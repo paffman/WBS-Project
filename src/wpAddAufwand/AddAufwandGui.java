@@ -1,19 +1,6 @@
-/**
- * Studienprojekt:	WBS
- * 
- * Kunde:				Pentasys AG, Jens von Gersdorff
- * Projektmitglieder:	Andre Paffenholz, 
- * 						Peter Lange, 
- * 						Daniel Metzler,
- * 						Samson von Graevenitz
- * 
- * GUI zum Hinzufügen eines Aufwandes zum Arbeitspaket
- * 
- * @author Daniel Metzler
- * @version 1.9 - 17.02.2011
- */
-
 package wpAddAufwand;
+
+import globals.FilterJTextField;
 
 import java.awt.*;
 
@@ -24,16 +11,40 @@ import java.util.Date;
 import javax.swing.*;
 import javax.swing.text.MaskFormatter;
 
+import wpWorker.Worker;
 
-
+/**
+ * Studienprojekt:	WBS<br/>
+ * 
+ * Kunde:				Pentasys AG, Jens von Gersdorff<br/>
+ * Projektmitglieder:	Andre Paffenholz, <br/>
+ * 						Peter Lange, <br/>
+ * 						Daniel Metzler,<br/>
+ * 						Samson von Graevenitz<br/>
+ *
+ * Studienprojekt:	PSYS WBS 2.0<br/>
+ * 
+ * Kunde:		Pentasys AG, Jens von Gersdorff<br/>
+ * Projektmitglieder:	<br/>
+ *			Michael Anstatt,<br/>
+ *			Marc-Eric Baumgärtner,<br/>
+ *			Jens Eckes,<br/>
+ *			Sven Seckler,<br/>
+ *			Lin Yang<br/>
+ * 
+ * GUI zum Hinzufügen eines Aufwandes zum Arbeitspaket<br/>
+ * 
+ * @author Daniel Metzler, Michael Anstatt
+ * @version 2.0 2012-0821
+ */
 public class AddAufwandGui extends JFrame{
 
 	private static final long serialVersionUID = 1L;
 	protected GridBagLayout gbl;
 	
-	protected JLabel lblID, lblName, lblUser,lblBeschreibung, lblAufwand, lblDatum;	
+	private JLabel lblID, lblName, lblUser,lblBeschreibung, lblAufwand, lblDatum;	
 	protected JTextField txfNr, txfName, txfBeschreibung, txfAufwand;
-	protected JComboBox cobUser;
+	protected JComboBox<Worker> cobUser;
 	protected JFormattedTextField txfDatum;
 	protected JButton btnEdit, btnSchliessen;	
 
@@ -56,23 +67,22 @@ public class AddAufwandGui extends JFrame{
 			System.err.println("Could not load LookAndFeel");
 		}
 		
-		
         lblID = new JLabel("ArbeitspaketID");
-		txfNr = new JTextField();
+		txfNr = new FilterJTextField();
 		txfNr.setEnabled(false);
         
 		lblName = new JLabel("Arbeitspaket Name");
-		txfName = new JTextField();
+		txfName = new FilterJTextField();
 		txfName.setEnabled(false);
 		
 		lblUser = new JLabel("Benutzer");
-		cobUser = new JComboBox();
+		cobUser = new JComboBox<Worker>();
 			
 		lblBeschreibung = new JLabel("Beschreibung");
-		txfBeschreibung = new JTextField();
+		txfBeschreibung = new FilterJTextField();
 		
 		lblAufwand = new JLabel("Aufwand");
-		txfAufwand = new JTextField();
+		txfAufwand = new FilterJTextField();
 		
 		lblDatum = new JLabel("Datum");
 		//Textfeld Datum bekommt das Format dd.mm.yyyy und hat das aktuelle Datum drinnen stehen
@@ -104,6 +114,7 @@ public class AddAufwandGui extends JFrame{
 		createGBC(btnSchliessen, 1, 6, 1, 1);
 		
 		setVisible(true);
+		
 	}
 		
 		

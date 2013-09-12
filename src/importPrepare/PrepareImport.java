@@ -1,5 +1,8 @@
 package importPrepare;
 
+
+import java.sql.ResultSet;
+
 /**
  * Studienprojekt:	WBS
  * 
@@ -15,16 +18,15 @@ package importPrepare;
  * @author Andre Paffenholz
  * @version 0.3 - .12.2010
  */
-
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import baseline.AddBaseline;
+import functions.CalcOAPBaseline;
+import functions.WpManager;
+
 import wpOverview.WPOverview;
 
 import jdbcConnection.SQLExecuter;
-
 public class PrepareImport {
 	
 	/**
@@ -34,7 +36,7 @@ public class PrepareImport {
 
 	public PrepareImport(WPOverview wpo){
 		prepareAPs();
-		new AddBaseline("Initialisierung einer importierten DB", wpo, true);
+		new CalcOAPBaseline("Initialisierung einer importierten DB", wpo);
 	}
 
 	/**
@@ -45,73 +47,62 @@ public class PrepareImport {
 	 */
 	
 	public void prepareAPs(){
-		SQLExecuter sqlExecWPValues = new SQLExecuter();
 		try {
-			ResultSet rsWPValues = sqlExecWPValues.executeQuery("SELECT * FROM Arbeitspaket WHERE istOAP = 0");
+			ResultSet rsWPValues = SQLExecuter.executeQuery("SELECT * FROM Arbeitspaket WHERE istOAP = 0");
 			while(rsWPValues.next()){
-				double stat = 0;
 				int lvl1ID = rsWPValues.getInt("LVL1ID");
 				int lvl2ID = rsWPValues.getInt("LVL2ID");
 				int lvl3ID = rsWPValues.getInt("LVL3ID");
 				String lvlxID = rsWPValues.getString("LVLxID");
-				Double tagessatz = getTagessatz(lvl1ID, lvl2ID, lvl3ID, lvlxID);
-				Double BAC = rsWPValues.getDouble("BAC");
-				Double BACKosten = BAC*tagessatz;
-				Double AC = getAufwand(lvl1ID, lvl2ID, lvl3ID, lvlxID);		
-				Double ACKosten = getACKosten(lvl1ID, lvl2ID, lvl3ID, lvlxID);
-				Double ETC = rsWPValues.getDouble("ETC");
 				
-				if(ETC <0){
-					ETC = 0.;
+				double dailyRate = getTagessatz(lvl1ID, lvl2ID, lvl3ID, lvlxID);
+				double bac = rsWPValues.getDouble("BAC");
+				double bacCost = bac*dailyRate;
+				double ac = getAufwand(lvl1ID, lvl2ID, lvl3ID, lvlxID);		
+				double acCost = getACKosten(lvl1ID, lvl2ID, lvl3ID, lvlxID);
+				double etc = rsWPValues.getDouble("ETC");
+				
+				if(etc < 0){
+					etc = 0.;
 				}
 				
-				if(BAC>0 && ETC==0)
-					stat = 100;
-				else{
-					if(ETC>0 && AC>0){
-						stat= (int) (AC*100 /(AC+ETC));
-				    }
-				    else{
-				    	stat= 0;
-				    } 
-				}	
-				Double ETCKosten = ( ETC * tagessatz);
-				Double EAC;
-				if(BACKosten>0){
-					EAC = ACKosten + ETCKosten;
+				double percentComplete = WpManager.calcPercentComplete(bac, etc, ac);
+				double etcCost = ( etc * dailyRate);
+				double eac;
+				if(bacCost>0){
+					eac = acCost + etcCost;
 				}
 				else{
-					EAC = 0.0;
+					eac = 0.0;
 				}
-				rsWPValues.updateDouble("AC", AC);
+				rsWPValues.updateDouble("AC", ac);
 				
 				Double cpi;
-				if(ACKosten+ETCKosten == 0.){
-					if(BACKosten==0.){
+				if(acCost+etcCost == 0.){
+					if(bacCost==0.){
 						cpi = 1.0;
 					}
 					else{
-						cpi = 999999.9;
+						cpi = 10.0;
 					}
 				}
 				else{
-					cpi = BACKosten/(ACKosten+ETCKosten);
+					cpi = bacCost/(acCost+etcCost);
 				}
 				rsWPValues.updateDouble("CPI", cpi);
-				rsWPValues.updateDouble("AC_Kosten", ACKosten);
-				rsWPValues.updateDouble("ETC_Kosten", ETCKosten);
-				rsWPValues.updateDouble("EV", BAC*stat/100*tagessatz);
-				rsWPValues.updateDouble("BAC_Kosten", BACKosten);
-				rsWPValues.updateDouble("WP_Tagessatz", tagessatz);
-				rsWPValues.updateDouble("EAC", EAC);		
+				rsWPValues.updateDouble("AC_Kosten", acCost);
+				rsWPValues.updateDouble("ETC_Kosten", etcCost);
+				rsWPValues.updateDouble("EV", bac*percentComplete/100*dailyRate);
+				rsWPValues.updateDouble("BAC_Kosten", bacCost);
+				rsWPValues.updateDouble("WP_Tagessatz", dailyRate);
+				rsWPValues.updateDouble("EAC", eac);		
 				rsWPValues.updateRow();
+				WpManager.updateAP(WpManager.getWorkpackage(lvl1ID+"."+lvl2ID+"."+lvl3ID+"."+lvlxID));
 			}
-			rsWPValues.close();
+			rsWPValues.getStatement().close();
 		}
 		catch (SQLException e) {
 			e.printStackTrace();	
-		} finally{
-			sqlExecWPValues.closeConnection();
 		}
 	}
 	
@@ -128,8 +119,7 @@ public class PrepareImport {
 	
 	public Double getAufwand(int lvl1ID, int lvl2ID, int lvl3ID, String lvlxID) throws SQLException{
 		Double summe = 0.;
-		SQLExecuter sqlExecAPAufwand = new SQLExecuter();
-		ResultSet rsAPAufwand = sqlExecAPAufwand.executeQuery("SELECT * FROM Aufwand " +
+		ResultSet rsAPAufwand = SQLExecuter.executeQuery("SELECT * FROM Aufwand " +
 				"WHERE LVL1ID = " + lvl1ID +
 					"and LVL2ID = " + lvl2ID +
 						"and LVL3ID = " + lvl3ID +
@@ -138,7 +128,6 @@ public class PrepareImport {
 			summe += rsAPAufwand.getDouble("Aufwand");
 		}
 		rsAPAufwand.close();
-		sqlExecAPAufwand.closeConnection();
 		return summe;		
 	}
 	
@@ -155,19 +144,15 @@ public class PrepareImport {
 	
 	public double getACKosten(int lvl1ID, int lvl2ID, int lvl3ID, String lvlxID) throws SQLException{
 		double ACKosten =0.;
-		SQLExecuter sqlExecAPAufwand = new SQLExecuter();
-		ResultSet rsAPAufwand = sqlExecAPAufwand.executeQuery("SELECT * FROM Aufwand WHERE LVL1ID = " + lvl1ID + "AND LVL2ID = " + lvl2ID + "AND LVL3ID = " + lvl3ID + "AND LVLxID = '" + lvlxID + "';");
+		ResultSet rsAPAufwand = SQLExecuter.executeQuery("SELECT * FROM Aufwand WHERE LVL1ID = " + lvl1ID + "AND LVL2ID = " + lvl2ID + "AND LVL3ID = " + lvl3ID + "AND LVLxID = '" + lvlxID + "';");
 		while(rsAPAufwand.next()){
-			SQLExecuter sqlExecMitarbeiter = new SQLExecuter();
-			ResultSet rsMitarbeiter = sqlExecMitarbeiter.executeQuery("SELECT * FROM Mitarbeiter WHERE Login= '" + rsAPAufwand.getString("FID_Ma") + "';");
+			ResultSet rsMitarbeiter = SQLExecuter.executeQuery("SELECT * FROM Mitarbeiter WHERE Login= '" + rsAPAufwand.getString("FID_Ma") + "';");
 			while(rsMitarbeiter.next()){
 				ACKosten += rsAPAufwand.getDouble("Aufwand") * rsMitarbeiter.getDouble("Tagessatz");
 			}	
 			rsMitarbeiter.close();
-			sqlExecMitarbeiter.closeConnection();
 		}
 		rsAPAufwand.close();
-		sqlExecAPAufwand.closeConnection();
 		return ACKosten;
 	}
 	
@@ -184,25 +169,21 @@ public class PrepareImport {
 		Double wptagessatz = 0.0;
 		ArrayList<String> zustaendige = new ArrayList<String>();
 		
-		SQLExecuter sqlExecAllZustaendige = new SQLExecuter();
 		try {
-			ResultSet rsAllZustaendige = sqlExecAllZustaendige.executeQuery(getSQLZustaendige(lvl1ID, lvl2ID, lvl3ID, lvlxID));
+			ResultSet rsAllZustaendige = SQLExecuter.executeQuery(getSQLZustaendige(lvl1ID, lvl2ID, lvl3ID, lvlxID));
 			while(rsAllZustaendige.next()){
 				zustaendige.add(rsAllZustaendige.getString("FID_Ma"));
 			}
 			rsAllZustaendige.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
-		} finally{
-			sqlExecAllZustaendige.closeConnection();
 		}
 		
 		for(int j=0; j<zustaendige.size(); j++){
 			String name = zustaendige.get(j);
 			
-			SQLExecuter sqlExecCurrentZustaendigWPs = new SQLExecuter();
 			try {
-				ResultSet rsCurrentZustaendigWPs = sqlExecCurrentZustaendigWPs.executeQuery("SELECT * FROM Mitarbeiter " +
+				ResultSet rsCurrentZustaendigWPs = SQLExecuter.executeQuery("SELECT * FROM Mitarbeiter " +
 						"WHERE Login= '" + name + "';");
 				while(rsCurrentZustaendigWPs.next()){
 					wptagessatz += rsCurrentZustaendigWPs.getDouble("Tagessatz");
@@ -211,8 +192,6 @@ public class PrepareImport {
 
 			} catch (SQLException e) {
 				e.printStackTrace();
-			} finally{
-				sqlExecCurrentZustaendigWPs.closeConnection();
 			}
 		}	
 		wptagessatz /= zustaendige.size();

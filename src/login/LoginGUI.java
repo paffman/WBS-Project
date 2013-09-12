@@ -1,5 +1,12 @@
 package login;
 
+
+import globals.FilterJTextField;
+
+import java.awt.*;
+
+import javax.swing.*;
+
 /**
  * Studienprojekt:	WBS
  * 
@@ -30,11 +37,6 @@ package login;
  * Sie unterliegen der Creative Commons Licence:
  * This licence allows you to use the icons in any client work, or commercial products such as WordPress themes or applications.
  */
-
-import java.awt.*;
-
-import javax.swing.*;
-
 public class LoginGUI extends JFrame{
 	
 	private static final long serialVersionUID = 1L;
@@ -101,7 +103,7 @@ public class LoginGUI extends JFrame{
         mnHilfe.add(miInfo);
 		
 		lblLogin = new JLabel("Login: ");
-		txfLogin = new JTextField(20);		
+		txfLogin = new FilterJTextField(20);		
 		lblPassword = new JLabel("Password: ");
 		txfPassword = new JPasswordField();
 		lblProjLeiter = new JLabel("Projektleiter");

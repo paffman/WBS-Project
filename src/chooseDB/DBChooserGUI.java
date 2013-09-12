@@ -1,20 +1,33 @@
 package chooseDB;
 
+import javax.swing.*;
+import java.awt.*;
+
 /**
- * Studienprojekt:	WBS
+ * Studienprojekt:	WBS<br/>
  * 
- * Kunde:				Pentasys AG, Jens von Gersdorff
- * Projektmitglieder:	Andre Paffenholz, 
- * 						Peter Lange, 
- * 						Daniel Metzler,
- * 						Samson von Graevenitz
+ * Kunde:				Pentasys AG, Jens von Gersdorff<br/>
+ * Projektmitglieder:	Andre Paffenholz, <br/>
+ * 						Peter Lange, <br/>
+ * 						Daniel Metzler,<br/>
+ * 						Samson von Graevenitz<br/>
  * 
  * 
  * GUI zur Anzeige des MDBAuswahl Fensters 
  * Verbindet zu einer gegebenen Microsoft Access Database Datei
+ *
+ * Studienprojekt:	PSYS WBS 2.0<br/>
  * 
- * @author Samson von Graevenitz, Daniel Metzler, Andre Paffenholz
- * @version 0.3- .12.2010
+ * Kunde:		Pentasys AG, Jens von Gersdorff<br/>
+ * Projektmitglieder:	<br/>
+ *			Michael Anstatt,<br/>
+ *			Marc-Eric Baumgärtner,<br/>
+ *			Jens Eckes,<br/>
+ *			Sven Seckler,<br/>
+ *			Lin Yang<br/>
+ *
+ * @author Samson von Graevenitz, Daniel Metzler, Andre Paffenholz, Lin Yang
+ * @version 2.0 - 2012-08-22
  * 
  * Die verwendeten Icons stammen von: http://sublink.ca/icons/sweetieplus/
  * sowie: http://http://p.yusukekamiyamane.com/
@@ -29,18 +42,13 @@ package chooseDB;
  * Sie unterliegen der Creative Commons Licence:
  * This licence allows you to use the icons in any client work, or commercial products such as WordPress themes or applications.
  */
-
-import javax.swing.*;
-
-import java.awt.*;
-
 public class DBChooserGUI extends JFrame{
 
 	protected static final long serialVersionUID = 1L;
 	protected JLabel lblMDB;									
 	protected JButton btnOeffnen, btnWeiter, btnSchliessen;		
 	protected JFileChooser fileIn;
-	protected JComboBox cobDBAuswahl;
+	protected JComboBox<String> cobDBAuswahl;
 	protected GridBagLayout gbl;
 	protected JMenuBar mnbMenu; 
 	protected JMenu mnDatei, mnHilfe;
@@ -73,9 +81,7 @@ public class DBChooserGUI extends JFrame{
 		setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
 			
 		
-        /**
-         * Menüs
-         */
+		//Menues
 		mnbMenu = new JMenuBar();
         mnDatei = new JMenu("Datei");
         mnHilfe = new JMenu("Hilfe");  
@@ -103,10 +109,10 @@ public class DBChooserGUI extends JFrame{
         //MDB-Auswahl
 		lblMDB = new JLabel("Pfad der MDB");
 		
-		cobDBAuswahl = new JComboBox();
+		cobDBAuswahl = new JComboBox<String>();
 		
 		cobDBAuswahl.setEditable(true);
-		btnOeffnen = new JButton("Öffnen");
+		btnOeffnen = new JButton("andere DB...");
 		btnSchliessen = new JButton("Schließen");
 		btnWeiter = new JButton("Weiter");	
 	

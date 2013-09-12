@@ -1,32 +1,43 @@
-/**
- * Studienprojekt:	WBS
- * 
- * Kunde:				Pentasys AG, Jens von Gersdorff
- * Projektmitglieder:	Andre Paffenholz, 
- * 						Peter Lange, 
- * 						Daniel Metzler,
- * 						Samson von Graevenitz
- * 
- * Funktionen zum Hinzufügen eines Arbeitspaketes
- * 
- * @author Daniel Metzler
- * @version 1.9 - 17.02.2011
- */
-
 package wpAddAufwand;
+
+import globals.Workpackage;
 
 import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.StringTokenizer;
+import java.util.List;
+
+import dbServices.WorkerService;
+
 
 import jdbcConnection.SQLExecuter;
-import login.User;
-import wpMitarbeiter.Mitarbeiter;
-import wpOverview.WPOverview;
 import wpShow.*;
+import wpWorker.Worker;
 
-
+/**
+ * Studienprojekt:	WBS
+ * 
+ * Kunde:				Pentasys AG, Jens von Gersdorff<br/>
+ * Projektmitglieder:	Andre Paffenholz, <br/>
+ * 						Peter Lange, <br/>
+ * 						Daniel Metzler,<br/>
+ * 						Samson von Graevenitz<br/>
+ * 
+ * Studienprojekt:	PSYS WBS 2.0<br/>
+ * 
+ * Kunde:		Pentasys AG, Jens von Gersdorff<br/>
+ * Projektmitglieder:	<br/>
+ *			Michael Anstatt,<br/>
+ *			Marc-Eric Baumgärtner,<br/>
+ *			Jens Eckes,<br/>
+ *			Sven Seckler,<br/>
+ *			Lin Yang<br/>
+ * 
+ * Funktionen zum Hinzufügen eines Arbeitspaketes<br/>
+ * 
+ * @author Daniel Metzler, Michael Anstatt
+ * @version 2.0 2012-08-21
+ */
 public class AddAufwand {
 	
 	/**
@@ -35,18 +46,12 @@ public class AddAufwand {
 	 */
 	public AddAufwandGui gui;
 	public WPShow wpshow;
-	private AddAufwand dies;
-	private String wpID;
-	private User usr;
-	private String wpname;
-	private String myaufwand;
-	private int lvl1ID, lvl2ID, lvl3ID;
-	private StringBuilder lvlxID = new StringBuilder();
-	private ArrayList<Mitarbeiter> MitarbeiterListe = WPOverview.MitarbeiterListe;
+	private Workpackage wp;
 	
 	
 	/**
 	 * Default-Konstruktor
+	 * @param workpackage 
 	 * @param wpID ID des Arbeitspakets
 	 * @param usr Benutzer dessen Aufwand eingetragen werden soll
 	 * @param show WPSHow GUI zur Referenzierung
@@ -54,16 +59,15 @@ public class AddAufwand {
 	 * Werte aus der WPShow werden übergeben
 	 * 
 	 */
-	public AddAufwand(String wpID, User usr, WPShow show, String wpname){
-		dies = this;
+	public AddAufwand(WPShow wpshow, Workpackage wp){
 		gui = new AddAufwandGui();
-		wpshow = show;
-		this.wpID = wpID;
-		new AddAufwandButtonAction(dies);
-		this.usr = usr;
-		this.wpname = wpname;
+		this.wp = wp;
+		this.wpshow = wpshow;
+		new AddAufwandButtonAction(this);
 		initialize();
-		gui.setTitle("Aufwand für " + wpID + " | " + wpname);
+		gui.setTitle("Aufwand für " + wp);
+		gui.setLocationRelativeTo(wpshow.getMainFrame());
+		gui.setLocation((int)gui.getLocation().getX()-gui.getHeight()/2, (int) (gui.getLocation().getY()-gui.getWidth()/2));
 	}
 	
 	
@@ -75,58 +79,35 @@ public class AddAufwand {
 	 * ansonsten nur der Mitarbeiter selbst 
 	 */
 	public void initialize(){	
-		int i = 0;
-		StringTokenizer st = new StringTokenizer(wpID, ".");
-		lvl1ID = Integer.parseInt(st.nextToken());
-		lvl2ID = Integer.parseInt(st.nextToken());
-		lvl3ID = Integer.parseInt(st.nextToken());
-		while(st.hasMoreElements()){
-			lvlxID.insert(i, st.nextToken(""));
-			i++;
-		}	
-		lvlxID.deleteCharAt(0);
-		gui.txfNr.setText(wpID);
-		gui.txfName.setText(wpname);
-		if(usr.getProjLeiter()){
-			SQLExecuter sqlExec = new SQLExecuter();
-			ResultSet rs1 = sqlExec.executeQuery(getSQLZustaendige());
-			try {
-				while(rs1.next()){
-					String login = rs1.getString("FID_Ma");
-					for(int j=0; j<MitarbeiterListe.size(); j++){					
-						if(MitarbeiterListe.get(j).getLogin().equals(login)){
-							gui.cobUser.addItem(MitarbeiterListe.get(j).getLogin() + " | " + MitarbeiterListe.get(j).getVorname() + " " + MitarbeiterListe.get(j).getName());
-						}
-					}
-
-				}
-				rs1.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-			sqlExec.closeConnection();
+	
+		gui.txfNr.setText(wp.getStringID());
+		gui.txfName.setText(wp.getName());
+		
+		List<Worker> allWorkers = WorkerService.getRealWorkers();
+		List<String> workerIDs = wp.getWorkers();
+		List<Worker> dummies = new ArrayList<Worker>();
+		
+		for(String actualID : workerIDs) {
+			dummies.add(new Worker(actualID));
 		}
-		else{
-			gui.cobUser.addItem(usr.getLogin() + " | " + usr.getVorname() + " " + usr.getName());
+		
+		if(wpshow.getUser().getProjLeiter()){
+			for(Worker actualWorker : allWorkers) {
+				if(dummies.contains(actualWorker)) {
+					gui.cobUser.addItem(actualWorker);
+				}
+			}
+		} else{
+			for(Worker actualWorker : allWorkers) {
+				if(dummies.contains(actualWorker) && wpshow.getUser().getLogin().equals(actualWorker.getLogin())) {
+					gui.cobUser.addItem(actualWorker);
+					gui.cobUser.setSelectedItem(actualWorker);
+				}
+			}
+			
 			gui.cobUser.setEnabled(false);
 		}	
 	}	
-	
-	
-	
-	
-	/**
-	 * wird in der Methode initialize() aufgerufen wenn der User Projektleiterberechtigungen hat, um die Benutzer in die ComboBox zu füllen
-	 * Alle zuständigen des Arbeitspakets werden aus der Paketzuweisungstabelle ausgelesen
-	 * @return String aller zuständigen Mitarbeiter
-	 */
-	public String getSQLZustaendige(){		
-		return "SELECT * FROM Paketzuweisung " +		
-				"WHERE FID_LVL1ID = " + lvl1ID + " " +
-				"AND FID_LVL2ID = " + lvl2ID + " " +
-				"AND FID_LVL3ID = " + lvl3ID + " " +
-				"AND FID_LVLxID = '" + lvlxID + "';";
-	}
 	
 	
 
@@ -172,28 +153,25 @@ public class AddAufwand {
 			java.util.Date dt = formatter.parse(gui.txfDatum.getText());
 			dte=new java.sql.Date(dt.getTime());
 			//Kommas des Textfeldes Aufwand werden durch Punkte ersetzt, damit es zu keinen Fehlern kommt
-			myaufwand = gui.txfAufwand.getText().replace(",", ".");
+			String myaufwand = gui.txfAufwand.getText().replace(",", ".");
 			
 			String login = gui.cobUser.getSelectedItem().toString();   
 		    int loginIndex = login.indexOf("|");
 		    String userLogin = login.substring(0,loginIndex-1);
 			//neuer Aufwand wird in die Datenbanktabelle Aufwand geschrieben
-		    SQLExecuter sqlExec1 = new SQLExecuter();
-			ResultSet rs1 = sqlExec1.executeQuery("SELECT * FROM  Aufwand");
+			ResultSet rs1 = SQLExecuter.executeQuery("SELECT * FROM  Aufwand");
 			rs1.moveToInsertRow();
 			rs1.updateInt("FID_Proj", 1);
-			rs1.updateInt("LVL1ID", lvl1ID);
-			rs1.updateInt("LVL2ID", lvl2ID);
-			rs1.updateInt("LVL3ID", lvl3ID);
-			rs1.updateString("LVLxID", lvlxID.toString());
+			rs1.updateInt("LVL1ID", wp.getLvl1ID());
+			rs1.updateInt("LVL2ID", wp.getLvl2ID());
+			rs1.updateInt("LVL3ID", wp.getLvl3ID());
+			rs1.updateString("LVLxID", wp.getLvlxID());
 			rs1.updateString("FID_Ma", userLogin);
 			rs1.updateDate("Datum", dte);
 			rs1.updateDouble("Aufwand", Double.parseDouble(myaufwand));
 			rs1.updateString("Beschreibung", gui.txfBeschreibung.getText());	
 			rs1.insertRow();
 			rs1.close();	
-			sqlExec1.closeConnection();
-			WPShowGUI.setStatusbar("Aufwand hinzugefügt");
 			return true;
 			
 		} catch (Exception e) {		

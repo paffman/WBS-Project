@@ -1,4 +1,12 @@
 package wpAddAufwand;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+
+import javax.swing.JOptionPane;
+
 /**
  * Studienprojekt:	WBS
  * 
@@ -13,13 +21,6 @@ package wpAddAufwand;
  * @author Daniel Metzler
  * @version 1.9 - 17.02.2011
  */
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-
-import javax.swing.JOptionPane;
-
 public class AddAufwandButtonAction {
 
 	private AddAufwand addaufwand;
@@ -44,14 +45,12 @@ public class AddAufwandButtonAction {
 							JOptionPane.showMessageDialog(addaufwand.gui, "Bitte prüfen Sie Ihre Eingaben!");
 						else {
 							//berechnet den neuen ETC und schreibt den Wert in das Textfeld ETC der WPShow damit die Werte mit dem neu errechneten ETC berechnet werden 
-							double ETC = Double.parseDouble(addaufwand.wpshow.gui.txfETC.getText()) - Double.parseDouble(addaufwand.gui.txfAufwand.getText());
-							addaufwand.wpshow.gui.txfETC.setText(Double.toString(ETC));						
+							double ETC = addaufwand.wpshow.getETCfromGUI() - Double.parseDouble(addaufwand.gui.txfAufwand.getText());
+							addaufwand.wpshow.updateETCInGUI(ETC);				
 							//Methode setChanges der Klasse WPShow aktualisiert die neuen Werte und berechnet alles neu mit dem neuen Aufwand und ETC 
 							//JOptionPane.showMessageDialog(addaufwand.gui, "Aufwand wurde erfolgreich eingetragen");
-							addaufwand.wpshow.setChanges();
-							addaufwand.wpshow.filltable();
+							addaufwand.wpshow.save();
 							addaufwand.gui.dispose();
-							addaufwand.wpshow.gui.tblAufwand.repaint();
 						}
 						
 					} catch (Exception e) {

@@ -1,5 +1,11 @@
 package chooseDB;
 
+import globals.InfoBox;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JOptionPane;
+
 /**
  * Studienprojekt:	WBS
  * 
@@ -15,22 +21,18 @@ package chooseDB;
  * @author Samson von Graevenitz und Daniel Metzler
  * @version 0.3 - 09.12.2010
  */
-
-import globals.InfoBox;
-
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import javax.swing.JOptionPane;
-
 public class DBChooserButtonAction {
 
 	private DBChooser dbchooser;
 	
+	/**
+	 * Konstruktor
+	 * @param dbchooser
+	 */
 	public DBChooserButtonAction(DBChooser dbchooser) {
 		this.dbchooser = dbchooser;
 		addButtonAction();
-		dbchooser.fillDBAuswahl();
+		dbchooser.fillCobDB();
 	}
 
 	/**
@@ -53,25 +55,25 @@ public class DBChooserButtonAction {
 
 		dbchooser.gui.btnWeiter.addActionListener(new ActionListener() {	
 			public void actionPerformed(ActionEvent e) {
-				dbchooser.weiter();
+				dbchooser.next();
 			}
 		});
 		
 		dbchooser.gui.btnOeffnen.addActionListener(new ActionListener() {	
 			public void actionPerformed(ActionEvent arg0) {			
-				dbchooser.oeffnen();				
+				dbchooser.open();				
 			}
 		});
 		
 		dbchooser.gui.miPfadoeffnen.addActionListener(new ActionListener() {	
 			public void actionPerformed(ActionEvent arg0) {			
-				dbchooser.oeffnen();				
+				dbchooser.open();				
 			}
 		});
 		
 		dbchooser.gui.miWeiter.addActionListener(new ActionListener() {	
 			public void actionPerformed(ActionEvent e) {
-				dbchooser.weiter();
+				dbchooser.next();
 			}
 		});
 		

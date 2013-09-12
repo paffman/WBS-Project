@@ -1,5 +1,13 @@
 package wpOverview;
 
+import java.awt.Canvas;
+import java.awt.Color;
+import java.awt.FlowLayout;
+
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+
 /**
  * Studienprojekt:	WBS
  * 
@@ -15,15 +23,6 @@ package wpOverview;
  * @version 0.3- .12.2010
  */
 
-import java.awt.Canvas;
-import java.awt.Color;
-import java.awt.FlowLayout;
-
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.SwingConstants;
-
-
 public class Legende extends JPanel{
 	
 	private static final long serialVersionUID = 1L;
@@ -31,11 +30,12 @@ public class Legende extends JPanel{
 	private Canvas color;
 
 	/**
-	 * Default-constructor: 
+	 * Default-Konstructor: 
 	 * Erzeugt ein JPanel mit den verschiedenen CPI-Farben und deren Zahlenwerte 
 	 */
 	public Legende(){
 		super();
+
 		setLayout(new FlowLayout());
 		
 		add(new JLabel("CPI-Farben:"));

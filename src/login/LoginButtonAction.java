@@ -1,5 +1,18 @@
 package login;
 
+
+import globals.InfoBox;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+
+import javax.swing.JOptionPane;
+
+import jdbcConnection.MDBConnect;
+import chooseDB.DBChooser;
+
 /**
  * Studienprojekt:	WBS
  * 
@@ -14,23 +27,13 @@ package login;
  * @author Samson von Graevenitz und Daniel Metzler
  * @version 0.1 - 30.11.2010
  */
-
-import globals.InfoBox;
-
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-
-import javax.swing.JOptionPane;
-
-import jdbcConnection.MDBConnect;
-import chooseDB.DBChooser;
-
 public class LoginButtonAction {
 
 	private Login login;
-	
+	/**
+	 * Konstruktor
+	 * @param login Login Fenster
+	 */
 	public LoginButtonAction(Login login){
 		this.login = login;
 		addButtonAction();

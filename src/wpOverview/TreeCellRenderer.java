@@ -1,5 +1,18 @@
 package wpOverview;
 
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Font;
+import java.awt.Toolkit;
+
+import javax.swing.ImageIcon;
+import javax.swing.JTree;
+
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeCellRenderer;
+
+import functions.WpManager;
+import globals.Workpackage;
 
 /**
  * Studienprojekt:	WBS
@@ -20,25 +33,25 @@ package wpOverview;
  * @author Andre Paffenholz, Daniel Metzler
  */
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Font;
-import java.awt.Toolkit;
-
-import javax.swing.ImageIcon;
-import javax.swing.JTree;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeCellRenderer;
-
-
 public class TreeCellRenderer extends DefaultTreeCellRenderer { 
 
 	private static final long serialVersionUID = 5446711829460583776L;
 	//Icons festlegen
-	private ImageIcon std = new ImageIcon(Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("/_icons/std.png")));
-	private ImageIcon std_oap = new ImageIcon(Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("/_icons/std_oap.png")));
-	private ImageIcon fertig_oap = new ImageIcon(Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("/_icons/fertige_oap.png")));
-	private ImageIcon fertig_uap = new ImageIcon(Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("/_icons/fertige_uap.png")));
+	 private ImageIcon std, std_oap, fertig_oap, fertig_uap;
+	
+	
+	private ImageIcon std_no_dep = new ImageIcon(Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("/_icons/std.png")));
+	private ImageIcon std_oap_no_dep = new ImageIcon(Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("/_icons/std_oap.png")));
+	private ImageIcon fertig_oap_no_dep = new ImageIcon(Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("/_icons/fertige_oap.png")));
+	private ImageIcon fertig_uap_no_dep = new ImageIcon(Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("/_icons/fertige_uap.png")));
+	
+	
+	private ImageIcon std_dep = new ImageIcon(Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("/_icons/std_dep.png")));
+	private ImageIcon std_oap_dep = new ImageIcon(Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("/_icons/std_oap_dep.png")));
+	private ImageIcon fertig_oap_dep = new ImageIcon(Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("/_icons/fertige_oap_dep.png")));
+	private ImageIcon fertig_uap_dep = new ImageIcon(Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("/_icons/fertige_uap_dep.png")));
+	
+	
 	private ImageIcon inaktiv = new ImageIcon(Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("/_icons/inaktiv.png")));
 
 
@@ -55,7 +68,21 @@ public class TreeCellRenderer extends DefaultTreeCellRenderer {
 	      //Prüfen ob es sich um ein valies Arbeitspaket oder einfach um eine Nummer im Baum handelt
 	      if (userObject instanceof Workpackage) {
 	        Workpackage wp = (Workpackage) userObject;
-	        double cpi = wp.getcpi();
+	        
+	       
+	        if(!WpManager.getFollowers(wp).isEmpty() || !WpManager.getAncestors(wp).isEmpty()) {
+	        	std = std_dep;
+	        	std_oap = std_oap_dep;
+	        	fertig_oap = fertig_oap_dep;
+	        	fertig_uap = fertig_uap_dep;
+	        } else {
+	        	std = std_no_dep;
+	        	std_oap = std_oap_no_dep;
+	        	fertig_oap = fertig_oap_no_dep;
+	        	fertig_uap = fertig_uap_no_dep;
+	        }
+	        
+	        double cpi = wp.getCpi();
 	        
 	        //hier wird die fürbung der Schrift und des Hintergrunds vorgenommen
 	        
@@ -81,8 +108,12 @@ public class TreeCellRenderer extends DefaultTreeCellRenderer {
 	        }
 	        else {
 	        	//Schrift Fett darstellen, falls Paket abgeschlossen
-	        	if(wp.getLvl1ID()>0 && wp.getStatus()==100 && wp.getAc() > 0){
+	        	if(wp.getLvl1ID()>0 && WpManager.calcPercentComplete(wp.getBac(), wp.getEtc(), wp.getAc())==100 && wp.getAc() > 0){
 			        Font aktFont = getFont();
+			        if(aktFont == null) {
+			        	setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+			        	aktFont = getFont();
+			        }
 			        aktFont = aktFont.deriveFont(Font.BOLD);
 			        setFont(aktFont);
 			        
@@ -124,7 +155,7 @@ public class TreeCellRenderer extends DefaultTreeCellRenderer {
 	        }
 
 	        
-	        //Treefürbungen vornehmen
+	        //Treefaerbungen vornehmen
 	        if(wp.getAc() > 0){
 		        if(cpi<=0.97){
 		        	this.setBackgroundNonSelectionColor(Color.yellow);

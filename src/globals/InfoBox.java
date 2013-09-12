@@ -1,20 +1,5 @@
 package globals;
 
-/**
- * Studienprojekt:	WBS
- * 
- * Kunde:				Pentasys AG, Jens von Gersdorff
- * Projektmitglieder:	Andre Paffenholz, 
- * 						Peter Lange, 
- * 						Daniel Metzler,
- * 						Samson von Graevenitz
- * 
- * Allgemeine InfoBox, wird über Menü->Hilfe->Info aufgerufen
- * 
- * @author Samson von Graevenitz/Peter Lange
- * @version 1.0- 16.02.2011
- */
-
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Container;
@@ -27,10 +12,33 @@ import java.awt.Toolkit;
 
 import javax.swing.*;
 
+/**
+ * Studienprojekt:	WBS<br/>
+ * 
+ * Kunde:				Pentasys AG, Jens von Gersdorff
+ * Projektmitglieder:	Andre Paffenholz, <br/>
+ * 						Peter Lange, <br/>
+ * 						Daniel Metzler,<br/>
+ * 						Samson von Graevenitz<br/>
+ * 
+ * Kunde:		Pentasys AG, Jens von Gersdorff<br/>
+ * Projektmitglieder:	<br/>
+ *			Michael Anstatt,<br/>
+ *			Marc-Eric Baumgärtner,<br/>
+ *			Jens Eckes,<br/>
+ *			Sven Seckler,<br/>
+ *			Lin Yang<br/>
+ *
+ * Allgemeine InfoBox, wird über Menü->Hilfe->Info aufgerufen<br/>
+ * 
+ * @author Samson von Graevenitz, Peter Lange, Jens Eckes, Lin Yang
+ * @version 2.0- 2012-08-22
+ */
 public class InfoBox extends JDialog{
 
-	private final String version = "1.6";
+	private final String version = "2.0";
 	private static final long serialVersionUID = 1L;
+	//altes info Bild /globals/info.old (jpg)
 	Image pictInfo = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("/globals/info.jpg"));
 	JButton close;
 
@@ -51,8 +59,8 @@ public class InfoBox extends JDialog{
 			System.err.println("Could not load LookAndFeel");
 		}
 		
-		int width = 500;
-		int height = 550;
+		int width = 436;
+		int height = 626;
 		Toolkit tk=Toolkit.getDefaultToolkit();
 		Dimension screenSize=tk.getScreenSize();
 		setLocation((int)(screenSize.getWidth()/2)-width/2,(int)(screenSize.getHeight()/2)-height/2);

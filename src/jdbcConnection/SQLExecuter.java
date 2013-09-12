@@ -1,3 +1,8 @@
+
+package jdbcConnection;
+import java.sql.*;
+
+
 /**
  * Studienprojekt:	WBS
  * 
@@ -14,15 +19,10 @@
  * @author Samson von Graevenitz
  * @version - 0.1 30.11.2010
  */
-
-package jdbcConnection;
-import java.sql.*;
-
-
 public class SQLExecuter {
 
 	//Datenelement fürs Konnektor-Objekt
-	private Connection theConn = null; 
+	private static Connection theConn = null; 
 	
 	/**
 	 * Default-Konstruktor 
@@ -36,23 +36,30 @@ public class SQLExecuter {
 	 * @exception Exception Es wird ein Fehler verursacht, falls die Verbindung fehlschägt.
 	 * Dabei wird "no Connection" auf der Konsole ausgegeben
 	 */
-	private void getConnection(){
+	private static void getConnection(){
 		try{
+		if(theConn == null) {
 			theConn = MDBConnect.getConnection();
+		}
+			
 		}catch(Exception e){
 			System.out.println("no Connection");
+			
 		}
 	}
 	
 	/**
 	 * Schließt die Verbindung zur MDB
 	 */
-	public void closeConnection(){
+	public static void closeConnection(){
 		try{
-			theConn.close();
+			if(theConn != null) {
+				theConn.close();
+			}
 		}catch(SQLException e){
             e.printStackTrace();
         }
+		theConn = null;
 	}
 	
 	/**
@@ -60,7 +67,7 @@ public class SQLExecuter {
 	 * z.B. CREATE TABLE, INSERT INTO
 	 * @param sql SQL Statement als String
 	 */
-	public void executeUpdate(String sql) throws SQLException{
+	public static void executeUpdate(String sql) throws SQLException{
 		getConnection();
 		Statement stmt;
 		try {
@@ -68,6 +75,7 @@ public class SQLExecuter {
 			//stmt = theConn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
 			stmt.executeUpdate(sql);
 			theConn.commit();
+			stmt.close();
 		} catch (SQLException e) {
 			/*
 			 * Falls ein Arbeitspaket gelöscht wird und die Kaskadierung dies Verhindert,
@@ -80,10 +88,12 @@ public class SQLExecuter {
 			if(e.getErrorCode() == -1612){
 				throw new SQLException(e);
 			}
-			else
-				e.printStackTrace();
+			else{
+//				e.printStackTrace();
+				throw e;
+			}
 		}finally{
-			closeConnection();
+//			closeConnection();
 		}
 	}
 	
@@ -98,7 +108,7 @@ public class SQLExecuter {
 	 * @exception Exception ein leeres ResultSet wird zurückgegeben und die Fehlermeldung ausgegeben
 	 * 
 	 */
-    public ResultSet executeQuery(String sql){
+    public static ResultSet executeQuery(String sql){
         getConnection();
         Statement stmt;
         ResultSet rs;
@@ -108,6 +118,7 @@ public class SQLExecuter {
             return rs;
         } catch (SQLException e) {
             e.printStackTrace();
+//            this.closeConnection();
         }
         return null;
     }
