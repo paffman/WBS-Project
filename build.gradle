@@ -1,5 +1,6 @@
 apply plugin: 'application'
 apply plugin: 'eclipse'
+apply plugin: 'checkstyle'
 
 sourceCompatibility = 1.7
 version = '3.0'
@@ -21,3 +22,24 @@ dependencies {
 
 // main application class
 mainClassName = "chooseDB.DBChooser"
+
+// checkstyle configurations
+tasks.withType(Checkstyle) {
+    ignoreFailures = true
+    configProperties = [
+        'checkstyle.suppressions.file': 'config/checkstyle/suppressions.xml'
+    ]
+}
+
+task csReport (dependsOn: [checkstyleMain, checkstyleTest]) << {
+    ant.xslt(in: "$reporting.baseDir/checkstyle/main.xml",
+             style: "config/checkstyle/checkstyle-simple.xsl",
+             out: "$reporting.baseDir/checkstyle/main.html")
+
+    /*ant.xslt(in: "$reporting.baseDir/checkstyle/test.xml",
+             style: "config/checkstyle/checkstyle-simple.xsl",
+             out: "$reporting.baseDir/checkstyle/test.html")*/
+}
+
+check.dependsOn csReport
+
