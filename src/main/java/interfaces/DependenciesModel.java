@@ -17,8 +17,6 @@
 * along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-//TODO: Beschreibugn bei @param hinzufügen
-
 
 package interfaces;
 
@@ -35,8 +33,8 @@ public interface DependenciesModel {
 
 	/*
 	 * A method to delete a dependency.
-	 * @param predecessorWpID beschreibung
-	 * @param succesorWpID beschreibung
+	 * @param predecessorWpID Workpackage which must be done before another workpackage.
+	 * @param succesorWpID Workpackage which has a workpackage that must be done before it.
 	 */
 	public void deleteDependency(int predecessorWpID, int successorWpID);
 	

@@ -21,16 +21,40 @@ package interfaces;
 
 import java.util.List;
 
+/*The interface for the employee model*/ 
 public interface EmployeesModel {
 
+    /*
+     * A method to get all employees.
+     * @return Returns a list with all employees.
+     */
     public List<?> getEmployee();
     
+    /*
+     * A method to get a specific employee.
+     * @param login The login for the specific employee.
+     * @return Returns the selected employee.
+     */
     public Employee getEmployee(String login);
     
+    /*
+     * TODO:ist das richtig?
+     * A method to get specific employees of the project.
+     * @param isLeader True, if the method should return a list with all leaders of the project. False, if the method should return a list with all employees without the leaders of the project.
+     * @returns Returns a list with all leaders if param isLeader is true, else returns a list with all employees without the leader.
+     */
     public List<?> getEmployee(boolean isLeader);
     
+    /*
+     * A method to update a employee.
+     * @param employee The specific employee which has to be updated.
+     */
     public void updateEmployee(Employee employee);
     
+    /*
+     * A method to delete a specific employee.
+     * @param id The id from the employee which has to be deleted.
+     */
     public void deleteEmployee(int id);
     
 }

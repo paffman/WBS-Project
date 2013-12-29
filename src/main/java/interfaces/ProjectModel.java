@@ -21,8 +21,14 @@ package interfaces;
 
 import java.util.List;
 
+/*The interface for the project model*/
 public interface ProjectModel {
 
+    /*
+     * TODO: stimmt das?
+     * A method to get all projects.
+     * @return Returns a list with all projects on the database.
+     */
     public List<?> getProject();
     
 }

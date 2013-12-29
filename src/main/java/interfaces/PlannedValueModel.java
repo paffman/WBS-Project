@@ -22,22 +22,67 @@ package interfaces;
 import java.util.Date;
 import java.util.List;
 
+/*The interface for the planned value model*/
 public interface PlannedValueModel {
     
+    /*
+     * A method to get the planned value in a specific period.
+     * @param from The start date of the period.
+     * @param to The end date of the period.
+     * @return Returns a list with the planned values in the period.
+     */
     public List<?> getPlannedValue(Date from, Date to);
     
+    /*
+     * A method to get the planned value in a specific period from a specific workpackage.
+     * @param from The start date of the period.
+     * @param to The end date of the period.
+     * @param wpID The id of the workpackage.
+     * @return Returns a list with the planned values from the selected workpackage in the period.
+     */
     public List<?> getPlannedValue(Date from, Date to, int wpID);
     
+    /*
+     * A method to get the planned value from a specific workpackage on a specific date.
+     * @param aDate The specific date.
+     * @param wpID The id from the workpackage.
+     * @return Returns a list with the planned value from the selected workpackage and date.
+     */
     public List<?> getPlannedValue(Date aDate, int wpID);
     
+    /* TODO: was macht param order? 
+     * A method to get the planned value from a specific workpackage on a specific date.
+     * @param aDate The specific date.
+     * @param wpID The id from the workpackage.
+     * @param order ...
+     * @return Returns a list with the planned value from the selected workpackage and date.
+     */
     public List<?> getPlannedValue(Date aDate, int wpID, OrderEnum order);
     
+    /*
+     * A method to update a planned value.
+     * @param aDate The specific date.
+     * @param wpID The id of the workpacke from which the planned value has to be updated.
+     * @param newValue The new value for the planned value.
+     */
     public void updatePlannedValue(Date aDate, int wpID, int newValue);
     
+    /*
+     * A method to delete all planed values.
+     */
     public void deletePlannedValue();
     
+    /*
+     * A method to delete a specific planned value
+     * @param wpID The id of the workpackage from where the planned value has to be deleted.
+     */
     public void deletePlannedValue(int wpID);
     
+    /*
+     * A method to delete a planned value on a specif date and a specific workpackage.
+     * @param aDate The specific date.
+     * @param wpID The id of the workpackage.
+     */
     public void deletePlannedValue(Date aDate, int wpID);
     
 }

@@ -22,18 +22,45 @@ package interfaces;
 import java.util.Date;
 import java.util.List;
 
+/* The interface for the workpackage model */
 public interface WorkpackageModel {
     
+    /*
+     * A method to get all workpackages from the project.
+     * @return Returns a list with all workpackages from the project.
+     */
     public List<?> getWorkpackage();
     
+    /*
+     * TODO: was macht diese methode?
+     * @param isToplevel Information if the wp has child workpackages and cannot have efforts.
+     */
     public List<?> getWorkpackage(boolean isToplevel);
     
+    /*
+     * A method to get a single workpackage.
+     * @param stringID The complete hierachical ID of a workpackage. Unique within a project.
+     * @return Returns the selected workpackage.
+     */
     public Workpackage getWorkpackage(String stringID);
     
+    /*
+     * A method to get all workpackages in a range.
+     * @param from The start date for this workpackage.
+     * @param to The end date for this workpackage
+     */
     public List<?> getWorkpackagesInDateRange(Date from, Date to);
     
+    /*
+     * A method to update a workpackage.
+     * @param wp The workpackage which has to be updated.
+     */
     public void updateWorkpackage(Workpackage wp);
     
+    /*
+     * A method to delete a workpackage.
+     * @param wpID The unique ID for a workpackage.
+     */
     public void deleteWorkpackage(int wpID);
     
 }

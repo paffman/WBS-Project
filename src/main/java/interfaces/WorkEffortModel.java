@@ -21,10 +21,20 @@ package interfaces;
 
 import java.util.List;
 
+/*The interface for the work effort model*/
 public interface WorkEffortModel {
 
+    /*
+     * A mehtod to get the work effort.
+     * @return Returns a list with the work effort from the project.
+     */
     public List<?> getWorkeffort();
     
+    /*
+     * A method to get the work effort from a specific baseline.
+     * @param baselineID The id from the specific baseline.
+     * @return Returns a list with the work effort from the specific baseline.
+     */
     public List<?> getWorkeffort(int baselineID);
     
 }

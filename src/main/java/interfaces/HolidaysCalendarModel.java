@@ -22,16 +22,41 @@ package interfaces;
 import java.util.Date;
 import java.util.List;
 
+/*The interface for the holidays calendar model*/
 public interface HolidaysCalendarModel {
     
+    /*
+     * TODO: stimmt das?
+     * A method to get the holiday calendars.
+     * @return Returns a list with all holiday calendars.
+     */
     public List<?> getHolidayCalendar();
     
+    /*
+     * A method to get a specific holiday calendar.
+     * @param calID The id from the calendar.
+     * @return Returns the selected holiday calendar
+     */
     public HolidayCalendar getHolidayCalendar(int calID);
     
+    /*
+     * A method to get the holiday calendar from a specific period.
+     * @param from The begin of the holiday calendar.
+     * @param to The end of the holiday calendar.
+     * @return Returns a list with the specific holiday calendar.
+     */
     public List<?> getHolidayCalendar(Date from, Date to);
     
+    /*
+     * A method to update the holiday calendar.
+     * @param hc The calendar which has to be updated.
+     */
     public void updateHolidayCalendar(HolidayCalendar hc);
     
+    /*
+     * A method to delete a holiday calendar.
+     * @param calID The id from the calendar which has to be deleted.
+     */
     public void deleteHolidayCalendar(int calID);
     
 }

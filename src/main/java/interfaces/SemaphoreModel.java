@@ -19,10 +19,20 @@
 
 package interfaces;
 
+/*The interface for the sempaphore model*/
 public interface SemaphoreModel {
     
+    /*
+     * A method to get a specific semaphore.
+     * @param tag The tag of the semaphore.
+     * @return Returns the selected semaphore.
+     */
     public WBSSemaphore getSemaphore(String tag);
     
+    /*
+     * A method to delete a semaphore.
+     * @param tag The tag from the semaphore wich has to be deleted.
+     */
     public void deleteSemaphore(String tag);
     
 }
