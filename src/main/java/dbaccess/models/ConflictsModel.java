@@ -17,24 +17,36 @@
 * along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-package interfaces;
+package dbaccess.models;
 
 import java.util.List;
 
-/*The interface for the work effort model*/
-public interface WorkEffortModel {
+import dbaccess.data.Conflict;
 
-    /*
-     * A mehtod to get the work effort.
-     * @return Returns a list with the work effort from the project.
+/**The interface for the conflict model*/
+public interface ConflictsModel {
+ 
+    /**
+     * A method to add a new conflict to the project.
+     * @param conflict The conflict which is added to the project.
      */
-    public List<?> getWorkeffort();
+    public void addNewConflict(Conflict conflict);
     
-    /*
-     * A method to get the work effort from a specific baseline.
-     * @param baselineID The id from the specific baseline.
-     * @return Returns a list with the work effort from the specific baseline.
+    /**
+     * A method to get all conflicts.
+     * @return Returns a list with all conflicts in the project.
      */
-    public List<?> getWorkeffort(int baselineID);
+    public List<?> getConflicts();
+    
+    /**
+     * A method to delete all conflicts.
+     */
+    public void deleteConflicts();
+    
+    /**
+     * A method to delete a specific conflict.
+     * @param id The id from the conflict which is deleted from the project.
+     */
+    public void deleteConflict(int id);
     
 }

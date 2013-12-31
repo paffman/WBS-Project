@@ -17,18 +17,8 @@
 * along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-package interfaces;
+package dbaccess.data;
 
-import java.util.List;
+public class WorkpackageAllocation {
 
-/*The interface for the project model*/
-public interface ProjectModel {
-
-    /*
-     * TODO: stimmt das?
-     * A method to get all projects.
-     * @return Returns a list with all projects on the database.
-     */
-    public List<?> getProject();
-    
 }

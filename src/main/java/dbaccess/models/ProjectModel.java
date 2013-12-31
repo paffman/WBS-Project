@@ -17,22 +17,25 @@
 * along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-package interfaces;
+package dbaccess.models;
 
-/*The interface for the sempaphore model*/
-public interface SemaphoreModel {
-    
-    /*
-     * A method to get a specific semaphore.
-     * @param tag The tag of the semaphore.
-     * @return Returns the selected semaphore.
+import java.util.List;
+
+import dbaccess.data.Project;
+
+/**The interface for the project model*/
+public interface ProjectModel {
+
+    /**
+     * A method to add a new project on the database.
+     * @param project The project which is added to the database.
      */
-    public WBSSemaphore getSemaphore(String tag);
+    public void addNewProject(Project project);
     
-    /*
-     * A method to delete a semaphore.
-     * @param tag The tag from the semaphore wich has to be deleted.
+    /**
+     * A method to get all projects.
+     * @return Returns a list with all projects on the database.
      */
-    public void deleteSemaphore(String tag);
+    public List<?> getProject();
     
 }

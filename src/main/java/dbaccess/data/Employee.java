@@ -17,25 +17,8 @@
 * along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+package dbaccess.data;
 
-package interfaces;
+public class Employee {
 
-import java.util.List;
-
-/* The interface for the dependencies model */
-public interface DependenciesModel {
-	
-    /*
-     * A method to get the dependencies.
-     * @return Returns a list with all dependencies.
-     */
-	public List<?> getDependency();
-
-	/*
-	 * A method to delete a dependency.
-	 * @param predecessorWpID Workpackage which must be done before another workpackage.
-	 * @param succesorWpID Workpackage which has a workpackage that must be done before it.
-	 */
-	public void deleteDependency(int predecessorWpID, int successorWpID);
-	
 }

@@ -17,28 +17,8 @@
 * along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-package interfaces;
+package dbaccess.data;
 
-import java.util.List;
+public class WorkEffort {
 
-/*The interface for the conflict model*/
-public interface ConflictsModel {
-
-    /*
-     * A method to get all conflicts.
-     * @return Returns a list with all conflicts in the project.
-     */
-    public List<?> getConflicts();
-    
-    /*
-     * A method to delete all conflicts.
-     */
-    public void deleteConflicts();
-    
-    /*
-     * A method to delete a specific conflict.
-     * @param id The id from the conflict which has to be deleted.
-     */
-    public void deleteConflict(int id);
-    
 }

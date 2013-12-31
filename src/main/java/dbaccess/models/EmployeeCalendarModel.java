@@ -17,37 +17,44 @@
 * along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-package interfaces;
+package dbaccess.models;
 
 import java.util.Date;
 import java.util.List;
 
-/*The interface for the employee calendar model*/
+import dbaccess.data.EmployeeCalendar;
+
+/**The interface for the employee calendar model*/
 public interface EmployeeCalendarModel {
 
-    /*
-     * TODO: ist das richtig?
-     * A method to get all employee calendars.
-     * @return Returns a list with all employee calendars.
+    /**
+     * A method to add a new employee calendar to the project.
+     * @param empCal The calendar which is added to the project.
+     */
+    public void addNewEmployeeCalendar(EmployeeCalendar empCal);
+    
+    /**
+     * A method to get the employee calendars from all employees.
+     * @return Returns a list with a employee calendar for each employee.
      */
     public List<?> getEmployeeCalendar();
     
-    /*
+    /**
      * A method to get a specific calendar.
      * @param id The id from the specific calendar
      * @return Returns the selected employee calendar.
      */
     public EmployeeCalendar getEmployeeCalendar(int id);
     
-    /*
+    /**
      * TODO: ist das richtig?
-     * A method to get the calendar from a employee.
+     * A method to get the calendar from an employee.
      * @param fid The id of the referenced employee.
      * @return Returns a list with the calendar of the selected employee.
      */
     public List<?> getEmployeeCalendarForFID(int fid);
     
-    /*
+    /**
      * A method to get the employee calendars in a specific period.
      * @param from The start date from the period.
      * @param to The end date from the period
@@ -55,7 +62,7 @@ public interface EmployeeCalendarModel {
      */
     public List<?> getEmployeeCalendarInDateRange(Date from, Date to);
     
-    /*
+    /**
      * TODO: Was macht mode2? wo ist der unterschied zur obigen methode?
      * A method to get the employee calendars in a specific period.
      * @param from The start date from the period.
@@ -64,9 +71,9 @@ public interface EmployeeCalendarModel {
      */
     public List<?> getEmployeeCalendarInDateRange(Date from, Date to, boolean mode2);
 
-    /*
+    /**
      * A method to delete e a specific calendar.
-     * @param id The id from the calendar which has to be deleted.
+     * @param id The id from the calendar which is deleted from the project.
      */
     public void deleteEmployeeCalendar(int id);
     

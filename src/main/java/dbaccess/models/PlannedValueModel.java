@@ -17,15 +17,24 @@
 * along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-package interfaces;
+package dbaccess.models;
 
 import java.util.Date;
 import java.util.List;
 
-/*The interface for the planned value model*/
+import dbaccess.data.OrderEnum;
+import dbaccess.data.PlannedValue;
+
+/**The interface for the planned value model*/
 public interface PlannedValueModel {
     
-    /*
+    /**
+     * A method to add a new planned value to the project.
+     * @param pValue The planned value which is added to the project.
+     */
+    public void addNewPlannedValue(PlannedValue pValue);
+    
+    /**
      * A method to get the planned value in a specific period.
      * @param from The start date of the period.
      * @param to The end date of the period.
@@ -33,7 +42,7 @@ public interface PlannedValueModel {
      */
     public List<?> getPlannedValue(Date from, Date to);
     
-    /*
+    /**
      * A method to get the planned value in a specific period from a specific workpackage.
      * @param from The start date of the period.
      * @param to The end date of the period.
@@ -42,7 +51,7 @@ public interface PlannedValueModel {
      */
     public List<?> getPlannedValue(Date from, Date to, int wpID);
     
-    /*
+    /**
      * A method to get the planned value from a specific workpackage on a specific date.
      * @param aDate The specific date.
      * @param wpID The id from the workpackage.
@@ -50,7 +59,7 @@ public interface PlannedValueModel {
      */
     public List<?> getPlannedValue(Date aDate, int wpID);
     
-    /* TODO: was macht param order? 
+    /** TODO: was genau macht param order? 
      * A method to get the planned value from a specific workpackage on a specific date.
      * @param aDate The specific date.
      * @param wpID The id from the workpackage.
@@ -59,7 +68,7 @@ public interface PlannedValueModel {
      */
     public List<?> getPlannedValue(Date aDate, int wpID, OrderEnum order);
     
-    /*
+    /**
      * A method to update a planned value.
      * @param aDate The specific date.
      * @param wpID The id of the workpacke from which the planned value has to be updated.
@@ -67,18 +76,18 @@ public interface PlannedValueModel {
      */
     public void updatePlannedValue(Date aDate, int wpID, int newValue);
     
-    /*
+    /**
      * A method to delete all planed values.
      */
     public void deletePlannedValue();
     
-    /*
+    /**
      * A method to delete a specific planned value
-     * @param wpID The id of the workpackage from where the planned value has to be deleted.
+     * @param wpID The id of the workpackage from where the planned value is deleted.
      */
     public void deletePlannedValue(int wpID);
     
-    /*
+    /**
      * A method to delete a planned value on a specif date and a specific workpackage.
      * @param aDate The specific date.
      * @param wpID The id of the workpackage.

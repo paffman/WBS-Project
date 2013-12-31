@@ -17,25 +17,30 @@
 * along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-package interfaces;
+package dbaccess.models;
 
-import java.util.List;
+import dbaccess.data.WBSSemaphore;
 
-/* The interface for the analyse data model */
-public interface AnalyseDataModel {
+/**The interface for the sempaphore model*/
+public interface SemaphoreModel {
     
-    /*
-     * A method to get the analyse data.
-     * @param fid Workpackage from which the data comes.
-     * @return Returns the data from selected workpackage.
+    /**
+     * A method to add a new wbs semaphore to the project.
+     * @param wbsSemaphore The semaphore which is added to the project.
      */
-    public AnalyseData getAnalyseData(int fid);
+    public void addNewSemaphore(WBSSemaphore wbsSemaphore);
     
-    /*
-     * A method to get the analyse data from the baseline.
-     * @param baseline Baseline for which the data is analysed.
-     * @return Returns a list with the data from the selected baseline.
+    /**
+     * A method to get a specific semaphore.
+     * @param tag The tag of the semaphore.
+     * @return Returns the selected semaphore.
      */
-    public List<?> getAnalyseDataForBaseline(int baseline);
+    public WBSSemaphore getSemaphore(String tag);
+    
+    /**
+     * A method to delete a semaphore.
+     * @param tag The tag from the semaphore wich is deleted.
+     */
+    public void deleteSemaphore(String tag);
     
 }

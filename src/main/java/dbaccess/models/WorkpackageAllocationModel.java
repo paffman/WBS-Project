@@ -17,44 +17,52 @@
 * along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-package interfaces;
+package dbaccess.models;
 
 import java.util.Date;
 import java.util.List;
 
+import dbaccess.data.WorkpackageAllocation;
+
 //TODO: Andere Namen für Join-Methoden ausdenken
-/*The interface for the workpackage allocation model*/
+/**The interface for the workpackage allocation model*/
 public interface WorkpackageAllocationModel {
 
-    /*
+    /**
+     * A method to add a new workpackage allocation.
+     * @param wpAllocation The allocation which is added.
+     */
+    public void addNewWorkpackageAllocation(WorkpackageAllocation wpAllocation);
+    
+    /**
      * A method to get all workpackage allocations.
      * @return Returns a list with all workpackage allocations of the project.
      */
     public List<?> getWorkpackageAllocation();
     
-    /*
+    /**
      * A method to get all workpackage allocations from a specific workpackage.
      * @param fidWP The id from the specific workpackage.
      * @return Returns a list with the work package allocations from the selected workpackage.
      */
     public List<?> getWorkpackageAllocation(int fidWP);
     
-    /*
+    /**
      * TODO: Was macht die methode genau? alle zuweisungen eines bestimmten arbeiters zurückgeben? dann müsste der parameter anders heisen?
      */
     public List<?> getWorkpackageAllocationEmployees(int fidWP);
     
-    /*
-     * TODO: was macht das?
+    /**
+     * TODO: was macht das? + anderen Namen ausdenken
      */
     public List<?> getWorkpackageAllocationJoinWP();
     
-    /*
-     * TODO: was macht das?
+    /**
+     * TODO: was macht das? + anderen Namen ausdenken
      */
     public List<?> getWorkpackageAllocationJoinWP(Date from, Date to);
     
-    /*
+    /**
      * A method to delete a workpackage allocation
      * @param employeeID The id from the employee.
      * @param workpackageID The id from the workpackage.

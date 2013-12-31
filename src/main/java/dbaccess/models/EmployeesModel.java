@@ -17,43 +17,50 @@
 * along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-package interfaces;
+package dbaccess.models;
 
 import java.util.List;
 
-/*The interface for the employee model*/ 
+import dbaccess.data.Employee;
+
+/**The interface for the employee model*/ 
 public interface EmployeesModel {
 
-    /*
+    /**
+     * A method to add a new employee to the project.
+     * @param employee The employee which is added to the project.
+     */
+    public void addNewEmployee(Employee employee);
+    
+    /**
      * A method to get all employees.
      * @return Returns a list with all employees.
      */
     public List<?> getEmployee();
     
-    /*
+    /**
      * A method to get a specific employee.
      * @param login The login for the specific employee.
      * @return Returns the selected employee.
      */
     public Employee getEmployee(String login);
     
-    /*
-     * TODO:ist das richtig?
+    /**
      * A method to get specific employees of the project.
-     * @param isLeader True, if the method should return a list with all leaders of the project. False, if the method should return a list with all employees without the leaders of the project.
-     * @returns Returns a list with all leaders if param isLeader is true, else returns a list with all employees without the leader.
+     * @param isLeader True, if the method should return a list with all leaders of the project. False, if the method should return a list with all employees of the project.
+     * @returns Returns a list with all leaders if parameter isLeader is true, else returns a list with all employees.
      */
     public List<?> getEmployee(boolean isLeader);
     
-    /*
+    /**
      * A method to update a employee.
-     * @param employee The specific employee which has to be updated.
+     * @param employee The specific employee which is updated.
      */
     public void updateEmployee(Employee employee);
     
-    /*
+    /**
      * A method to delete a specific employee.
-     * @param id The id from the employee which has to be deleted.
+     * @param id The id from the employee which is deleted.
      */
     public void deleteEmployee(int id);
     
