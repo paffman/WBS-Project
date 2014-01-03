@@ -26,9 +26,9 @@ mainClassName = "chooseDB.DBChooser"
 // checkstyle configurations
 tasks.withType(Checkstyle) {
     ignoreFailures = true
-    configProperties = [
+    /*configProperties = [
         'checkstyle.suppressions.file': 'config/checkstyle/suppressions.xml'
-    ]
+    ]*/
 }
 
 task csReport (dependsOn: [checkstyleMain, checkstyleTest]) << {
@@ -36,10 +36,9 @@ task csReport (dependsOn: [checkstyleMain, checkstyleTest]) << {
              style: "config/checkstyle/checkstyle-simple.xsl",
              out: "$reporting.baseDir/checkstyle/main.html")
 
-    /*ant.xslt(in: "$reporting.baseDir/checkstyle/test.xml",
+    ant.xslt(in: "$reporting.baseDir/checkstyle/test.xml",
              style: "config/checkstyle/checkstyle-simple.xsl",
-             out: "$reporting.baseDir/checkstyle/test.html")*/
+             out: "$reporting.baseDir/checkstyle/test.html")
 }
 
 check.dependsOn csReport
-
