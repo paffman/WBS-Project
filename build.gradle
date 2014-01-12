@@ -29,9 +29,6 @@ mainClassName = "chooseDB.DBChooser"
 // checkstyle configurations
 tasks.withType(Checkstyle) {
     ignoreFailures = true
-    /*configProperties = [
-        'checkstyle.suppressions.file': 'config/checkstyle/suppressions.xml'
-    ]*/
 }
 
 task csReport (dependsOn: [checkstyleMain, checkstyleTest]) << {
