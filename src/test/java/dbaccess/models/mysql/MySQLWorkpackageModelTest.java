@@ -26,6 +26,7 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import dbaccess.data.Workpackage;
 import dbaccess.models.WorkpackageModel;
 import org.junit.*;
+import sqlutils.TestData;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -64,6 +65,7 @@ public class MySQLWorkpackageModelTest {
 
     @Before
     public final void setup() {
+        TestData.reloadData(con);
         wpModel = new MySQLWorkpackageModel(con);
     }
 
@@ -78,7 +80,7 @@ public class MySQLWorkpackageModelTest {
         assertThat(wpList, notNullValue());
 
         assertThat("list should not be empty", wpList.size() > 0);
-        assertThat("list should contain 8 WPs", wpList.size() == 8);
+        assertThat("list should contain 8 WPs", wpList.size() == 9);
 
         assertThat(wpList.get(0).getName(), equalTo("Mauerbau"));
         assertThat(wpList.get(1).getName(), equalTo("Vorbereitung"));
