@@ -20,5 +20,49 @@
 package dbaccess.data;
 
 public class Conflict {
+    private int id;
+    private int fid_wp;
+    private int fid_wp_affected;
+    private int fid_emp;
+    private int reason;
+    private String occurence_date;
+    
+    public Conflict(int id, int fid_wp, int fid_wp_affected, int fid_emp, int reason, String occurence_date){
+        this.id=id;
+        this.fid_wp=fid_wp;
+        this.fid_wp_affected=fid_wp_affected;
+        this.fid_emp=fid_emp;
+        this.reason=reason;
+        this.occurence_date=occurence_date;
+    }
+    
+    public String toString(){
+        return id+" "+fid_wp+" "+fid_wp_affected+" "+fid_emp+" "+reason+" "+occurence_date;
+    }
 
+    public int getId() {
+        return id;
+    }
+
+    public int getFid_wp() {
+        return fid_wp;
+    }
+
+    public int getFid_wp_affected() {
+        return fid_wp_affected;
+    }
+
+    public int getFid_emp() {
+        return fid_emp;
+    }
+
+    public int getReason() {
+        return reason;
+    }
+
+    public String getOccurence_date() {
+        return occurence_date;
+    }
+    
+    
 }

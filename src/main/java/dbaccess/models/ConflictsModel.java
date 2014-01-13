@@ -36,7 +36,7 @@ public interface ConflictsModel {
      * A method to get all conflicts.
      * @return Returns a list with all conflicts in the project.
      */
-    public List<?> getConflicts();
+    public List<Conflict> getConflicts();
     
     /**
      * A method to delete all conflicts.

@@ -21,4 +21,36 @@ package dbaccess.data;
 
 public class Baseline {
 
+    private int id;
+    private int fid_project;
+    private String bl_date; //TODO: eigentlich Datum, als Date oder String speichern?
+    private String description;
+    
+    public Baseline(int id, int fid_project, String bl_date, String description){
+        this.id=id;
+        this.fid_project=fid_project;
+        this.bl_date=bl_date;
+        this.description=description;
+    }
+    
+    public String toString(){
+        return id+" "+"fid_project"+" "+bl_date+" "+description;
+    }
+    
+    public int getId() {
+        return id;
+    }
+
+    public int getFid_project() {
+        return fid_project;
+    }
+
+    public String getBl_date() {
+        return bl_date;
+    }
+
+    public String getDescription() {
+        return description;
+    } 
+    
 }
