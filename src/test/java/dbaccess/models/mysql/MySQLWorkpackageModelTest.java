@@ -80,7 +80,7 @@ public class MySQLWorkpackageModelTest {
         assertThat(wpList, notNullValue());
 
         assertThat("list should not be empty", wpList.size() > 0);
-        assertThat("list should contain 8 WPs", wpList.size() == 9);
+        assertThat("list should contain 8 WPs", wpList.size() == 8);
 
         assertThat(wpList.get(0).getName(), equalTo("Mauerbau"));
         assertThat(wpList.get(1).getName(), equalTo("Vorbereitung"));
