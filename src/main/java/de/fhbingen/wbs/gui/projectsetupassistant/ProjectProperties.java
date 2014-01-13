@@ -1,7 +1,9 @@
-package placeholder.gui;
+package de.fhbingen.wbs.gui.projectsetupassistant;
 
-import javax.swing.JFrame;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
 import java.awt.Container;
+import java.awt.Dimension;
 
 /**
  * GUI class for a project assistant.
@@ -9,40 +11,45 @@ import java.awt.Container;
  * database structures.
  * Created by Maxi on 02.01.14.
  */
-public class ProjectAssistantGUI extends JFrame {
+public class ProjectProperties extends JDialog {
     /**
      * Interface for GUI actions.
      */
-    public interface ProjectAssistantMethods {
+    public interface Actions {
 
     }
 
     /**
-     * Default constructor for a ProjectAssistantGUI.
+     * Default constructor for a ProjectProperties.
      * @param newDelegate the controller instance.
      */
-    public ProjectAssistantGUI(final ProjectAssistantMethods newDelegate) {
+    public ProjectProperties(final Actions newDelegate) {
         super();
         delegate = newDelegate;
         contentPane = getContentPane();
-        setTitle("Projektassistent");
         createUiObjects();
-        pack();
-        //setPreferredSize(preferredSize);
+
+        //Configuration of Dialog
+        setTitle("Projektassistent");
+        setModal(true);
+        setPreferredSize(PREFERRED_SIZE);
         setVisible(true);
+        pack();
     }
 
     /**
      * Creates UI elements and places them on the gui.
      */
     private void createUiObjects() {
-
+        final JLabel labelButtonNext = new JLabel();
+        final JLabel labelButtonCancel = new JLabel();
+        final JLabel labelButtonBack = new JLabel();
     }
 
     /**
      * Interface to the controller.
      */
-    private final ProjectAssistantMethods delegate;
+    private final Actions delegate;
 
     /**
      * The content pane of this JFrame.
@@ -50,5 +57,8 @@ public class ProjectAssistantGUI extends JFrame {
      */
     private final Container contentPane;
 
-    //public static final preferredSize = new Dimension(100, 100);
+    /**
+     * Default preferred size.
+     */
+    private static final Dimension PREFERRED_SIZE = new Dimension();
 }
