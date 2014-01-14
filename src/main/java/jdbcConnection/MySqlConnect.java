@@ -33,7 +33,7 @@ public final class MySqlConnect {
 	    // This will load the MySQL driver, each DB has its own driver
 	    Class.forName(mySqlDriver);
 	    Connection connect = DriverManager.getConnection("jdbc:mysql://"
-		    + host + "/" + dbName + "?user=" + dbName + "_" + login
+		    + host + "/" + dbName + "?user=" + login
 		    + "&password=" + pw);
 	    return connect;
 	} catch (SQLException e) {

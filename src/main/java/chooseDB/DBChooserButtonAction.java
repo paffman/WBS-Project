@@ -31,8 +31,7 @@ public class DBChooserButtonAction {
 	 */
 	public DBChooserButtonAction(DBChooser dbchooser) {
 		this.dbchooser = dbchooser;
-		addButtonAction();
-		dbchooser.fillCobDB();
+		addButtonAction();		
 	}
 
 	/**
@@ -47,49 +46,37 @@ public class DBChooserButtonAction {
 	 * Hilfe-Menü:				gibt per JOptionPane eine Hilfe für die DBChooserGUI aus
 	*/
 	public void addButtonAction(){
-		dbchooser.gui.btnSchliessen.addActionListener(new ActionListener() {
+		dbchooser.gui.closeButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				System.exit(0);
 			}
 		});
 
-		dbchooser.gui.btnWeiter.addActionListener(new ActionListener() {	
+		dbchooser.gui.okButton.addActionListener(new ActionListener() {	
+			public void actionPerformed(ActionEvent e) {
+				dbchooser.next();
+			}
+		});
+				
+		dbchooser.gui.okMenuItem.addActionListener(new ActionListener() {	
 			public void actionPerformed(ActionEvent e) {
 				dbchooser.next();
 			}
 		});
 		
-		dbchooser.gui.btnOeffnen.addActionListener(new ActionListener() {	
-			public void actionPerformed(ActionEvent arg0) {			
-				dbchooser.open();				
-			}
-		});
-		
-		dbchooser.gui.miPfadoeffnen.addActionListener(new ActionListener() {	
-			public void actionPerformed(ActionEvent arg0) {			
-				dbchooser.open();				
-			}
-		});
-		
-		dbchooser.gui.miWeiter.addActionListener(new ActionListener() {	
-			public void actionPerformed(ActionEvent e) {
-				dbchooser.next();
-			}
-		});
-		
-		dbchooser.gui.miBeenden.addActionListener(new ActionListener() {
+		dbchooser.gui.closeMenuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				System.exit(0);
 			}
 		});
 		
-		dbchooser.gui.miHilfe.addActionListener(new ActionListener() {	
+		dbchooser.gui.helpMenuItem.addActionListener(new ActionListener() {	
 			public void actionPerformed(ActionEvent arg0) {			
-				JOptionPane.showMessageDialog(dbchooser.gui, "Zuerst muss der richtige Pfad angegeben werden. Dann gelangen Sie mit \"Weiter\" zum Login");				
+				JOptionPane.showMessageDialog(dbchooser.gui, "Geben sie die Zugangsdaten zur Datenbank und ihren Benutzernamen an. Mit einem Klick auf Ok gelangen sie dann in das WBS-Tool.");				
 			}
 		});
 		
-		dbchooser.gui.miInfo.addActionListener(new ActionListener() {	
+		dbchooser.gui.infoMenuItem.addActionListener(new ActionListener() {	
 			public void actionPerformed(ActionEvent arg0) {			
 				new InfoBox();		
 			}
