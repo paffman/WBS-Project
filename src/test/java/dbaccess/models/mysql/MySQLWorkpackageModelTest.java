@@ -112,8 +112,8 @@ public class MySQLWorkpackageModelTest {
 
     @Test
     public final void testGetWorkpackageByStringID2() {
-        String projectID = "1.0.0.0";
-        Workpackage wp = wpModel.getWorkpackage(projectID);
+        String wpID = "1.0.0.0";
+        Workpackage wp = wpModel.getWorkpackage(wpID);
 
         // validate the db fields
         assertThat(wp.getId(), equalTo(2));
