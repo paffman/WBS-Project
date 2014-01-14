@@ -26,47 +26,22 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import dbaccess.data.Workpackage;
 import dbaccess.models.WorkpackageModel;
 import org.junit.*;
+import sqlutils.TestDBConnector;
 import sqlutils.TestData;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
+import java.sql.Time;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 public class MySQLWorkpackageModelTest {
 
-    private static Connection con;
     private WorkpackageModel wpModel;
-
-    @BeforeClass
-    public static final void setupTest() {
-        final String url = "jdbc:mysql://localhost:3306/";
-        final String dbName = "mbtest";
-        final String driver = "com.mysql.jdbc.Driver";
-        final String userName = "unittest";
-        final String password = "junit411";
-
-        try {
-            Class.forName(driver).newInstance();
-            con = DriverManager.getConnection(url + dbName,
-                    userName, password);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @AfterClass
-    public static final void closeDBConnection() {
-        try {
-            con.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     @Before
     public final void setup() {
-        TestData.reloadData(con);
-        wpModel = new MySQLWorkpackageModel(con);
+        wpModel = new MySQLWorkpackageModel(TestDBConnector.getConnection());
     }
 
     @After
@@ -79,8 +54,7 @@ public class MySQLWorkpackageModelTest {
         List<Workpackage> wpList = wpModel.getWorkpackage();
         assertThat(wpList, notNullValue());
 
-        assertThat("list should not be empty", wpList.size() > 0);
-        assertThat("list should contain 8 WPs", wpList.size() == 8);
+        assertThat(wpList.size(), equalTo(8));
 
         assertThat(wpList.get(0).getName(), equalTo("Mauerbau"));
         assertThat(wpList.get(1).getName(), equalTo("Vorbereitung"));
@@ -93,7 +67,38 @@ public class MySQLWorkpackageModelTest {
     }
 
     @Test
-    public final void testGetWorkpackageByStringID1() {
+    public final void testGetWorkpackage_OnlyLeavesTrue() {
+        List<Workpackage> wpList = wpModel.getWorkpackage(true);
+        assertThat(wpList, notNullValue());
+
+        assertThat(wpList.size(), equalTo(5));
+
+        assertThat(wpList.get(0).getName(), equalTo("Inspektion der Baustelle"));
+        assertThat(wpList.get(1).getName(), equalTo("Entwurfszeichnung"));
+        assertThat(wpList.get(2).getName(), equalTo("Material Beschaffung"));
+        assertThat(wpList.get(3).getName(), equalTo("Zement Mischen"));
+        assertThat(wpList.get(4).getName(), equalTo("Stein auf Stein"));
+    }
+
+    @Test
+    public final void testGetWorkpackage_OnlyLeavesFalse() {
+        List<Workpackage> wpList = wpModel.getWorkpackage(false);
+        assertThat(wpList, notNullValue());
+
+        assertThat(wpList.size(), equalTo(8));
+
+        assertThat(wpList.get(0).getName(), equalTo("Mauerbau"));
+        assertThat(wpList.get(1).getName(), equalTo("Vorbereitung"));
+        assertThat(wpList.get(2).getName(), equalTo("Inspektion der Baustelle"));
+        assertThat(wpList.get(3).getName(), equalTo("Entwurfszeichnung"));
+        assertThat(wpList.get(4).getName(), equalTo("Material Beschaffung"));
+        assertThat(wpList.get(5).getName(), equalTo("Bauen"));
+        assertThat(wpList.get(6).getName(), equalTo("Zement Mischen"));
+        assertThat(wpList.get(7).getName(), equalTo("Stein auf Stein"));
+    }
+
+    @Test
+    public final void testGetWorkpackage_ByStringID1() {
         final String projectID = "0.0.0.0";
 
         Workpackage projectWP = wpModel.getWorkpackage(projectID);
@@ -108,12 +113,19 @@ public class MySQLWorkpackageModelTest {
         assertThat(projectWP.getPositionID(), equalTo(1));
         assertThat(projectWP.getName(), equalTo("Mauerbau"));
         assertThat(projectWP.getDescription(), equalTo("Projekt"));
+        assertThat(projectWP.getBac(), equalTo(7.0));
+        assertThat(projectWP.getAc(), equalTo(2.625));
+        assertThat(projectWP.getEv(), equalTo(750.0));
+        assertThat(projectWP.getEtc(), equalTo(4.5));
+        assertThat(projectWP.getEac(), equalTo(1350.0));
     }
 
     @Test
-    public final void testGetWorkpackageByStringID2() {
+    public final void testGetWorkpackage_ByStringID2() {
         String wpID = "1.0.0.0";
         Workpackage wp = wpModel.getWorkpackage(wpID);
+
+        assertThat(wp, notNullValue());
 
         // validate the db fields
         assertThat(wp.getId(), equalTo(2));
@@ -123,6 +135,85 @@ public class MySQLWorkpackageModelTest {
         assertThat(wp.getPositionID(), equalTo(1));
         assertThat(wp.getName(), equalTo("Vorbereitung"));
         assertThat(wp.getDescription(), equalTo("Vorbereitende Arbeiten"));
+        assertThat(wp.getBac(), equalTo(2.0));
+        assertThat(wp.getAc(), equalTo(2.125));
+        assertThat(wp.getEv(), equalTo(600.0));
+        assertThat(wp.getEtc(), equalTo(0.0));
+        assertThat(wp.getEac(), equalTo(0.0));
+    }
+
+    @Test
+    public final void testGetWorkpackagesInDateRange1() throws ParseException {
+        final SimpleDateFormat format = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
+        final String startDateString = "2014-01-02 00:00:01";
+        final String endDateString = "2014-01-03 09:59:59";
+
+        final Date startDate = format.parse(startDateString);
+        final Date endDate = format.parse(endDateString);
+
+        List<Workpackage> wpList = wpModel.getWorkpackagesInDateRange(startDate, endDate);
+        assertThat(wpList, notNullValue());
+
+        assertThat(wpList.size(), equalTo(1));
+    }
+
+    @Test
+    public final void testGetWorkpackagesInDateRange2() throws ParseException {
+        final SimpleDateFormat format = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
+        final String startDateString = "2014-01-01 00:00:01";
+        final String endDateString = "2014-01-01 08:01:01";
+
+        final Date startDate = format.parse(startDateString);
+        final Date endDate = format.parse(endDateString);
+
+        List<Workpackage> wpList = wpModel.getWorkpackagesInDateRange(startDate, endDate);
+        assertThat(wpList, notNullValue());
+
+        assertThat(wpList.size(), equalTo(3));
+    }
+
+    @Test
+    public final void testGetWorkpackagesInDateRange3() throws ParseException {
+        final SimpleDateFormat format = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
+        final String startDateString = "2014-01-03 10:01:01";
+        final String endDateString = "2014-01-04 10:00:00";
+
+        final Date startDate = format.parse(startDateString);
+        final Date endDate = format.parse(endDateString);
+
+        List<Workpackage> wpList = wpModel.getWorkpackagesInDateRange(startDate, endDate);
+        assertThat(wpList, notNullValue());
+
+        assertThat(wpList.size(), equalTo(0));
+    }
+
+    @Test
+    public final void testUpdateWorkpackage() {
+        String stringID = "3.1.0.0";
+
+        Workpackage wpOld = wpModel.getWorkpackage(stringID);
+        assertThat(wpOld, notNullValue());
+        assertThat(wpOld.getEtc(), equalTo(1.0));
+
+        wpOld.setEtc(1.5);
+        wpModel.updateWorkpackage(wpOld);
+
+        Workpackage wpNew = wpModel.getWorkpackage(stringID);
+        assertThat(wpNew.getEtc(), equalTo(1.5));
+
+        // change test data back to original state
+        TestData.reloadData(TestDBConnector.getConnection());
+    }
+
+    @Test
+    public final void testDeleteWorkpackage() {
+        // TODO: implement testDeleteWorkpackage
     }
 
 }
+
+
+
+
+
+

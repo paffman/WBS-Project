@@ -24,7 +24,13 @@ dependencies {
 }
 
 // main application class
-mainClassName = "chooseDB.DBChooser"
+mainClassName = 'chooseDB.DBChooser'
+
+// test task configuration
+test {
+    // tests in this package are executed via the test suite
+    exclude 'dbaccess/models/mysql/*Test.class'
+}
 
 // checkstyle configurations
 tasks.withType(Checkstyle) {

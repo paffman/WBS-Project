@@ -470,6 +470,10 @@ public class Workpackage {
      * @return The release date
      */
     public Date getReleaseDate() {
+        if (releaseDate == null) {
+            // TODO: check if it is alright to just initialize it
+            releaseDate = new Date();
+        }
         return releaseDate;
     }
 

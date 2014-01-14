@@ -23,21 +23,25 @@ import dbaccess.data.Workpackage;
 import dbaccess.models.WorkpackageModel;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 /**
  * The <code>MySQLWorkpackageModel</code> class implements the
- * <code>WorkpackageModel</code> and handles all the database access
- * concerning work packages.
+ * <code>WorkpackageModel</code> and handles all the database access concerning
+ * work packages.
  */
 public class MySQLWorkpackageModel implements WorkpackageModel {
 
-    /** The MySQL connection to use. */
+    /**
+     * The MySQL connection to use.
+     */
     private Connection connection;
 
     /**
@@ -56,12 +60,21 @@ public class MySQLWorkpackageModel implements WorkpackageModel {
 
     @Override
     public final List<Workpackage> getWorkpackage() {
+        return getWorkpackage(false);
+    }
+
+    @Override
+    public final List<Workpackage> getWorkpackage(final boolean onlyLeaves) {
         List<Workpackage> wpList = new ArrayList<Workpackage>();
+
         ResultSet sqlResult = null;
+        Statement stm = null;
 
         try {
-            Statement stm = connection.createStatement();
-            sqlResult = stm.executeQuery("CALL workpackage_select(NULL)");
+            stm = connection.createStatement();
+            String sql = String.format("CALL workpackage_select(%b)",
+                    onlyLeaves);
+            sqlResult = stm.executeQuery(sql);
 
             while (sqlResult.next()) {
                 wpList.add(Workpackage.fromResultSet(sqlResult));
@@ -69,14 +82,20 @@ public class MySQLWorkpackageModel implements WorkpackageModel {
 
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                if (sqlResult != null) {
+                    sqlResult.close();
+                }
+                if (stm != null) {
+                    stm.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
 
         return wpList;
-    }
-
-    @Override
-    public final List<Workpackage> getWorkpackage(final boolean onlyLeaves) {
-        return null;
     }
 
     @Override
@@ -87,12 +106,15 @@ public class MySQLWorkpackageModel implements WorkpackageModel {
         Workpackage wp = null;
         ResultSet sqlResult = null;
 
-        try {
-            Statement stm = connection.createStatement();
-            final String storedProc = "CALL workpackage_select_by_id('"
-                    + stringID + "', " + projectID + ")";
+        PreparedStatement stm = null;
+        final String storedProcedure = "CALL workpackage_select_by_id(?, ?)";
 
-            sqlResult = stm.executeQuery(storedProc);
+        try {
+            stm = connection.prepareStatement(storedProcedure);
+            stm.setString(1, stringID);
+            stm.setInt(2, projectID);
+
+            sqlResult = stm.executeQuery();
 
             if (sqlResult.next()) {
                 wp = Workpackage.fromResultSet(sqlResult);
@@ -100,6 +122,17 @@ public class MySQLWorkpackageModel implements WorkpackageModel {
 
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                if (sqlResult != null) {
+                    sqlResult.close();
+                }
+                if (stm != null) {
+                    stm.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
 
         return wp;
@@ -108,12 +141,101 @@ public class MySQLWorkpackageModel implements WorkpackageModel {
     @Override
     public final List<Workpackage> getWorkpackagesInDateRange(final Date from,
                                                               final Date to) {
-        return null;
+        final List<Workpackage> wpList = new ArrayList<Workpackage>();
+        ResultSet sqlResult = null;
+        PreparedStatement stm = null;
+        final String storedProcedure = "CALL workpackage_select_by_date(?, ?)";
+        final Timestamp fromTimestamp = new Timestamp(from.getTime());
+        final Timestamp toTimestamp = new Timestamp(to.getTime());
+
+        try {
+            stm = connection.prepareStatement(storedProcedure);
+            stm.setTimestamp(1, fromTimestamp);
+            stm.setTimestamp(2, toTimestamp);
+            sqlResult = stm.executeQuery();
+
+            while (sqlResult.next()) {
+                wpList.add(Workpackage.fromResultSet(sqlResult));
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (sqlResult != null) {
+                    sqlResult.close();
+                }
+                if (stm != null) {
+                    stm.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return wpList;
     }
 
     @Override
     public final void updateWorkpackage(final Workpackage wp) {
+        final int paramCount = 21;
+        PreparedStatement stm = null;
 
+        String storedProcedure = "CALL workpackage_update_by_id(";
+
+        for (int i = 1; i < paramCount; i++) {
+            storedProcedure += "?,";
+        }
+
+        storedProcedure += "?)";
+
+        System.out.println(storedProcedure);
+
+        try {
+            stm = connection.prepareStatement(storedProcedure);
+            stm.setString(1, wp.getStringID());
+            stm.setInt(2, wp.getProjectID());
+            stm.setInt(3, wp.getEmployeeID());
+
+            stm.setString(4, wp.getName());
+            stm.setString(5, wp.getDescription());
+
+            stm.setDouble(6, wp.getBac());
+            stm.setDouble(7, wp.getAc());
+            stm.setDouble(8, wp.getEv());
+            stm.setDouble(9, wp.getEtc());
+            stm.setDouble(10, wp.getEac());
+
+            stm.setDouble(11, wp.getCpi());
+
+            stm.setDouble(12, wp.getBacCosts());
+            stm.setDouble(13, wp.getAcCosts());
+            stm.setDouble(14, wp.getEtcCosts());
+
+            stm.setDouble(15, wp.getDailyRate());
+
+            stm.setTimestamp(16, new Timestamp(wp.getReleaseDate().getTime()));
+            stm.setBoolean(17, wp.isTopLevel());
+            stm.setBoolean(18, wp.isInactive());
+            stm.setTimestamp(19, new Timestamp(wp.getStartDateCalc()
+                    .getTime()));
+            stm.setTimestamp(20, new Timestamp(wp.getStartDateWish()
+                    .getTime()));
+            stm.setTimestamp(21, new Timestamp(wp.getEndDateCalc().getTime()));
+
+            stm.execute();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (stm != null) {
+                    stm.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
