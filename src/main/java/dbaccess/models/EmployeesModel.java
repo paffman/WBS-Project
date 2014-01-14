@@ -36,7 +36,7 @@ public interface EmployeesModel {
      * A method to get all employees.
      * @return Returns a list with all employees.
      */
-    public List<?> getEmployee();
+    public List<Employee> getEmployee();
     
     /**
      * A method to get a specific employee.
@@ -50,7 +50,7 @@ public interface EmployeesModel {
      * @param isLeader True, if the method should return a list with all leaders of the project. False, if the method should return a list with all employees of the project.
      * @returns Returns a list with all leaders if parameter isLeader is true, else returns a list with all employees.
      */
-    public List<?> getEmployee(boolean isLeader);
+    public List<Employee> getEmployee(boolean isLeader);
     
     /**
      * A method to update a employee.

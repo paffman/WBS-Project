@@ -45,7 +45,7 @@ public class MySQLConflictsModel implements ConflictsModel {
             while (result.next()) {
                 conflict = new Conflict(result.getInt(1), result.getInt(2),
                         result.getInt(3), result.getInt(4), result.getInt(5),
-                        result.getString(6));
+                        result.getDate(6));
                 conList.add(conflict);
             }
 

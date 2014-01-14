@@ -19,17 +19,19 @@
 
 package dbaccess.data;
 
+import java.util.Date;
+
 public class EmployeeCalendar {
     private int id;
     private int fid_emp;
-    private String begin_time;
-    private String end_time;
+    private Date begin_time;
+    private Date end_time;
     private String description;
     private boolean availability;
     private boolean full_time;
 
-    public EmployeeCalendar(int id, int fid_emp, String begin_time,
-            String end_time, String description, boolean availability, boolean full_time) {
+    public EmployeeCalendar(int id, int fid_emp, Date begin_time,
+            Date end_time, String description, boolean availability, boolean full_time) {
         this.id=id;
         this.fid_emp=fid_emp;
         this.begin_time=begin_time;
@@ -51,11 +53,11 @@ public class EmployeeCalendar {
         return fid_emp;
     }
 
-    public String getBegin_time() {
+    public Date getBegin_time() {
         return begin_time;
     }
 
-    public String getEnd_time() {
+    public Date getEnd_time() {
         return end_time;
     }
 

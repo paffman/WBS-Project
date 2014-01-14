@@ -5,18 +5,16 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.text.DateFormat;
-import java.text.ParseException;
 import java.util.List;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import dbaccess.data.Conflict;
-import dbaccess.models.ConflictsModel;
+import dbaccess.data.Employee;
+import dbaccess.models.EmployeesModel;
 
-public class MySQLConflictsModelTest {
+public class MySQLEmployeesModelTest {
     private static Connection con;
 
     @BeforeClass
@@ -46,37 +44,41 @@ public class MySQLConflictsModelTest {
     }
     
     @Test
-    public final void testAddNewConflict() {
-        ConflictsModel conModel = new MySQLConflictsModel(con);
-        try {
-            conModel.addNewConflict(new Conflict(2,1,1,1,1,DateFormat.getInstance().parse("2014-01-13 00:00:00")));
-        } catch (ParseException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+    public final void testAddNewEmployee() {
+        //EmployeeModel empModel=new MySQLEmployeeModel(con);
+        //empModel.addNewEmployee(new Employee(10,"TestLogin","Test","Nur ein",true,"passwort",42.5,10));
         //TODO: implementieren
     }
     
     @Test
-    public final void testGetConflicts() {
-        ConflictsModel conModel = new MySQLConflictsModel(con);
-
-        List<Conflict> conList = conModel.getConflicts();
-        assertThat(conList, notNullValue());
+    public final void testGetEmployee() {
+        EmployeesModel empModel=new MySQLEmployeesModel(con);
+        List<Employee> empList=empModel.getEmployee();
+        assertThat(empList, notNullValue());
         //TODO: implementieren
     }
     
     @Test
-    public final void testDeleteConflict() {
-        ConflictsModel conModel = new MySQLConflictsModel(con);
-        conModel.deleteConflict(1);
+    public final void testGetEmployee1() {
+        EmployeesModel empModel=new MySQLEmployeesModel(con);
+        Employee employee=empModel.getEmployee("TestLogin");
+        assertThat(employee, notNullValue());
         //TODO: implementieren
     }
     
     @Test
-    public final void testDeleteConflicts() {
-        ConflictsModel conModel = new MySQLConflictsModel(con);
-        conModel.deleteConflicts();
+    public final void testGetEmployee2() {
+        EmployeesModel empModel=new MySQLEmployeesModel(con);
+        List<Employee> empList=empModel.getEmployee(true);
+        assertThat(empList, notNullValue());
         //TODO: implementieren
     }
+    
+    @Test
+    public final void testUpdateEmployee() {
+        EmployeesModel empModel=new MySQLEmployeesModel(con);
+        empModel.updateEmployee(new Employee(10,"NeuerLogin","Test","Immernoch ein",false,"1234",42.5,10));
+        //TODO: implementieren
+    }
+    
 }

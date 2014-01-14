@@ -5,6 +5,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.util.List;
 
 import org.junit.AfterClass;
@@ -46,7 +48,12 @@ public class MySQLBaselineModelTest {
     @Test
     public final void testAddNewBaseline() {
         BaselineModel blModel = new MySQLBaselineModel(con);
-        blModel.addNewBaseline(new Baseline(2,1,"2014-01-13 00:00:00","TestBeschreibung"));
+        try {
+            blModel.addNewBaseline(new Baseline(2,1,DateFormat.getInstance().parse("2014-01-13 00:00:00"),"TestBeschreibung"));
+        } catch (ParseException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
         //TODO: implementieren
     }
     

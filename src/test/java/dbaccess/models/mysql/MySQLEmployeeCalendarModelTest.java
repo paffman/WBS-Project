@@ -27,13 +27,12 @@ public class MySQLEmployeeCalendarModelTest {
 
         try {
             Class.forName(driver).newInstance();
-            con = DriverManager.getConnection(url + dbName,
-                    userName, password);
+            con = DriverManager.getConnection(url + dbName, userName, password);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-    
+
     @AfterClass
     public static final void closeDBConnection() {
         try {
@@ -42,62 +41,67 @@ public class MySQLEmployeeCalendarModelTest {
             e.printStackTrace();
         }
     }
-    
+
     @Test
     public final void testAddNewEmployeeCalendar() {
-        //EmployeeCalendarModel empCalModel=new MySQLEmployeeCalendarModel(con);
-        //empCalModel.addNewEmployeeCalendar(new EmployeeCalendar(1,1,"2014-01-13 00:00:00","2014-01-14 00:00:00","Test_Beschreibung",true,false));
-        //TODO: implementieren
+        // EmployeeCalendarModel empCalModel=new
+        // MySQLEmployeeCalendarModel(con);
+        // empCalModel.addNewEmployeeCalendar(new
+        // EmployeeCalendar(1,1,DateFormat.getInstance().parse("2014-01-13 00:00:00"),DateFormat.getInstance().parse("2014-01-14 00:00:00"),"Test_Beschreibung",true,false));
+        // TODO: implementieren
     }
-    
+
     @Test
     public final void testGetEmployeeCalendar() {
-        EmployeeCalendarModel empCalModel=new MySQLEmployeeCalendarModel(con);
-        List<EmployeeCalendar> empCalList=empCalModel.getEmployeeCalendar();
+        EmployeeCalendarModel empCalModel = new MySQLEmployeeCalendarModel(con);
+        List<EmployeeCalendar> empCalList = empCalModel.getEmployeeCalendar();
         assertThat(empCalList, notNullValue());
-        //TODO: implementieren
+        // TODO: implementieren
     }
-        
+
     @Test
     public final void testGetEmployeeCalendar1() {
-        EmployeeCalendarModel empCalModel=new MySQLEmployeeCalendarModel(con);
-        EmployeeCalendar empCal=empCalModel.getEmployeeCalendar(1);
+        EmployeeCalendarModel empCalModel = new MySQLEmployeeCalendarModel(con);
+        EmployeeCalendar empCal = empCalModel.getEmployeeCalendar(1);
         assertThat(empCal, notNullValue());
-        //TODO: implementieren
+        // TODO: implementieren
     }
-    
+
     @Test
     public final void testGetEmployeeCalendarForFID() {
-        EmployeeCalendarModel empCalModel=new MySQLEmployeeCalendarModel(con);
-        List<EmployeeCalendar> empCalList=empCalModel.getEmployeeCalendarForFID(1);
+        EmployeeCalendarModel empCalModel = new MySQLEmployeeCalendarModel(con);
+        List<EmployeeCalendar> empCalList = empCalModel
+                .getEmployeeCalendarForFID(1);
         assertThat(empCalList, notNullValue());
-        //TODO: implementieren
+        // TODO: implementieren
     }
-    
+
     @Test
     public final void testGetEmployeeCalendarInDateRange() {
-        //EmployeeCalendarModel empCalModel=new MySQLEmployeeCalendarModel(con);
-        //TODO: welches Format hat datum?
-        //List<EmployeeCalendar> empCalList=empCalModel.getEmployeeCalendarInDateRange("datum","datum");
-        //assertThat(empCalList, notNullValue());
-        //TODO: implementieren
+        // EmployeeCalendarModel empCalModel=new
+        // MySQLEmployeeCalendarModel(con);
+        // List<EmployeeCalendar>
+        // empCalList=empCalModel.getEmployeeCalendarInDateRange(DateFormat.getInstance().parse("2014-01-13"),DateFormat.getInstance().parse("2014-01-14"));
+        // assertThat(empCalList, notNullValue());
+        // TODO: implementieren
     }
-    
+
     @Test
     public final void testGetEmployeeCalendarInDateRange1() {
-        //EmployeeCalendarModel empCalModel=new MySQLEmployeeCalendarModel(con);
-        //TODO: welches Format hat datum?
-        //List<EmployeeCalendar> empCalList=empCalModel.getEmployeeCalendarInDateRange("datum","datum", boolean);
-        //assertThat(empCalList, notNullValue());
-        //TODO: implementieren
+        // EmployeeCalendarModel empCalModel=new
+        // MySQLEmployeeCalendarModel(con);
+        // List<EmployeeCalendar>
+        // empCalList=empCalModel.getEmployeeCalendarInDateRange(DateFormat.getInstance().parse("2014-01-13"),DateFormat.getInstance().parse("2014-01-14");
+        // boolean);
+        // assertThat(empCalList, notNullValue());
+        // TODO: implementieren
     }
-    
+
     @Test
     public final void testDeleteEmployeeCalendar() {
-        //EmployeeCalendarModel empCalModel=new MySQLEmployeeCalendarModel(con);
-        //empCalModel.deleteEmployeeCalendar(1);
-        //TODO: implementieren
+        // EmployeeCalendarModel empCalModel=new
+        // MySQLEmployeeCalendarModel(con);
+        // empCalModel.deleteEmployeeCalendar(1);
+        // TODO: implementieren
     }
 }
-
-

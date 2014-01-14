@@ -42,7 +42,7 @@ public class MySQLBaselineModel implements BaselineModel {
 
             while (result.next()){
                 baseline = new Baseline(result.getInt(1), result.getInt(2),
-                        result.getString(3), result.getString(4));
+                        result.getDate(3), result.getString(4));
                 blList.add(baseline);
             }
             
@@ -64,7 +64,7 @@ public class MySQLBaselineModel implements BaselineModel {
 
             if (result.next()){
                 baseline = new Baseline(result.getInt(1), result.getInt(2),
-                        result.getString(3), result.getString(4));
+                        result.getDate(3), result.getString(4));
             }
             
             return baseline;

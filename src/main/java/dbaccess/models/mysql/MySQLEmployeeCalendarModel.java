@@ -23,7 +23,7 @@ public class MySQLEmployeeCalendarModel implements EmployeeCalendarModel {
     public void addNewEmployeeCalendar(EmployeeCalendar empCal) {
         try {
             Statement stm = connection.createStatement();
-            stm.execute("INSERT INTO dependencies VALUES (" + empCal.getId()
+            stm.execute("INSERT INTO employee_calendar VALUES (" + empCal.getId()
                     + "," + empCal.getFid_emp() + ",'" + empCal.getBegin_time()
                     + "','" + empCal.getEnd_time() + "','"
                     + empCal.getDescription() + "'," + empCal.isAvailability()
@@ -45,8 +45,8 @@ public class MySQLEmployeeCalendarModel implements EmployeeCalendarModel {
 
             while (result.next()) {
                 employeeCalendar = new EmployeeCalendar(result.getInt(1),
-                        result.getInt(2), result.getString(3),
-                        result.getString(4), result.getString(5),
+                        result.getInt(2), result.getDate(3),
+                        result.getDate(4), result.getString(5),
                         result.getBoolean(6), result.getBoolean(7));
                 empCalList.add(employeeCalendar);
             }
@@ -70,8 +70,8 @@ public class MySQLEmployeeCalendarModel implements EmployeeCalendarModel {
 
             if (result.next()) {
                 employeeCalendar = new EmployeeCalendar(result.getInt(1),
-                        result.getInt(2), result.getString(3),
-                        result.getString(4), result.getString(5),
+                        result.getInt(2), result.getDate(3),
+                        result.getDate(4), result.getString(5),
                         result.getBoolean(6), result.getBoolean(7));
             }
 
@@ -95,8 +95,8 @@ public class MySQLEmployeeCalendarModel implements EmployeeCalendarModel {
 
             while (result.next()) {
                 employeeCalendar = new EmployeeCalendar(result.getInt(1),
-                        result.getInt(2), result.getString(3),
-                        result.getString(4), result.getString(5),
+                        result.getInt(2), result.getDate(3),
+                        result.getDate(4), result.getString(5),
                         result.getBoolean(6), result.getBoolean(7));
                 empCalList.add(employeeCalendar);
             }
@@ -122,8 +122,8 @@ public class MySQLEmployeeCalendarModel implements EmployeeCalendarModel {
 
             while (result.next()) {
                 employeeCalendar = new EmployeeCalendar(result.getInt(1),
-                        result.getInt(2), result.getString(3),
-                        result.getString(4), result.getString(5),
+                        result.getInt(2), result.getDate(3),
+                        result.getDate(4), result.getString(5),
                         result.getBoolean(6), result.getBoolean(7));
                 empCalList.add(employeeCalendar);
             }

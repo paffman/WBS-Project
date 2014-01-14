@@ -19,14 +19,16 @@
 
 package dbaccess.data;
 
+import java.util.Date;
+
 public class Baseline {
 
     private int id;
     private int fid_project;
-    private String bl_date; //TODO: eigentlich Datum, als Date oder String speichern?
+    private Date bl_date; 
     private String description;
     
-    public Baseline(int id, int fid_project, String bl_date, String description){
+    public Baseline(int id, int fid_project, Date bl_date, String description){
         this.id=id;
         this.fid_project=fid_project;
         this.bl_date=bl_date;
@@ -45,7 +47,7 @@ public class Baseline {
         return fid_project;
     }
 
-    public String getBl_date() {
+    public Date getBl_date() {
         return bl_date;
     }
 
