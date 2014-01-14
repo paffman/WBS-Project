@@ -37,7 +37,7 @@ public interface DependenciesModel {
      * A method to get the dependencies.
      * @return Returns a list with all dependencies.
      */
-	public List<?> getDependency();
+	public List<Dependency> getDependency();
 
 	/**
 	 * A method to delete a dependency.

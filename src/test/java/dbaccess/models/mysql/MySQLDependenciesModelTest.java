@@ -11,10 +11,10 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import dbaccess.data.Conflict;
-import dbaccess.models.ConflictsModel;
+import dbaccess.data.Dependency;
+import dbaccess.models.DependenciesModel;
 
-public class MySQLConflictsModelTest {
+public class MySQLDependenciesModelTest {
     private static Connection con;
 
     @BeforeClass
@@ -44,32 +44,26 @@ public class MySQLConflictsModelTest {
     }
     
     @Test
-    public final void testAddNewConflict() {
-        ConflictsModel conModel = new MySQLConflictsModel(con);
-        conModel.addNewConflict(new Conflict(2,1,1,1,1,"2014-01-13 00:00:00"));
+    public final void testAddNewDependency() {
+        //DependenciesModel depModel = new MySQLDependenciesModel(con);
+        //depModel.addNewDependency(new Dependency(1,2));
         //TODO: implementieren
     }
     
     @Test
-    public final void testGetConflicts() {
-        ConflictsModel conModel = new MySQLConflictsModel(con);
+    public final void testGetDependency() {
+        DependenciesModel depModel = new MySQLDependenciesModel(con);
 
-        List<Conflict> conList = conModel.getConflicts();
-        assertThat(conList, notNullValue());
+        List<Dependency> depList = depModel.getDependency();
+        assertThat(depList, notNullValue());
         //TODO: implementieren
     }
     
     @Test
-    public final void testDeleteConflict() {
-        ConflictsModel conModel = new MySQLConflictsModel(con);
-        conModel.deleteConflict(1);
+    public final void testDeleteDependency() {
+        //DependenciesModel depModel = new MySQLDependenciesModel(con);
+        //depModel.deleteDependency(1, 2);
         //TODO: implementieren
     }
     
-    @Test
-    public final void testDeleteConflicts() {
-        ConflictsModel conModel = new MySQLConflictsModel(con);
-        conModel.deleteConflicts();
-        //TODO: implementieren
-    }
 }

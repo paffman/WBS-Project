@@ -37,7 +37,7 @@ public interface EmployeeCalendarModel {
      * A method to get the employee calendars from all employees.
      * @return Returns a list with a employee calendar for each employee.
      */
-    public List<?> getEmployeeCalendar();
+    public List<EmployeeCalendar> getEmployeeCalendar();
     
     /**
      * A method to get a specific calendar.
@@ -52,7 +52,7 @@ public interface EmployeeCalendarModel {
      * @param fid The id of the referenced employee.
      * @return Returns a list with the calendar of the selected employee.
      */
-    public List<?> getEmployeeCalendarForFID(int fid);
+    public List<EmployeeCalendar> getEmployeeCalendarForFID(int fid);
     
     /**
      * A method to get the employee calendars in a specific period.
@@ -60,7 +60,7 @@ public interface EmployeeCalendarModel {
      * @param to The end date from the period
      * @return Returns a list with all calendars in the specific period.
      */
-    public List<?> getEmployeeCalendarInDateRange(Date from, Date to);
+    public List<EmployeeCalendar> getEmployeeCalendarInDateRange(Date from, Date to);
     
     /**
      * TODO: Was macht mode2? wo ist der unterschied zur obigen methode?
@@ -69,7 +69,7 @@ public interface EmployeeCalendarModel {
      * @param to The end date from the period
      * @return Returns a list with all calendars in the specific period.
      */
-    public List<?> getEmployeeCalendarInDateRange(Date from, Date to, boolean mode2);
+    public List<EmployeeCalendar> getEmployeeCalendarInDateRange(Date from, Date to, boolean mode2);
 
     /**
      * A method to delete e a specific calendar.

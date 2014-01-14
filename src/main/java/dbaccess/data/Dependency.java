@@ -19,6 +19,24 @@
 
 package dbaccess.data;
 
-public class Dependency {
+public class Dependency{
+    private int fid_wp_predecessor;
+    private int fid_wp_successor;
+    
+    public Dependency(int fid_wp_predecessor, int fid_wp_successor){
+        this.fid_wp_predecessor=fid_wp_predecessor;
+        this.fid_wp_successor=fid_wp_successor;
+    }
+    
+    public String toString(){
+        return fid_wp_predecessor+" "+fid_wp_successor;
+    }
 
+    public int getFid_wp_predecessor() {
+        return fid_wp_predecessor;
+    }
+
+    public int getFid_wp_successor() {
+        return fid_wp_successor;
+    }
 }
