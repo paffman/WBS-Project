@@ -1,33 +1,23 @@
 package chooseDB;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import javax.swing.*;
-import javax.swing.filechooser.FileFilter;
+import javax.swing.JOptionPane;
 
 import wpOverview.WPOverview;
 import wpWorker.User;
 import functions.WpManager;
-import globals.Controller;
 import globals.Loader;
-import globals.Workpackage;
 import jdbcConnection.MySqlConnect;
 import jdbcConnection.SQLExecuter;
-import login.Login;
 
 /**
  * Studienprojekt: WBS
@@ -54,158 +44,224 @@ import login.Login;
  */
 public class DBChooser {
 
-	/**
-	 * übergibt ein Object von der DBChooserGUI
-	 */
-	public DBChooserGUI gui;
+    /**
+     * übergibt ein Object von der DBChooserGUI
+     */
+    public DBChooserGUI gui;
+    private String lastDbHost = null, lastDbName = null, lastDbIndexPw = null,
+	    lastDbUser = null;
 
-	/**
-	 * Bedeutung: wurde der Cancel Button im Projektebenen Fenster gedrückt?
-	 */
-	// private boolean cancel = false;
-	/**
-	 * Bedeutung: Variable zum Auslesen der Ebenen aus dem Textfeld
-	 */
-	// private String ebenen = "";
+    /**
+     * Bedeutung: wurde der Cancel Button im Projektebenen Fenster gedrückt?
+     */
+    // private boolean cancel = false;
+    /**
+     * Bedeutung: Variable zum Auslesen der Ebenen aus dem Textfeld
+     */
+    // private String ebenen = "";
 
-	/**
-	 * Konstruktor DBChooser() initialisiert die DBChooserGUI, und beeinhaltet
-	 * die Listener der DBChooserGUI durch die Methode addButtonAction()
-	 */
-	public DBChooser() {
-		gui = new DBChooserGUI();
-		new DBChooserButtonAction(this);
+    /**
+     * Konstruktor DBChooser() initialisiert die DBChooserGUI, und beeinhaltet
+     * die Listener der DBChooserGUI durch die Methode addButtonAction()
+     */
+    public DBChooser() {
+	loadLastDB();
+	gui = new DBChooserGUI(this);
+	new DBChooserButtonAction(this);
+    }
 
+    /**
+     * next() wird durch das Betätigen des "weiter" Buttons ausgeführt prüft
+     * ob das Textfeld für den Pfad ausgefüllt ist. Und stellt bei
+     * erfolgreicher Ausfüllung des Textfeldes eine Verbindung zur MDB her per
+     * MDBConnect Klasse her und setzt den aktuell eingegeben Pfad. In der
+     * Methode dbInitial() wird geprüft, ob alle notwendigen Daten in der DB
+     * vorhanden sind, andernfalls werden diese angelegt. Danach wird der Login
+     * gestartet.
+     */
+    public void next() {
+	// cancel = false;
+	// %%
+	String host = gui.hostField.getText();
+	String db = gui.dbNameField.getText();
+	String user = gui.userField.getText();
+	String indexDbPw = new String(gui.dbPwPasswordField.getPassword());
+	String userPw = new String(gui.pwPasswordField.getPassword());
+	String dbIndex = getDatabaseIndex(host, db, indexDbPw);
+	if (dbIndex == null) {
+	    return;
+	}
+	Boolean pl = gui.plCheckBox.isSelected();
+
+	if (host.equals("")) {
+	    JOptionPane.showMessageDialog(gui, "Bitte einen Host eintragen!");
+	    return;
+	}
+	if (db.equals("")) {
+	    JOptionPane.showMessageDialog(gui,
+		    "Bitte einen Datenbanknamen eintragen!");
+	    return;
+	}
+	if (user.equals("")) {
+	    JOptionPane.showMessageDialog(gui,
+		    "Bitte einen Benutzer eintragen!");
+	    return;
+	}
+	MySqlConnect.setDbConncetion(host, db, dbIndex + "_" + user, userPw);
+
+	try {
+	    if (!tryConnection()) {
+		JOptionPane.showMessageDialog(gui,
+			"Verbindung konnte nicht aufgebaut werden!");
+		return;
+	    }
+	} catch (Exception e) {
+	    JOptionPane.showMessageDialog(
+		    gui,
+		    "Verbindung konnte nicht aufgebaut werden! Exception: "
+			    + e.toString());
+	    return;
 	}
 
-	/**
-	 * next() wird durch das Betätigen des "weiter" Buttons ausgeführt prüft
-	 * ob das Textfeld für den Pfad ausgefüllt ist. Und stellt bei
-	 * erfolgreicher Ausfüllung des Textfeldes eine Verbindung zur MDB her per
-	 * MDBConnect Klasse her und setzt den aktuell eingegeben Pfad. In der
-	 * Methode dbInitial() wird geprüft, ob alle notwendigen Daten in der DB
-	 * vorhanden sind, andernfalls werden diese angelegt. Danach wird der Login
-	 * gestartet.
-	 */
-	public void next() {
-		// cancel = false;
-		// %%
-		String host = gui.hostField.getText();
-		String db = gui.dbNameField.getText();
-		String user = gui.userField.getText();
-		String indexDbPw = new String(gui.dbPwPasswordField.getPassword());
-		String userPw = new String(gui.pwPasswordField.getPassword());
-		String dbIndex = getDatabaseIndex(host, db, indexDbPw);
-		Boolean pl = gui.plCheckBox.isSelected();
+	saveLastDB(host, db, user, indexDbPw);
 
-		if (host.equals("")) {
-			JOptionPane.showMessageDialog(gui, "Bitte einen Host eintragen!");
-			return;
-		}
-		if (db.equals("")) {
-			JOptionPane.showMessageDialog(gui,
-					"Bitte einen Datenbanknamen eintragen!");
-			return;
-		}
-		if (user.equals("")) {
-			JOptionPane.showMessageDialog(gui,
-					"Bitte einen Benutzer eintragen!");
-			return;
-		}
-		MySqlConnect.setDbConncetion(host, db, dbIndex + "_" + user, userPw);
+	// %% Check project-leader
+	User userData = null;
 
-		try {
-			if (!tryConnection()) {
-				JOptionPane.showMessageDialog(gui,
-						"Verbindung konnte nicht aufgebaut werden!");
-				return;
-			}
-		} catch (Exception e) {
-			JOptionPane.showMessageDialog(
-					gui,
-					"Verbindung konnte nicht aufgebaut werden! Exception: "
-							+ e.toString());
-			return;
-		}
+	// %% Check Semaphore if project-leader
 
-		// %% Check project-leader
-		User userData = null;
+	// Start WBS-Tool
+	final User threadUser = userData;
+	Thread loader = new Thread() {
+	    public void run() {
+		Loader splashScreen = new Loader(gui);
+		WpManager.loadDB();
+		new WPOverview(threadUser, gui);
+		splashScreen.dispose();
+	    }
+	};
+	loader.start();
+	gui.dispose();
+    }
 
-		// %% Check Semaphore if project-leader
+    private String getDatabaseIndex(String host, String db, String indexDbPw) {
+	MySqlConnect.setDbConncetion(host, "id_wbs", "idxUser", indexDbPw);
+	try {
+	    ResultSet rslt =
+		    SQLExecuter
+			    .executeQuery("call db_identifier_select_by_dbname('"
+				    + db + "');");
+	    rslt.next();
+	    return rslt.getString("id");
+	} catch (SQLException e) {
+	    JOptionPane
+		    .showMessageDialog(
+			    gui,
+			    "Verbindung konnte nicht aufgebaut werden! Es wurde kein Index-Eintrag f�r die Datenbank gefunden.");
+	    return null;
+	}
+    }
 
-		// Start WBS-Tool
-		final User threadUser = userData;
-		Thread loader = new Thread() {
-			public void run() {
-				Loader splashScreen = new Loader(gui);
-				WpManager.loadDB();
-				new WPOverview(threadUser, gui);
-				splashScreen.dispose();
-			}
-		};
-		loader.start();
-		gui.dispose();
+    private boolean tryConnection() throws Exception {
+	try {
+	    // direct use and not use through SQLExecuter to circumvent
+	    // Exception Handling
+	    Connection c = MySqlConnect.getConnection();
+	    Statement stmt =
+		    c.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
+			    ResultSet.CONCUR_READ_ONLY);
+	    stmt.executeQuery("call project_select()");
+	    return true;
+	} catch (Exception e) {
+	    throw e;
+	}
+    }
+
+    /**
+     * saveLastDB: writes the login data, except the user password, into a file,
+     * which is loaded on the next startup.
+     * 
+     * @param host
+     *            host of the database.
+     * @param db
+     *            name of the database.
+     * @param user
+     *            user of the database, without database index pr�fix.
+     * @param indexPw
+     *            password for the index database.
+     */
+    private void saveLastDB(final String host, final String db,
+	    final String user, final String indexPw) {
+	File dbConfig = new File("DbConfig.txt");
+	try {
+	    PrintWriter out = new PrintWriter(dbConfig);
+	    out.println(host);
+	    out.println(db);
+	    out.println(indexPw);
+	    out.println(user);
+	    out.close();
+	} catch (IOException e) {
+	    e.printStackTrace();
 	}
 
-	private String getDatabaseIndex(String host, String db, String indexDbPw) {
-		// %%
-		return "002";
-	}
+    }
 
-	private boolean tryConnection() throws Exception {
-		try {
-			// direct use and not use through SQLExecuter to circumvent
-			// Exception Handling
-			Connection c = MySqlConnect.getConnection();
-			Statement stmt = c.createStatement(
-					ResultSet.TYPE_SCROLL_INSENSITIVE,
-					ResultSet.CONCUR_UPDATABLE);
-			stmt.executeQuery("call project_select()");
-			return true;		
-		} catch (Exception e) {
-			throw e;
-		}
+    /**
+     * loadLastDB(): loads the data of the last used db into the data elements
+     * of this class.
+     */
+    private void loadLastDB() {
+	File dbConfig = new File("DbConfig.txt");
+	if (dbConfig.canRead()) {
+	    try {
+		BufferedReader in =
+			new BufferedReader(new FileReader(dbConfig));
+		this.lastDbHost = in.readLine();
+		this.lastDbName = in.readLine();
+		this.lastDbIndexPw = in.readLine();
+		this.lastDbUser = in.readLine();
+		in.close();
+	    } catch (IOException e) {
+		e.printStackTrace();
+	    }
 	}
+    }
 
-	/**
-	 * @deprecated -- muss neu gemacht werden f�r neue Funktionen speichert noch
-	 *             nicht bekannte MDB-Pfade in die Datei DBHistory.txt
-	 * 
-	 * @param str
-	 *            - Pfad zur DB
-	 */
-	public void saveToHistory(String str) {
-		File dbPaths = new File("DBHistory.txt");
-		if (dbPaths.canRead()) {
-			try {
-				BufferedReader in = new BufferedReader(new FileReader(dbPaths));
-				while (in.ready()) {
-					if (in.readLine().equals(str)) {
-						in.close();
-						return;
-					}
-				}
-				in.close();
-				BufferedWriter out = new BufferedWriter(new FileWriter(dbPaths,
-						true));
-				out.write(str);
-				out.newLine();
-				out.flush();
-				out.close();
-				System.out.println(str);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-	}
+    /**
+     * erstellt ein Objekt von DBChooser() und beginnt somit das Programm durch
+     * Konstruktoraufruf von DBChooser()
+     * 
+     * @param args
+     */
+    public static void main(String[] args) {
+	new DBChooser();
+    }
 
-	/**
-	 * erstellt ein Objekt von DBChooser() und beginnt somit das Programm durch
-	 * Konstruktoraufruf von DBChooser()
-	 * 
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		new DBChooser();
-	}
+    /**
+     * @return the lastDbHost
+     */
+    public final String getLastDbHost() {
+	return lastDbHost;
+    }
+
+    /**
+     * @return the lastDbName
+     */
+    public final String getLastDbName() {
+	return lastDbName;
+    }
+
+    /**
+     * @return the lastDbIndexPw
+     */
+    public final String getLastDbIndexPw() {
+	return lastDbIndexPw;
+    }
+
+    /**
+     * @return the lastDbUser
+     */
+    public final String getLastDbUser() {
+	return lastDbUser;
+    }
 }
