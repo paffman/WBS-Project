@@ -82,12 +82,13 @@ public class SQLExecuter {
 	public static ResultSet executeQuery(final String sql) {
 		openConnection();
 		Statement stmt;
+		System.out.println(sql);//%%
 		ResultSet rs;
 		try {
 			stmt = openConnection.createStatement(
 					ResultSet.TYPE_SCROLL_INSENSITIVE,
-					ResultSet.CONCUR_UPDATABLE);
-			rs = stmt.executeQuery(sql);
+					ResultSet.CONCUR_READ_ONLY);
+			rs = stmt.executeQuery(sql);			
 			return rs;
 		} catch (SQLException e) {
 			e.printStackTrace();
