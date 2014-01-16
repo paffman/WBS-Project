@@ -216,7 +216,7 @@ public class DBChooser {
     /**
      * saveLastDB: writes the login data, except the user password, into a file,
      * which is loaded on the next startup.
-     * 
+     *
      * @param host
      *            host of the database.
      * @param db
