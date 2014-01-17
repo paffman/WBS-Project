@@ -6,14 +6,33 @@ import java.sql.SQLException;
 
 /**
  * ...
- * 
+ *
  * @author Hendrik Mainzer
- * @version
+ * @version 3.0 - 2014-01-17
  */
 public final class MySqlConnect {
 
-    private static final String mySqlDriver = "com.mysql.jdbc.Driver";
-    private static String host, dbName, login, pw;
+    /**
+     * Constant which holds the name of the jdbc driver.
+     */
+    private static final String MYSQL_DRIVER = "com.mysql.jdbc.Driver";
+
+    /**
+     * address of the host.
+     */
+    private static String host;
+    /**
+     * name of the connected database.
+     */
+    private static String dbName;
+    /**
+     * username/login of the connected database.
+     */
+    private static String login;
+    /**
+     * password of login.
+     */
+    private static String password;
 
     /**
      * private constructor to make it impossible to create an instance of
@@ -23,32 +42,32 @@ public final class MySqlConnect {
     };
 
     /**
-     * getConnection() returns an Connection-Object which can be used to submit
+     * Returns an Connection-Object which can be used to submit
      * queries to the MySql-Database.
-     * 
+     *
      * @return Connection-Object
      */
     public static Connection getConnection() {
 	try {
 	    // This will load the MySQL driver, each DB has its own driver
-	    Class.forName(mySqlDriver);
+	    Class.forName(MYSQL_DRIVER);
 	    Connection connect = DriverManager.getConnection("jdbc:mysql://"
-		    + host + "/" + dbName + "?user=" + login
-		    + "&password=" + pw);
+		    + host + "/" + dbName + "?user=" + login + "&password="
+		    + password);
 	    return connect;
 	} catch (SQLException e) {
-	    // TODO Auto-generated catch block
 	    e.printStackTrace();
 	} catch (ClassNotFoundException e) {
-	    // TODO Auto-generated catch block
 	    e.printStackTrace();
 	}
+	System.err.println("Could not establish connection to database: "
+		+ dbName);
 	return null;
     }
 
     /**
      * Sets the parameters for the access of the MySql-DB.
-     * 
+     *
      * @param aHost
      *            : address of the host
      * @param aDbName
@@ -64,7 +83,9 @@ public final class MySqlConnect {
 	MySqlConnect.host = aHost;
 	MySqlConnect.dbName = aDbName;
 	MySqlConnect.login = aLogin;
-	MySqlConnect.pw = aPassword;
+	MySqlConnect.password = aPassword;
+
+	// since the DB may have changed existing connections are closed.
 	SQLExecuter.closeConnection();
     }
 
