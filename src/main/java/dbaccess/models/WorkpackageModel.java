@@ -85,6 +85,6 @@ public interface WorkpackageModel {
      * @param stringID The complete hierachical ID of a workpackage. Unique
      *                 within a project.
      */
-    boolean deleteWorkpackage(String stringID);
+    void deleteWorkpackage(String stringID);
 
 }

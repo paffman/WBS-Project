@@ -54,7 +54,66 @@ public class MySQLWorkpackageModel implements WorkpackageModel {
     }
 
     @Override
-    public final void addNewWorkpackage(final Workpackage workpackage) {
+    public final void addNewWorkpackage(final Workpackage wp) {
+        final int paramCount = 22;
+        PreparedStatement stm = null;
+
+        String storedProcedure = "CALL workpackage_new(";
+
+        for (int i = 1; i < paramCount; i++) {
+            storedProcedure += "?,";
+        }
+
+        storedProcedure += "?)";
+
+        System.out.println(storedProcedure);
+
+        try {
+            stm = connection.prepareStatement(storedProcedure);
+            stm.setString(1, wp.getStringID());
+            stm.setInt(2, wp.getProjectID());
+            stm.setInt(3, wp.getEmployeeID());
+            stm.setInt(4, wp.getParentID());
+
+            stm.setString(5, wp.getName());
+            stm.setString(6, wp.getDescription());
+
+            stm.setDouble(7, wp.getBac());
+            stm.setDouble(8, wp.getAc());
+            stm.setDouble(9, wp.getEv());
+            stm.setDouble(10, wp.getEtc());
+            stm.setDouble(11, wp.getEac());
+
+            stm.setDouble(12, wp.getCpi());
+
+            stm.setDouble(13, wp.getBacCosts());
+            stm.setDouble(14, wp.getAcCosts());
+            stm.setDouble(15, wp.getEtcCosts());
+
+            stm.setDouble(16, wp.getDailyRate());
+
+            stm.setTimestamp(17, new Timestamp(wp.getReleaseDate().getTime()));
+            stm.setBoolean(18, wp.isTopLevel());
+            stm.setBoolean(19, wp.isInactive());
+            stm.setTimestamp(20, new Timestamp(wp.getStartDateCalc()
+                    .getTime()));
+            stm.setTimestamp(21, new Timestamp(wp.getStartDateWish()
+                    .getTime()));
+            stm.setTimestamp(22, new Timestamp(wp.getEndDateCalc().getTime()));
+
+            stm.execute();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (stm != null) {
+                    stm.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
 
     }
 
@@ -239,20 +298,16 @@ public class MySQLWorkpackageModel implements WorkpackageModel {
     }
 
     @Override
-    public final boolean deleteWorkpackage(String stringID) {
+    public final void deleteWorkpackage(String stringID) {
         final int projectID = 1;
 
         PreparedStatement stm = null;
-        boolean success = false;
         final String storedProcedure = "CALL workpackage_delete_by_id(?, ?)";
 
         try {
             stm = connection.prepareStatement(storedProcedure);
             stm.setString(1, stringID);
             stm.setInt(2, projectID);
-
-            success = stm.execute();
-            System.out.println("Success: " + success);
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
@@ -264,8 +319,6 @@ public class MySQLWorkpackageModel implements WorkpackageModel {
                 e.printStackTrace();
             }
         }
-
-        return success;
     }
 
 }
