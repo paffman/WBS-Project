@@ -1,62 +1,75 @@
 package dbaccess.models.mysql;
 
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
+import sqlutils.TestDBConnector;
 import dbaccess.data.AnalyseData;
 import dbaccess.models.AnalyseDataModel;
 
 public class MySQLAnalyseDataModelTest {
-    private static Connection con;
+    private AnalyseDataModel adModel;
 
-    @BeforeClass
-    public static final void setupTest() {
-        final String url = "jdbc:mysql://localhost:3306/";
-        final String dbName = "wbs_unittest_db";
-        final String driver = "com.mysql.jdbc.Driver";
-        final String userName = "root";
-        final String password = "root";
-
-        try {
-            Class.forName(driver).newInstance();
-            con = DriverManager.getConnection(url + dbName,
-                    userName, password);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    @Before
+    public final void setup() {
+        adModel=new MySQLAnalyseDataModel(TestDBConnector.getConnection());
     }
     
-    @AfterClass
-    public static final void closeDBConnection() {
-        try {
-            con.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    @After
+    public final void cleanup() {
+        adModel = null;
     }
     
     
     @Test
     public final void testAddNewAnalyseData() {
-
-        AnalyseDataModel adModel = new MySQLAnalyseDataModel(con);
-        adModel.addNewAnalyseData(new AnalyseData(1,1,1,"TestData",2.5,2.6,2.7,2.8,2.9,1.0,2.3,1.2,1.2,3,4,5));
+        AnalyseData ad=new AnalyseData();
+        ad.setId(1);
+        ad.setFid_wp(1);
+        ad.setFid_baseline(1);
+        ad.setName("TestData");
+        ad.setBac(2.1);
+        ad.setAc(2.2);
+        ad.setEv(2.3);
+        ad.setEtc(2.4);
+        ad.setEac(2.5);
+        ad.setCpi(2.6);
+        ad.setBac_costs(2.7);
+        ad.setAc_costs(2.8);
+        ad.setEtc_costs(2.9);
+        ad.setSv(3);
+        ad.setSpi(4);
+        ad.setPv(5);
+        
+        adModel.addNewAnalyseData(ad);
         AnalyseData aData = adModel.getAnalyseData(1);
         assertThat(aData, notNullValue());
+        assertThat(aData.getId(), equalTo(1));
+        assertThat(aData.getFid_wp(), equalTo(1));
+        assertThat(aData.getFid_baseline(), equalTo(1));
+        assertThat(aData.getName(), equalTo("TestData"));
+        assertThat(aData.getBac(), equalTo(2.1));
+        assertThat(aData.getAc(), equalTo(2.2));
+        assertThat(aData.getEv(), equalTo(2.3));
+        assertThat(aData.getEtc(), equalTo(2.4));
+        assertThat(aData.getEac(), equalTo(2.5));
+        assertThat(aData.getCpi(), equalTo(2.6));
+        assertThat(aData.getBac_costs(), equalTo(2.7));
+        assertThat(aData.getAc_costs(), equalTo(2.8));
+        assertThat(aData.getEtc_costs(), equalTo(2.9));
+        assertThat(aData.getSv(), equalTo(3));
+        assertThat(aData.getSpi(), equalTo(4));
+        assertThat(aData.getPv(), equalTo(5));
     }
     
     //TODO: Tests müssen noch implementiert werden
     @Test
     public final void testGetAnalyseData() {
-
-        AnalyseDataModel adModel = new MySQLAnalyseDataModel(con);
 
         AnalyseData aData = adModel.getAnalyseData(1);
         assertThat(aData, notNullValue());
@@ -69,7 +82,6 @@ public class MySQLAnalyseDataModelTest {
     @Test
     public final void testGetAnalyseDataForBaseline() {
 
-        AnalyseDataModel adModel = new MySQLAnalyseDataModel(con);
         System.out.println(adModel.getAnalyseDataForBaseline(1));
         AnalyseData aData = adModel.getAnalyseData(1);
         assertThat(aData, notNullValue());

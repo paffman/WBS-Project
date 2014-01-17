@@ -1,75 +1,62 @@
 package dbaccess.models.mysql;
 
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.List;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
+import sqlutils.TestDBConnector;
 import dbaccess.data.Baseline;
 import dbaccess.models.BaselineModel;
 
 public class MySQLBaselineModelTest {
-    private static Connection con;
+    private BaselineModel blModel;
 
-    @BeforeClass
-    public static final void setupTest() {
-        final String url = "jdbc:mysql://localhost:3306/";
-        final String dbName = "wbs_unittest_db";
-        final String driver = "com.mysql.jdbc.Driver";
-        final String userName = "root";
-        final String password = "root";
-
-        try {
-            Class.forName(driver).newInstance();
-            con = DriverManager.getConnection(url + dbName,
-                    userName, password);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    @Before
+    public final void setup() {
+        blModel=new MySQLBaselineModel(TestDBConnector.getConnection());
     }
     
-    @AfterClass
-    public static final void closeDBConnection() {
-        try {
-            con.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    @After
+    public final void cleanup() {
+        blModel = null;
     }
     
     @Test
     public final void testAddNewBaseline() {
-        BaselineModel blModel = new MySQLBaselineModel(con);
         try {
-            blModel.addNewBaseline(new Baseline(2,1,DateFormat.getInstance().parse("2014-01-13 00:00:00"),"TestBeschreibung"));
+            Baseline bl=new Baseline();
+            bl.setId(2);
+            bl.setFid_project(1);
+            bl.setBl_date(DateFormat.getInstance().parse("2014-01-13 00:00:00"));
+            bl.setDescription("TestBeschreibung");
+   
+            blModel.addNewBaseline(bl);
         } catch (ParseException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        //TODO: implementieren
     }
     
     @Test
     public final void testGetBaseline() {
-        BaselineModel blModel = new MySQLBaselineModel(con);
 
         List<Baseline> blList = blModel.getBaseline();
         assertThat(blList, notNullValue());
+        assertThat(blList.get(0).getDescription(), equalTo("TestBeschreibung"));
+        assertThat(blList.get(0).getBl_date().toString(), equalTo("2014-01-13 00:00:00"));
         //TODO: implementieren
     }
     
     @Test
     public final void testGetBaseline1() {
-        BaselineModel blModel = new MySQLBaselineModel(con);
-
         Baseline baseline = blModel.getBaseline(1);
         assertThat(baseline, notNullValue());
         //TODO: implementieren

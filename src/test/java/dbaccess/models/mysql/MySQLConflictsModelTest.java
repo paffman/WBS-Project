@@ -3,80 +3,66 @@ package dbaccess.models.mysql;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.List;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
+import sqlutils.TestDBConnector;
 import dbaccess.data.Conflict;
 import dbaccess.models.ConflictsModel;
 
 public class MySQLConflictsModelTest {
-    private static Connection con;
+    private ConflictsModel cfModel;
 
-    @BeforeClass
-    public static final void setupTest() {
-        final String url = "jdbc:mysql://localhost:3306/";
-        final String dbName = "wbs_unittest_db";
-        final String driver = "com.mysql.jdbc.Driver";
-        final String userName = "root";
-        final String password = "root";
-
-        try {
-            Class.forName(driver).newInstance();
-            con = DriverManager.getConnection(url + dbName,
-                    userName, password);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    @Before
+    public final void setup() {
+        cfModel=new MySQLConflictsModel(TestDBConnector.getConnection());
     }
     
-    @AfterClass
-    public static final void closeDBConnection() {
-        try {
-            con.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    @After
+    public final void cleanup() {
+        cfModel = null;
     }
     
     @Test
     public final void testAddNewConflict() {
-        ConflictsModel conModel = new MySQLConflictsModel(con);
         try {
-            conModel.addNewConflict(new Conflict(2,1,1,1,1,DateFormat.getInstance().parse("2014-01-13 00:00:00")));
+            Conflict cf=new Conflict();
+            cf.setId(2);
+            cf.setFid_wp(1);
+            cf.setFid_wp_affected(1);
+            cf.setFid_emp(1);
+            cf.setReason(1);
+            cf.setOccurence_date(DateFormat.getInstance().parse("2014-01-13 00:00:00"));
+            
+            cfModel.addNewConflict(cf);
         } catch (ParseException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        //TODO: implementieren
     }
     
     @Test
     public final void testGetConflicts() {
-        ConflictsModel conModel = new MySQLConflictsModel(con);
-
-        List<Conflict> conList = conModel.getConflicts();
-        assertThat(conList, notNullValue());
+    
+        List<Conflict> cfList = cfModel.getConflicts();
+        assertThat(cfList, notNullValue());
         //TODO: implementieren
     }
     
     @Test
     public final void testDeleteConflict() {
-        ConflictsModel conModel = new MySQLConflictsModel(con);
-        conModel.deleteConflict(1);
+        cfModel.deleteConflict(1);
         //TODO: implementieren
     }
     
     @Test
     public final void testDeleteConflicts() {
-        ConflictsModel conModel = new MySQLConflictsModel(con);
-        conModel.deleteConflicts();
+        cfModel.deleteConflicts();
         //TODO: implementieren
     }
 }

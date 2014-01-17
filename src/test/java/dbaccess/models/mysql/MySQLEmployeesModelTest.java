@@ -3,56 +3,46 @@ package dbaccess.models.mysql;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.util.List;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
+import sqlutils.TestDBConnector;
 import dbaccess.data.Employee;
 import dbaccess.models.EmployeesModel;
 
 public class MySQLEmployeesModelTest {
-    private static Connection con;
+    private EmployeesModel empModel;
 
-    @BeforeClass
-    public static final void setupTest() {
-        final String url = "jdbc:mysql://localhost:3306/";
-        final String dbName = "wbs_unittest_db";
-        final String driver = "com.mysql.jdbc.Driver";
-        final String userName = "root";
-        final String password = "root";
-
-        try {
-            Class.forName(driver).newInstance();
-            con = DriverManager.getConnection(url + dbName,
-                    userName, password);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    @Before
+    public final void setup() {
+        empModel=new MySQLEmployeesModel(TestDBConnector.getConnection());
     }
     
-    @AfterClass
-    public static final void closeDBConnection() {
-        try {
-            con.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    @After
+    public final void cleanup() {
+        empModel = null;
     }
     
     @Test
     public final void testAddNewEmployee() {
-        //EmployeeModel empModel=new MySQLEmployeeModel(con);
-        //empModel.addNewEmployee(new Employee(10,"TestLogin","Test","Nur ein",true,"passwort",42.5,10));
+        Employee ep=new Employee();
+        ep.setId(10);
+        ep.setLogin("TestLogin");
+        ep.setLast_name("Test");
+        ep.setFirst_name("Nur ein");
+        ep.setProject_leader(true);
+        ep.setPassword("passwort");
+        ep.setDaily_rate(42.5);
+        ep.setTime_preference(10);
+        //empModel.addNewEmployee(ep);
         //TODO: implementieren
     }
     
     @Test
     public final void testGetEmployee() {
-        EmployeesModel empModel=new MySQLEmployeesModel(con);
         List<Employee> empList=empModel.getEmployee();
         assertThat(empList, notNullValue());
         //TODO: implementieren
@@ -60,7 +50,6 @@ public class MySQLEmployeesModelTest {
     
     @Test
     public final void testGetEmployee1() {
-        EmployeesModel empModel=new MySQLEmployeesModel(con);
         Employee employee=empModel.getEmployee("TestLogin");
         assertThat(employee, notNullValue());
         //TODO: implementieren
@@ -68,7 +57,6 @@ public class MySQLEmployeesModelTest {
     
     @Test
     public final void testGetEmployee2() {
-        EmployeesModel empModel=new MySQLEmployeesModel(con);
         List<Employee> empList=empModel.getEmployee(true);
         assertThat(empList, notNullValue());
         //TODO: implementieren
@@ -76,8 +64,18 @@ public class MySQLEmployeesModelTest {
     
     @Test
     public final void testUpdateEmployee() {
-        EmployeesModel empModel=new MySQLEmployeesModel(con);
-        empModel.updateEmployee(new Employee(10,"NeuerLogin","Test","Immernoch ein",false,"1234",42.5,10));
+        Employee ep=new Employee();
+        ep.setId(10);
+        ep.setLogin("NeuerLogin");
+        ep.setLast_name("Test");
+        ep.setFirst_name("Immernoch ein");
+        ep.setProject_leader(false);
+        ep.setPassword("1234");
+        ep.setDaily_rate(42.5);
+        ep.setTime_preference(10);
+        
+        
+        empModel.updateEmployee(ep);
         //TODO: implementieren
     }
     
