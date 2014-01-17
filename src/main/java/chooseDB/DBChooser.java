@@ -82,16 +82,16 @@ public class DBChooser {
     public void next() {
 	// cancel = false;
 	// %%
-	String host = gui.hostField.getText();
-	String db = gui.dbNameField.getText();
-	String user = gui.userField.getText();
-	String indexDbPw = new String(gui.dbPwPasswordField.getPassword());
-	String userPw = new String(gui.pwPasswordField.getPassword());
+	String host = gui.getHostField().getText();
+	String db = gui.getDbNameField().getText();
+	String user = gui.getUserField().getText();
+	String indexDbPw = new String(gui.getDbPwPasswordField().getPassword());
+	String userPw = new String(gui.getPwPasswordField().getPassword());
 	String dbIndex = getDatabaseIndex(host, db, indexDbPw);
 	if (dbIndex == null) {
 	    return;
 	}
-	Boolean pl = gui.plCheckBox.isSelected();
+	Boolean pl = gui.getPlCheckBox().isSelected();
 
 	if (host.equals("")) {
 	    JOptionPane.showMessageDialog(gui, "Bitte einen Host eintragen!");

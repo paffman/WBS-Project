@@ -1,7 +1,24 @@
 package chooseDB;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.Toolkit;
+
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 
 /**
  * Studienprojekt: WBS<br/>
@@ -45,25 +62,79 @@ import java.awt.*;
  */
 public class DBChooserGUI extends JFrame {
 
+    /**
+     * generated serialVersionUID.
+     */
     protected static final long serialVersionUID = 1L;
-    protected JButton okButton, closeButton;
-    protected GridBagLayout gbl;
-    protected JMenuBar mainMenuBar;
-    protected JMenu fileMenu, helpMenu;
-    protected JMenuItem okMenuItem, openMenuItem, closeMenuItem, helpMenuItem,
+    /**
+     * Height of the window.
+     */
+    private static final int WINDOW_HEIGHT = 280;
+    /**
+     * Width of the window.
+     */
+    private static final int WINDOW_WIDTH = 400;
+    /**
+     * Button to confirm db connection entries and start the wbs-tool.
+     */
+    private JButton okButton;
+    /**
+     * Button to close the window.
+     */
+    private JButton closeButton;
+    /**
+     * The GridBagLayout for the window.
+     */
+    private GridBagLayout gbl;
+    /**
+     * The MenuBar for the window.
+     */
+    private JMenuBar mainMenuBar;
+    /**
+     * File-Menu of the MenuBar.
+     */
+    private JMenu fileMenu;
+    /**
+     * Help-Menu of the MenuBar.
+     */
+    private JMenu helpMenu;
+    /**
+     * Items of the Menues.
+     */
+    private JMenuItem okMenuItem, openMenuItem, closeMenuItem, helpMenuItem,
 	    infoMenuItem, newDbMenuItem;
-    protected JCheckBox plCheckBox;
-    protected JTextField hostField, dbNameField, userField;
-    protected JPasswordField dbPwPasswordField, pwPasswordField;
+    /**
+     * Checkbox for project leader login.
+     */
+    private JCheckBox plCheckBox;
+    /**
+     * Fields for the database connection.
+     */
+    private JTextField hostField, dbNameField, userField;
+    /**
+     * PasswordFields for the passwords needed for a database connection.
+     */
+    private JPasswordField dbPwPasswordField, pwPasswordField;
 
-    // Icons fürs Menü
-    private ImageIcon hilfe = new ImageIcon(Toolkit.getDefaultToolkit()
+    /**
+     * Icon for help menu.
+     */
+    private ImageIcon helpIcon = new ImageIcon(Toolkit.getDefaultToolkit()
 	    .getImage(this.getClass().getResource("/_icons/hilfe.png")));
-    private ImageIcon info = new ImageIcon(Toolkit.getDefaultToolkit()
+    /**
+     * Icon for info menu.
+     */
+    private ImageIcon infoIcon = new ImageIcon(Toolkit.getDefaultToolkit()
 	    .getImage(this.getClass().getResource("/_icons/info.png")));
-    private ImageIcon weiter = new ImageIcon(Toolkit.getDefaultToolkit()
+    /**
+     * Icon for ok menu.
+     */
+    private ImageIcon okIcon = new ImageIcon(Toolkit.getDefaultToolkit()
 	    .getImage(this.getClass().getResource("/_icons/weiter.png")));
-    private ImageIcon schlies = new ImageIcon(Toolkit.getDefaultToolkit()
+    /**
+     * Icon for close menu.
+     */
+    private ImageIcon closeIcon = new ImageIcon(Toolkit.getDefaultToolkit()
 	    .getImage(this.getClass().getResource("/_icons/schliessen.png")));
 
     /**
@@ -89,18 +160,18 @@ public class DBChooserGUI extends JFrame {
 	setResizable(false);
 	setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-	// Menues
+	// menus
 	mainMenuBar = new JMenuBar();
 	fileMenu = new JMenu("Datei");
 	helpMenu = new JMenu("Hilfe");
 	okMenuItem = new JMenuItem("Weiter");
-	okMenuItem.setIcon(weiter);
+	okMenuItem.setIcon(okIcon);
 	closeMenuItem = new JMenuItem("Schlie�en");
-	closeMenuItem.setIcon(schlies);
+	closeMenuItem.setIcon(closeIcon);
 	helpMenuItem = new JMenuItem("Hilfe");
-	helpMenuItem.setIcon(hilfe);
+	helpMenuItem.setIcon(helpIcon);
 	infoMenuItem = new JMenuItem("Info");
-	infoMenuItem.setIcon(info);
+	infoMenuItem.setIcon(infoIcon);
 	newDbMenuItem = new JMenuItem("DB Einrichtungsassistent");
 
 	mainMenuBar.add(fileMenu);
@@ -113,6 +184,7 @@ public class DBChooserGUI extends JFrame {
 	helpMenu.addSeparator();
 	helpMenu.add(infoMenuItem);
 
+	// labels and input elements
 	JLabel titleLabel = new JLabel("Datenbank:");
 	JLabel hostLabel = new JLabel("Host:");
 	JLabel dbNameLabel = new JLabel("DB-Name:");
@@ -129,6 +201,7 @@ public class DBChooserGUI extends JFrame {
 	closeButton = new JButton("Schlie�en");
 	okButton = new JButton("Ok");
 
+	// load saved database into fields
 	if (dbChooser.getLastDbHost() != null) {
 	    hostField.setText(dbChooser.getLastDbHost());
 	}
@@ -142,6 +215,7 @@ public class DBChooserGUI extends JFrame {
 	    userField.setText(dbChooser.getLastDbUser());
 	}
 
+	// place all elements in the window.
 	this.setJMenuBar(mainMenuBar);
 	createGBC(titleLabel, 0, 0, 4, 1);
 	createGBC(hostLabel, 0, 1, 1, 1);
@@ -159,21 +233,23 @@ public class DBChooserGUI extends JFrame {
 	createGBC(okButton, 2, 8, 1, 1);
 	createGBC(closeButton, 3, 8, 1, 1);
 
+	// show gui
 	setVisible(true);
 
+	// set Focus to password field if the host is already set and therefore
+	// a saved database has been loaded.
 	if (!hostField.getText().equals("")) {
 	    pwPasswordField.requestFocus();
 	}
     }
 
     /**
-     * void initialize() Methode initialize zum erstellen des Layouts Gui ist
-     * 500 Pixel breit und 160 Pixel lang Es wird ein GridbagLayout verwendet
-     * Gui wird mittig plaziert
+     * Method to create the gui. A GridBagLayout is used for the positioning of
+     * the elements.
      */
     private void initialize() {
-	int width = 400;
-	int height = 280;
+	int width = WINDOW_WIDTH;
+	int height = WINDOW_HEIGHT;
 	Toolkit tk = Toolkit.getDefaultToolkit();
 	Dimension screenSize = tk.getScreenSize();
 	setLocation((int) (screenSize.getWidth() / 2) - width / 2,
@@ -187,7 +263,7 @@ public class DBChooserGUI extends JFrame {
     /**
      * void createGBC(args) wird am Anordnen der Komponenten auf dem JFrame
      * aufgerufen Methode createGBC zum Hinzufügen der einzelnen Komponenten
-     * zum GridBagLayout
+     * zum GridBagLayout.
      * 
      * @param c
      *            Komponente die zum Layout hinzugefügt wird
@@ -200,7 +276,8 @@ public class DBChooserGUI extends JFrame {
      * @param height
      *            Höhe des Elementes
      */
-    private void createGBC(Component c, int x, int y, int width, int height) {
+    private void createGBC(final Component c, final int x, final int y,
+	    final int width, final int height) {
 	GridBagConstraints gbc = new GridBagConstraints();
 	gbc.fill = GridBagConstraints.HORIZONTAL;
 	gbc.gridx = x;
@@ -212,5 +289,103 @@ public class DBChooserGUI extends JFrame {
 	gbc.insets = new Insets(5, 5, 5, 5);
 	gbl.setConstraints(c, gbc);
 	add(c);
+    }
+
+    /**
+     * @return the okButton
+     */
+    protected final JButton getOkButton() {
+	return okButton;
+    }
+
+    /**
+     * @return the closeButton
+     */
+    protected final JButton getCloseButton() {
+	return closeButton;
+    }
+
+    /**
+     * @return the okMenuItem
+     */
+    protected final JMenuItem getOkMenuItem() {
+	return okMenuItem;
+    }
+
+    /**
+     * @return the openMenuItem
+     */
+    protected final JMenuItem getOpenMenuItem() {
+	return openMenuItem;
+    }
+
+    /**
+     * @return the closeMenuItem
+     */
+    protected final JMenuItem getCloseMenuItem() {
+	return closeMenuItem;
+    }
+
+    /**
+     * @return the helpMenuItem
+     */
+    protected final JMenuItem getHelpMenuItem() {
+	return helpMenuItem;
+    }
+
+    /**
+     * @return the infoMenuItem
+     */
+    protected final JMenuItem getInfoMenuItem() {
+	return infoMenuItem;
+    }
+
+    /**
+     * @return the newDbMenuItem
+     */
+    protected final JMenuItem getNewDbMenuItem() {
+	return newDbMenuItem;
+    }
+
+    /**
+     * @return the plCheckBox
+     */
+    protected final JCheckBox getPlCheckBox() {
+	return plCheckBox;
+    }
+
+    /**
+     * @return the hostField
+     */
+    protected final JTextField getHostField() {
+	return hostField;
+    }
+
+    /**
+     * @return the dbNameField
+     */
+    protected final JTextField getDbNameField() {
+	return dbNameField;
+    }
+
+    /**
+     * @return the userField
+     */
+    protected final JTextField getUserField() {
+	return userField;
+    }
+
+    /**
+     * @return the dbPwPasswordField
+     */
+    protected final JPasswordField getDbPwPasswordField() {
+	return dbPwPasswordField;
+    }
+
+    /**
+     * @return the pwPasswordField
+     */
+    protected final JPasswordField getPwPasswordField() {
+	return pwPasswordField;
     }
 }

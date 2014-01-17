@@ -1,6 +1,9 @@
 package jdbcConnection;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 /**
  * Studienprojekt: WBS
@@ -8,92 +11,141 @@ import java.sql.*;
  * Kunde: Pentasys AG, Jens von Gersdorff Projektmitglieder: Andre Paffenholz,
  * Peter Lange, Daniel Metzler, Samson von Graevenitz
  * 
- * FÃ¼hrt SQL-Statements aus. HÃ¤lt ein Connection-Objekt auf dem SQL-Updates
- * und SQL-Querys ausgefÃ¼hrt werden kÃ¶nnen.
+ * Führt SQL-Statements aus. Hält ein Connection-Objekt auf dem SQL-Updates
+ * und SQL-Querys ausgeführt werden können.
  * 
  * @author Samson von Graevenitz
  * @version - 0.1 30.11.2010
  */
-public class SQLExecuter {
+/**
+ * 
+ * Executes SQL statements. Has an connection object which can be used for SQL
+ * updates and queries.
+ * 
+ * @author Hendrik Mainzer
+ * 
+ */
+public final class SQLExecuter {
 
-	private static Connection openConnection = null;
+    /**
+     * holds an opened connection.
+     */
+    private static Connection openConnection = null;
 
-	/**
-	 * Default-Konstruktor
-	 */
-	public SQLExecuter() {
-	}
+    /**
+     * timeout in seconds for checking validity of a connection.
+     */
+    private static final int VALIDITY_CHECK_TIMEOUT = 3;
 
-	/**
-	 * Opens a connection to the DB.
-	 */
-	private static void openConnection() {
-		try {
-			if (openConnection == null) {
-				openConnection = MySqlConnect.getConnection();
-			}
-		} catch (Exception e) {
-			System.err.println("no Connection");
+    /**
+     * count of tries to reconnect lost connection.
+     */
+    private static final int RECONNECT_TRIES = 3;
+
+    /**
+     * private default constructor.
+     */
+    private SQLExecuter() {
+    }
+
+    /**
+     * Opens a connection to the DB.
+     * 
+     * @return returns true if connection is established.
+     */
+    private static boolean openConnection() {
+	try {
+
+	    // checks if existing connection is still valid.
+	    if (openConnection != null) {
+		int reconnectTries = 0;
+		do {
+		    if (!openConnection.isValid(VALIDITY_CHECK_TIMEOUT)) {
+			openConnection = null;
+			openConnection = MySqlConnect.getConnection();
+			reconnectTries++;
+		    }
+		} while (reconnectTries < RECONNECT_TRIES);
+		if (reconnectTries == RECONNECT_TRIES) {
+		    // todo close tool
+		    return false;
 		}
-	}
+	    }
 
-	/**
-	 * Closes the connection to the db.
-	 */
-	public static void closeConnection() {
-		try {
-			if (openConnection != null) {
-				openConnection.close();
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		openConnection = null;
+	    // open connection
+	    if (openConnection == null) {
+		openConnection = MySqlConnect.getConnection();
+	    }
+	} catch (Exception e) {
+	    System.err.println("no Connection");
 	}
+	return openConnection != null;
+    }
 
-	/**
-	 * @param sql
-	 *            SQL Statement as String
-	 * @throws SQLException
-	 */
-	public static void executeUpdate(final String sql) throws SQLException {
-		openConnection();
-		Statement stmt;
-		try {
-			stmt = openConnection.createStatement();
-			stmt.executeUpdate(sql);
-			openConnection.commit();
-			stmt.close();
-		} catch (SQLException e) {
-			if (e.getErrorCode() == -1612) {
-				throw new SQLException(e);
-			} else {
-				throw e;
-			}
+    /**
+     * Closes the connection to the db.
+     */
+    public static void closeConnection() {
+	try {
+	    if (openConnection != null) {
+		if (openConnection.isValid(VALIDITY_CHECK_TIMEOUT)) {
+		    openConnection.close();
 		}
+	    }
+	} catch (SQLException e) {
+	    e.printStackTrace();
 	}
+	openConnection = null;
+    }
 
-	/**
-	 * 
-	 * @param sql
-	 *            SQL Statement as String
-	 * @return returns a ResultSet
-	 */
-	public static ResultSet executeQuery(final String sql) {
-		openConnection();
-		Statement stmt;
-		System.out.println(sql);//%%
-		ResultSet rs;
-		try {
-			stmt = openConnection.createStatement(
-					ResultSet.TYPE_SCROLL_INSENSITIVE,
-					ResultSet.CONCUR_READ_ONLY);
-			rs = stmt.executeQuery(sql);			
-			return rs;
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return null;
+    /**
+     * @param sql
+     *            SQL Statement as String
+     * @throws SQLException
+     *             an SQLException
+     */
+    public static void executeUpdate(final String sql) throws SQLException {
+	if (!openConnection()) {
+	    return;
 	}
+	Statement stmt;
+	try {
+	    stmt = openConnection.createStatement();
+	    stmt.executeUpdate(sql);
+	    openConnection.commit();
+	    stmt.close();
+	} catch (SQLException e) {
+	    if (e.getErrorCode() == -1612) {
+		throw new SQLException(e);
+	    } else {
+		throw e;
+	    }
+	}
+    }
+
+    /**
+     * Executes the given query on the database.
+     * 
+     * @param sql
+     *            SQL Statement as String
+     * @return returns a read only ResultSet
+     */
+    public static ResultSet executeQuery(final String sql) {
+	if (!openConnection()) {
+	    return null;
+	}
+	Statement stmt;
+	ResultSet rs;
+	try {
+	    stmt = openConnection.createStatement(
+		    ResultSet.TYPE_SCROLL_INSENSITIVE,
+		    ResultSet.CONCUR_READ_ONLY);
+	    rs = stmt.executeQuery(sql);
+	    return rs;
+	} catch (SQLException e) {
+	    e.printStackTrace();
+	}
+	return null;
+    }
 
 }
