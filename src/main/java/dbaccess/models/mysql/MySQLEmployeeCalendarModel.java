@@ -1,3 +1,23 @@
+/*
+ * The WBS-­Tool is a project managment tool combining the Work Breakdown
+ * Structure and Earned Value Analysis
+ * Copyright (C) 2013 FH-­Bingen
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY;; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+
 package dbaccess.models.mysql;
 
 import java.sql.Connection;
@@ -11,10 +31,23 @@ import java.util.List;
 import dbaccess.data.EmployeeCalendar;
 import dbaccess.models.EmployeeCalendarModel;
 
+/**
+ * The <code>MySQLEmployeeCalendarModel</code> class implements the
+ * <code>EmployeeCalendarModel</code> and handles all the database access concerning
+ * employee calendars.
+ */
 public class MySQLEmployeeCalendarModel implements EmployeeCalendarModel {
 
+    /**
+     * The MySQL connection to use.
+     */
     private Connection connection;
 
+    /**
+     * Constructor.
+     *
+     * @param con The MySQL connection to use.
+     */
     public MySQLEmployeeCalendarModel(Connection connection) {
         this.connection = connection;
     }
@@ -44,10 +77,7 @@ public class MySQLEmployeeCalendarModel implements EmployeeCalendarModel {
             result = stm.executeQuery("SELECT * FROM employee_calendar");
 
             while (result.next()) {
-                employeeCalendar = new EmployeeCalendar(result.getInt(1),
-                        result.getInt(2), result.getDate(3),
-                        result.getDate(4), result.getString(5),
-                        result.getBoolean(6), result.getBoolean(7));
+                employeeCalendar = EmployeeCalendar.fromResultSet(result);
                 empCalList.add(employeeCalendar);
             }
 
@@ -69,10 +99,7 @@ public class MySQLEmployeeCalendarModel implements EmployeeCalendarModel {
                             + id);
 
             if (result.next()) {
-                employeeCalendar = new EmployeeCalendar(result.getInt(1),
-                        result.getInt(2), result.getDate(3),
-                        result.getDate(4), result.getString(5),
-                        result.getBoolean(6), result.getBoolean(7));
+                employeeCalendar = EmployeeCalendar.fromResultSet(result);
             }
 
             return employeeCalendar;
@@ -94,10 +121,7 @@ public class MySQLEmployeeCalendarModel implements EmployeeCalendarModel {
                             + fid);
 
             while (result.next()) {
-                employeeCalendar = new EmployeeCalendar(result.getInt(1),
-                        result.getInt(2), result.getDate(3),
-                        result.getDate(4), result.getString(5),
-                        result.getBoolean(6), result.getBoolean(7));
+                employeeCalendar = EmployeeCalendar.fromResultSet(result);
                 empCalList.add(employeeCalendar);
             }
 
@@ -121,10 +145,7 @@ public class MySQLEmployeeCalendarModel implements EmployeeCalendarModel {
                             + from + " AND end_time < " + to);
 
             while (result.next()) {
-                employeeCalendar = new EmployeeCalendar(result.getInt(1),
-                        result.getInt(2), result.getDate(3),
-                        result.getDate(4), result.getString(5),
-                        result.getBoolean(6), result.getBoolean(7));
+                employeeCalendar = EmployeeCalendar.fromResultSet(result);
                 empCalList.add(employeeCalendar);
             }
 

@@ -1,3 +1,23 @@
+/*
+ * The WBS-­Tool is a project managment tool combining the Work Breakdown
+ * Structure and Earned Value Analysis
+ * Copyright (C) 2013 FH-­Bingen
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY;; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+
 package dbaccess.models.mysql;
 
 import java.sql.Connection;
@@ -10,10 +30,23 @@ import java.util.List;
 import dbaccess.data.Dependency;
 import dbaccess.models.DependenciesModel;
 
+/**
+ * The <code>MySQLDependenciesModel</code> class implements the
+ * <code>Dependency</code> and handles all the database access concerning
+ * dependencies.
+ */
 public class MySQLDependenciesModel implements DependenciesModel {
 
+    /**
+     * The MySQL connection to use.
+     */
     private Connection connection;
 
+    /**
+     * Constructor.
+     *
+     * @param con The MySQL connection to use.
+     */
     public MySQLDependenciesModel(Connection connection) {
         this.connection = connection;
     }
@@ -41,7 +74,7 @@ public class MySQLDependenciesModel implements DependenciesModel {
             result = stm.executeQuery("SELECT * FROM dependencies");
 
             while (result.next()) {
-                dependency = new Dependency(result.getInt(1), result.getInt(2));
+                dependency = Dependency.fromResultSet(result);
                 depList.add(dependency);
             }
 

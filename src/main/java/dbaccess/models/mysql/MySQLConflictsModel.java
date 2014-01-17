@@ -1,3 +1,23 @@
+/*
+ * The WBS-­Tool is a project managment tool combining the Work Breakdown
+ * Structure and Earned Value Analysis
+ * Copyright (C) 2013 FH-­Bingen
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY;; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+
 package dbaccess.models.mysql;
 
 import java.sql.Connection;
@@ -10,10 +30,23 @@ import java.util.List;
 import dbaccess.data.Conflict;
 import dbaccess.models.ConflictsModel;
 
+/**
+ * The <code>MySQLConflictsModel</code> class implements the
+ * <code>ConflictsModel</code> and handles all the database access concerning
+ * conflicts.
+ */
 public class MySQLConflictsModel implements ConflictsModel {
 
+    /**
+     * The MySQL connection to use.
+     */
     private Connection connection;
 
+    /**
+     * Constructor.
+     *
+     * @param con The MySQL connection to use.
+     */
     public MySQLConflictsModel(Connection connection) {
         this.connection = connection;
     }
@@ -38,14 +71,12 @@ public class MySQLConflictsModel implements ConflictsModel {
         List<Conflict> conList = new ArrayList<Conflict>();
         try {
             ResultSet result = null;
-            Conflict conflict = null;
+            Conflict conflict = new Conflict();
             Statement stm = connection.createStatement();
             result = stm.executeQuery("SELECT * FROM conflict");
 
             while (result.next()) {
-                conflict = new Conflict(result.getInt(1), result.getInt(2),
-                        result.getInt(3), result.getInt(4), result.getInt(5),
-                        result.getDate(6));
+                conflict = Conflict.fromResultSet(result);
                 conList.add(conflict);
             }
 

@@ -1,3 +1,23 @@
+/*
+ * The WBS-­Tool is a project managment tool combining the Work Breakdown
+ * Structure and Earned Value Analysis
+ * Copyright (C) 2013 FH-­Bingen
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY;; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+
 package dbaccess.models.mysql;
 
 import java.sql.Connection;
@@ -10,10 +30,23 @@ import java.util.List;
 import dbaccess.data.Baseline;
 import dbaccess.models.BaselineModel;
 
+/**
+ * The <code>MySQLBaselineModel</code> class implements the
+ * <code>BaselineModel</code> and handles all the database access concerning
+ * baselines.
+ */
 public class MySQLBaselineModel implements BaselineModel {
 
+    /**
+     * The MySQL connection to use.
+     */
     private Connection connection;
 
+    /**
+     * Constructor.
+     *
+     * @param con The MySQL connection to use.
+     */
     public MySQLBaselineModel(Connection connection) {
         this.connection = connection;
     }
@@ -36,13 +69,12 @@ public class MySQLBaselineModel implements BaselineModel {
         List<Baseline> blList = new ArrayList<Baseline>();
         try {
             ResultSet result = null;
-            Baseline baseline=null;
+            Baseline baseline=new Baseline();
             Statement stm = connection.createStatement();
             result = stm.executeQuery("SELECT * FROM baseline");
 
             while (result.next()){
-                baseline = new Baseline(result.getInt(1), result.getInt(2),
-                        result.getDate(3), result.getString(4));
+                baseline = Baseline.fromResultSet(result);
                 blList.add(baseline);
             }
             
@@ -55,7 +87,7 @@ public class MySQLBaselineModel implements BaselineModel {
 
     @Override
     public Baseline getBaseline(int baselineID) {
-        Baseline baseline = null;
+        Baseline baseline = new Baseline();
         try {
             ResultSet result = null;
             Statement stm = connection.createStatement();
@@ -63,8 +95,7 @@ public class MySQLBaselineModel implements BaselineModel {
                     + baselineID);
 
             if (result.next()){
-                baseline = new Baseline(result.getInt(1), result.getInt(2),
-                        result.getDate(3), result.getString(4));
+                baseline = Baseline.fromResultSet(result);
             }
             
             return baseline;

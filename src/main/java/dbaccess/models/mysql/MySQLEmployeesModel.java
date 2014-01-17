@@ -1,3 +1,23 @@
+/*
+ * The WBS-­Tool is a project managment tool combining the Work Breakdown
+ * Structure and Earned Value Analysis
+ * Copyright (C) 2013 FH-­Bingen
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY;; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+
 package dbaccess.models.mysql;
 
 import java.sql.Connection;
@@ -10,10 +30,23 @@ import java.util.List;
 import dbaccess.data.Employee;
 import dbaccess.models.EmployeesModel;
 
+/**
+ * The <code>MySQLEmployeesModel</code> class implements the
+ * <code>EmployeesModel</code> and handles all the database access concerning
+ * employees.
+ */
 public class MySQLEmployeesModel implements EmployeesModel {
 
+    /**
+     * The MySQL connection to use.
+     */
     private Connection connection;
 
+    /**
+     * Constructor.
+     *
+     * @param con The MySQL connection to use.
+     */
     public MySQLEmployeesModel(Connection connection) {
         this.connection = connection;
     }
@@ -45,10 +78,7 @@ public class MySQLEmployeesModel implements EmployeesModel {
             result = stm.executeQuery("SELECT * FROM employee");
 
             while (result.next()) {
-                employee = new Employee(result.getInt(1), result.getString(2),
-                        result.getString(3), result.getString(4),
-                        result.getBoolean(5), result.getString(6),
-                        result.getDouble(7), result.getInt(8));
+                employee = Employee.fromResultSet(result);
                 empList.add(employee);
             }
 
@@ -69,10 +99,7 @@ public class MySQLEmployeesModel implements EmployeesModel {
                     + login);
 
             if (result.next()) {
-                employee = new Employee(result.getInt(1), result.getString(2),
-                        result.getString(3), result.getString(4),
-                        result.getBoolean(5), result.getString(6),
-                        result.getDouble(7), result.getInt(8));
+                employee = Employee.fromResultSet(result);
             }
 
             return employee;
@@ -94,10 +121,7 @@ public class MySQLEmployeesModel implements EmployeesModel {
                             + isLeader);
 
             while (result.next()) {
-                employee = new Employee(result.getInt(1), result.getString(2),
-                        result.getString(3), result.getString(4),
-                        result.getBoolean(5), result.getString(6),
-                        result.getDouble(7), result.getInt(8));
+                employee = Employee.fromResultSet(result);
                 empList.add(employee);
             }
 

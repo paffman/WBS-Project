@@ -1,3 +1,22 @@
+/*
+ * The WBS-­Tool is a project managment tool combining the Work Breakdown
+ * Structure and Earned Value Analysis
+ * Copyright (C) 2013 FH-­Bingen
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY;; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package dbaccess.models.mysql;
 
 import java.sql.Connection;
@@ -10,9 +29,24 @@ import java.util.List;
 import dbaccess.data.AnalyseData;
 import dbaccess.models.AnalyseDataModel;
 
+
+/**
+ * The <code>MySQLAnalyseDataModel</code> class implements the
+ * <code>AnalyseDataModel</code> and handles all the database access concerning
+ * analyse data.
+ */
 public class MySQLAnalyseDataModel implements AnalyseDataModel {
+    
+    /**
+     * The MySQL connection to use.
+     */
     private Connection connection;
 
+    /**
+     * Constructor.
+     *
+     * @param con The MySQL connection to use.
+     */
     public MySQLAnalyseDataModel(Connection connection) {
         this.connection = connection;
     }
@@ -38,7 +72,7 @@ public class MySQLAnalyseDataModel implements AnalyseDataModel {
 
     @Override
     public AnalyseData getAnalyseData(int fid) {
-        AnalyseData aData = null;
+        AnalyseData aData = new AnalyseData();
         try {
             ResultSet result = null;
             Statement stm = connection.createStatement();
@@ -46,14 +80,8 @@ public class MySQLAnalyseDataModel implements AnalyseDataModel {
                     + fid);
 
             if (result.next()){
-                aData = new AnalyseData(result.getInt(1), result.getInt(2),
-                        result.getInt(3), result.getString(4),
-                        result.getDouble(5), result.getDouble(6),
-                        result.getDouble(7), result.getDouble(8),
-                        result.getDouble(9), result.getDouble(10),
-                        result.getDouble(11), result.getDouble(12),
-                        result.getDouble(13), result.getInt(14),
-                        result.getInt(15), result.getInt(16));
+                aData = AnalyseData.fromResultSet(result);
+                       
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -66,20 +94,13 @@ public class MySQLAnalyseDataModel implements AnalyseDataModel {
         List<AnalyseData> adList = new ArrayList<AnalyseData>();
         try {
             ResultSet result = null;
-            AnalyseData aData=null;
+            AnalyseData aData=new AnalyseData();
             Statement stm = connection.createStatement();
             result = stm.executeQuery("SELECT * FROM analyse_data WHERE fid_baseline = "
                     + baseline);
 
             while (result.next()){
-                aData = new AnalyseData(result.getInt(1), result.getInt(2),
-                        result.getInt(3), result.getString(4),
-                        result.getDouble(5), result.getDouble(6),
-                        result.getDouble(7), result.getDouble(8),
-                        result.getDouble(9), result.getDouble(10),
-                        result.getDouble(11), result.getDouble(12),
-                        result.getDouble(13), result.getInt(14),
-                        result.getInt(15), result.getInt(16));
+                aData = AnalyseData.fromResultSet(result);
                 adList.add(aData);
             }
             
