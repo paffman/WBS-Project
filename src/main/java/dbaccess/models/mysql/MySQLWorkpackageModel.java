@@ -239,8 +239,33 @@ public class MySQLWorkpackageModel implements WorkpackageModel {
     }
 
     @Override
-    public final void deleteWorkpackage(final int wpID) {
+    public final boolean deleteWorkpackage(String stringID) {
+        final int projectID = 1;
 
+        PreparedStatement stm = null;
+        boolean success = false;
+        final String storedProcedure = "CALL workpackage_delete_by_id(?, ?)";
+
+        try {
+            stm = connection.prepareStatement(storedProcedure);
+            stm.setString(1, stringID);
+            stm.setInt(2, projectID);
+
+            success = stm.execute();
+            System.out.println("Success: " + success);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (stm != null) {
+                    stm.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return success;
     }
 
 }

@@ -20,6 +20,7 @@
 package dbaccess.models.mysql;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.CoreMatchers.notNullValue;
 
@@ -206,7 +207,20 @@ public class MySQLWorkpackageModelTest {
 
     @Test
     public final void testDeleteWorkpackage() {
-        // TODO: implement testDeleteWorkpackage
+        String wpToDeleteID = "3.2.0.0";
+
+        Workpackage wpToDelte = wpModel.getWorkpackage(wpToDeleteID);
+        assertThat(wpToDelte, notNullValue());
+
+        /*
+         * TODO: not really working right now.
+         * wp_allocation holds foreign key to this work package
+         */
+        boolean success = wpModel.deleteWorkpackage(wpToDeleteID);
+        //assertThat(success, equalTo(true));
+
+        // change test data back to original state
+        TestData.reloadData(TestDBConnector.getConnection());
     }
 
 }
