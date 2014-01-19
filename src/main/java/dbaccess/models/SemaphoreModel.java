@@ -19,28 +19,28 @@
 
 package dbaccess.models;
 
-import dbaccess.data.WBSSemaphore;
-
 /**The interface for the sempaphore model*/
 public interface SemaphoreModel {
-    
+        
     /**
-     * A method to add a new wbs semaphore to the project.
-     * @param wbsSemaphore The semaphore which is added to the project.
-     */
-    public void addNewSemaphore(WBSSemaphore wbsSemaphore);
-    
-    /**
-     * A method to get a specific semaphore.
+     * A method to enter a semaphore.
      * @param tag The tag of the semaphore.
-     * @return Returns the selected semaphore.
+     * @return Returns if the semaphore could be entered.
      */
-    public WBSSemaphore getSemaphore(String tag);
+    public boolean enterSemaphore(String tag, int id);
     
     /**
-     * A method to delete a semaphore.
-     * @param tag The tag from the semaphore wich is deleted.
+     * A method to enter a semaphore. 
+     * @param tag The tag of the semaphore.
+     * @param force When true the semaphore is forcefully entered.
+     * @return Returns if the semaphore could be entered.
      */
-    public void deleteSemaphore(String tag);
+    public boolean enterSemaphore(String tag, int id, boolean force);
+    
+    /**
+     * A method to leave a semaphore.
+     * @param tag The tag of the semaphore to leave
+     */
+    public void leaveSemaphore(String tag, int id);
     
 }

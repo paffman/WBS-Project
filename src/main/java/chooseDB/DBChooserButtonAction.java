@@ -47,34 +47,34 @@ public class DBChooserButtonAction {
      * Hilfe-Menü: gibt per JOptionPane eine Hilfe für die DBChooserGUI aus
      */
     public final void addButtonAction() {
-	dbChooser.gui.getCloseButton().addActionListener(new ActionListener() {
+	dbChooser.getGui().getCloseButton().addActionListener(new ActionListener() {
 	    public void actionPerformed(final ActionEvent e) {
 		System.exit(0);
 	    }
 	});
 
-	dbChooser.gui.getOkButton().addActionListener(new ActionListener() {
+	dbChooser.getGui().getOkButton().addActionListener(new ActionListener() {
 	    public void actionPerformed(final ActionEvent e) {
 		dbChooser.next();
 	    }
 	});
 
-	dbChooser.gui.getOkMenuItem().addActionListener(new ActionListener() {
+	dbChooser.getGui().getOkMenuItem().addActionListener(new ActionListener() {
 	    public void actionPerformed(final ActionEvent e) {
 		dbChooser.next();
 	    }
 	});
 
-	dbChooser.gui.getCloseMenuItem().addActionListener(
+	dbChooser.getGui().getCloseMenuItem().addActionListener(
 		new ActionListener() {
 		    public void actionPerformed(final ActionEvent e) {
 			System.exit(0);
 		    }
 		});
 
-	dbChooser.gui.getHelpMenuItem().addActionListener(new ActionListener() {
+	dbChooser.getGui().getHelpMenuItem().addActionListener(new ActionListener() {
 	    public void actionPerformed(final ActionEvent arg0) {
-		JOptionPane.showMessageDialog(dbChooser.gui,
+		JOptionPane.showMessageDialog(dbChooser.getGui(),
 			"Geben sie die Zugangsdaten zur Datenbank und "
 				+ "ihren Benutzernamen an. Mit einem "
 				+ "Klick auf Ok gelangen sie dann "
@@ -82,7 +82,7 @@ public class DBChooserButtonAction {
 	    }
 	});
 
-	dbChooser.gui.getInfoMenuItem().addActionListener(new ActionListener() {
+	dbChooser.getGui().getInfoMenuItem().addActionListener(new ActionListener() {
 	    public void actionPerformed(final ActionEvent arg0) {
 		new InfoBox();
 	    }

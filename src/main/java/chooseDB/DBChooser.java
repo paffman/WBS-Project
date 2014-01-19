@@ -12,6 +12,8 @@ import java.sql.Statement;
 
 import javax.swing.JOptionPane;
 
+import dbaccess.DBModelManager;
+import dbaccess.data.Employee;
 import wpOverview.WPOverview;
 import wpWorker.User;
 import functions.WpManager;
@@ -45,24 +47,29 @@ import jdbcConnection.SQLExecuter;
 public class DBChooser {
 
 	/**
-	 * übergibt ein Object von der DBChooserGUI
+	 * Holds the gui-object
 	 */
-	public DBChooserGUI gui;
-	private String lastDbHost = null, lastDbName = null, lastDbIndexPw = null,
-			lastDbUser = null;
+	private DBChooserGUI gui;
+	
+	/**
+	 * last Host the client was connected to.
+	 */
+	private String lastDbHost = null;
+	/**
+	 * Name of the last database the client was connected to.
+	 */
+	private String lastDbName = null;
+	/**
+	 * Password for the id_wbs database of the last host the client was connected to.
+	 */
+	private String lastDbIndexPw = null;
+	/**
+	 * Last username used to login into a database.
+	 */
+	private String lastDbUser = null;
 
 	/**
-	 * Bedeutung: wurde der Cancel Button im Projektebenen Fenster gedrückt?
-	 */
-	// private boolean cancel = false;
-	/**
-	 * Bedeutung: Variable zum Auslesen der Ebenen aus dem Textfeld
-	 */
-	// private String ebenen = "";
-
-	/**
-	 * Konstruktor DBChooser() initialisiert die DBChooserGUI, und beeinhaltet
-	 * die Listener der DBChooserGUI durch die Methode addButtonAction()
+	 * Constructor initializes the DBChooserGUI and the Listeners for it.
 	 */
 	public DBChooser() {
 		loadLastDB();
@@ -71,13 +78,9 @@ public class DBChooser {
 	}
 
 	/**
-	 * next() wird durch das Betätigen des "weiter" Buttons ausgeführt prüft
-	 * ob das Textfeld für den Pfad ausgefüllt ist. Und stellt bei
-	 * erfolgreicher Ausfüllung des Textfeldes eine Verbindung zur MDB her per
-	 * MDBConnect Klasse her und setzt den aktuell eingegeben Pfad. In der
-	 * Methode dbInitial() wird geprüft, ob alle notwendigen Daten in der DB
-	 * vorhanden sind, andernfalls werden diese angelegt. Danach wird der Login
-	 * gestartet.
+	 * This method is called when the "ok"-Button in the GUI is activated.
+	 * It controls the database connection and handles the login. If everything
+	 * is valid the wbs-tool is started.
 	 */
 	public void next() {
 
@@ -131,14 +134,25 @@ public class DBChooser {
 		// save database as last accessed db
 		saveLastDB(host, db, user, indexDbPw);
 
-		// %% get userData
-		User userData = null;
-		
+		// get employee data
+		Employee employee = DBModelManager.getEmployeesModel()
+				.getEmployee(user);
+		if (employee == null) {
+			JOptionPane
+					.showMessageDialog(gui,
+							"Der Benutzer konnte nicht in der Datenbank gefunden werden!");
+			return;
+		}
+
 		// %% Check project-leader
-		if ( pl ){
-			
+		if (pl) {
+
 			// %% Check Semaphore if project-leader
-		}		
+
+		}
+
+		// create user data
+		User userData = null;
 
 		// start WBS-Tool
 		final User threadUser = userData;
@@ -154,6 +168,13 @@ public class DBChooser {
 		gui.dispose();
 	}
 
+	/**
+	 * This method queries the unique id in the id_wbs db for a given dbName
+	 * @param host Host where db is located.
+	 * @param db Database for which the id is required.
+	 * @param indexDbPw Password for the user of the id_wbs db.
+	 * @return Unique id of the given database.
+	 */
 	private String getDatabaseIndex(String host, String db, String indexDbPw) {
 		MySqlConnect.setDbConncetion(host, "id_wbs", "", "idxUser", indexDbPw);
 		try {
@@ -171,6 +192,11 @@ public class DBChooser {
 		}
 	}
 
+	/**
+	 * Tries out the currently used database connection.
+	 * @return Returns true if the connection works. False if otherwise.
+	 * @throws Exception
+	 */
 	private boolean tryConnection() throws Exception {
 		try {
 			// direct use and not use through SQLExecuter to circumvent
@@ -236,9 +262,8 @@ public class DBChooser {
 	}
 
 	/**
-	 * erstellt ein Objekt von DBChooser() und beginnt somit das Programm durch
-	 * Konstruktoraufruf von DBChooser()
-	 * 
+	 * Start of the application.
+	 * Creates a DBChooser objects and therefore starts the login gui.
 	 * @param args
 	 */
 	public static void main(String[] args) {
@@ -271,5 +296,12 @@ public class DBChooser {
 	 */
 	public final String getLastDbUser() {
 		return lastDbUser;
+	}
+	
+	/**
+	 * @return the gui
+	 */
+	public final DBChooserGUI getGui(){
+		return gui;
 	}
 }
