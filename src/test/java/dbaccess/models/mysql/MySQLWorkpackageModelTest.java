@@ -20,14 +20,13 @@
 package dbaccess.models.mysql;
 
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.CoreMatchers.notNullValue;
 
 import dbaccess.data.Workpackage;
 import dbaccess.models.WorkpackageModel;
+import jdbcConnection.SQLExecuter;
 import org.junit.*;
-import sqlutils.TestDBConnector;
 import sqlutils.TestData;
 
 import java.text.ParseException;
@@ -42,7 +41,7 @@ public class MySQLWorkpackageModelTest {
 
     @Before
     public final void setup() {
-        wpModel = new MySQLWorkpackageModel(TestDBConnector.getConnection());
+        wpModel = new MySQLWorkpackageModel();
     }
 
     @After
@@ -101,7 +100,7 @@ public class MySQLWorkpackageModelTest {
 
 
         // change test data back to original state
-        TestData.reloadData(TestDBConnector.getConnection());
+        TestData.reloadData(SQLExecuter.getConnection());
     }
 
     @Test
@@ -257,7 +256,7 @@ public class MySQLWorkpackageModelTest {
         assertThat(wpNew.getEtc(), equalTo(1.5));
 
         // change test data back to original state
-        TestData.reloadData(TestDBConnector.getConnection());
+        TestData.reloadData(SQLExecuter.getConnection());
     }
 
     @Test
@@ -276,7 +275,7 @@ public class MySQLWorkpackageModelTest {
         //assertThat(deletedWP, nullValue());
 
         // change test data back to original state
-        TestData.reloadData(TestDBConnector.getConnection());
+        TestData.reloadData(SQLExecuter.getConnection());
     }
 
 }

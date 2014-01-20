@@ -19,6 +19,8 @@
 
 package dbaccess.models.mysql;
 
+import jdbcConnection.MySqlConnect;
+import jdbcConnection.SQLExecuter;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
@@ -32,13 +34,17 @@ public class MySQLModelsTestSuite {
 
     @BeforeClass
     public static final void setUp() throws Exception {
-        TestDBConnector.openConnection();
-        TestData.reloadData(TestDBConnector.getConnection());
+        MySqlConnect.setDbConncetion("localhost", "mbtest", "", "unittest",
+                "junit411");
+        //TestDBConnector.openConnection();
+        //TestData.reloadData(TestDBConnector.getConnection());
+        TestData.reloadData(SQLExecuter.getConnection());
     }
 
     @AfterClass
     public static final void tearDown() throws Exception {
-        TestDBConnector.closeConnection();
+        //TestDBConnector.closeConnection();
+        //SQLExecuter.closeConnection();
     }
 
 }

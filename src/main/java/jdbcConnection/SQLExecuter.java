@@ -6,18 +6,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 /**
- * Studienprojekt: WBS
- * 
- * Kunde: Pentasys AG, Jens von Gersdorff Projektmitglieder: Andre Paffenholz,
- * Peter Lange, Daniel Metzler, Samson von Graevenitz
- * 
- * Führt SQL-Statements aus. Hält ein Connection-Objekt auf dem SQL-Updates
- * und SQL-Querys ausgeführt werden können.
- * 
- * @author Samson von Graevenitz
- * @version - 0.1 30.11.2010
- */
-/**
  * 
  * Executes SQL statements. Has an connection object which can be used for SQL
  * updates and queries.
@@ -59,14 +47,15 @@ public final class SQLExecuter {
 			// checks if existing connection is still valid.
 			if (openConnection != null) {
 				int reconnectTries = 0;
-				do {
-					if (!openConnection.isValid(VALIDITY_CHECK_TIMEOUT)) {
-						openConnection = null;
-						openConnection = MySqlConnect.getConnection();
-						reconnectTries++;
-					}
-				} while (reconnectTries < RECONNECT_TRIES);
-				if (reconnectTries == RECONNECT_TRIES) {
+
+                while (!openConnection.isValid(VALIDITY_CHECK_TIMEOUT) &&
+                        reconnectTries < RECONNECT_TRIES) {
+                    openConnection = null;
+                    openConnection = MySqlConnect.getConnection();
+                    reconnectTries++;
+                }
+
+				if (reconnectTries >= RECONNECT_TRIES) {
 					// todo close tool
 					return false;
 				}

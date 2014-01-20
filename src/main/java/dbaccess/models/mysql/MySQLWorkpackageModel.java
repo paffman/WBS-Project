@@ -21,6 +21,7 @@ package dbaccess.models.mysql;
 
 import dbaccess.data.Workpackage;
 import dbaccess.models.WorkpackageModel;
+import jdbcConnection.SQLExecuter;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -39,22 +40,9 @@ import java.util.List;
  */
 public class MySQLWorkpackageModel implements WorkpackageModel {
 
-    /**
-     * The MySQL connection to use.
-     */
-    private Connection connection;
-
-    /**
-     * Constructor.
-     *
-     * @param con The MySQL connection to use.
-     */
-    public MySQLWorkpackageModel(final Connection con) {
-        this.connection = con;
-    }
-
     @Override
     public final void addNewWorkpackage(final Workpackage wp) {
+        final Connection connection = SQLExecuter.getConnection();
         final int paramCount = 22;
         PreparedStatement stm = null;
 
@@ -124,6 +112,7 @@ public class MySQLWorkpackageModel implements WorkpackageModel {
 
     @Override
     public final List<Workpackage> getWorkpackage(final boolean onlyLeaves) {
+        final Connection connection = SQLExecuter.getConnection();
         List<Workpackage> wpList = new ArrayList<Workpackage>();
 
         ResultSet sqlResult = null;
@@ -160,6 +149,7 @@ public class MySQLWorkpackageModel implements WorkpackageModel {
     @Override
     public final Workpackage getWorkpackage(final String stringID) {
 
+        final Connection connection = SQLExecuter.getConnection();
         final int projectID = 1;
 
         Workpackage wp = null;
@@ -200,6 +190,7 @@ public class MySQLWorkpackageModel implements WorkpackageModel {
     @Override
     public final List<Workpackage> getWorkpackagesInDateRange(final Date from,
                                                               final Date to) {
+        final Connection connection = SQLExecuter.getConnection();
         final List<Workpackage> wpList = new ArrayList<Workpackage>();
         ResultSet sqlResult = null;
         PreparedStatement stm = null;
@@ -237,6 +228,7 @@ public class MySQLWorkpackageModel implements WorkpackageModel {
 
     @Override
     public final void updateWorkpackage(final Workpackage wp) {
+        final Connection connection = SQLExecuter.getConnection();
         final int paramCount = 21;
         PreparedStatement stm = null;
 
@@ -299,6 +291,7 @@ public class MySQLWorkpackageModel implements WorkpackageModel {
 
     @Override
     public final void deleteWorkpackage(String stringID) {
+        final Connection connection = SQLExecuter.getConnection();
         final int projectID = 1;
 
         PreparedStatement stm = null;
