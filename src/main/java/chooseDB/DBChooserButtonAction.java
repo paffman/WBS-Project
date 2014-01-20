@@ -20,72 +20,77 @@ import javax.swing.JOptionPane;
  */
 public class DBChooserButtonAction {
 
-    /**
-     * The dbChooser which called the Class.
-     */
-    private DBChooser dbChooser;
+	/**
+	 * The dbChooser which called the Class.
+	 */
+	private DBChooser dbChooser;
 
-    /**
-     * Konstruktor
-     * 
-     * @param aDBChooser
-     *            calling DBChooser
-     */
-    public DBChooserButtonAction(final DBChooser aDBChooser) {
-	this.dbChooser = aDBChooser;
-	addButtonAction();
-    }
+	/**
+	 * Konstruktor
+	 * 
+	 * @param aDBChooser
+	 *            calling DBChooser
+	 */
+	public DBChooserButtonAction(final DBChooser aDBChooser) {
+		this.dbChooser = aDBChooser;
+		addButtonAction();
+	}
 
-    /**
-     * void addButtonAction() fügt actionListener zum "Schließen" und "Weiter"
-     * Buttons hinzu fügt actionListener für das Menü hinzu (Weiter, Oeffnen,
-     * Schließen, Info und Hilfe
-     * 
-     * Schließen-Button/Menü: beendet das Programm Weiter-Button/Menü: führt
-     * Methode weiter() aus Oeffnen-Button/Menü: führt Methode oeffnen() aus
-     * Info-Menü: gibt Angaben per JOptionPane über das Projekt aus
-     * Hilfe-Menü: gibt per JOptionPane eine Hilfe für die DBChooserGUI aus
-     */
-    public final void addButtonAction() {
-	dbChooser.getGui().getCloseButton().addActionListener(new ActionListener() {
-	    public void actionPerformed(final ActionEvent e) {
-		System.exit(0);
-	    }
-	});
+	/**
+	 * void addButtonAction() fügt actionListener zum "Schließen" und "Weiter"
+	 * Buttons hinzu fügt actionListener für das Menü hinzu (Weiter, Oeffnen,
+	 * Schließen, Info und Hilfe
+	 * 
+	 * Schließen-Button/Menü: beendet das Programm Weiter-Button/Menü: führt
+	 * Methode weiter() aus Oeffnen-Button/Menü: führt Methode oeffnen() aus
+	 * Info-Menü: gibt Angaben per JOptionPane über das Projekt aus
+	 * Hilfe-Menü: gibt per JOptionPane eine Hilfe für die DBChooserGUI aus
+	 */
+	public final void addButtonAction() {
+		dbChooser.getGui().getCloseButton()
+				.addActionListener(new ActionListener() {
+					public void actionPerformed(final ActionEvent e) {
+						System.exit(0);
+					}
+				});
 
-	dbChooser.getGui().getOkButton().addActionListener(new ActionListener() {
-	    public void actionPerformed(final ActionEvent e) {
-		dbChooser.next();
-	    }
-	});
+		dbChooser.getGui().getOkButton()
+				.addActionListener(new ActionListener() {
+					public void actionPerformed(final ActionEvent e) {
+						dbChooser.next();
+					}
+				});
 
-	dbChooser.getGui().getOkMenuItem().addActionListener(new ActionListener() {
-	    public void actionPerformed(final ActionEvent e) {
-		dbChooser.next();
-	    }
-	});
+		dbChooser.getGui().getOkMenuItem()
+				.addActionListener(new ActionListener() {
+					public void actionPerformed(final ActionEvent e) {
+						dbChooser.next();
+					}
+				});
 
-	dbChooser.getGui().getCloseMenuItem().addActionListener(
-		new ActionListener() {
-		    public void actionPerformed(final ActionEvent e) {
-			System.exit(0);
-		    }
-		});
+		dbChooser.getGui().getCloseMenuItem()
+				.addActionListener(new ActionListener() {
+					public void actionPerformed(final ActionEvent e) {
+						System.exit(0);
+					}
+				});
 
-	dbChooser.getGui().getHelpMenuItem().addActionListener(new ActionListener() {
-	    public void actionPerformed(final ActionEvent arg0) {
-		JOptionPane.showMessageDialog(dbChooser.getGui(),
-			"Geben sie die Zugangsdaten zur Datenbank und "
-				+ "ihren Benutzernamen an. Mit einem "
-				+ "Klick auf Ok gelangen sie dann "
-				+ "in das WBS-Tool.");
-	    }
-	});
+		dbChooser.getGui().getHelpMenuItem()
+				.addActionListener(new ActionListener() {
+					public void actionPerformed(final ActionEvent arg0) {
+						JOptionPane.showMessageDialog(dbChooser.getGui(),
+								"Geben sie die Zugangsdaten zur Datenbank und "
+										+ "ihren Benutzernamen an. Mit einem "
+										+ "Klick auf Ok gelangen sie dann "
+										+ "in das WBS-Tool.");
+					}
+				});
 
-	dbChooser.getGui().getInfoMenuItem().addActionListener(new ActionListener() {
-	    public void actionPerformed(final ActionEvent arg0) {
-		new InfoBox();
-	    }
-	});
-    }
+		dbChooser.getGui().getInfoMenuItem()
+				.addActionListener(new ActionListener() {
+					public void actionPerformed(final ActionEvent arg0) {
+						new InfoBox();
+					}
+				});
+	}
 }
