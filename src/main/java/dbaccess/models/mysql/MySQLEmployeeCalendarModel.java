@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import jdbcConnection.SQLExecuter;
 import dbaccess.data.EmployeeCalendar;
 import dbaccess.models.EmployeeCalendarModel;
 
@@ -41,16 +42,6 @@ public class MySQLEmployeeCalendarModel implements EmployeeCalendarModel {
      * The MySQL connection to use.
      */
     private Connection connection;
-
-    /**
-     * Constructor.
-     * 
-     * @param con
-     *            The MySQL connection to use.
-     */
-    public MySQLEmployeeCalendarModel(Connection connection) {
-        this.connection = connection;
-    }
 
     @Override
     public void addNewEmployeeCalendar(EmployeeCalendar empCal) {

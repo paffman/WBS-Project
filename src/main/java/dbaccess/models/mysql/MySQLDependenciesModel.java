@@ -27,6 +27,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import jdbcConnection.SQLExecuter;
 import dbaccess.data.Dependency;
 import dbaccess.models.DependenciesModel;
 
@@ -41,15 +42,6 @@ public class MySQLDependenciesModel implements DependenciesModel {
      * The MySQL connection to use.
      */
     private Connection connection;
-
-    /**
-     * Constructor.
-     *
-     * @param con The MySQL connection to use.
-     */
-    public MySQLDependenciesModel(Connection connection) {
-        this.connection = connection;
-    }
 
     @Override
     public void addNewDependency(Dependency dependency) {

@@ -27,6 +27,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import jdbcConnection.SQLExecuter;
 import dbaccess.data.Conflict;
 import dbaccess.models.ConflictsModel;
 
@@ -41,16 +42,6 @@ public class MySQLConflictsModel implements ConflictsModel {
      * The MySQL connection to use.
      */
     private Connection connection;
-
-    /**
-     * Constructor.
-     *
-     * @param con The MySQL connection to use.
-     */
-    public MySQLConflictsModel(Connection connection) {
-        connection=SQLExecuter.getConnection();
-        this.connection = connection;
-    }
 
     @Override
     public void addNewConflict(Conflict conflict) {

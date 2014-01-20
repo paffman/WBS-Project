@@ -26,6 +26,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import jdbcConnection.SQLExecuter;
 import dbaccess.data.AnalyseData;
 import dbaccess.models.AnalyseDataModel;
 
@@ -41,15 +42,6 @@ public class MySQLAnalyseDataModel implements AnalyseDataModel {
      * The MySQL connection to use.
      */
     private Connection connection;
-
-    /**
-     * Constructor.
-     *
-     * @param con The MySQL connection to use.
-     */
-    public MySQLAnalyseDataModel(Connection connection) {
-        this.connection = connection;
-    }
 
     @Override
     public void addNewAnalyseData(AnalyseData data) {

@@ -3,6 +3,7 @@ package dbaccess.models.mysql;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import jdbcConnection.MySqlConnect;
 
 import org.junit.After;
 import org.junit.Before;
@@ -17,7 +18,7 @@ public class MySQLAnalyseDataModelTest {
 
     @Before
     public final void setup() {
-        adModel=new MySQLAnalyseDataModel(TestDBConnector.getConnection());
+        adModel=new MySQLAnalyseDataModel();
     }
     
     @After

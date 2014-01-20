@@ -26,6 +26,8 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import jdbcConnection.MySqlConnect;
+import jdbcConnection.SQLExecuter;
 import dbaccess.data.Employee;
 import dbaccess.models.EmployeesModel;
 
@@ -41,20 +43,9 @@ public class MySQLEmployeesModel implements EmployeesModel {
      */
     private Connection connection;
 
-    /**
-     * Constructor.
-     * 
-     * @param con
-     *            The MySQL connection to use.
-     */
-    public MySQLEmployeesModel(Connection connection) {
-        this.connection = connection;
-    }
-
     @Override
     public void addNewEmployee(Employee employee) {
-        // TODO: siehe db_name und "testhost"... wie wird das übergeben????
-        // passwort wird zudem nicht richtig gesetzt
+        // TODO: passwort wird nicht richtig gesetzt
         connection=SQLExecuter.getConnection();
         try {
             Statement stm = connection.createStatement();
@@ -138,7 +129,6 @@ public class MySQLEmployeesModel implements EmployeesModel {
         return null;
     }
 
-    //TODO: siehe wie oben: was ist mit db_name????
     @Override
     public void updateEmployee(Employee employee) {
         connection=SQLExecuter.getConnection();

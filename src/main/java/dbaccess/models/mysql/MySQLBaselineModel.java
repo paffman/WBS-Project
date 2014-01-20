@@ -27,6 +27,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import jdbcConnection.SQLExecuter;
 import dbaccess.data.Baseline;
 import dbaccess.models.BaselineModel;
 
@@ -41,15 +42,6 @@ public class MySQLBaselineModel implements BaselineModel {
      * The MySQL connection to use.
      */
     private Connection connection;
-
-    /**
-     * Constructor.
-     *
-     * @param con The MySQL connection to use.
-     */
-    public MySQLBaselineModel(Connection connection) {
-        this.connection = connection;
-    }
 
     @Override
     public void addNewBaseline(Baseline line) {
