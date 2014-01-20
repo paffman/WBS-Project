@@ -18,17 +18,23 @@ dependencies {
 
     // dependencies for our tests
     testCompile group: 'junit', name: 'junit', version: '4.11'
+
+    // dependencies needed at runtime
+    runtime group: 'mysql', name: 'mysql-connector-java', version: '5.1.28'
 }
 
 // main application class
-mainClassName = "chooseDB.DBChooser"
+mainClassName = 'chooseDB.DBChooser'
+
+// test task configuration
+test {
+    // tests in this package are executed via the test suite
+    exclude 'dbaccess/models/mysql/*Test.class'
+}
 
 // checkstyle configurations
 tasks.withType(Checkstyle) {
     ignoreFailures = true
-    /*configProperties = [
-        'checkstyle.suppressions.file': 'config/checkstyle/suppressions.xml'
-    ]*/
 }
 
 task csReport (dependsOn: [checkstyleMain, checkstyleTest]) << {

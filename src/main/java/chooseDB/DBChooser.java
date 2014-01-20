@@ -1,50 +1,42 @@
 package chooseDB;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
-import javax.swing.*;
-import javax.swing.filechooser.FileFilter;
+import javax.swing.JOptionPane;
 
+import dbaccess.DBModelManager;
+import dbaccess.data.Employee;
+import wpOverview.WPOverview;
+import wpWorker.User;
 import functions.WpManager;
-import globals.Controller;
-import globals.Workpackage;
-
-
-import jdbcConnection.MDBConnect;
+import globals.Loader;
+import jdbcConnection.MySqlConnect;
 import jdbcConnection.SQLExecuter;
-import login.Login;
 
 /**
- * Studienprojekt:	WBS
+ * Studienprojekt: WBS
  * 
- * Kunde:				Pentasys AG, Jens von Gersdorff
- * Projektmitglieder:	Andre Paffenholz, 
- * 						Peter Lange, 
- * 						Daniel Metzler,
- * 						Samson von Graevenitz
- *
- * Studienprojekt:	PSYS WBS 2.0<br/>
+ * Kunde: Pentasys AG, Jens von Gersdorff Projektmitglieder: Andre Paffenholz,
+ * Peter Lange, Daniel Metzler, Samson von Graevenitz
  * 
- * Kunde:		Pentasys AG, Jens von Gersdorff<br/>
- * Projektmitglieder:	<br/>
- *			Michael Anstatt,<br/>
- *			Marc-Eric Baumgärtner,<br/>
- *			Jens Eckes,<br/>
- *			Sven Seckler,<br/>
- *			Lin Yang<br/>
- *
+ * Studienprojekt: PSYS WBS 2.0<br/>
+ * 
+ * Kunde: Pentasys AG, Jens von Gersdorff<br/>
+ * Projektmitglieder: <br/>
+ * Michael Anstatt,<br/>
+ * Marc-Eric Baumgärtner,<br/>
+ * Jens Eckes,<br/>
+ * Sven Seckler,<br/>
+ * Lin Yang<br/>
+ * 
  * Ruft die DBChooserGUI auf<br/>
  * setzt nach der Pfadeingabe den Pfad in der MDBConnect Klasse<br/>
  * 
@@ -55,286 +47,214 @@ import login.Login;
 public class DBChooser {
 
 	/**
-	 * übergibt ein Object von der DBChooserGUI
+	 * Holds the gui-object
 	 */
-	public DBChooserGUI gui;
+	private DBChooserGUI gui;
+	
 	/**
-	 * Bedeutung: wurde der Cancel Button im Projektebenen Fenster gedrückt?
+	 * last Host the client was connected to.
 	 */
-	private boolean cancel = false;
+	private String lastDbHost = null;
 	/**
-	 * Bedeutung: Variable zum Auslesen der Ebenen aus dem Textfeld
+	 * Name of the last database the client was connected to.
 	 */
-	private String ebenen = "";
+	private String lastDbName = null;
+	/**
+	 * Password for the id_wbs database of the last host the client was connected to.
+	 */
+	private String lastDbIndexPw = null;
+	/**
+	 * Last username used to login into a database.
+	 */
+	private String lastDbUser = null;
 
 	/**
-	 * Konstruktor DBChooser() initialisiert die DBChooserGUI, und beeinhaltet die Listener der DBChooserGUI durch die Methode addButtonAction()
+	 * Constructor initializes the DBChooserGUI and the Listeners for it.
 	 */
 	public DBChooser() {
-		gui = new DBChooserGUI();
+		loadLastDB();
+		gui = new DBChooserGUI(this);
 		new DBChooserButtonAction(this);
-
 	}
 
 	/**
-	 * next() wird durch das Betätigen des "weiter" Buttons ausgeführt prüft ob das Textfeld für den Pfad ausgefüllt ist. Und stellt bei erfolgreicher
-	 * Ausfüllung des Textfeldes eine Verbindung zur MDB her per MDBConnect Klasse her und setzt den aktuell eingegeben Pfad. In der Methode dbInitial() wird
-	 * geprüft, ob alle notwendigen Daten in der DB vorhanden sind, andernfalls werden diese angelegt. Danach wird der Login gestartet.
+	 * This method is called when the "ok"-Button in the GUI is activated.
+	 * It controls the database connection and handles the login. If everything
+	 * is valid the wbs-tool is started.
 	 */
 	public void next() {
-		cancel = false;
-		if (gui.cobDBAuswahl.getSelectedItem().equals("")) {
-			JOptionPane.showMessageDialog(gui, "Bitte geben Sie einen Pfad an!");
-		} else if (!gui.cobDBAuswahl.getSelectedItem().equals("") && !gui.cobDBAuswahl.getSelectedItem().toString().endsWith(".mdb")) {
-			JOptionPane.showMessageDialog(gui, "Bitte nur *.mdb Dateien verwenden!");
-		} else {
-			saveToHistory(gui.cobDBAuswahl.getSelectedItem().toString());
-			MDBConnect.setPathDB(gui.cobDBAuswahl.getSelectedItem().toString());
-			dbInitial();
-			if (!cancel) {
-				gui.dispose();
-				new Login();
-			}
+
+		// get input from gui
+		String host = gui.getHostField().getText();
+		String db = gui.getDbNameField().getText();
+		String user = gui.getUserField().getText();
+		String indexDbPw = new String(gui.getDbPwPasswordField().getPassword());
+		String userPw = new String(gui.getPwPasswordField().getPassword());
+		Boolean pl = gui.getPlCheckBox().isSelected();
+
+		// check input
+		if (host.equals("")) {
+			JOptionPane.showMessageDialog(gui, "Bitte einen Host eintragen!");
+			return;
+		}
+		if (db.equals("")) {
+			JOptionPane.showMessageDialog(gui,
+					"Bitte einen Datenbanknamen eintragen!");
+			return;
+		}
+		if (user.equals("")) {
+			JOptionPane.showMessageDialog(gui,
+					"Bitte einen Benutzer eintragen!");
+			return;
 		}
 
-	}
+		// get index of database
+		String dbIndex = getDatabaseIndex(host, db, indexDbPw);
+		if (dbIndex == null) {
+			return;
+		}
 
-	/**
-	 * Kopiert die leere Datenbank und gibt ihr den Namen welcher als Projekt-Name angegeben wurde, zusätlich werden die notwendigen Daten in die Datenbank
-	 * kopiert, z. B.: Projekt: Das Projekt Default-Mitarbeiter: Leiter (PW: 1234, Projektleiterberechtigung) Default-AP: ID 0.0.0.x
-	 */
-	public void dbInitial() {
-		int myEbenen = 0;
-		String projname = "";
-		Date projectStart = null;
-
-		ResultSet rsProjekt = SQLExecuter.executeQuery("SELECT * FROM Projekt");
+		// test connection
+		MySqlConnect.setDbConncetion(host, db, dbIndex, dbIndex + "_" + user,
+				userPw);
 		try {
-			if (!rsProjekt.next()) {
-				boolean gueltig = false;
-				while (!gueltig) {
-					projname = JOptionPane.showInputDialog(null, "Geben Sie den Projektnamen an.", "Projektname", JOptionPane.PLAIN_MESSAGE);
-					ebenen = JOptionPane.showInputDialog(null, "Geben Sie die Maximale Ebenenanzahl an.", "Anzahl Projektebenen", JOptionPane.PLAIN_MESSAGE);
-
-					while (projectStart == null) {
-						try {
-							projectStart = Controller.DATE_DAY.parse(JOptionPane.showInputDialog(null,
-									"Geben Sie das geplante Projektstartdatum in der form dd.mm.yyyy an.", "Startdatum", JOptionPane.PLAIN_MESSAGE));
-						} catch (Exception e) {
-							JOptionPane.showMessageDialog(null, "Falsches Datumsformat", "Bitte geben Sie das Startdatum in der Form dd.mm.yyyy an!", JOptionPane.ERROR_MESSAGE);
-						}
-					}
-
-					// Kein leerer Projektname erlaubt, wenn leer oder nach Cancel wird Programm geschlossen
-					if (projname == null || projname.equals("")) {
-						System.out.println("Durch Benutzer abgebrochen");
-						System.exit(0);
-					} else {
-						if (ebenen != null) {
-							try {
-								int anz = Integer.valueOf(ebenen).intValue();
-								if (anz > 3) {
-									gueltig = true;
-								} else {
-									JOptionPane.showMessageDialog(null, "Mindestens 4 Ebenen", "Es müssen mindestens 4 Ebenen angelegt werden.",
-											JOptionPane.ERROR_MESSAGE);
-								}
-							} catch (NumberFormatException e) {
-								JOptionPane.showMessageDialog(null, "Bitte geben sie eine gültige Zahl an!", "Anzahl Projektebenen", JOptionPane.ERROR_MESSAGE);
-							}
-						} else {
-							gueltig = true;
-							cancel = true;
-						}
-					}
-				}
+			if (!tryConnection()) {
+				JOptionPane.showMessageDialog(gui,
+						"Verbindung konnte nicht aufgebaut werden!");
+				return;
 			}
-			rsProjekt.close();
-		} catch (SQLException e1) {
-			e1.printStackTrace();
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(
+					gui,
+					"Verbindung konnte nicht aufgebaut werden! Exception: "
+							+ e.toString());
+			return;
 		}
-		if (ebenen != null && projname != null && !projname.equals("")) {
-			// Kopiert die leere MDB und ändern den Namen
-			copyAndRename(MDBConnect.getPathDB(), projname);
-			ResultSet rsMitarbeiter = SQLExecuter.executeQuery("SELECT * FROM Mitarbeiter");
-			try {
-				if (!rsMitarbeiter.next()) {
-					rsMitarbeiter.moveToInsertRow();
-					rsMitarbeiter.updateString("Login", "Leiter");
-					rsMitarbeiter.updateString("Vorname", "DO NOT");
-					rsMitarbeiter.updateString("Name", "USE");
-					rsMitarbeiter.updateInt("Berechtigung", 1);
-					rsMitarbeiter.updateString("Passwort", "1234");
-					rsMitarbeiter.updateDouble("Tagessatz", 100);
-					rsMitarbeiter.insertRow();
-					System.out.println("Leiter wurde angelegt \n User: Leiter\nPasswort: 1234");
-				}
-				rsMitarbeiter.close();
-			} catch (SQLException e1) {
-				e1.printStackTrace();
-			}
 
-			rsProjekt = SQLExecuter.executeQuery("SELECT * FROM Projekt");
-			try {
-				if (!rsProjekt.next()) {
+		// save database as last accessed db
+		saveLastDB(host, db, user, indexDbPw);
 
-					myEbenen = Integer.parseInt(ebenen);
-					rsProjekt.moveToInsertRow();
-					rsProjekt.updateString("FID_Leiter", "Leiter");
-					rsProjekt.updateString("Name", projname);
-					rsProjekt.updateInt("Ebenen", Integer.parseInt(ebenen));
-					rsProjekt.insertRow();
-					System.out.println("Projekt wurde angelegt");
-				}
-				rsProjekt.close();
-			} catch (SQLException e1) {
-				e1.printStackTrace();
-			}
+		// get employee data
+		Employee employee = DBModelManager.getEmployeesModel()
+				.getEmployee(user);
+		if (employee == null) {
+			JOptionPane
+					.showMessageDialog(gui,
+							"Der Benutzer konnte nicht in der Datenbank gefunden werden!");
+			return;
+		}
 
-			String nullen = "0";
-				for (int i = 4; i < myEbenen; i++) {
-					nullen += ".0";
-				}
+		// %% Check project-leader
+		if (pl) {
+
+			// %% Check Semaphore if project-leader
+
+		}
+
+		// create user data
+		User userData = null;
+
+		// start WBS-Tool
+		final User threadUser = userData;
+		Thread loader = new Thread() {
+			public void run() {
+				Loader splashScreen = new Loader(gui);
 				WpManager.loadDB();
-			if(WpManager.getAllAp().size() == 0) {					
-				Workpackage rootAp = new Workpackage(0, 0, 0, nullen, projname, "Projekt", 1.0, 0.0, 0, 0, 0, 0, 0, 0, 0, 0, null, true, false, "Leiter", new ArrayList<String>(), null, projectStart, null);
-				WpManager.insertAP(rootAp);
+				new WPOverview(threadUser, gui);
+				splashScreen.dispose();
 			}
-			try {
-					ResultSet rsAPZuweisung = SQLExecuter.executeQuery("SELECT * FROM Paketzuweisung");
-					rsAPZuweisung.moveToInsertRow();
-					rsAPZuweisung.updateInt("FID_Proj", 1);
-					rsAPZuweisung.updateInt("FID_LVL1ID", 0);
-					rsAPZuweisung.updateInt("FID_LVL2ID", 0);
-					rsAPZuweisung.updateInt("FID_LVL3ID", 0);
-					rsAPZuweisung.updateString("FID_LVLxID", nullen);
-					rsAPZuweisung.updateString("FID_Ma", "Leiter");
-					rsAPZuweisung.insertRow();
-					rsAPZuweisung.close();
-					System.out.println("AP wurde angelegt");
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
+		};
+		loader.start();
+		gui.dispose();
 	}
 
 	/**
-	 * void open() wird durch das Betätigen des "öffnen" Buttons ausgeführt erstellt einen JFileChooser in der der Benutzer eine MDB-Datei auf seinem
-	 * Filesystem auswählen kann diese schreibt wird dann in das Textfeld für die Pfadangabe geschrieben
+	 * This method queries the unique id in the id_wbs db for a given dbName
+	 * @param host Host where db is located.
+	 * @param db Database for which the id is required.
+	 * @param indexDbPw Password for the user of the id_wbs db.
+	 * @return Unique id of the given database.
 	 */
-	public void open() {
-		gui.fileIn = new JFileChooser(".");
-		gui.fileIn.setFileFilter(new FileFilter() {
-
-			public String getDescription() {
-				return "MDB's";
-			}
-
-			public boolean accept(File f) {
-				if (f.isDirectory()) return true;
-				return f.getName().toLowerCase().endsWith(".mdb");
-			}
-		});
-		gui.fileIn.setMultiSelectionEnabled(false);
-		if (gui.fileIn.showOpenDialog(gui) == JFileChooser.APPROVE_OPTION) {
-			String file = gui.fileIn.getSelectedFile().toString();
-			gui.cobDBAuswahl.setSelectedItem(file);
-		}
-	}
-
-	/**
-	 * Kopiert die leere MDB und ändern deren Namen in den angegebenen Projektnamen wenn bereits eine Datei mit dem Namen besteht, wird fortlaufend in Klammern
-	 * die Anzahl der gleichnamigen Dateien hochgezählt
-	 * 
-	 * @param dbPath - Pfad zur MDB-Datenbank
-	 * @param projname - Projektname
-	 */
-	public void copyAndRename(String dbPath, String projname) {
-		String infile = dbPath.subSequence(4, dbPath.length()) + "";
-		String outfile = dbPath.subSequence(4, dbPath.lastIndexOf("/") + 1) + projname + ".mdb";
-		System.out.println(infile);
-		System.out.println(outfile);
-		File outFile = new File(outfile);
-		int i = 0;
-		while (outFile.isFile()) {
-			i++;
-			outfile = outfile.subSequence(0, outfile.lastIndexOf(".")) + "(" + i + ").mdb";
-			outFile = new File(outfile);
-		}
+	private String getDatabaseIndex(String host, String db, String indexDbPw) {
+		MySqlConnect.setDbConncetion(host, "id_wbs", "", "idxUser", indexDbPw);
 		try {
-			FileInputStream in = new FileInputStream(infile);
-			FileOutputStream out = new FileOutputStream(outfile);
-			byte[] c = new byte[4096];
-			while (in.available() > 0) {
-				in.read(c);
-				out.write(c);
-			}
-			in.close();
+			ResultSet rslt = SQLExecuter
+					.executeQuery("call db_identifier_select_by_dbname('" + db
+							+ "');");
+			rslt.next();
+			return rslt.getString("id");
+		} catch (SQLException e) {
+			JOptionPane
+					.showMessageDialog(
+							gui,
+							"Verbindung konnte nicht aufgebaut werden! Es wurde kein Index-Eintrag f�r die Datenbank gefunden.");
+			return null;
+		}
+	}
+
+	/**
+	 * Tries out the currently used database connection.
+	 * @return Returns true if the connection works. False if otherwise.
+	 * @throws Exception
+	 */
+	private boolean tryConnection() throws Exception {
+		try {
+			// direct use and not use through SQLExecuter to circumvent
+			// Exception Handling
+			Connection c = MySqlConnect.getConnection();
+			Statement stmt = c.createStatement(
+					ResultSet.TYPE_SCROLL_INSENSITIVE,
+					ResultSet.CONCUR_READ_ONLY);
+			stmt.executeQuery("call project_select()");
+			return true;
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	/**
+	 * saveLastDB: writes the login data, except the user password, into a file,
+	 * which is loaded on the next startup.
+	 * 
+	 * @param host
+	 *            host of the database.
+	 * @param db
+	 *            name of the database.
+	 * @param user
+	 *            user of the database, without database index pr�fix.
+	 * @param indexPw
+	 *            password for the index database.
+	 */
+	private void saveLastDB(final String host, final String db,
+			final String user, final String indexPw) {
+		File dbConfig = new File("DbConfig.txt");
+		try {
+			PrintWriter out = new PrintWriter(dbConfig);
+			out.println(host);
+			out.println(db);
+			out.println(indexPw);
+			out.println(user);
 			out.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		JOptionPane.showMessageDialog(gui, "Es wurde eine neue DB-File angelegt\n" + outfile);
-		saveToHistory(outfile.replace("/", "\\"));
-		MDBConnect.setPathDB(outfile);
+
 	}
 
 	/**
-	 * füllt die ComboBox mit Pfaden zu bereits bekannten MDBs
+	 * loadLastDB(): loads the data of the last used db into the data elements
+	 * of this class.
 	 */
-	public void fillCobDB() {
-		File dbPaths = new File("DBHistory.txt");
-		if (!dbPaths.canRead()) {
+	private void loadLastDB() {
+		File dbConfig = new File("DbConfig.txt");
+		if (dbConfig.canRead()) {
 			try {
-				FileWriter out = new FileWriter(dbPaths);
-				File wbsEmpty = new File("WBS_leer.mdb");
-				if (wbsEmpty.exists()) {
-					out.write("\n" + wbsEmpty.getAbsolutePath() + "\n");
-				} else {
-					out.write("\n");
-				}
-				out.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		try {
-			BufferedReader in = new BufferedReader(new FileReader("DBHistory.txt"));
-			while (in.ready()) {
-				gui.cobDBAuswahl.addItem(in.readLine());
-			}
-			in.close();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		System.out.println(dbPaths.canRead());
-	}
-
-	/**
-	 * speichert noch nicht bekannte MDB-Pfade in die Datei DBHistory.txt
-	 * 
-	 * @param str - Pfad zur DB
-	 */
-	public void saveToHistory(String str) {
-		File dbPaths = new File("DBHistory.txt");
-		if (dbPaths.canRead()) {
-			try {
-				BufferedReader in = new BufferedReader(new FileReader(dbPaths));
-				while (in.ready()) {
-					if (in.readLine().equals(str)) {
-						in.close();
-						return;
-					}
-				}
+				BufferedReader in = new BufferedReader(new FileReader(dbConfig));
+				this.lastDbHost = in.readLine();
+				this.lastDbName = in.readLine();
+				this.lastDbIndexPw = in.readLine();
+				this.lastDbUser = in.readLine();
 				in.close();
-				BufferedWriter out = new BufferedWriter(new FileWriter(dbPaths, true));
-				out.write(str);
-				out.newLine();
-				out.flush();
-				out.close();
-				System.out.println(str);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -342,11 +262,46 @@ public class DBChooser {
 	}
 
 	/**
-	 * erstellt ein Objekt von DBChooser() und beginnt somit das Programm durch Konstruktoraufruf von DBChooser()
-	 * 
+	 * Start of the application.
+	 * Creates a DBChooser objects and therefore starts the login gui.
 	 * @param args
 	 */
 	public static void main(String[] args) {
 		new DBChooser();
+	}
+
+	/**
+	 * @return the lastDbHost
+	 */
+	public final String getLastDbHost() {
+		return lastDbHost;
+	}
+
+	/**
+	 * @return the lastDbName
+	 */
+	public final String getLastDbName() {
+		return lastDbName;
+	}
+
+	/**
+	 * @return the lastDbIndexPw
+	 */
+	public final String getLastDbIndexPw() {
+		return lastDbIndexPw;
+	}
+
+	/**
+	 * @return the lastDbUser
+	 */
+	public final String getLastDbUser() {
+		return lastDbUser;
+	}
+	
+	/**
+	 * @return the gui
+	 */
+	public final DBChooserGUI getGui(){
+		return gui;
 	}
 }

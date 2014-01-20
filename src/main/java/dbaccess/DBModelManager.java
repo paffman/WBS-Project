@@ -1,5 +1,5 @@
 /*
-* The WBS-­Tool is a project managment tool combining the Work Breakdown
+* The WBS�Tool is a project management tool combining the Work Breakdown
 * Structure and Earned Value Analysis
 * Copyright (C) 2013 FH-­Bingen
 *
@@ -38,11 +38,13 @@ import dbaccess.models.WorkpackageModel;
  */
 public class DBModelManager {
    
+	private DBModelManager(){};
+	
     /**
      * This method provide the analyse data model.
      * @return Returns the actual analyse data model.
      */
-    public AnalyseDataModel getAnalyseDataModel(){
+    public static AnalyseDataModel getAnalyseDataModel(){
         return null;
     }
     
@@ -50,7 +52,7 @@ public class DBModelManager {
      * This method provide the baseline model.
      * @return Returns the actual baseline model.
      */
-    public BaselineModel getBaselineModel(){
+    public static BaselineModel getBaselineModel(){
         return null;
     }
     
@@ -58,7 +60,7 @@ public class DBModelManager {
      * This method provide the conflicts model.
      * @return Returns the actual conflicts model.
      */
-    public ConflictsModel getConflictsModel(){
+    public static ConflictsModel getConflictsModel(){
         return null;
     }
     
@@ -66,7 +68,7 @@ public class DBModelManager {
      * This method provide the dependencies model.
      * @return Returns the actual dependencies model.
      */
-    public DependenciesModel getDependenciesModel(){
+    public static DependenciesModel getDependenciesModel(){
         return null;
     }
     
@@ -74,7 +76,7 @@ public class DBModelManager {
      * This method provide the employee calendar model.
      * @return Returns the actual employee calendar model.
      */
-    public EmployeeCalendarModel getEmployeeCalendarModel(){
+    public static EmployeeCalendarModel getEmployeeCalendarModel(){
         return null;
     }
     
@@ -82,7 +84,7 @@ public class DBModelManager {
      * This method provide the employees model.
      * @return Returns the actual employees model.
      */
-    public EmployeesModel getEmployeesModel(){
+    public static EmployeesModel getEmployeesModel(){
         return null;
     }
     
@@ -90,7 +92,7 @@ public class DBModelManager {
      * This method provide the holiday calendar model.
      * @return Returns the actual holiday calendar model.
      */
-    public HolidaysCalendarModel getHolidaysCalendarModel(){
+    public static HolidaysCalendarModel getHolidaysCalendarModel(){
         return null;
     }
     
@@ -98,7 +100,7 @@ public class DBModelManager {
      * This method provide the planned value model.
      * @return Returns the actual planned value model.
      */
-    public PlannedValueModel getPlannedValueModel(){
+    public static PlannedValueModel getPlannedValueModel(){
         return null;
     }
     
@@ -106,7 +108,7 @@ public class DBModelManager {
      * This method provide the project model.
      * @return Returns the actual project model.
      */
-    public ProjectModel getProjectModel(){
+    public static ProjectModel getProjectModel(){
         return null;
     }
     
@@ -114,7 +116,7 @@ public class DBModelManager {
      * This method provide the semaphore model.
      * @return Returns the actual semaphore data model.
      */
-    public SemaphoreModel getSemaphoreModel(){
+    public static SemaphoreModel getSemaphoreModel(){
         return null;
     }
     
@@ -122,7 +124,7 @@ public class DBModelManager {
      * This method provide the work effort model.
      * @return Returns the actual work effort model.
      */
-    public WorkEffortModel getWorkEffortModel(){
+    public static WorkEffortModel getWorkEffortModel(){
         return null;
     }
     
@@ -130,7 +132,7 @@ public class DBModelManager {
      * This method provide the workpackage allocation model.
      * @return Returns the actual workpackage allocation model.
      */
-    public WorkpackageAllocationModel getWorkpackageAllocationModel(){
+    public static WorkpackageAllocationModel getWorkpackageAllocationModel(){
         return null;
     }
     
@@ -138,7 +140,7 @@ public class DBModelManager {
      * This method provide the workpackage model.
      * @return Returns the actual workpackage data model.
      */
-    public WorkpackageModel getWorkpackageModel(){
+    public static WorkpackageModel getWorkpackageModel(){
         return null;
     }
 }

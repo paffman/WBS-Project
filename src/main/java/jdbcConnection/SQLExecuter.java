@@ -1,125 +1,161 @@
-
 package jdbcConnection;
-import java.sql.*;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 /**
- * Studienprojekt:	WBS
+ * Studienprojekt: WBS
  * 
- * Kunde:				Pentasys AG, Jens von Gersdorff
- * Projektmitglieder:	Andre Paffenholz, 
- * 						Peter Lange, 
- * 						Daniel Metzler,
- * 						Samson von Graevenitz
+ * Kunde: Pentasys AG, Jens von Gersdorff Projektmitglieder: Andre Paffenholz,
+ * Peter Lange, Daniel Metzler, Samson von Graevenitz
  * 
- * Führt SQL-Statements aus.
- * Hält ein Connection-Objekt auf dem SQL-Updates und SQL-Querys
- * ausgeführt werden können.
+ * F�hrt SQL-Statements aus. H�lt ein Connection-Objekt auf dem SQL-Updates
+ * und SQL-Querys ausgef�hrt werden k�nnen.
  * 
  * @author Samson von Graevenitz
  * @version - 0.1 30.11.2010
  */
-public class SQLExecuter {
+/**
+ * 
+ * Executes SQL statements. Has an connection object which can be used for SQL
+ * updates and queries.
+ * 
+ * @author Hendrik Mainzer
+ * 
+ */
+public final class SQLExecuter {
 
-	//Datenelement fürs Konnektor-Objekt
-	private static Connection theConn = null; 
-	
 	/**
-	 * Default-Konstruktor 
+	 * holds an opened connection.
 	 */
-	public SQLExecuter(){
+	private static Connection openConnection = null;
+
+	/**
+	 * timeout in seconds for checking validity of a connection.
+	 */
+	private static final int VALIDITY_CHECK_TIMEOUT = 3;
+
+	/**
+	 * count of tries to reconnect lost connection.
+	 */
+	private static final int RECONNECT_TRIES = 3;
+
+	/**
+	 * private default constructor.
+	 */
+	private SQLExecuter() {
 	}
-	
+
 	/**
-	 * Stellt die Verbindung zur MDB her und speichert das Connection-Objekt
-	 *
-	 * @exception Exception Es wird ein Fehler verursacht, falls die Verbindung fehlschägt.
-	 * Dabei wird "no Connection" auf der Konsole ausgegeben
+	 * Opens a connection to the DB.
+	 * 
+	 * @return returns true if connection is established.
 	 */
-	private static void getConnection(){
-		try{
-		if(theConn == null) {
-			theConn = MDBConnect.getConnection();
-		}
-			
-		}catch(Exception e){
-			System.out.println("no Connection");
-			
-		}
-	}
-	
-	/**
-	 * Schließt die Verbindung zur MDB
-	 */
-	public static void closeConnection(){
-		try{
-			if(theConn != null) {
-				theConn.close();
+	private static boolean openConnection() {
+		try {
+
+			// checks if existing connection is still valid.
+			if (openConnection != null) {
+				int reconnectTries = 0;
+				do {
+					if (!openConnection.isValid(VALIDITY_CHECK_TIMEOUT)) {
+						openConnection = null;
+						openConnection = MySqlConnect.getConnection();
+						reconnectTries++;
+					}
+				} while (reconnectTries < RECONNECT_TRIES);
+				if (reconnectTries == RECONNECT_TRIES) {
+					// todo close tool
+					return false;
+				}
 			}
-		}catch(SQLException e){
-            e.printStackTrace();
-        }
-		theConn = null;
+
+			// open connection
+			if (openConnection == null) {
+				openConnection = MySqlConnect.getConnection();
+			}
+		} catch (Exception e) {
+			System.err.println("no Connection");
+		}
+		return openConnection != null;
 	}
-	
+
 	/**
-	 * Führt ein SQL-Statement aus - welches kein ResultSet benötigt
-	 * z.B. CREATE TABLE, INSERT INTO
-	 * @param sql SQL Statement als String
+	 * Closes the connection to the db.
 	 */
-	public static void executeUpdate(String sql) throws SQLException{
-		getConnection();
+	public static void closeConnection() {
+		try {
+			if (openConnection != null) {
+				if (openConnection.isValid(VALIDITY_CHECK_TIMEOUT)) {
+					openConnection.close();
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		openConnection = null;
+	}
+
+	/**
+	 * @param sql
+	 *            SQL Statement as String
+	 * @throws SQLException
+	 *             an SQLException
+	 */
+	public static void executeUpdate(final String sql) throws SQLException {
+		if (!openConnection()) {
+			return;
+		}
 		Statement stmt;
 		try {
-			stmt = theConn.createStatement();
-			//stmt = theConn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			stmt = openConnection.createStatement();
 			stmt.executeUpdate(sql);
-			theConn.commit();
+			openConnection.commit();
 			stmt.close();
 		} catch (SQLException e) {
-			/*
-			 * Falls ein Arbeitspaket gelöscht wird und die Kaskadierung dies Verhindert,
-			 * so wird eine entsprechende SQLException geworfen. Diese wird abgefangen und der Fehler wird
-			 * an die WPOverview durchgereicht, wo er dann verarbeitet wird.
-			 * 
-			 * Bei anderen Exceptions soll der Fehler nach wie vor ausgegeben werden.
-			 */
-			
-			if(e.getErrorCode() == -1612){
+			if (e.getErrorCode() == -1612) {
 				throw new SQLException(e);
-			}
-			else{
-//				e.printStackTrace();
+			} else {
 				throw e;
 			}
-		}finally{
-//			closeConnection();
 		}
 	}
-	
-	
 
 	/**
-	 * Führt ein SQL-Statement aus, das ein ResultSet zurückgibt z.B.:	SELECT FROM
+	 * Executes the given query on the database.
 	 * 
-	 * @param sql SQL Statement als String
-	 * @return liefert ein ResultSet zurück
-	 * 
-	 * @exception Exception ein leeres ResultSet wird zurückgegeben und die Fehlermeldung ausgegeben
-	 * 
+	 * @param sql
+	 *            SQL Statement as String
+	 * @return returns a read only ResultSet
 	 */
-    public static ResultSet executeQuery(String sql){
-        getConnection();
-        Statement stmt;
-        ResultSet rs;
-        try {
-            stmt = theConn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
-            rs = stmt.executeQuery(sql);
-            return rs;
-        } catch (SQLException e) {
-            e.printStackTrace();
-//            this.closeConnection();
-        }
-        return null;
-    }
+	public static ResultSet executeQuery(final String sql) {
+		if (!openConnection()) {
+			return null;
+		}
+		Statement stmt;
+		ResultSet rs;
+		try {
+			stmt = openConnection.createStatement(
+					ResultSet.TYPE_SCROLL_INSENSITIVE,
+					ResultSet.CONCUR_READ_ONLY);
+			rs = stmt.executeQuery(sql);
+			return rs;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	/**
+	 * @return Connection to the database
+	 */
+	public static Connection getConnection(){
+		if (!openConnection()) {
+			return null;
+		}
+		return openConnection;		
+	}
+	
 }
