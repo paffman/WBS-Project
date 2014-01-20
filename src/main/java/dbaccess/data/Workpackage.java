@@ -1,7 +1,7 @@
 /*
- * The WBS-­Tool is a project managment tool combining the Work Breakdown
+ * The WBS-Tool is a project management tool combining the Work Breakdown
  * Structure and Earned Value Analysis
- * Copyright (C) 2013 FH-­Bingen
+ * Copyright (C) 2013 FH-Bingen
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
