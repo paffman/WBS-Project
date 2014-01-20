@@ -21,7 +21,7 @@ public class MySQLBaselineModelTest {
 
     @Before
     public final void setup() {
-        blModel=new MySQLBaselineModel(TestDBConnector.getConnection());
+        blModel=new MySQLBaselineModel();
     }
     
     @After

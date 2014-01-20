@@ -20,7 +20,7 @@ public class MySQLConflictsModelTest {
 
     @Before
     public final void setup() {
-        cfModel=new MySQLConflictsModel(TestDBConnector.getConnection());
+        cfModel=new MySQLConflictsModel();
     }
     
     @After

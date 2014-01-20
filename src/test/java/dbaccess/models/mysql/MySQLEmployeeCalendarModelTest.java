@@ -18,7 +18,7 @@ public class MySQLEmployeeCalendarModelTest {
 
     @Before
     public final void setup() {
-        empCalModel=new MySQLEmployeeCalendarModel(TestDBConnector.getConnection());
+        empCalModel=new MySQLEmployeeCalendarModel();
     }
     
     @After

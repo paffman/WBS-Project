@@ -18,7 +18,7 @@ public class MySQLDependenciesModelTest {
 
     @Before
     public final void setup() {
-        dpModel=new MySQLDependenciesModel(TestDBConnector.getConnection());
+        dpModel=new MySQLDependenciesModel();
     }
     
     @After

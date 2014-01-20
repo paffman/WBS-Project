@@ -18,7 +18,7 @@ public class MySQLEmployeesModelTest {
 
     @Before
     public final void setup() {
-        empModel=new MySQLEmployeesModel(TestDBConnector.getConnection());
+        empModel=new MySQLEmployeesModel();
     }
     
     @After

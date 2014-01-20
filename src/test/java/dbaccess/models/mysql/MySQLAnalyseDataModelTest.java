@@ -3,13 +3,11 @@ package dbaccess.models.mysql;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import jdbcConnection.MySqlConnect;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import sqlutils.TestDBConnector;
 import dbaccess.data.AnalyseData;
 import dbaccess.models.AnalyseDataModel;
 
