@@ -17,7 +17,6 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 package dbaccess.models.mysql;
 
 import java.sql.Connection;
@@ -45,11 +44,10 @@ public class MySQLConflictsModel implements ConflictsModel {
 
     @Override
     public void addNewConflict(Conflict conflict) {
-        connection=SQLExecuter.getConnection();
+        connection = SQLExecuter.getConnection();
         try {
             Statement stm = connection.createStatement();
-            stm.execute("CALL conflicts_new ("
-                    + conflict.getFid_wp() + ","
+            stm.execute("CALL conflicts_new (" + conflict.getFid_wp() + ","
                     + conflict.getFid_wp_affected() + ","
                     + conflict.getFid_emp() + "," + conflict.getReason() + ","
                     + ",'" + conflict.getOccurence_date() + "')");
@@ -60,13 +58,13 @@ public class MySQLConflictsModel implements ConflictsModel {
 
     @Override
     public List<Conflict> getConflicts() {
-        connection=SQLExecuter.getConnection();
+        connection = SQLExecuter.getConnection();
         List<Conflict> conList = new ArrayList<Conflict>();
         try {
             ResultSet result = null;
             Conflict conflict = new Conflict();
             Statement stm = connection.createStatement();
-            result = stm.executeQuery("CALL conflicts_select");
+            result = stm.executeQuery("CALL conflicts_select()");
 
             while (result.next()) {
                 conflict = Conflict.fromResultSet(result);
@@ -82,10 +80,10 @@ public class MySQLConflictsModel implements ConflictsModel {
 
     @Override
     public void deleteConflicts() {
-        connection=SQLExecuter.getConnection();
+        connection = SQLExecuter.getConnection();
         try {
             Statement stm = connection.createStatement();
-            stm.execute("CALL conflicts_delete");
+            stm.execute("CALL conflicts_delete()");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -93,10 +91,10 @@ public class MySQLConflictsModel implements ConflictsModel {
 
     @Override
     public void deleteConflict(int id) {
-        connection=SQLExecuter.getConnection();
+        connection = SQLExecuter.getConnection();
         try {
             Statement stm = connection.createStatement();
-            stm.execute("CALL conflict_delete_by_id" + id);
+            stm.execute("CALL conflict_delete_by_id(" + id + ")");
         } catch (SQLException e) {
             e.printStackTrace();
         }

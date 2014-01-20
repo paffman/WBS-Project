@@ -52,7 +52,6 @@ public class MySQLDependenciesModel implements DependenciesModel {
                     + dependency.getFid_wp_predecessor() + ","
                     + dependency.getFid_wp_successor() + ")");
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }

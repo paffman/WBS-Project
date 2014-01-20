@@ -70,7 +70,7 @@ public class MySQLAnalyseDataModel implements AnalyseDataModel {
             ResultSet result = null;
             Statement stm = connection.createStatement();
             result = stm.executeQuery("CALL analyse_data_select_by("
-                    + fid+")");
+                    + fid+",false)");
 
             if (result.next()){
                 aData = AnalyseData.fromResultSet(result);
