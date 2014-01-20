@@ -1,7 +1,7 @@
 /*
- * The WBS-­Tool is a project managment tool combining the Work Breakdown
+ * The WBS-Tool is a project management tool combining the Work Breakdown
  * Structure and Earned Value Analysis
- * Copyright (C) 2013 FH-­Bingen
+ * Copyright (C) 2013 FH-Bingen
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,26 +19,32 @@
 
 package dbaccess.models.mysql;
 
+import jdbcConnection.MySqlConnect;
+import jdbcConnection.SQLExecuter;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
-import sqlutils.TestDBConnector;
+
 import sqlutils.TestData;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({MySQLWorkpackageModelTest.class})
+@Suite.SuiteClasses({
+        MySQLEmployeesModelTest.class
+})
 public class MySQLModelsTestSuite {
 
     @BeforeClass
     public static final void setUp() throws Exception {
-        TestDBConnector.openConnection();
-        TestData.reloadData(TestDBConnector.getConnection());
+        MySqlConnect.setDbConncetion("localhost", "wbs_unittest_db", "", "root",
+                "root");
+        TestData.reloadData(SQLExecuter.getConnection());
     }
 
     @AfterClass
     public static final void tearDown() throws Exception {
-        TestDBConnector.closeConnection();
+        SQLExecuter.closeConnection();
     }
 
 }
