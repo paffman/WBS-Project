@@ -23,19 +23,19 @@ import java.util.List;
 
 import dbaccess.data.Project;
 
-/**The interface for the project model*/
+/** The interface for the project model */
 public interface ProjectModel {
 
     /**
-     * A method to add a new project on the database.
+     * Adds a new project on the database.
      * @param project The project which is added to the database.
      */
     public void addNewProject(Project project);
     
     /**
-     * A method to get all projects.
+     * Gets all projects.
      * @return Returns a list with all projects on the database.
      */
-    public List<?> getProject();
+    public List<Project> getProject();
     
 }

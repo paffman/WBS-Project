@@ -25,13 +25,13 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
-import sqlutils.TestDBConnector;
 import sqlutils.TestData;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-        MySQLWorkpackageModelTest.class,
-        MySQLSemaphoreModelTest.class
+    MySQLProjectModelTest.class,
+    MySQLWorkpackageModelTest.class,
+    MySQLSemaphoreModelTest.class
 })
 public class MySQLModelsTestSuite {
 
