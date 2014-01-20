@@ -29,22 +29,22 @@ import sqlutils.TestDBConnector;
 import sqlutils.TestData;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({MySQLWorkpackageModelTest.class})
+@Suite.SuiteClasses({
+        MySQLWorkpackageModelTest.class,
+        MySQLSemaphoreModelTest.class
+})
 public class MySQLModelsTestSuite {
 
     @BeforeClass
     public static final void setUp() throws Exception {
         MySqlConnect.setDbConncetion("localhost", "mbtest", "", "unittest",
                 "junit411");
-        //TestDBConnector.openConnection();
-        //TestData.reloadData(TestDBConnector.getConnection());
         TestData.reloadData(SQLExecuter.getConnection());
     }
 
     @AfterClass
     public static final void tearDown() throws Exception {
-        //TestDBConnector.closeConnection();
-        //SQLExecuter.closeConnection();
+        SQLExecuter.closeConnection();
     }
 
 }
