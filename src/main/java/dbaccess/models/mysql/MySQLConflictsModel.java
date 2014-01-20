@@ -48,11 +48,13 @@ public class MySQLConflictsModel implements ConflictsModel {
      * @param con The MySQL connection to use.
      */
     public MySQLConflictsModel(Connection connection) {
+        connection=SQLExecuter.getConnection();
         this.connection = connection;
     }
 
     @Override
     public void addNewConflict(Conflict conflict) {
+        connection=SQLExecuter.getConnection();
         try {
             Statement stm = connection.createStatement();
             stm.execute("CALL conflicts_new ("
@@ -67,6 +69,7 @@ public class MySQLConflictsModel implements ConflictsModel {
 
     @Override
     public List<Conflict> getConflicts() {
+        connection=SQLExecuter.getConnection();
         List<Conflict> conList = new ArrayList<Conflict>();
         try {
             ResultSet result = null;
@@ -88,6 +91,7 @@ public class MySQLConflictsModel implements ConflictsModel {
 
     @Override
     public void deleteConflicts() {
+        connection=SQLExecuter.getConnection();
         try {
             Statement stm = connection.createStatement();
             stm.execute("CALL conflicts_delete");
@@ -98,6 +102,7 @@ public class MySQLConflictsModel implements ConflictsModel {
 
     @Override
     public void deleteConflict(int id) {
+        connection=SQLExecuter.getConnection();
         try {
             Statement stm = connection.createStatement();
             stm.execute("CALL conflict_delete_by_id" + id);

@@ -55,6 +55,7 @@ public class MySQLEmployeesModel implements EmployeesModel {
     public void addNewEmployee(Employee employee) {
         // TODO: siehe db_name und "testhost"... wie wird das übergeben????
         // passwort wird zudem nicht richtig gesetzt
+        connection=SQLExecuter.getConnection();
         try {
             Statement stm = connection.createStatement();
             stm.execute("CALL employees_new('" + employee.getLogin() + "','"
@@ -64,7 +65,7 @@ public class MySQLEmployeesModel implements EmployeesModel {
                     + employee.getDaily_rate() + ","
                     + employee.getTime_preference() + ",'"
                     + employee.getPassword()
-                    + "','wbs_unittest_db','testhost')");
+                    + "','"+MySqlConnect.getDbName()+"','"+MySqlConnect.getHost()+"')");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -72,6 +73,7 @@ public class MySQLEmployeesModel implements EmployeesModel {
 
     @Override
     public List<Employee> getEmployee() {
+        connection=SQLExecuter.getConnection();
         List<Employee> empList = new ArrayList<Employee>();
         try {
             ResultSet result = null;
@@ -93,6 +95,7 @@ public class MySQLEmployeesModel implements EmployeesModel {
 
     @Override
     public Employee getEmployee(String login) {
+        connection=SQLExecuter.getConnection();
         Employee employee = null;
         try {
             ResultSet result = null;
@@ -114,6 +117,7 @@ public class MySQLEmployeesModel implements EmployeesModel {
     // TODO: die procedure macht nicht das was ich erwartet hätte...
     @Override
     public List<Employee> getEmployee(boolean isLeader) {
+        connection=SQLExecuter.getConnection();
         List<Employee> empList = new ArrayList<Employee>();
         try {
             ResultSet result = null;
@@ -137,6 +141,7 @@ public class MySQLEmployeesModel implements EmployeesModel {
     //TODO: siehe wie oben: was ist mit db_name????
     @Override
     public void updateEmployee(Employee employee) {
+        connection=SQLExecuter.getConnection();
         try {
             Statement stm = connection.createStatement();
             stm.execute("CALL employees_update_by_id(" + employee.getId() + ",'"
@@ -145,7 +150,7 @@ public class MySQLEmployeesModel implements EmployeesModel {
                     + employee.getFirst_name() + "',"
                     + employee.isProject_leader() + ","
                     + employee.getDaily_rate() + ","
-                    + employee.getTime_preference() + ",'" + employee.getPassword() + "','dbname')");
+                    + employee.getTime_preference() + ",'" + employee.getPassword() + "','" + MySqlConnect.getDbName() + "')");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -153,6 +158,7 @@ public class MySQLEmployeesModel implements EmployeesModel {
 
     @Override
     public void deleteEmployee(int id) {
+        connection=SQLExecuter.getConnection();
         try {
             Statement stm = connection.createStatement();
             stm.execute("CALL employees_delete_by_id(" + id + ")");

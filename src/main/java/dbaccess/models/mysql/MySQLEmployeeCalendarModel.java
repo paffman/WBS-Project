@@ -54,6 +54,7 @@ public class MySQLEmployeeCalendarModel implements EmployeeCalendarModel {
 
     @Override
     public void addNewEmployeeCalendar(EmployeeCalendar empCal) {
+        connection=SQLExecuter.getConnection();
         try {
             Statement stm = connection.createStatement();
             stm.execute("CALL employee_calendar_new ("
@@ -68,6 +69,7 @@ public class MySQLEmployeeCalendarModel implements EmployeeCalendarModel {
 
     @Override
     public List<EmployeeCalendar> getEmployeeCalendar() {
+        connection=SQLExecuter.getConnection();
         List<EmployeeCalendar> empCalList = new ArrayList<EmployeeCalendar>();
         try {
             ResultSet result = null;
@@ -89,6 +91,7 @@ public class MySQLEmployeeCalendarModel implements EmployeeCalendarModel {
 
     @Override
     public EmployeeCalendar getEmployeeCalendar(int id) {
+        connection=SQLExecuter.getConnection();
         EmployeeCalendar employeeCalendar = null;
         try {
             ResultSet result = null;
@@ -110,6 +113,7 @@ public class MySQLEmployeeCalendarModel implements EmployeeCalendarModel {
 
     @Override
     public List<EmployeeCalendar> getEmployeeCalendarForFID(int fid) {
+        connection=SQLExecuter.getConnection();
         List<EmployeeCalendar> empCalList = new ArrayList<EmployeeCalendar>();
         try {
             ResultSet result = null;
@@ -134,6 +138,7 @@ public class MySQLEmployeeCalendarModel implements EmployeeCalendarModel {
     @Override
     public List<EmployeeCalendar> getEmployeeCalendarInDateRange(Date from,
             Date to) {
+        connection=SQLExecuter.getConnection();
         List<EmployeeCalendar> empCalList = new ArrayList<EmployeeCalendar>();
         try {
             ResultSet result = null;
@@ -158,6 +163,7 @@ public class MySQLEmployeeCalendarModel implements EmployeeCalendarModel {
     @Override
     public List<EmployeeCalendar> getEmployeeCalendarInDateRange(Date from,
             Date to, boolean mode2) {
+        connection=SQLExecuter.getConnection();
         // TODO was macht es?
         List<EmployeeCalendar> empCalList = new ArrayList<EmployeeCalendar>();
         try {
@@ -182,6 +188,7 @@ public class MySQLEmployeeCalendarModel implements EmployeeCalendarModel {
 
     @Override
     public void deleteEmployeeCalendar(int id) {
+        connection=SQLExecuter.getConnection();
         try {
             Statement stm = connection.createStatement();
             stm.execute("CALL employee_calendar_delete_by_id( " + id+")");

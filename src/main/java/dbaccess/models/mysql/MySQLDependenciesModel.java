@@ -53,6 +53,7 @@ public class MySQLDependenciesModel implements DependenciesModel {
 
     @Override
     public void addNewDependency(Dependency dependency) {
+        connection=SQLExecuter.getConnection();
         try {
             Statement stm = connection.createStatement();
             stm.execute("CALL dependencies_new ("
@@ -66,6 +67,7 @@ public class MySQLDependenciesModel implements DependenciesModel {
 
     @Override
     public List<Dependency> getDependency() {
+        connection=SQLExecuter.getConnection();
         List<Dependency> depList = new ArrayList<Dependency>();
         try {
             ResultSet result = null;
@@ -87,6 +89,7 @@ public class MySQLDependenciesModel implements DependenciesModel {
 
     @Override
     public void deleteDependency(int predecessorWpID, int successorWpID) {
+        connection=SQLExecuter.getConnection();
         try {
             Statement stm = connection.createStatement();
             stm.execute("CALL dependencies_delete_by_key("

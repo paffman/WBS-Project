@@ -53,6 +53,7 @@ public class MySQLAnalyseDataModel implements AnalyseDataModel {
 
     @Override
     public void addNewAnalyseData(AnalyseData data) {
+        connection=SQLExecuter.getConnection();
         try {
             Statement stm = connection.createStatement();
             stm.execute("CALL analyse_data_new (" 
@@ -71,6 +72,7 @@ public class MySQLAnalyseDataModel implements AnalyseDataModel {
 
     @Override
     public AnalyseData getAnalyseData(int fid) {
+        connection=SQLExecuter.getConnection();
         AnalyseData aData = new AnalyseData();
         try {
             ResultSet result = null;
@@ -90,6 +92,7 @@ public class MySQLAnalyseDataModel implements AnalyseDataModel {
 
     @Override
     public List<?> getAnalyseDataForBaseline(int baseline) {
+        connection=SQLExecuter.getConnection();
         List<AnalyseData> adList = new ArrayList<AnalyseData>();
         try {
             ResultSet result = null;

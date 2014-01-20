@@ -53,6 +53,7 @@ public class MySQLBaselineModel implements BaselineModel {
 
     @Override
     public void addNewBaseline(Baseline line) {
+        connection=SQLExecuter.getConnection();
         try {
             Statement stm = connection.createStatement();
             stm.execute("CALL baseline_new ("
@@ -65,6 +66,7 @@ public class MySQLBaselineModel implements BaselineModel {
 
     @Override
     public List<Baseline> getBaseline() {
+        connection=SQLExecuter.getConnection();
         List<Baseline> blList = new ArrayList<Baseline>();
         try {
             ResultSet result = null;
@@ -86,6 +88,7 @@ public class MySQLBaselineModel implements BaselineModel {
 
     @Override
     public Baseline getBaseline(int baselineID) {
+        connection=SQLExecuter.getConnection();
         Baseline baseline = new Baseline();
         try {
             ResultSet result = null;
