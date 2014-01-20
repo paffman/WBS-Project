@@ -55,8 +55,8 @@ public class MySQLAnalyseDataModel implements AnalyseDataModel {
     public void addNewAnalyseData(AnalyseData data) {
         try {
             Statement stm = connection.createStatement();
-            stm.execute("INSERT INTO analyse_data VALUES (" + data.getId()
-                    + "," + data.getFid_wp() + "," + data.getFid_baseline()
+            stm.execute("CALL analyse_data_new (" 
+                    + data.getFid_wp() + "," + data.getFid_baseline()
                     + ", '" + data.getName() + "'," + data.getBac() + ","
                     + data.getAc() + "," + data.getEv() + "," + data.getEtc()
                     + "," + data.getEac() + "," + data.getCpi() + ","
@@ -64,7 +64,6 @@ public class MySQLAnalyseDataModel implements AnalyseDataModel {
                     + data.getEtc_costs() + "," + data.getSv() + ","
                     + data.getSpi() + "," + data.getPv() + ")");
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
@@ -76,8 +75,8 @@ public class MySQLAnalyseDataModel implements AnalyseDataModel {
         try {
             ResultSet result = null;
             Statement stm = connection.createStatement();
-            result = stm.executeQuery("SELECT * FROM analyse_data WHERE id = "
-                    + fid);
+            result = stm.executeQuery("CALL analyse_data_select_by("
+                    + fid+")");
 
             if (result.next()){
                 aData = AnalyseData.fromResultSet(result);
@@ -96,8 +95,8 @@ public class MySQLAnalyseDataModel implements AnalyseDataModel {
             ResultSet result = null;
             AnalyseData aData=new AnalyseData();
             Statement stm = connection.createStatement();
-            result = stm.executeQuery("SELECT * FROM analyse_data WHERE fid_baseline = "
-                    + baseline);
+            result = stm.executeQuery("CALL analyse_data_select_by("
+                    + baseline+",true)");
 
             while (result.next()){
                 aData = AnalyseData.fromResultSet(result);

@@ -55,13 +55,12 @@ public class MySQLConflictsModel implements ConflictsModel {
     public void addNewConflict(Conflict conflict) {
         try {
             Statement stm = connection.createStatement();
-            stm.execute("INSERT INTO conflicts VALUES (" + conflict.getId()
-                    + "," + conflict.getFid_wp() + ","
+            stm.execute("CALL conflicts_new ("
+                    + conflict.getFid_wp() + ","
                     + conflict.getFid_wp_affected() + ","
                     + conflict.getFid_emp() + "," + conflict.getReason() + ","
                     + ",'" + conflict.getOccurence_date() + "')");
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
@@ -73,7 +72,7 @@ public class MySQLConflictsModel implements ConflictsModel {
             ResultSet result = null;
             Conflict conflict = new Conflict();
             Statement stm = connection.createStatement();
-            result = stm.executeQuery("SELECT * FROM conflict");
+            result = stm.executeQuery("CALL conflicts_select");
 
             while (result.next()) {
                 conflict = Conflict.fromResultSet(result);
@@ -91,7 +90,7 @@ public class MySQLConflictsModel implements ConflictsModel {
     public void deleteConflicts() {
         try {
             Statement stm = connection.createStatement();
-            stm.execute("DELETE * FROM conflict");
+            stm.execute("CALL conflicts_delete");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -101,7 +100,7 @@ public class MySQLConflictsModel implements ConflictsModel {
     public void deleteConflict(int id) {
         try {
             Statement stm = connection.createStatement();
-            stm.execute("DELETE * FROM conflict WHERE id = " + id);
+            stm.execute("CALL conflict_delete_by_id" + id);
         } catch (SQLException e) {
             e.printStackTrace();
         }

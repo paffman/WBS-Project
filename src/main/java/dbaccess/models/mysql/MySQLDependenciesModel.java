@@ -55,7 +55,7 @@ public class MySQLDependenciesModel implements DependenciesModel {
     public void addNewDependency(Dependency dependency) {
         try {
             Statement stm = connection.createStatement();
-            stm.execute("INSERT INTO dependencies VALUES ("
+            stm.execute("CALL dependencies_new ("
                     + dependency.getFid_wp_predecessor() + ","
                     + dependency.getFid_wp_successor() + ")");
         } catch (SQLException e) {
@@ -71,7 +71,7 @@ public class MySQLDependenciesModel implements DependenciesModel {
             ResultSet result = null;
             Dependency dependency = null;
             Statement stm = connection.createStatement();
-            result = stm.executeQuery("SELECT * FROM dependencies");
+            result = stm.executeQuery("CALL dependencies_select()");
 
             while (result.next()) {
                 dependency = Dependency.fromResultSet(result);
@@ -89,9 +89,8 @@ public class MySQLDependenciesModel implements DependenciesModel {
     public void deleteDependency(int predecessorWpID, int successorWpID) {
         try {
             Statement stm = connection.createStatement();
-            stm.execute("DELETE * FROM dependency WHERE fid_wp_predecessor = "
-                    + predecessorWpID + "AND fid_wp_successor = "
-                    + successorWpID);
+            stm.execute("CALL dependencies_delete_by_key("
+                    + predecessorWpID + "," + successorWpID+")");
         } catch (SQLException e) {
             e.printStackTrace();
         }

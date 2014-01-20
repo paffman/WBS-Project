@@ -55,11 +55,10 @@ public class MySQLBaselineModel implements BaselineModel {
     public void addNewBaseline(Baseline line) {
         try {
             Statement stm = connection.createStatement();
-            stm.execute("INSERT INTO baseline VALUES (" + line.getId() + ","
+            stm.execute("CALL baseline_new ("
                     + line.getFid_project() + ",'" + line.getBl_date() + "','"
                     + line.getDescription() + "')");
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
@@ -71,7 +70,7 @@ public class MySQLBaselineModel implements BaselineModel {
             ResultSet result = null;
             Baseline baseline=new Baseline();
             Statement stm = connection.createStatement();
-            result = stm.executeQuery("SELECT * FROM baseline");
+            result = stm.executeQuery("CALL baseline_select()");
 
             while (result.next()){
                 baseline = Baseline.fromResultSet(result);
@@ -91,8 +90,8 @@ public class MySQLBaselineModel implements BaselineModel {
         try {
             ResultSet result = null;
             Statement stm = connection.createStatement();
-            result = stm.executeQuery("SELECT * FROM baseline WHERE id = "
-                    + baselineID);
+            result = stm.executeQuery("CALL baseline_select("
+                    + baselineID + ")");
 
             if (result.next()){
                 baseline = Baseline.fromResultSet(result);

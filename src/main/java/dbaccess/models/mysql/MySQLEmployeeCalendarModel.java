@@ -17,7 +17,6 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 package dbaccess.models.mysql;
 
 import java.sql.Connection;
@@ -33,8 +32,8 @@ import dbaccess.models.EmployeeCalendarModel;
 
 /**
  * The <code>MySQLEmployeeCalendarModel</code> class implements the
- * <code>EmployeeCalendarModel</code> and handles all the database access concerning
- * employee calendars.
+ * <code>EmployeeCalendarModel</code> and handles all the database access
+ * concerning employee calendars.
  */
 public class MySQLEmployeeCalendarModel implements EmployeeCalendarModel {
 
@@ -45,8 +44,9 @@ public class MySQLEmployeeCalendarModel implements EmployeeCalendarModel {
 
     /**
      * Constructor.
-     *
-     * @param con The MySQL connection to use.
+     * 
+     * @param con
+     *            The MySQL connection to use.
      */
     public MySQLEmployeeCalendarModel(Connection connection) {
         this.connection = connection;
@@ -56,13 +56,12 @@ public class MySQLEmployeeCalendarModel implements EmployeeCalendarModel {
     public void addNewEmployeeCalendar(EmployeeCalendar empCal) {
         try {
             Statement stm = connection.createStatement();
-            stm.execute("INSERT INTO employee_calendar VALUES (" + empCal.getId()
-                    + "," + empCal.getFid_emp() + ",'" + empCal.getBegin_time()
+            stm.execute("CALL employee_calendar_new ("
+                    + empCal.getFid_emp() + ",'" + empCal.getBegin_time()
                     + "','" + empCal.getEnd_time() + "','"
                     + empCal.getDescription() + "'," + empCal.isAvailability()
                     + "," + empCal.isFull_time() + ")");
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
@@ -74,7 +73,7 @@ public class MySQLEmployeeCalendarModel implements EmployeeCalendarModel {
             ResultSet result = null;
             EmployeeCalendar employeeCalendar = null;
             Statement stm = connection.createStatement();
-            result = stm.executeQuery("SELECT * FROM employee_calendar");
+            result = stm.executeQuery("CALL employee_calendar_select()");
 
             while (result.next()) {
                 employeeCalendar = EmployeeCalendar.fromResultSet(result);
@@ -95,8 +94,8 @@ public class MySQLEmployeeCalendarModel implements EmployeeCalendarModel {
             ResultSet result = null;
             Statement stm = connection.createStatement();
             result = stm
-                    .executeQuery("SELECT * FROM employee_calendar WHERE id = "
-                            + id);
+                    .executeQuery("CALL employee_calendar_select("
+                            + id +")");
 
             if (result.next()) {
                 employeeCalendar = EmployeeCalendar.fromResultSet(result);
@@ -117,8 +116,8 @@ public class MySQLEmployeeCalendarModel implements EmployeeCalendarModel {
             EmployeeCalendar employeeCalendar = null;
             Statement stm = connection.createStatement();
             result = stm
-                    .executeQuery("SELECT * FROM employee_calendar WHERE fid_emp = "
-                            + fid);
+                    .executeQuery("CALL employee_calendar_select("
+                            + fid +", true)");
 
             while (result.next()) {
                 employeeCalendar = EmployeeCalendar.fromResultSet(result);
@@ -141,8 +140,8 @@ public class MySQLEmployeeCalendarModel implements EmployeeCalendarModel {
             EmployeeCalendar employeeCalendar = null;
             Statement stm = connection.createStatement();
             result = stm
-                    .executeQuery("SELECT * FROM employee_calendar WHERE begin_time > "
-                            + from + " AND end_time < " + to);
+                    .executeQuery("CALL employee_calendar_select_by_date( "
+                            + from + "," + to + ")");
 
             while (result.next()) {
                 employeeCalendar = EmployeeCalendar.fromResultSet(result);
@@ -160,6 +159,24 @@ public class MySQLEmployeeCalendarModel implements EmployeeCalendarModel {
     public List<EmployeeCalendar> getEmployeeCalendarInDateRange(Date from,
             Date to, boolean mode2) {
         // TODO was macht es?
+        List<EmployeeCalendar> empCalList = new ArrayList<EmployeeCalendar>();
+        try {
+            ResultSet result = null;
+            EmployeeCalendar employeeCalendar = null;
+            Statement stm = connection.createStatement();
+            result = stm
+                    .executeQuery("CALL employee_calendar_select_by_date( "
+                            + from + "," + to + ",true)");
+
+            while (result.next()) {
+                employeeCalendar = EmployeeCalendar.fromResultSet(result);
+                empCalList.add(employeeCalendar);
+            }
+
+            return empCalList;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return null;
     }
 
@@ -167,7 +184,7 @@ public class MySQLEmployeeCalendarModel implements EmployeeCalendarModel {
     public void deleteEmployeeCalendar(int id) {
         try {
             Statement stm = connection.createStatement();
-            stm.execute("DELETE * FROM employee_calendar WHERE id = " + id);
+            stm.execute("CALL employee_calendar_delete_by_id( " + id+")");
         } catch (SQLException e) {
             e.printStackTrace();
         }
