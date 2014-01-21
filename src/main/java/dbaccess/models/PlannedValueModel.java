@@ -40,7 +40,7 @@ public interface PlannedValueModel {
      * @param to The end date of the period.
      * @return Returns a list with the planned values in the period.
      */
-    public List<?> getPlannedValue(Date from, Date to);
+    public List<PlannedValue> getPlannedValue(Date from, Date to);
     
     /**
      * A method to get the planned value in a specific period from a specific workpackage.
@@ -49,7 +49,7 @@ public interface PlannedValueModel {
      * @param wpID The id of the workpackage.
      * @return Returns a list with the planned values from the selected workpackage in the period.
      */
-    public List<?> getPlannedValue(Date from, Date to, int wpID);
+    public List<PlannedValue> getPlannedValue(Date from, Date to, int wpID);
     
     /**
      * A method to get the planned value from a specific workpackage on a specific date.
@@ -57,16 +57,7 @@ public interface PlannedValueModel {
      * @param wpID The id from the workpackage.
      * @return Returns a list with the planned value from the selected workpackage and date.
      */
-    public List<?> getPlannedValue(Date aDate, int wpID);
-    
-    /** TODO: was genau macht param order? 
-     * A method to get the planned value from a specific workpackage on a specific date.
-     * @param aDate The specific date.
-     * @param wpID The id from the workpackage.
-     * @param order ...
-     * @return Returns a list with the planned value from the selected workpackage and date.
-     */
-    public List<?> getPlannedValue(Date aDate, int wpID, OrderEnum order);
+    public int getPlannedValue(Date aDate, int wpID);
     
     /**
      * A method to update a planned value.

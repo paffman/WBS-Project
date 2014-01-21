@@ -113,7 +113,7 @@ public class MySQLWorkpackageAllocationModelTest {
 		}
 
 		wpaList = wpAllocModel.getWorkpackageAllocation(55);
-		assertThat(wpaList, notNullValue());
+		assertThat(wpaList.size(), equalTo(0));
 	}
 
 	/**
@@ -169,7 +169,6 @@ public class MySQLWorkpackageAllocationModelTest {
 				while (rslt.next()) {
 					rsltSize++;
 				}
-				System.err.println(rsltSize);
 
 			} catch (SQLException e) {
 				e.printStackTrace();

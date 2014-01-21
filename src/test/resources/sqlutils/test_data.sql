@@ -242,4 +242,11 @@ INSERT INTO wp_allocation (fid_wp, fid_emp) VALUES
 (8, 2),
 (8, 3);
 
+INSERT INTO planned_value (fid_wp, pv_date, pv ) VALUES
+(7, '2014-01-05 00:00:00', 2),
+(7, '2014-01-06 00:00:00', 3),
+(8, '2014-01-07 00:00:00', 4),
+(8, '2014-01-08 00:00:00', 5),
+(8, '2014-01-09 00:00:00', 6);
+
 COMMIT;

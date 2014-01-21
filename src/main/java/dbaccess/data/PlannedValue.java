@@ -19,6 +19,104 @@
 
 package dbaccess.data;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Date;
+
+/**
+ * A simple container class representing a planned value. It mirrors all the
+ * database fields in the planned_value table.
+ */
 public class PlannedValue {
 
+	/** Unique id of a planned value.*/
+	private int id;
+	
+	/** Foreign id of a workpackage.*/
+	private int fid_wp;
+	
+	/** Date for planned value.*/
+	private Date pv_date;
+	
+	/** The planned value.*/
+	private int pv;
+
+	/**
+	 * @return the fid_wp
+	 */
+	public final int getFid_wp() {
+		return fid_wp;
+	}
+
+	/**
+	 * @param fid_wp the fid_wp to set
+	 */
+	public final void setFid_wp(int fid_wp) {
+		this.fid_wp = fid_wp;
+	}
+
+	/**
+	 * @return the pv_date
+	 */
+	public final Date getPv_date() {
+		return pv_date;
+	}
+
+	/**
+	 * @param pv_date the pv_date to set
+	 */
+	public final void setPv_date(Date pv_date) {
+		this.pv_date = pv_date;
+	}
+
+	/**
+	 * @return the pv
+	 */
+	public final int getPv() {
+		return pv;
+	}
+
+	/**
+	 * @param pv the pv to set
+	 */
+	public final void setPv(int pv) {
+		this.pv = pv;
+	}
+
+	/**
+	 * @return the id
+	 */
+	public final int getId() {
+		return id;
+	}	
+	
+	/**
+	 * @param id the id to set
+	 */
+	private final void setId(int id) {
+		this.id = id;
+	}
+
+	/**
+	 * Creates a <code>PlannedValue</code> based on a <code>ResultSet</code>.
+	 * 
+	 * @param resSet
+	 *            The result set containing the data
+	 * @return A <code>PlannedValue</code> object
+	 */
+	public static final PlannedValue fromResultSet(final ResultSet resSet) {
+		PlannedValue pv = new PlannedValue();
+
+		try {
+			pv.setId(resSet.getInt("id"));	
+			pv.setFid_wp(resSet.getInt("fid_wp"));
+			pv.setPv_date(resSet.getDate("pv_date"));
+			pv.setPv(resSet.getInt("pv"));
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return pv;
+	}
+	
 }

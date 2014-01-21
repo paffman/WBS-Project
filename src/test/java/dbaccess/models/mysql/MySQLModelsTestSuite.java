@@ -32,7 +32,8 @@ import sqlutils.TestData;
         MySQLWorkpackageModelTest.class,
         MySQLSemaphoreModelTest.class,
         MySQLWorkpackageAllocationModelTest.class,
-        MySQLWorkEffortModelTest.class
+        MySQLWorkEffortModelTest.class,
+        MySQLPlannedValueModelTest.class
 })
 public class MySQLModelsTestSuite {
 

@@ -28,6 +28,11 @@ import java.sql.SQLException;
 import jdbcConnection.SQLExecuter;
 import dbaccess.models.SemaphoreModel;
 
+/**
+ * The <code>MySQLSemaphoreModel</code> class implements the
+ * <code>SemaphoreModel</code> and handles all the database access concerning
+ * semaphores.
+ */
 public class MySQLSemaphoreModel implements SemaphoreModel {
 
 	@Override

@@ -27,10 +27,10 @@ import java.sql.SQLException;
  * database fields in the wp_allocation table.
  */
 public class WorkpackageAllocation {
-	/** workpackage id */
+	/** Foreign id of the workpackage. */
 	private int fid_wp;
 
-	/** employee id */
+	/** Foreign id of the employee. */
 	private int fid_emp;
 
 	/**

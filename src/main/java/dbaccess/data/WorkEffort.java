@@ -57,7 +57,7 @@ public class WorkEffort {
 	/**
 	 * @param id the id to set
 	 */
-	public final void setId(int id) {
+	private final void setId(int id) {
 		this.id = id;
 	}
 
