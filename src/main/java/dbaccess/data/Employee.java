@@ -67,7 +67,6 @@ public class Employee {
             ep.setLast_name(resSet.getString("last_name"));
             ep.setFirst_name(resSet.getString("first_name"));
             ep.setProject_leader(resSet.getBoolean("project_leader"));
-            ep.setPassword(resSet.getString("password"));
             ep.setDaily_rate(resSet.getDouble("daily_rate"));
             ep.setTime_preference(resSet.getInt("time_preference"));
         } catch (SQLException e) {

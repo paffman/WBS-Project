@@ -31,7 +31,8 @@ import sqlutils.TestData;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-        MySQLEmployeesModelTest.class
+        MySQLEmployeesModelTest.class,
+        MySQLBaselineModelTest.class
 })
 public class MySQLModelsTestSuite {
 

@@ -20,7 +20,6 @@ CREATE TABLE IF NOT EXISTS employees (
 	last_name varchar(255) NOT NULL,
 	first_name varchar(255) DEFAULT NULL,
 	project_leader boolean NOT NULL,
-	password varchar(255) NOT NULL,
 	daily_rate double NOT NULL,
 	time_preference int(11) NOT NULL DEFAULT 0,
 	PRIMARY KEY ( id ),
@@ -183,11 +182,11 @@ CREATE TABLE IF NOT EXISTS planned_value (
 	FOREIGN KEY ( fid_wp ) REFERENCES workpackage( id )
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
 
-INSERT INTO employees (id, login, last_name, first_name, project_leader, password, daily_rate) VALUES
-(1, 'Leiter', 'USE', 'DO NOT', 1, '1234', 100),
-(2, 'h.mueller', 'Müller', 'Hans', 1, '1234', 500),
-(3, 'p.pan', 'Pan', 'Peter', 0, '1234', 100),
-(4, 'b.schmidt', 'Schmidt', 'Bernd', 0, '1234', 300);
+INSERT INTO employees (login, last_name, first_name, project_leader, daily_rate, time_preference) VALUES
+('Leiter', 'USE', 'DO NOT', 1, 100, 0),
+('h.mueller', 'Müller', 'Hans', 1, 500, 0),
+('p.pan', 'Pan', 'Peter', 0, 100, 0),
+('b.schmidt', 'Schmidt', 'Bernd', 0, 300, 0);
 
 INSERT INTO project (id, fid_pl, name, levels) VALUES
 (1, 1, 'Mauerbau', 4);

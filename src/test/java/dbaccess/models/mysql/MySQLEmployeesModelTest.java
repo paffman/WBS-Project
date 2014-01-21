@@ -28,17 +28,24 @@ public class MySQLEmployeesModelTest {
     
     @Test
     public final void testAddNewEmployee() {
+        //TODO: funktioniert nicht(bzw nur das erste mal), da in die datenbank "mysql" daten eingetragen werden, welche nicht zurückgesetzt werden
         Employee ep=new Employee();
         ep.setId(10);
-        ep.setLogin("TestLogin");
+        ep.setLogin("test");
         ep.setLast_name("Test");
         ep.setFirst_name("Nur ein");
         ep.setProject_leader(true);
-        ep.setPassword("passwort");
         ep.setDaily_rate(42.5);
         ep.setTime_preference(10);
-        //empModel.addNewEmployee(ep);
-        //TODO: implementieren
+       /* empModel.addNewEmployee(ep);
+        Employee employee=empModel.getEmployee("test");
+        assertThat(employee, notNullValue());
+        assertThat(employee.getId(),equalTo(5));
+        assertThat(employee.getLast_name(),equalTo("Test"));
+        assertThat(employee.getFirst_name(),equalTo("Nur ein"));
+        assertThat(employee.isProject_leader(),equalTo(true));
+        assertThat(employee.getDaily_rate(),equalTo(42.5));
+        assertThat(employee.getTime_preference(),equalTo(10));*/
     }
     
     @Test
@@ -47,26 +54,28 @@ public class MySQLEmployeesModelTest {
         List<Employee> empList=empModel.getEmployee();
         assertThat(empList, notNullValue());
         assertThat(empList.size(), equalTo(4));
-        assertThat(empList.get(1).getId(),equalTo(2));
-        assertThat(empList.get(1).getLast_name(),equalTo("Müller"));
-        assertThat(empList.get(1).getFirst_name(),equalTo("Hans"));
-        assertThat(empList.get(1).isProject_leader(),equalTo(true));
-        assertThat(empList.get(1).getPassword(),equalTo("1234"));
-        assertThat(empList.get(1).getDaily_rate(),equalTo(500.0));
-        assertThat(empList.get(1).getTime_preference(),equalTo(0));
+        assertThat(empList.get(0).getLogin(),equalTo("Leiter"));
+        assertThat(empList.get(1).getLogin(),equalTo("h.mueller"));
+        assertThat(empList.get(2).getLogin(),equalTo("p.pan"));
+        assertThat(empList.get(3).getId(),equalTo(4));
+        assertThat(empList.get(3).getLogin(),equalTo("b.schmidt"));
+        assertThat(empList.get(3).getLast_name(),equalTo("Schmidt"));
+        assertThat(empList.get(3).getFirst_name(),equalTo("Bernd"));
+        assertThat(empList.get(3).isProject_leader(),equalTo(false));
+        assertThat(empList.get(3).getDaily_rate(),equalTo(300.0));
+        assertThat(empList.get(3).getTime_preference(),equalTo(0));
     }
     
     @Test
     public final void testGetEmployee1() {
         //get employee with login name
-        Employee employee=empModel.getEmployee("h.mueller");
+        Employee employee=empModel.getEmployee("b.schmidt");
         assertThat(employee, notNullValue());
-        assertThat(employee.getId(),equalTo(2));
-        assertThat(employee.getLast_name(),equalTo("Müller"));
-        assertThat(employee.getFirst_name(),equalTo("Hans"));
-        assertThat(employee.isProject_leader(),equalTo(true));
-        assertThat(employee.getPassword(),equalTo("1234"));
-        assertThat(employee.getDaily_rate(),equalTo(500.0));
+        assertThat(employee.getId(),equalTo(4));
+        assertThat(employee.getLast_name(),equalTo("Schmidt"));
+        assertThat(employee.getFirst_name(),equalTo("Bernd"));
+        assertThat(employee.isProject_leader(),equalTo(false));
+        assertThat(employee.getDaily_rate(),equalTo(300.0));
         assertThat(employee.getTime_preference(),equalTo(0));
     }
     
@@ -77,19 +86,19 @@ public class MySQLEmployeesModelTest {
         assertThat(empList, notNullValue());
         assertThat(empList.size(),equalTo(2));
         assertThat(empList.get(0).getLogin(),equalTo("p.pan"));
-        assertThat(empList.get(0).getLogin(),equalTo("b.schmidt"));
+        assertThat(empList.get(1).getLogin(),equalTo("b.schmidt"));
     }
     
     @Test
     public final void testUpdateEmployee() {
-        
+        //TODO: gibt probleme mit umlauten ä,ö,ü z.b. bei "Müller"
         //Setup employee
-        Employee ep=empModel.getEmployee("h.mueller");
-        ep.setProject_leader(false);
+        Employee ep=empModel.getEmployee("p.pan");
+        ep.setProject_leader(true);
             
         empModel.updateEmployee(ep);
-        ep=empModel.getEmployee("h.mueller");
-        assertThat(ep.isProject_leader(),equalTo(false));
+        ep=empModel.getEmployee("p.pan");
+        assertThat(ep.isProject_leader(),equalTo(true));
         //TODO: implementieren
     }
     

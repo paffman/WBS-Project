@@ -24,6 +24,8 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,19 +39,21 @@ import dbaccess.models.BaselineModel;
  * baselines.
  */
 public class MySQLBaselineModel implements BaselineModel {
-
+    final SimpleDateFormat dateFormat = new SimpleDateFormat(
+            "yyyy-mm-dd hh:mm:ss");
     /**
      * The MySQL connection to use.
      */
     private Connection connection;
-
+    
     @Override
     public void addNewBaseline(Baseline line) {
         connection=SQLExecuter.getConnection();
         try {
             Statement stm = connection.createStatement();
+            
             stm.execute("CALL baseline_new ("
-                    + line.getFid_project() + ",'" + line.getBl_date() + "','"
+                    + line.getFid_project() + ",'" + new Timestamp(new java.sql.Date(line.getBl_date().getTime()).getTime()) + "','"
                     + line.getDescription() + "')");
         } catch (SQLException e) {
             e.printStackTrace();
@@ -64,7 +68,7 @@ public class MySQLBaselineModel implements BaselineModel {
             ResultSet result = null;
             Baseline baseline=new Baseline();
             Statement stm = connection.createStatement();
-            result = stm.executeQuery("CALL baseline_select()");
+            result = stm.executeQuery("CALL baseline_select(NULL)");
 
             while (result.next()){
                 baseline = Baseline.fromResultSet(result);

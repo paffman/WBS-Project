@@ -45,7 +45,6 @@ public class MySQLEmployeesModel implements EmployeesModel {
 
     @Override
     public void addNewEmployee(Employee employee) {
-        // TODO: passwort wird nicht richtig gesetzt
         connection = SQLExecuter.getConnection();
         try {
             Statement stm = connection.createStatement();
@@ -136,7 +135,7 @@ public class MySQLEmployeesModel implements EmployeesModel {
         try {
             Statement stm = connection.createStatement();
             stm.execute("CALL employees_update_by_id(" + employee.getId()
-                    + "','" + employee.getLast_name() + "','"
+                    + ",'" + employee.getLast_name() + "','"
                     + employee.getFirst_name() + "',"
                     + employee.isProject_leader() + ","
                     + employee.getDaily_rate() + ","
