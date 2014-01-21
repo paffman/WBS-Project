@@ -20,6 +20,7 @@
 package dbaccess.models.mysql;
 
 import java.sql.Connection;
+import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -40,8 +41,8 @@ public class MySQLSemaphoreModel implements SemaphoreModel {
 			stm.setString(1, tag);
 			stm.setInt(2, id);
 			stm.execute();
-			// } catch (){
-			// pFailed = true;
+		} catch (MySQLIntegrityConstraintViolationException e) {
+			pFailed = true;
 		} catch (SQLException e) {
 			System.out.println(e.getClass().getName());
 			e.printStackTrace();
@@ -60,10 +61,10 @@ public class MySQLSemaphoreModel implements SemaphoreModel {
 
 	@Override
 	public boolean enterSemaphore(String tag, int id, boolean force) {
-		if ( !force ){
+		if (!force) {
 			return enterSemaphore(tag, id);
 		}
-		
+
 		Connection connection = SQLExecuter.getConnection();
 		boolean pFailed = false;
 		boolean entryExists = false;
@@ -77,7 +78,7 @@ public class MySQLSemaphoreModel implements SemaphoreModel {
 			ResultSet sqlResult = getEmpId.executeQuery();
 			entryExists = sqlResult.next();
 			if (entryExists) {
-				empId = sqlResult.getInt("emp_id");
+				empId = sqlResult.getInt("fid_emp");
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -121,14 +122,14 @@ public class MySQLSemaphoreModel implements SemaphoreModel {
 		}
 
 		PreparedStatement enterStmt = null;
-		storedProcedure = "CALL semaphore_p(?)";
+		storedProcedure = "CALL semaphore_p(?,?)";
 		try {
 			enterStmt = connection.prepareStatement(storedProcedure);
 			enterStmt.setString(1, tag);
 			enterStmt.setInt(2, id);
 			enterStmt.execute();
-			// } catch (){
-			// pFailed = true;
+		} catch (MySQLIntegrityConstraintViolationException e) {
+			pFailed = true;
 		} catch (SQLException e) {
 			e.printStackTrace();
 			pFailed = true;

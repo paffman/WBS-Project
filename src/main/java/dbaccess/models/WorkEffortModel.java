@@ -36,13 +36,13 @@ public interface WorkEffortModel {
      * A mehtod to get the work effort.
      * @return Returns a list with the work effort from the project.
      */
-    public List<?> getWorkeffort();
+    public List<WorkEffort> getWorkEffort();
     
     /**
      * A method to get the work effort from a specific baseline.
      * @param baselineID The id from the specific baseline.
      * @return Returns a list with the work effort from the specific baseline.
      */
-    public List<?> getWorkeffort(int baselineID);
+    public List<WorkEffort> getWorkEffort(int wpId);
     
 }

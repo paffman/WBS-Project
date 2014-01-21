@@ -25,20 +25,21 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
-import sqlutils.TestDBConnector;
 import sqlutils.TestData;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
         MySQLWorkpackageModelTest.class,
-        MySQLSemaphoreModelTest.class
+        MySQLSemaphoreModelTest.class,
+        MySQLWorkpackageAllocationModelTest.class,
+        MySQLWorkEffortModelTest.class
 })
 public class MySQLModelsTestSuite {
 
     @BeforeClass
     public static final void setUp() throws Exception {
-        MySqlConnect.setDbConncetion("localhost", "mbtest", "", "unittest",
-                "junit411");
+        MySqlConnect.setDbConncetion("localhost", "wbs_test", "", "wbsTestUsr",
+                "1234");
         TestData.reloadData(SQLExecuter.getConnection());
     }
 
