@@ -55,6 +55,10 @@ public class MySQLProjectModelTest {
         List<Project> projectList = projectModel.getProject();
         assertThat(projectList, notNullValue());
         assertThat(projectList.size(), equalTo(2));
+        assertThat(projectList.get(1).getId(), equalTo(2));
+        assertThat(projectList.get(1).getProjectLeader(), equalTo(1));
+        assertThat(projectList.get(1).getName(), equalTo("test project"));
+        assertThat(projectList.get(1).getLevels(), equalTo(3));
 
         TestData.reloadData(SQLExecuter.getConnection());
     }
