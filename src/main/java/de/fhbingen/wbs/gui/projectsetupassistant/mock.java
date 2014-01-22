@@ -1,6 +1,7 @@
 package de.gui.projectsetupassistant;
 
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -142,6 +143,7 @@ public class mock extends JDialog {
         gbc.weightx = 1.0;
         gbc.fill = GridBagConstraints.BOTH;
         panel2.add(panel3, gbc);
+        panel3.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Projektleiteraccount", TitledBorder.RIGHT, TitledBorder.DEFAULT_POSITION));
         final JLabel label3 = new JLabel();
         label3.setText("Vorname");
         gbc = new GridBagConstraints();

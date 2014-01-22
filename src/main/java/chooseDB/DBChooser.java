@@ -305,4 +305,13 @@ public class DBChooser {
     public final DBChooserGUI getGui() {
         return gui;
     }
+	/**
+	 * erstellt ein Objekt von DBChooser() und beginnt somit das Programm durch Konstruktoraufruf von DBChooser()
+	 *
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		new DBChooser();
+        C10N.configure(new DefaultC10NAnnotations());
+	}
 }

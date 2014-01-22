@@ -69,7 +69,7 @@
               <minimumSize width="200" height="200"/>
               <preferredSize width="200" height="100"/>
             </properties>
-            <border type="none"/>
+            <border type="etched" title="Projektleiteraccount" title-justification="3"/>
             <children>
               <component id="7d9ef" class="javax.swing.JLabel">
                 <constraints>
