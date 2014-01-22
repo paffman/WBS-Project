@@ -21,4 +21,62 @@ package dbaccess.data;
 
 public class Project {
 
+    /** The project id. */
+    private final int id;
+
+    /** The id of the project leader. */
+    private final int projectLeader;
+
+    /** The name of the project */
+    private final String name;
+
+    /** The depth of the work package hierarchy (ex '1.1.0.0' has 4 levels) */
+    private final int levels;
+
+    public Project(int aID, int aLeader, String aName, int levelAmount) {
+        this.id = aID;
+        this.projectLeader = aLeader;
+        this.name = aName;
+        this.levels = levelAmount;
+    }
+
+    public Project(Project otherProject) {
+        this.id = otherProject.id;
+        this.projectLeader = otherProject.projectLeader;
+        this.name = otherProject.name;
+        this.levels = otherProject.levels;
+    }
+
+    /**
+     * Gets the Project id.
+     * @return The Project id
+     */
+    public int getId() {
+        return id;
+    }
+
+    /**
+     * Get the project leader id.
+     * @return The id of the Project leader
+     */
+    public int getProjectLeader() {
+        return projectLeader;
+    }
+
+    /**
+     * Gets the name of the project.
+     * @return The project name
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Gets the depth of the work package hierarchy (ex '1.1.0.0' has 4 levels).
+     * @return The depth of the work package hierarchy.
+     */
+    public int getLevels() {
+        return levels;
+    }
+
 }
