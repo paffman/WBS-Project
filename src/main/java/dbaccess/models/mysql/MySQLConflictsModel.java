@@ -23,6 +23,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,7 +42,7 @@ public class MySQLConflictsModel implements ConflictsModel {
      * The MySQL connection to use.
      */
     private Connection connection;
-
+    
     @Override
     public void addNewConflict(Conflict conflict) {
         connection = SQLExecuter.getConnection();
@@ -49,8 +50,8 @@ public class MySQLConflictsModel implements ConflictsModel {
             Statement stm = connection.createStatement();
             stm.execute("CALL conflicts_new (" + conflict.getFid_wp() + ","
                     + conflict.getFid_wp_affected() + ","
-                    + conflict.getFid_emp() + "," + conflict.getReason() + ","
-                    + ",'" + conflict.getOccurence_date() + "')");
+                    + conflict.getFid_emp() + "," + conflict.getReason() + ",'"
+                    + new Timestamp(conflict.getOccurence_date().getTime()) + "')");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -94,7 +95,7 @@ public class MySQLConflictsModel implements ConflictsModel {
         connection = SQLExecuter.getConnection();
         try {
             Statement stm = connection.createStatement();
-            stm.execute("CALL conflict_delete_by_id(" + id + ")");
+            stm.execute("CALL conflicts_delete_by_id(" + id + ")");
         } catch (SQLException e) {
             e.printStackTrace();
         }

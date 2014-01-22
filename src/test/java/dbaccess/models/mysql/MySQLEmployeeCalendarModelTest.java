@@ -58,8 +58,8 @@ public class MySQLEmployeeCalendarModelTest {
             assertThat(empCalList, notNullValue());
             assertThat(empCalList.size(), equalTo(2));
             assertThat(empCalList.get(1).getFid_emp(), equalTo(1));
-            assertThat(dateFormat.parse(empCalList.get(1).getBegin_time().toString()), equalTo(dateFormat.parse("2014-01-13")));
-            assertThat(dateFormat.parse(empCalList.get(1).getEnd_time().toString()), equalTo(dateFormat.parse("2014-01-14")));
+            assertThat(dateFormat.parse(empCalList.get(1).getBegin_time().toString()), equalTo(dateFormat.parse("2014-01-13 00:00:00")));
+            assertThat(dateFormat.parse(empCalList.get(1).getEnd_time().toString()), equalTo(dateFormat.parse("2014-01-14 11:30:45")));
             assertThat(empCalList.get(1).getDescription(), equalTo("Test Beschreibung"));
             assertThat(empCalList.get(1).isAvailability(), equalTo(true));
             assertThat(empCalList.get(1).isFull_time(), equalTo(true));
@@ -140,8 +140,6 @@ public class MySQLEmployeeCalendarModelTest {
     @Test
     public final void testGetEmployeeCalendarInDateRange() {
         //get all employee calendars in a specific period
-        //TODO: generell wegen datumsangaben nachfragen und abändern
-        //TODO: macht die stored procedure das was sie soll? ...test funktioniert noch nicht
         List<EmployeeCalendar> empCalList;
         try {
             empCalList = empCalModel.getEmployeeCalendarInDateRange(dateFormat.parse("2014-01-10 00:00:00"),dateFormat.parse("2014-01-15 00:00:00"));
@@ -156,13 +154,18 @@ public class MySQLEmployeeCalendarModelTest {
 
     @Test
     public final void testGetEmployeeCalendarInDateRange1() {
-        // EmployeeCalendarModel empCalModel=new
-        // MySQLEmployeeCalendarModel(con);
-        // List<EmployeeCalendar>
-        // empCalList=empCalModel.getEmployeeCalendarInDateRange(DateFormat.getInstance().parse("2014-01-13"),DateFormat.getInstance().parse("2014-01-14");
-        // boolean);
-        // assertThat(empCalList, notNullValue());
-        // TODO: implementieren
+        //get all employee calendars in a specific period mode2
+        //TODO: was macht es => test implementieren
+        List<EmployeeCalendar> empCalList;
+        try {
+            empCalList = empCalModel.getEmployeeCalendarInDateRange(dateFormat.parse("2014-01-10 00:00:00"),dateFormat.parse("2014-01-15 00:00:00"),true);
+            /*assertThat(empCalList, notNullValue());
+            assertThat(empCalList.size(),equalTo(1));
+            assertThat(empCalList.get(0).getFid_emp(),equalTo(3));*/
+            
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
@@ -170,7 +173,7 @@ public class MySQLEmployeeCalendarModelTest {
         empCalModel.deleteEmployeeCalendar(1);
         List<EmployeeCalendar> empCalList = empCalModel.getEmployeeCalendar();
         
-        assertThat(empCalList,equalTo(null));
+        assertThat(empCalList.size(),equalTo(0));
         
         TestData.reloadData(SQLExecuter.getConnection());
     }

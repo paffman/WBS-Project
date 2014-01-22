@@ -50,7 +50,7 @@ public class MySQLBaselineModel implements BaselineModel {
             Statement stm = connection.createStatement();
             
             stm.execute("CALL baseline_new ("
-                    + line.getFid_project() + ",'" + new Timestamp(new java.sql.Date(line.getBl_date().getTime()).getTime()) + "','"
+                    + line.getFid_project() + ",'" + new Timestamp(line.getBl_date().getTime()) + "','"
                     + line.getDescription() + "')");
         } catch (SQLException e) {
             e.printStackTrace();

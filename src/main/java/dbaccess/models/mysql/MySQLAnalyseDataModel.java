@@ -83,7 +83,7 @@ public class MySQLAnalyseDataModel implements AnalyseDataModel {
     }
 
     @Override
-    public List<?> getAnalyseDataForBaseline(int baseline) {
+    public List<AnalyseData> getAnalyseDataForBaseline(int baseline) {
         connection=SQLExecuter.getConnection();
         List<AnalyseData> adList = new ArrayList<AnalyseData>();
         try {
