@@ -65,12 +65,12 @@ public class MySQLDependenciesModel implements DependenciesModel {
             Dependency dependency = null;
             Statement stm = connection.createStatement();
             result = stm.executeQuery("CALL dependencies_select()");
-
+           
             while (result.next()) {
                 dependency = Dependency.fromResultSet(result);
                 depList.add(dependency);
             }
-
+           
             return depList;
         } catch (SQLException e) {
             e.printStackTrace();

@@ -41,7 +41,6 @@ public class MySQLConflictsModelTest {
             
             cfModel.addNewConflict(cf);
         } catch (ParseException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }

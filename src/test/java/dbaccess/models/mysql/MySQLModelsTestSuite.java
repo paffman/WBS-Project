@@ -32,14 +32,15 @@ import sqlutils.TestData;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
         MySQLEmployeesModelTest.class,
-        MySQLBaselineModelTest.class
+        MySQLBaselineModelTest.class,
+        MySQLDependenciesModelTest.class,
+        MySQLEmployeeCalendarModelTest.class
 })
 public class MySQLModelsTestSuite {
 
     @BeforeClass
     public static final void setUp() throws Exception {
-        MySqlConnect.setDbConncetion("localhost", "wbs_unittest_db", "", "root",
-                "root");
+        MySqlConnect.setDbConncetion("localhost", "wbs_unittest_db", "", "root","root");
         TestData.reloadData(SQLExecuter.getConnection());
     }
 

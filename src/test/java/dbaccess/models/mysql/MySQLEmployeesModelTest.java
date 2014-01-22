@@ -6,10 +6,13 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.util.List;
 
+import jdbcConnection.SQLExecuter;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import sqlutils.TestData;
 import dbaccess.data.Employee;
 import dbaccess.models.EmployeesModel;
 
@@ -45,7 +48,9 @@ public class MySQLEmployeesModelTest {
         assertThat(employee.getFirst_name(),equalTo("Nur ein"));
         assertThat(employee.isProject_leader(),equalTo(true));
         assertThat(employee.getDaily_rate(),equalTo(42.5));
-        assertThat(employee.getTime_preference(),equalTo(10));*/
+        assertThat(employee.getTime_preference(),equalTo(10));
+        TestData.reloadData(SQLExecuter.getConnection());
+        */
     }
     
     @Test
@@ -99,6 +104,7 @@ public class MySQLEmployeesModelTest {
         empModel.updateEmployee(ep);
         ep=empModel.getEmployee("p.pan");
         assertThat(ep.isProject_leader(),equalTo(true));
+        TestData.reloadData(SQLExecuter.getConnection());
         //TODO: implementieren
     }
     

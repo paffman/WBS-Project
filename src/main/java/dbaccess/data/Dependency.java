@@ -45,7 +45,7 @@ public class Dependency{
 
         try {
             dp.setFid_wp_predecessor(resSet.getInt("fid_wp_predecessor"));
-            dp.setFid_wp_successor(resSet.getInt("fid_successor"));
+            dp.setFid_wp_successor(resSet.getInt("fid_wp_successor"));
         } catch (SQLException e) {
             e.printStackTrace();
         }

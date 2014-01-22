@@ -25,7 +25,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,8 +38,6 @@ import dbaccess.models.BaselineModel;
  * baselines.
  */
 public class MySQLBaselineModel implements BaselineModel {
-    final SimpleDateFormat dateFormat = new SimpleDateFormat(
-            "yyyy-mm-dd hh:mm:ss");
     /**
      * The MySQL connection to use.
      */

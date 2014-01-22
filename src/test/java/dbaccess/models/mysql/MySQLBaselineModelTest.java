@@ -8,10 +8,13 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
+import jdbcConnection.SQLExecuter;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import sqlutils.TestData;
 import dbaccess.data.Baseline;
 import dbaccess.models.BaselineModel;
 
@@ -48,6 +51,7 @@ public class MySQLBaselineModelTest {
             assertThat(baseline.getDescription(), equalTo("TestBeschreibung"));
             assertThat(baseline.getBl_date().toString(),
                     equalTo("2014-01-13"));
+            TestData.reloadData(SQLExecuter.getConnection());
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -59,7 +63,7 @@ public class MySQLBaselineModelTest {
         try {
             List<Baseline> blList = blModel.getBaseline();
             assertThat(blList, notNullValue());
-            assertThat(blList.size(), equalTo(2));
+            assertThat(blList.size(), equalTo(1));
             assertThat(blList.get(0).getId(), equalTo(1));
             assertThat(blList.get(0).getFid_project(), equalTo(1));
             assertThat(blList.get(0).getDescription(),

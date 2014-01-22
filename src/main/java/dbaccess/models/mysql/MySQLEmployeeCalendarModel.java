@@ -23,6 +23,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -45,14 +46,13 @@ public class MySQLEmployeeCalendarModel implements EmployeeCalendarModel {
 
     @Override
     public void addNewEmployeeCalendar(EmployeeCalendar empCal) {
-        connection=SQLExecuter.getConnection();
+        connection = SQLExecuter.getConnection();
         try {
             Statement stm = connection.createStatement();
-            stm.execute("CALL employee_calendar_new ("
-                    + empCal.getFid_emp() + ",'" + empCal.getBegin_time()
-                    + "','" + empCal.getEnd_time() + "','"
-                    + empCal.getDescription() + "'," + empCal.isAvailability()
-                    + "," + empCal.isFull_time() + ")");
+            stm.execute("CALL employee_calendar_new (" + empCal.getFid_emp() + ",'"
+                    + new Timestamp(new java.sql.Date(empCal.getBegin_time().getTime()).getTime()) + "','"
+                    + new Timestamp(new java.sql.Date(empCal.getEnd_time().getTime()).getTime()) + "','"
+                    + empCal.getDescription() + "'," + empCal.isAvailability() + "," + empCal.isFull_time() + ")");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -60,20 +60,20 @@ public class MySQLEmployeeCalendarModel implements EmployeeCalendarModel {
 
     @Override
     public List<EmployeeCalendar> getEmployeeCalendar() {
-        connection=SQLExecuter.getConnection();
+        connection = SQLExecuter.getConnection();
         List<EmployeeCalendar> empCalList = new ArrayList<EmployeeCalendar>();
         try {
             ResultSet result = null;
             EmployeeCalendar employeeCalendar = null;
             Statement stm = connection.createStatement();
-            result = stm.executeQuery("CALL employee_calendar_select()");
-
+            result = stm.executeQuery("CALL employee_calendar_select(NULL,NULL)");
             while (result.next()) {
                 employeeCalendar = EmployeeCalendar.fromResultSet(result);
                 empCalList.add(employeeCalendar);
             }
-
+           
             return empCalList;
+            
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -82,14 +82,12 @@ public class MySQLEmployeeCalendarModel implements EmployeeCalendarModel {
 
     @Override
     public EmployeeCalendar getEmployeeCalendar(int id) {
-        connection=SQLExecuter.getConnection();
+        connection = SQLExecuter.getConnection();
         EmployeeCalendar employeeCalendar = null;
         try {
             ResultSet result = null;
             Statement stm = connection.createStatement();
-            result = stm
-                    .executeQuery("CALL employee_calendar_select("
-                            + id +")");
+            result = stm.executeQuery("CALL employee_calendar_select(" + id + ", NULL)");
 
             if (result.next()) {
                 employeeCalendar = EmployeeCalendar.fromResultSet(result);
@@ -104,15 +102,13 @@ public class MySQLEmployeeCalendarModel implements EmployeeCalendarModel {
 
     @Override
     public List<EmployeeCalendar> getEmployeeCalendarForFID(int fid) {
-        connection=SQLExecuter.getConnection();
+        connection = SQLExecuter.getConnection();
         List<EmployeeCalendar> empCalList = new ArrayList<EmployeeCalendar>();
         try {
             ResultSet result = null;
             EmployeeCalendar employeeCalendar = null;
             Statement stm = connection.createStatement();
-            result = stm
-                    .executeQuery("CALL employee_calendar_select("
-                            + fid +", true)");
+            result = stm.executeQuery("CALL employee_calendar_select(" + fid + ", true)");
 
             while (result.next()) {
                 employeeCalendar = EmployeeCalendar.fromResultSet(result);
@@ -127,17 +123,14 @@ public class MySQLEmployeeCalendarModel implements EmployeeCalendarModel {
     }
 
     @Override
-    public List<EmployeeCalendar> getEmployeeCalendarInDateRange(Date from,
-            Date to) {
-        connection=SQLExecuter.getConnection();
+    public List<EmployeeCalendar> getEmployeeCalendarInDateRange(Date from, Date to) {
+        connection = SQLExecuter.getConnection();
         List<EmployeeCalendar> empCalList = new ArrayList<EmployeeCalendar>();
         try {
             ResultSet result = null;
             EmployeeCalendar employeeCalendar = null;
             Statement stm = connection.createStatement();
-            result = stm
-                    .executeQuery("CALL employee_calendar_select_by_date( "
-                            + from + "," + to + ")");
+            result = stm.executeQuery("CALL employee_calendar_select_by_date( " + new Timestamp(new java.sql.Date(from.getTime()).getTime()) + "," + new Timestamp(new java.sql.Date(to.getTime()).getTime()) + ",NULL)");
 
             while (result.next()) {
                 employeeCalendar = EmployeeCalendar.fromResultSet(result);
@@ -152,18 +145,15 @@ public class MySQLEmployeeCalendarModel implements EmployeeCalendarModel {
     }
 
     @Override
-    public List<EmployeeCalendar> getEmployeeCalendarInDateRange(Date from,
-            Date to, boolean mode2) {
-        connection=SQLExecuter.getConnection();
+    public List<EmployeeCalendar> getEmployeeCalendarInDateRange(Date from, Date to, boolean mode2) {
+        connection = SQLExecuter.getConnection();
         // TODO was macht es?
         List<EmployeeCalendar> empCalList = new ArrayList<EmployeeCalendar>();
         try {
             ResultSet result = null;
             EmployeeCalendar employeeCalendar = null;
             Statement stm = connection.createStatement();
-            result = stm
-                    .executeQuery("CALL employee_calendar_select_by_date( "
-                            + from + "," + to + ",true)");
+            result = stm.executeQuery("CALL employee_calendar_select_by_date( " +new Timestamp(new java.sql.Date(from.getTime()).getTime()) + "," + new Timestamp(new java.sql.Date(to.getTime()).getTime()) + ",true)");
 
             while (result.next()) {
                 employeeCalendar = EmployeeCalendar.fromResultSet(result);
@@ -179,10 +169,10 @@ public class MySQLEmployeeCalendarModel implements EmployeeCalendarModel {
 
     @Override
     public void deleteEmployeeCalendar(int id) {
-        connection=SQLExecuter.getConnection();
+        connection = SQLExecuter.getConnection();
         try {
             Statement stm = connection.createStatement();
-            stm.execute("CALL employee_calendar_delete_by_id( " + id+")");
+            stm.execute("CALL employee_calendar_delete_by_id( " + id + ")");
         } catch (SQLException e) {
             e.printStackTrace();
         }
