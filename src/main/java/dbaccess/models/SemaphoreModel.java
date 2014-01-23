@@ -19,28 +19,40 @@
 
 package dbaccess.models;
 
-/**The interface for the sempaphore model*/
+/** The interface for the semaphore model. */
 public interface SemaphoreModel {
-        
+
     /**
      * A method to enter a semaphore.
-     * @param tag The tag of the semaphore.
+     * 
+     * @param tag
+     *            The tag of the semaphore.
+     * @param id
+     *            The id of the entering user.
      * @return Returns if the semaphore could be entered.
      */
-    public boolean enterSemaphore(String tag, int id);
-    
+    boolean enterSemaphore(String tag, int id);
+
     /**
-     * A method to enter a semaphore. 
-     * @param tag The tag of the semaphore.
-     * @param force When true the semaphore is forcefully entered.
+     * Enter a semaphore.
+     * 
+     * @param tag
+     *            The tag of the semaphore.
+     * @param id
+     *            The id of the entering user.
+     * @param force
+     *            When true the semaphore is forcefully entered.
      * @return Returns if the semaphore could be entered.
      */
-    public boolean enterSemaphore(String tag, int id, boolean force);
-    
+    boolean enterSemaphore(String tag, int id, boolean force);
+
     /**
-     * A method to leave a semaphore.
-     * @param tag The tag of the semaphore to leave
+     * Leave a semaphore.
+     * 
+     * @param tag
+     *            The tag of the semaphore to leave
+     * @param id
+     *            The user id of the user who leaves
      */
-    public void leaveSemaphore(String tag, int id);
-    
+    void leaveSemaphore(String tag, int id);
 }

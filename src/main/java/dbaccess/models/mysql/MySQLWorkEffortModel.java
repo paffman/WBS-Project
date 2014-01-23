@@ -38,104 +38,104 @@ import dbaccess.models.WorkEffortModel;
  */
 public class MySQLWorkEffortModel implements WorkEffortModel {
 
-	@Override
-	public void addNewWorkEffort(WorkEffort effort) {
-		final Connection connection = SQLExecuter.getConnection();
-		PreparedStatement stm = null;
+    @Override
+    public final void addNewWorkEffort(final WorkEffort effort) {
+        final Connection connection = SQLExecuter.getConnection();
+        PreparedStatement stm = null;
 
-		String storedProcedure = "CALL work_effort_new(?,?,?,?,?)";
+        String storedProcedure = "CALL work_effort_new(?,?,?,?,?)";
 
-		try {
-			stm = connection.prepareStatement(storedProcedure);
-			stm.setInt(1, effort.getFid_wp());
-			stm.setInt(2, effort.getFid_emp());
-			stm.setTimestamp(3, new Timestamp(effort.getRec_date().getTime()));
-			stm.setDouble(4, effort.getEffort());
-			stm.setString(5, effort.getDescription());
+        try {
+            stm = connection.prepareStatement(storedProcedure);
+            stm.setInt(1, effort.getFid_wp());
+            stm.setInt(2, effort.getFid_emp());
+            stm.setTimestamp(3, new Timestamp(effort.getRec_date().getTime()));
+            stm.setDouble(4, effort.getEffort());
+            stm.setString(5, effort.getDescription());
 
-			stm.execute();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				if (stm != null) {
-					stm.close();
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-	}
+            stm.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (stm != null) {
+                    stm.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
-	@Override
-	public List<WorkEffort> getWorkEffort() {
-		final Connection connection = SQLExecuter.getConnection();
-		List<WorkEffort> effortList = new ArrayList<WorkEffort>();
+    @Override
+    public final List<WorkEffort> getWorkEffort() {
+        final Connection connection = SQLExecuter.getConnection();
+        List<WorkEffort> effortList = new ArrayList<WorkEffort>();
 
-		ResultSet sqlResult = null;
-		PreparedStatement stm = null;
+        ResultSet sqlResult = null;
+        PreparedStatement stm = null;
 
-		final String storedProcedure = "CALL work_effort_select(null)";
+        final String storedProcedure = "CALL work_effort_select(null)";
 
-		try {
-			stm = connection.prepareStatement(storedProcedure);			
-			sqlResult = stm.executeQuery();
+        try {
+            stm = connection.prepareStatement(storedProcedure);
+            sqlResult = stm.executeQuery();
 
-			while (sqlResult.next()) {
-				effortList.add(WorkEffort.fromResultSet(sqlResult));
-			}
+            while (sqlResult.next()) {
+                effortList.add(WorkEffort.fromResultSet(sqlResult));
+            }
 
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				if (sqlResult != null) {
-					sqlResult.close();
-				}
-				if (stm != null) {
-					stm.close();
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-		return effortList;
-	}
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (sqlResult != null) {
+                    sqlResult.close();
+                }
+                if (stm != null) {
+                    stm.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return effortList;
+    }
 
-	@Override
-	public List<WorkEffort> getWorkEffort(int wpId) {
-		final Connection connection = SQLExecuter.getConnection();
-		List<WorkEffort> effortList = new ArrayList<WorkEffort>();
+    @Override
+    public final List<WorkEffort> getWorkEffort(final int wpId) {
+        final Connection connection = SQLExecuter.getConnection();
+        List<WorkEffort> effortList = new ArrayList<WorkEffort>();
 
-		ResultSet sqlResult = null;
-		PreparedStatement stm = null;
+        ResultSet sqlResult = null;
+        PreparedStatement stm = null;
 
-		final String storedProcedure = "CALL work_effort_select(?)";
+        final String storedProcedure = "CALL work_effort_select(?)";
 
-		try {
-			stm = connection.prepareStatement(storedProcedure);			
-			stm.setInt(1, wpId);
-			sqlResult = stm.executeQuery();
+        try {
+            stm = connection.prepareStatement(storedProcedure);
+            stm.setInt(1, wpId);
+            sqlResult = stm.executeQuery();
 
-			while (sqlResult.next()) {
-				effortList.add(WorkEffort.fromResultSet(sqlResult));
-			}
+            while (sqlResult.next()) {
+                effortList.add(WorkEffort.fromResultSet(sqlResult));
+            }
 
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				if (sqlResult != null) {
-					sqlResult.close();
-				}
-				if (stm != null) {
-					stm.close();
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-		return effortList;
-	}
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (sqlResult != null) {
+                    sqlResult.close();
+                }
+                if (stm != null) {
+                    stm.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return effortList;
+    }
 
 }

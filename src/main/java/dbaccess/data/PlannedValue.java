@@ -29,94 +29,98 @@ import java.util.Date;
  */
 public class PlannedValue {
 
-	/** Unique id of a planned value.*/
-	private int id;
-	
-	/** Foreign id of a workpackage.*/
-	private int fid_wp;
-	
-	/** Date for planned value.*/
-	private Date pv_date;
-	
-	/** The planned value.*/
-	private int pv;
+    /** Unique id of a planned value. */
+    private int id;
 
-	/**
-	 * @return the fid_wp
-	 */
-	public final int getFid_wp() {
-		return fid_wp;
-	}
+    /** Foreign id of a workpackage. */
+    private int fid_wp;
 
-	/**
-	 * @param fid_wp the fid_wp to set
-	 */
-	public final void setFid_wp(int fid_wp) {
-		this.fid_wp = fid_wp;
-	}
+    /** Date for planned value. */
+    private Date pv_date;
 
-	/**
-	 * @return the pv_date
-	 */
-	public final Date getPv_date() {
-		return pv_date;
-	}
+    /** The planned value. */
+    private int pv;
 
-	/**
-	 * @param pv_date the pv_date to set
-	 */
-	public final void setPv_date(Date pv_date) {
-		this.pv_date = pv_date;
-	}
+    /**
+     * @return the fid_wp
+     */
+    public final int getFid_wp() {
+        return fid_wp;
+    }
 
-	/**
-	 * @return the pv
-	 */
-	public final int getPv() {
-		return pv;
-	}
+    /**
+     * @param fid_wp
+     *            the fid_wp to set
+     */
+    public final void setFid_wp(final int fid_wp) {
+        this.fid_wp = fid_wp;
+    }
 
-	/**
-	 * @param pv the pv to set
-	 */
-	public final void setPv(int pv) {
-		this.pv = pv;
-	}
+    /**
+     * @return the pv_date
+     */
+    public final Date getPv_date() {
+        return pv_date;
+    }
 
-	/**
-	 * @return the id
-	 */
-	public final int getId() {
-		return id;
-	}	
-	
-	/**
-	 * @param id the id to set
-	 */
-	private final void setId(int id) {
-		this.id = id;
-	}
+    /**
+     * @param pv_date
+     *            the pv_date to set
+     */
+    public final void setPv_date(final Date pv_date) {
+        this.pv_date = pv_date;
+    }
 
-	/**
-	 * Creates a <code>PlannedValue</code> based on a <code>ResultSet</code>.
-	 * 
-	 * @param resSet
-	 *            The result set containing the data
-	 * @return A <code>PlannedValue</code> object
-	 */
-	public static final PlannedValue fromResultSet(final ResultSet resSet) {
-		PlannedValue pv = new PlannedValue();
+    /**
+     * @return the pv
+     */
+    public final int getPv() {
+        return pv;
+    }
 
-		try {
-			pv.setId(resSet.getInt("id"));	
-			pv.setFid_wp(resSet.getInt("fid_wp"));
-			pv.setPv_date(resSet.getDate("pv_date"));
-			pv.setPv(resSet.getInt("pv"));
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+    /**
+     * @param pv
+     *            the pv to set
+     */
+    public final void setPv(final int pv) {
+        this.pv = pv;
+    }
 
-		return pv;
-	}
-	
+    /**
+     * @return the id
+     */
+    public final int getId() {
+        return id;
+    }
+
+    /**
+     * @param id
+     *            the id to set
+     */
+    private final void setId(final int id) {
+        this.id = id;
+    }
+
+    /**
+     * Creates a <code>PlannedValue</code> based on a <code>ResultSet</code>.
+     * 
+     * @param resSet
+     *            The result set containing the data
+     * @return A <code>PlannedValue</code> object
+     */
+    public static final PlannedValue fromResultSet(final ResultSet resSet) {
+        PlannedValue pv = new PlannedValue();
+
+        try {
+            pv.setId(resSet.getInt("id"));
+            pv.setFid_wp(resSet.getInt("fid_wp"));
+            pv.setPv_date(resSet.getDate("pv_date"));
+            pv.setPv(resSet.getInt("pv"));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return pv;
+    }
+
 }

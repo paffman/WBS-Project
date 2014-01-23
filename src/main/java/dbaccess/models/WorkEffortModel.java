@@ -23,26 +23,31 @@ import java.util.List;
 
 import dbaccess.data.WorkEffort;
 
-/**The interface for the work effort model*/
+/** The interface for the work effort model. */
 public interface WorkEffortModel {
 
     /**
      * A method to add a new work effort to the project.
-     * @param effort The effort which is added.
+     * 
+     * @param effort
+     *            The effort which is added.
      */
-    public void addNewWorkEffort(WorkEffort effort);
-    
+    void addNewWorkEffort(WorkEffort effort);
+
     /**
      * A mehtod to get the work effort.
+     * 
      * @return Returns a list with the work effort from the project.
      */
-    public List<WorkEffort> getWorkEffort();
-    
+    List<WorkEffort> getWorkEffort();
+
     /**
      * A method to get the work effort from a specific baseline.
-     * @param baselineID The id from the specific baseline.
+     * 
+     * @param wpId
+     *            The id from the specific workpackage.
      * @return Returns a list with the work effort from the specific baseline.
      */
-    public List<WorkEffort> getWorkEffort(int wpId);
-    
+    List<WorkEffort> getWorkEffort(int wpId);
+
 }

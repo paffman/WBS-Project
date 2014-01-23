@@ -102,14 +102,14 @@ public class MySQLWorkpackageAllocationModelTest {
 		assertThat(wpaList.size(), equalTo(3));
 		int wpId = 1;
 		for (int i = 0; i < wpaList.size(); i++) {
-			assertThat(wpaList.get(0).getFid_wp(), equalTo(wpId));
+			assertThat(wpaList.get(i).getFid_wp(), equalTo(wpId));
 		}
 
 		wpaList = wpAllocModel.getWorkpackageAllocation(5);
 		assertThat(wpaList.size(), equalTo(2));
 		wpId = 5;
 		for (int i = 0; i < wpaList.size(); i++) {
-			assertThat(wpaList.get(0).getFid_wp(), equalTo(wpId));
+			assertThat(wpaList.get(i).getFid_wp(), equalTo(wpId));
 		}
 
 		wpaList = wpAllocModel.getWorkpackageAllocation(55);

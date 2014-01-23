@@ -25,67 +25,67 @@ import java.util.List;
 import dbaccess.data.WorkpackageAllocation;
 import dbaccess.data.Workpackage;
 
-/** The interface for the workpackage allocation model */
+/** The interface for the workpackage allocation model. */
 public interface WorkpackageAllocationModel {
 
-	/**
-	 * A method to add a new workpackage allocation.
-	 * 
-	 * @param wpAllocation
-	 *            The allocation which is added.
-	 */
-	public void addNewWorkpackageAllocation(WorkpackageAllocation wpAllocation);
+    /**
+     * A method to add a new workpackage allocation.
+     * 
+     * @param wpAllocation
+     *            The allocation which is added.
+     */
+    void addNewWorkpackageAllocation(WorkpackageAllocation wpAllocation);
 
-	/**
-	 * A method to get all workpackage allocations.
-	 * 
-	 * @return Returns a list with all workpackage allocations of the project.
-	 */
-	public List<WorkpackageAllocation> getWorkpackageAllocation();
+    /**
+     * A method to get all workpackage allocations.
+     * 
+     * @return Returns a list with all workpackage allocations of the project.
+     */
+    List<WorkpackageAllocation> getWorkpackageAllocation();
 
-	/**
-	 * A method to get all workpackage allocations from a specific workpackage.
-	 * 
-	 * @param fidWP
-	 *            The id from the specific workpackage.
-	 * @return Returns a list with the work package allocations from the
-	 *         selected workpackage.
-	 */
-	public List<WorkpackageAllocation> getWorkpackageAllocation(int fidWP);
+    /**
+     * A method to get all workpackage allocations from a specific workpackage.
+     * 
+     * @param fidWP
+     *            The id from the specific workpackage.
+     * @return Returns a list with the work package allocations from the
+     *         selected workpackage.
+     */
+    List<WorkpackageAllocation> getWorkpackageAllocation(int fidWP);
 
-	/**
-	 * A method to get all workpackages for a single employee
-	 * 
-	 * @param fidEmp
-	 *            Id of the employee.
-	 * @return Returns a List of all Workpackages allocated to the employee.
-	 */
-	public List<Workpackage> getWorkpackageAllocationJoinWP(
-			int fidEmp);
+    /**
+     * A method to get all workpackages for a single employee.
+     * 
+     * @param fidEmp
+     *            Id of the employee.
+     * @return Returns a List of all Workpackages allocated to the employee.
+     */
+    List<Workpackage> getWorkpackageAllocationJoinWP(int fidEmp);
 
-	/**
-	 * A method to get all workpackages for a single employee within a certain
-	 * span of time
-	 * 
-	 * @param fidEmp
-	 *            Id of the employee.
-	 * @param from
-	 *            first Date
-	 * @param to
-	 *            second Date
-	 * @return Returns a List of all Workpackages, within the given dates, allocated to the employee.
-	 */
-	public  List<Workpackage> getWorkpackageAllocationJoinWP(
-			int fidEmp, Date from, Date to);
+    /**
+     * A method to get all workpackages for a single employee within a certain
+     * span of time.
+     * 
+     * @param fidEmp
+     *            Id of the employee.
+     * @param from
+     *            first Date
+     * @param to
+     *            second Date
+     * @return Returns a List of all Workpackages, within the given dates,
+     *         allocated to the employee.
+     */
+    List<Workpackage> getWorkpackageAllocationJoinWP(int fidEmp, Date from,
+            Date to);
 
-	/**
-	 * A method to delete a workpackage allocation
-	 * 
-	 * @param employeeID
-	 *            The id from the employee.
-	 * @param workpackageID
-	 *            The id from the workpackage.
-	 */
-	public void deleteWorkpackageAllocation(int employeeID, int workpackageID);
+    /**
+     * A method to delete a workpackage allocation.
+     * 
+     * @param employeeID
+     *            The id from the employee.
+     * @param workpackageID
+     *            The id from the workpackage.
+     */
+    void deleteWorkpackageAllocation(int employeeID, int workpackageID);
 
 }

@@ -39,239 +39,246 @@ import dbaccess.models.PlannedValueModel;
  */
 public class MySQLPlannedValueModel implements PlannedValueModel {
 
-	@Override
-	public void addNewPlannedValue(PlannedValue pValue) {
-		final Connection connection = SQLExecuter.getConnection();
-		PreparedStatement stm = null;
+    @Override
+    public final void addNewPlannedValue(final PlannedValue pValue) {
+        final Connection connection = SQLExecuter.getConnection();
+        PreparedStatement stm = null;
 
-		String storedProcedure = "CALL planned_value_new(?,?,?)";
+        String storedProcedure = "CALL planned_value_new(?,?,?)";
 
-		try {
-			stm = connection.prepareStatement(storedProcedure);
-			stm.setInt(1, pValue.getFid_wp());
-			stm.setTimestamp(2, new Timestamp(pValue.getPv_date().getTime()));
-			stm.setInt(3, pValue.getPv());
+        try {
+            stm = connection.prepareStatement(storedProcedure);
+            stm.setInt(1, pValue.getFid_wp());
+            stm.setTimestamp(2, new Timestamp(pValue.getPv_date().getTime()));
+            stm.setInt(3, pValue.getPv());
 
-			stm.execute();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				if (stm != null) {
-					stm.close();
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-	}
+            stm.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (stm != null) {
+                    stm.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
-	@Override
-	public List<PlannedValue> getPlannedValue(Date from, Date to) {
-		final Connection connection = SQLExecuter.getConnection();
-		List<PlannedValue> pvList = new ArrayList<PlannedValue>();
+    @Override
+    public final List<PlannedValue> getPlannedValue(final Date from,
+            final Date to) {
+        final Connection connection = SQLExecuter.getConnection();
+        List<PlannedValue> pvList = new ArrayList<PlannedValue>();
 
-		ResultSet sqlResult = null;
-		PreparedStatement stm = null;
+        ResultSet sqlResult = null;
+        PreparedStatement stm = null;
 
-		final String storedProcedure = "CALL planned_value_select_by_date(?,?, null)";
+        final String storedProcedure =
+                "CALL planned_value_select_by_date(?,?, null)";
 
-		try {
-			stm = connection.prepareStatement(storedProcedure);
-			stm.setTimestamp(1, new Timestamp(from.getTime()));
-			stm.setTimestamp(2, new Timestamp(to.getTime()));
-			sqlResult = stm.executeQuery();
+        try {
+            stm = connection.prepareStatement(storedProcedure);
+            stm.setTimestamp(1, new Timestamp(from.getTime()));
+            stm.setTimestamp(2, new Timestamp(to.getTime()));
+            sqlResult = stm.executeQuery();
 
-			while (sqlResult.next()) {
-				pvList.add(PlannedValue.fromResultSet(sqlResult));
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				if (sqlResult != null) {
-					sqlResult.close();
-				}
-				if (stm != null) {
-					stm.close();
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-		return pvList;
-	}
+            while (sqlResult.next()) {
+                pvList.add(PlannedValue.fromResultSet(sqlResult));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (sqlResult != null) {
+                    sqlResult.close();
+                }
+                if (stm != null) {
+                    stm.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return pvList;
+    }
 
-	@Override
-	public List<PlannedValue> getPlannedValue(Date from, Date to, int wpID) {
-		final Connection connection = SQLExecuter.getConnection();
-		List<PlannedValue> pvList = new ArrayList<PlannedValue>();
+    @Override
+    public final List<PlannedValue> getPlannedValue(final Date from,
+            final Date to, final int wpID) {
+        final Connection connection = SQLExecuter.getConnection();
+        List<PlannedValue> pvList = new ArrayList<PlannedValue>();
 
-		ResultSet sqlResult = null;
-		PreparedStatement stm = null;
+        ResultSet sqlResult = null;
+        PreparedStatement stm = null;
 
-		final String storedProcedure = "CALL planned_value_select_by_date(?,?,?)";
+        final String storedProcedure =
+                "CALL planned_value_select_by_date(?,?,?)";
 
-		try {
-			stm = connection.prepareStatement(storedProcedure);
-			stm.setTimestamp(1, new Timestamp(from.getTime()));
-			stm.setTimestamp(2, new Timestamp(to.getTime()));
-			stm.setInt(3, wpID);
-			sqlResult = stm.executeQuery();
+        try {
+            stm = connection.prepareStatement(storedProcedure);
+            stm.setTimestamp(1, new Timestamp(from.getTime()));
+            stm.setTimestamp(2, new Timestamp(to.getTime()));
+            stm.setInt(3, wpID);
+            sqlResult = stm.executeQuery();
 
-			while (sqlResult.next()) {
-				pvList.add(PlannedValue.fromResultSet(sqlResult));
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				if (sqlResult != null) {
-					sqlResult.close();
-				}
-				if (stm != null) {
-					stm.close();
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-		return pvList;
-	}
+            while (sqlResult.next()) {
+                pvList.add(PlannedValue.fromResultSet(sqlResult));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (sqlResult != null) {
+                    sqlResult.close();
+                }
+                if (stm != null) {
+                    stm.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return pvList;
+    }
 
-	@Override
-	public int getPlannedValue(Date aDate, int wpID) {
-		final Connection connection = SQLExecuter.getConnection();
+    @Override
+    public final int getPlannedValue(final Date aDate, final int wpID) {
+        final Connection connection = SQLExecuter.getConnection();
 
-		ResultSet sqlResult = null;
-		PreparedStatement stm = null;
+        ResultSet sqlResult = null;
+        PreparedStatement stm = null;
 
-		final String storedProcedure = "CALL planned_value_select_by_wp_and_date(?,?)";
-		int rslt = Integer.MIN_VALUE;
-		try {
-			stm = connection.prepareStatement(storedProcedure);
-			stm.setTimestamp(1, new Timestamp(aDate.getTime()));
-			stm.setInt(2, wpID);
-			sqlResult = stm.executeQuery();
-			if (sqlResult.next()) {
-				rslt = sqlResult.getInt("pv");
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				if (sqlResult != null) {
-					sqlResult.close();
-				}
-				if (stm != null) {
-					stm.close();
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-		return rslt;
-	}
+        final String storedProcedure =
+                "CALL planned_value_select_by_wp_and_date(?,?)";
+        int rslt = Integer.MIN_VALUE;
+        try {
+            stm = connection.prepareStatement(storedProcedure);
+            stm.setTimestamp(1, new Timestamp(aDate.getTime()));
+            stm.setInt(2, wpID);
+            sqlResult = stm.executeQuery();
+            if (sqlResult.next()) {
+                rslt = sqlResult.getInt("pv");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (sqlResult != null) {
+                    sqlResult.close();
+                }
+                if (stm != null) {
+                    stm.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return rslt;
+    }
 
-	@Override
-	public void updatePlannedValue(Date aDate, int wpID, int newValue) {
-		final Connection connection = SQLExecuter.getConnection();
-		PreparedStatement stm = null;
+    @Override
+    public final void updatePlannedValue(final Date aDate, final int wpID,
+            final int newValue) {
+        final Connection connection = SQLExecuter.getConnection();
+        PreparedStatement stm = null;
 
-		String storedProcedure = "CALL planned_value_update_by_wp_and_date(?,?,?)";
+        String storedProcedure =
+                "CALL planned_value_update_by_wp_and_date(?,?,?)";
 
-		try {
-			stm = connection.prepareStatement(storedProcedure);
-			stm.setInt(1, wpID);
-			stm.setTimestamp(2, new Timestamp(aDate.getTime()));
-			stm.setInt(3, newValue);
+        try {
+            stm = connection.prepareStatement(storedProcedure);
+            stm.setInt(1, wpID);
+            stm.setTimestamp(2, new Timestamp(aDate.getTime()));
+            stm.setInt(3, newValue);
 
-			stm.execute();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				if (stm != null) {
-					stm.close();
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-	}
+            stm.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (stm != null) {
+                    stm.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
-	@Override
-	public void deletePlannedValue() {
-		final Connection connection = SQLExecuter.getConnection();
-		PreparedStatement stm = null;
+    @Override
+    public final void deletePlannedValue() {
+        final Connection connection = SQLExecuter.getConnection();
+        PreparedStatement stm = null;
 
-		String storedProcedure = "CALL planned_value_delete()";
+        String storedProcedure = "CALL planned_value_delete()";
 
-		try {
-			stm = connection.prepareStatement(storedProcedure);
+        try {
+            stm = connection.prepareStatement(storedProcedure);
 
-			stm.execute();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				if (stm != null) {
-					stm.close();
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-	}
+            stm.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (stm != null) {
+                    stm.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
-	@Override
-	public void deletePlannedValue(int wpID) {
-		final Connection connection = SQLExecuter.getConnection();
-		PreparedStatement stm = null;
+    @Override
+    public final void deletePlannedValue(final int wpID) {
+        final Connection connection = SQLExecuter.getConnection();
+        PreparedStatement stm = null;
 
-		String storedProcedure = "CALL planned_value_delete_by_wp(?, null)";
+        String storedProcedure = "CALL planned_value_delete_by_wp(?, null)";
 
-		try {
-			stm = connection.prepareStatement(storedProcedure);
-			stm.setInt(1, wpID);
+        try {
+            stm = connection.prepareStatement(storedProcedure);
+            stm.setInt(1, wpID);
 
-			stm.execute();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				if (stm != null) {
-					stm.close();
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-	}
+            stm.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (stm != null) {
+                    stm.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
-	@Override
-	public void deletePlannedValue(Date aDate, int wpID) {
-		final Connection connection = SQLExecuter.getConnection();
-		PreparedStatement stm = null;
+    @Override
+    public final void deletePlannedValue(final Date aDate, final int wpID) {
+        final Connection connection = SQLExecuter.getConnection();
+        PreparedStatement stm = null;
 
-		String storedProcedure = "CALL planned_value_delete_by_wp(?, ?)";
+        String storedProcedure = "CALL planned_value_delete_by_wp(?, ?)";
 
-		try {
-			stm = connection.prepareStatement(storedProcedure);
-			stm.setInt(1, wpID);
-			stm.setTimestamp(2, new Timestamp(aDate.getTime()));
+        try {
+            stm = connection.prepareStatement(storedProcedure);
+            stm.setInt(1, wpID);
+            stm.setTimestamp(2, new Timestamp(aDate.getTime()));
 
-			stm.execute();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				if (stm != null) {
-					stm.close();
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-	}
+            stm.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (stm != null) {
+                    stm.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }

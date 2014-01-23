@@ -17,15 +17,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.mysql.jdbc.PreparedStatement;
-
 import sqlutils.TestData;
 import dbaccess.data.HolidayCalendar;
-import dbaccess.data.PlannedValue;
-import dbaccess.data.Workpackage;
 import dbaccess.models.HolidaysCalendarModel;
-import dbaccess.models.PlannedValueModel;
-
 public class MySQLHolidaysCalendarModelTest {
 
 	private HolidaysCalendarModel hcModel;
@@ -106,8 +100,6 @@ public class MySQLHolidaysCalendarModelTest {
 			stmt.setTimestamp(2, to);
 			stmt.setTimestamp(3, from);
 			stmt.setTimestamp(4, to);
-			stmt.setTimestamp(5, from);
-			stmt.setTimestamp(6, to);
 			ResultSet rslt = stmt.executeQuery();
 			int rsltSize = 0;
 			if (rslt != null) {
@@ -142,10 +134,8 @@ public class MySQLHolidaysCalendarModelTest {
 			}
 			assertThat(hcList.size(), equalTo(rsltSize));
 		} catch (SQLException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 

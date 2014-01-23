@@ -27,60 +27,61 @@ import java.sql.SQLException;
  * database fields in the wp_allocation table.
  */
 public class WorkpackageAllocation {
-	/** Foreign id of the workpackage. */
-	private int fid_wp;
+    /** Foreign id of the workpackage. */
+    private int fid_wp;
 
-	/** Foreign id of the employee. */
-	private int fid_emp;
+    /** Foreign id of the employee. */
+    private int fid_emp;
 
-	/**
-	 * Creates a <code>WorkpackageAllocation</code> based on a <code>ResultSet</code>.
-	 * 
-	 * @param resSet
-	 *            The result set containing the data
-	 * @return A <code>WorkpackageAllocation</code> object
-	 */
-	public static final WorkpackageAllocation fromResultSet(
-			final ResultSet resSet) {
-		WorkpackageAllocation wp_alloc = new WorkpackageAllocation();
+    /**
+     * Creates a <code>WorkpackageAllocation</code> based on a
+     * <code>ResultSet</code>.
+     * 
+     * @param resSet
+     *            The result set containing the data
+     * @return A <code>WorkpackageAllocation</code> object
+     */
+    public static final WorkpackageAllocation fromResultSet(
+            final ResultSet resSet) {
+        WorkpackageAllocation wp_alloc = new WorkpackageAllocation();
 
-		try {
-			wp_alloc.setFid_wp(resSet.getInt("fid_wp"));
-			wp_alloc.setFid_emp(resSet.getInt("fid_emp"));
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return wp_alloc;
-	}
+        try {
+            wp_alloc.setFid_wp(resSet.getInt("fid_wp"));
+            wp_alloc.setFid_emp(resSet.getInt("fid_emp"));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return wp_alloc;
+    }
 
-	/**
-	 * @return the fid_wp
-	 */
-	public final int getFid_wp() {
-		return fid_wp;
-	}
+    /**
+     * @return the fid_wp
+     */
+    public final int getFid_wp() {
+        return fid_wp;
+    }
 
-	/**
-	 * @param fid_wp
-	 *            the fid_wp to set
-	 */
-	public final void setFid_wp(int fid_wp) {
-		this.fid_wp = fid_wp;
-	}
+    /**
+     * @param fid_wp
+     *            the fid_wp to set
+     */
+    public final void setFid_wp(final int fid_wp) {
+        this.fid_wp = fid_wp;
+    }
 
-	/**
-	 * @return the fid_emp
-	 */
-	public final int getFid_emp() {
-		return fid_emp;
-	}
+    /**
+     * @return the fid_emp
+     */
+    public final int getFid_emp() {
+        return fid_emp;
+    }
 
-	/**
-	 * @param fid_emp
-	 *            the fid_emp to set
-	 */
-	public final void setFid_emp(int fid_emp) {
-		this.fid_emp = fid_emp;
-	}
+    /**
+     * @param fid_emp
+     *            the fid_emp to set
+     */
+    public final void setFid_emp(final int fid_emp) {
+        this.fid_emp = fid_emp;
+    }
 
 }
