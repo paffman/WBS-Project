@@ -249,4 +249,9 @@ INSERT INTO planned_value (fid_wp, pv_date, pv ) VALUES
 (8, '2014-01-08 00:00:00', 5),
 (8, '2014-01-09 00:00:00', 6);
 
+INSERT INTO holidays_calendar (title,begin_time, end_time, availability,full_time ) VALUES
+("Neujahr",'2014-01-01 00:00:00', '2014-01-01 23:59:59', false, true),
+("Weihnachten",'2014-12-24 14:00:00', '2014-12-24 23:59:59', false, false),
+("Talk like a Pirate Day",'2014-09-19 0:00:00', '2014-09-19 23:59:59', true, true);
+
 COMMIT;

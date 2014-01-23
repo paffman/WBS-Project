@@ -24,47 +24,61 @@ import java.util.List;
 
 import dbaccess.data.HolidayCalendar;
 
-/**The interface for the holidays calendar model*/
+/** The interface for the holidays calendar model. */
 public interface HolidaysCalendarModel {
-    
-    /**
-     * A method to add a new holiday calendar to the project.
-     * @param holCal The calendar which is added to the project.
-     */
-    public void addNewHolidayCalendar(HolidayCalendar holCal);
-    
-    /**
-     * TODO: stimmt das?
-     * A method to get the holiday calendars.
-     * @return Returns a list with all holiday calendars.
-     */
-    public List<?> getHolidayCalendar();
-    
-    /**
-     * A method to get a specific holiday calendar.
-     * @param calID The id from the calendar.
-     * @return Returns the selected holiday calendar
-     */
-    public HolidayCalendar getHolidayCalendar(int calID);
-    
-    /**
-     * A method to get the holiday calendar from a specific period.
-     * @param from The begin of the holiday calendar.
-     * @param to The end of the holiday calendar.
-     * @return Returns a list with the specific holiday calendar.
-     */
-    public List<?> getHolidayCalendar(Date from, Date to);
-    
-    /**
-     * A method to update the holiday calendar.
-     * @param hc The calendar which is updated.
-     */
-    public void updateHolidayCalendar(HolidayCalendar hc);
-    
-    /**
-     * A method to delete a holiday calendar.
-     * @param calID The id from the calendar which is deleted.
-     */
-    public void deleteHolidayCalendar(int calID);
-    
+
+	/**
+	 * A method to add a new holiday calendar to the project.
+	 * 
+	 * @param holCal
+	 *            The calendar which is added to the project.
+	 */
+	public void addNewHolidayCalendar(HolidayCalendar holCal);
+
+	/**
+	 * A method to get the holiday calendars.
+	 * 
+	 * @return Returns a list with all holiday calendars entries.
+	 */
+	public List<HolidayCalendar> getHolidayCalendar();
+
+	/**
+	 * A method to get a specific holiday calendar.
+	 * 
+	 * @param calID
+	 *            The id from the calendar.
+	 * @return Returns the selected holiday calendar
+	 */
+	public HolidayCalendar getHolidayCalendar(int calID);
+
+	/**
+	 * A method to get the holiday calendar from a specific period.
+	 * 
+	 * @param from
+	 *            The begin of the holiday calendar.
+	 * @param to
+	 *            The end of the holiday calendar.
+	 * @param mode2
+	 *            If mode2 is true the executed query has one where option more.
+	 *            See documentation for details.
+	 * @return Returns a list with the specific holiday calendar.
+	 */
+	public List<HolidayCalendar> getHolidayCalendar(Date from, Date to,
+			boolean mode2);
+
+	/**
+	 * A method to update the holiday calendar.
+	 * 
+	 * @param hc
+	 *            The calendar which is updated.
+	 */
+	public void updateHolidayCalendar(HolidayCalendar hc);
+
+	/**
+	 * A method to delete a holiday calendar.
+	 * 
+	 * @param calID
+	 *            The id from the calendar which is deleted.
+	 */
+	public void deleteHolidayCalendar(int calID);
 }

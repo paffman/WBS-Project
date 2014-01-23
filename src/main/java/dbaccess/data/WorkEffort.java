@@ -28,22 +28,22 @@ import java.util.Date;
  * database fields in the work_effort table.
  */
 public class WorkEffort {
-	
+
 	/** Unique id of the effort. */
 	private int id;
-	
+
 	/** Foreign key of the affected workpackage. */
 	private int fid_wp;
-	
-	/** Foreign key of the employee.*/
+
+	/** Foreign key of the employee. */
 	private int fid_emp;
-	
-	/** Date of the work effort.*/
+
+	/** Date of the work effort. */
 	private Date rec_date;
-	
+
 	/** Effort in 8h days. */
 	private double effort;
-	
+
 	/** Description of the effort. */
 	private String description;
 
@@ -55,9 +55,10 @@ public class WorkEffort {
 	}
 
 	/**
-	 * @param id the id to set
+	 * @param id
+	 *            the id to set
 	 */
-	private final void setId(int id) {
+	private final void setId(final int id) {
 		this.id = id;
 	}
 
@@ -69,9 +70,10 @@ public class WorkEffort {
 	}
 
 	/**
-	 * @param fid_wp the fid_wp to set
+	 * @param fid_wp
+	 *            the fid_wp to set
 	 */
-	public final void setFid_wp(int fid_wp) {
+	public final void setFid_wp(final int fid_wp) {
 		this.fid_wp = fid_wp;
 	}
 
@@ -83,9 +85,10 @@ public class WorkEffort {
 	}
 
 	/**
-	 * @param fid_emp the fid_emp to set
+	 * @param fid_emp
+	 *            the fid_emp to set
 	 */
-	public final void setFid_emp(int fid_emp) {
+	public final void setFid_emp(final int fid_emp) {
 		this.fid_emp = fid_emp;
 	}
 
@@ -97,9 +100,10 @@ public class WorkEffort {
 	}
 
 	/**
-	 * @param rec_date the rec_date to set
+	 * @param rec_date
+	 *            the rec_date to set
 	 */
-	public final void setRec_date(Date rec_date) {
+	public final void setRec_date(final Date rec_date) {
 		this.rec_date = rec_date;
 	}
 
@@ -111,9 +115,10 @@ public class WorkEffort {
 	}
 
 	/**
-	 * @param effort the effort to set
+	 * @param effort
+	 *            the effort to set
 	 */
-	public final void setEffort(double effort) {
+	public final void setEffort(final double effort) {
 		this.effort = effort;
 	}
 
@@ -125,9 +130,10 @@ public class WorkEffort {
 	}
 
 	/**
-	 * @param description the description to set
+	 * @param description
+	 *            the description to set
 	 */
-	public final void setDescription(String description) {
+	public final void setDescription(final String description) {
 		this.description = description;
 	}
 
@@ -138,8 +144,7 @@ public class WorkEffort {
 	 *            The result set containing the data
 	 * @return A <code>WorkEffort</code> object
 	 */
-	public static final WorkEffort fromResultSet(
-			final ResultSet resSet) {
+	public static final WorkEffort fromResultSet(final ResultSet resSet) {
 		WorkEffort workEffort = new WorkEffort();
 
 		try {
