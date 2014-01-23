@@ -22,13 +22,9 @@ import jdbcConnection.MySqlConnect;
 import jdbcConnection.SQLExecuter;
 
 /**
- * Studienprojekt: WBS
- * 
- * Kunde: Pentasys AG, Jens von Gersdorff Projektmitglieder: Andre Paffenholz,
- * Peter Lange, Daniel Metzler, Samson von Graevenitz
- * 
+ * Studienprojekt: WBS Kunde: Pentasys AG, Jens von Gersdorff Projektmitglieder:
+ * Andre Paffenholz, Peter Lange, Daniel Metzler, Samson von Graevenitz
  * Studienprojekt: PSYS WBS 2.0<br/>
- * 
  * Kunde: Pentasys AG, Jens von Gersdorff<br/>
  * Projektmitglieder: <br/>
  * Michael Anstatt,<br/>
@@ -36,272 +32,277 @@ import jdbcConnection.SQLExecuter;
  * Jens Eckes,<br/>
  * Sven Seckler,<br/>
  * Lin Yang<br/>
- * 
  * Ruft die DBChooserGUI auf<br/>
  * setzt nach der Pfadeingabe den Pfad in der MDBConnect Klasse<br/>
- * 
  * 
  * @author Samson von Graevenitz, Daniel Metzler, Michael Anstatt
  * @version 2.0 - 2012-08-20
  */
 public class DBChooser {
 
-	/**
-	 * Holds the gui-object
-	 */
-	private DBChooserGUI gui;
-	
-	/**
-	 * last Host the client was connected to.
-	 */
-	private String lastDbHost = null;
-	/**
-	 * Name of the last database the client was connected to.
-	 */
-	private String lastDbName = null;
-	/**
-	 * Password for the id_wbs database of the last host the client was connected to.
-	 */
-	private String lastDbIndexPw = null;
-	/**
-	 * Last username used to login into a database.
-	 */
-	private String lastDbUser = null;
+    /**
+     * Holds the gui-object.
+     */
+    private DBChooserGUI gui;
 
-	/**
-	 * Constructor initializes the DBChooserGUI and the Listeners for it.
-	 */
-	public DBChooser() {
-		loadLastDB();
-		gui = new DBChooserGUI(this);
-		new DBChooserButtonAction(this);
-	}
+    /**
+     * last Host the client was connected to.
+     */
+    private String lastDbHost = null;
+    /**
+     * Name of the last database the client was connected to.
+     */
+    private String lastDbName = null;
+    /**
+     * Password for the id_wbs database of the last host the client was
+     * connected to.
+     */
+    private String lastDbIndexPw = null;
+    /**
+     * Last username used to login into a database.
+     */
+    private String lastDbUser = null;
 
-	/**
-	 * This method is called when the "ok"-Button in the GUI is activated.
-	 * It controls the database connection and handles the login. If everything
-	 * is valid the wbs-tool is started.
-	 */
-	public void next() {
+    /**
+     * Constructor initializes the DBChooserGUI and the Listeners for it.
+     */
+    public DBChooser() {
+        loadLastDB();
+        gui = new DBChooserGUI(this);
+        new DBChooserButtonAction(this);
+    }
 
-		// get input from gui
-		String host = gui.getHostField().getText();
-		String db = gui.getDbNameField().getText();
-		String user = gui.getUserField().getText();
-		String indexDbPw = new String(gui.getDbPwPasswordField().getPassword());
-		String userPw = new String(gui.getPwPasswordField().getPassword());
-		Boolean pl = gui.getPlCheckBox().isSelected();
+    /**
+     * This method is called when the "ok"-Button in the GUI is activated. It
+     * controls the database connection and handles the login. If everything is
+     * valid the wbs-tool is started.
+     */
+    public final void next() {
 
-		// check input
-		if (host.equals("")) {
-			JOptionPane.showMessageDialog(gui, "Bitte einen Host eintragen!");
-			return;
-		}
-		if (db.equals("")) {
-			JOptionPane.showMessageDialog(gui,
-					"Bitte einen Datenbanknamen eintragen!");
-			return;
-		}
-		if (user.equals("")) {
-			JOptionPane.showMessageDialog(gui,
-					"Bitte einen Benutzer eintragen!");
-			return;
-		}
+        // get input from gui
+        String host = gui.getHostField().getText();
+        String db = gui.getDbNameField().getText();
+        String user = gui.getUserField().getText();
+        String indexDbPw = new String(gui.getDbPwPasswordField().getPassword());
+        String userPw = new String(gui.getPwPasswordField().getPassword());
+        Boolean pl = gui.getPlCheckBox().isSelected();
 
-		// get index of database
-		String dbIndex = getDatabaseIndex(host, db, indexDbPw);
-		if (dbIndex == null) {
-			return;
-		}
+        // check input
+        if (host.equals("")) {
+            JOptionPane.showMessageDialog(gui, "Bitte einen Host eintragen!");
+            return;
+        }
+        if (db.equals("")) {
+            JOptionPane.showMessageDialog(gui,
+                    "Bitte einen Datenbanknamen eintragen!");
+            return;
+        }
+        if (user.equals("")) {
+            JOptionPane.showMessageDialog(gui,
+                    "Bitte einen Benutzer eintragen!");
+            return;
+        }
 
-		// test connection
-		MySqlConnect.setDbConncetion(host, db, dbIndex, dbIndex + "_" + user,
-				userPw);
-		try {
-			if (!tryConnection()) {
-				JOptionPane.showMessageDialog(gui,
-						"Verbindung konnte nicht aufgebaut werden!");
-				return;
-			}
-		} catch (Exception e) {
-			JOptionPane.showMessageDialog(
-					gui,
-					"Verbindung konnte nicht aufgebaut werden! Exception: "
-							+ e.toString());
-			return;
-		}
+        // get index of database
+        String dbIndex = getDatabaseIndex(host, db, indexDbPw);
+        if (dbIndex == null) {
+            return;
+        }
 
-		// save database as last accessed db
-		saveLastDB(host, db, user, indexDbPw);
+        // test connection
+        MySqlConnect.setDbConncetion(host, db, dbIndex, dbIndex + "_" + user,
+                userPw);
+        try {
+            if (!tryConnection()) {
+                JOptionPane.showMessageDialog(gui,
+                        "Verbindung konnte nicht aufgebaut werden!");
+                return;
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(
+                    gui,
+                    "Verbindung konnte nicht aufgebaut werden! Exception: "
+                            + e.toString());
+            return;
+        }
 
-		// get employee data
-		Employee employee = DBModelManager.getEmployeesModel()
-				.getEmployee(user);
-		if (employee == null) {
-			JOptionPane
-					.showMessageDialog(gui,
-							"Der Benutzer konnte nicht in der Datenbank gefunden werden!");
-			return;
-		}
+        // save database as last accessed db
+        saveLastDB(host, db, user, indexDbPw);
 
-		// %% Check project-leader
-		if (pl) {
+        // get employee data
+        Employee employee =
+                DBModelManager.getEmployeesModel().getEmployee(user);
+        if (employee == null) {
+            JOptionPane.showMessageDialog(gui, "Der Benutzer konnte nicht "
+                    + "in der Datenbank gefunden werden!");
+            return;
+        }
 
-			// %% Check Semaphore if project-leader
+        // %% Check project-leader
+        if (pl) {
 
-		}
+            // %% Check Semaphore if project-leader
 
-		// create user data
-		User userData = null;
+        }
 
-		// start WBS-Tool
-		final User threadUser = userData;
-		Thread loader = new Thread() {
-			public void run() {
-				Loader splashScreen = new Loader(gui);
-				WpManager.loadDB();
-				new WPOverview(threadUser, gui);
-				splashScreen.dispose();
-			}
-		};
-		loader.start();
-		gui.dispose();
-	}
+        // create user data
+        User userData = null;
 
-	/**
-	 * This method queries the unique id in the id_wbs db for a given dbName
-	 * @param host Host where db is located.
-	 * @param db Database for which the id is required.
-	 * @param indexDbPw Password for the user of the id_wbs db.
-	 * @return Unique id of the given database.
-	 */
-	private String getDatabaseIndex(String host, String db, String indexDbPw) {
-		MySqlConnect.setDbConncetion(host, "id_wbs", "", "idxUser", indexDbPw);
-		try {
-			ResultSet rslt = SQLExecuter
-					.executeQuery("call db_identifier_select_by_dbname('" + db
-							+ "');");
-			rslt.next();
-			return rslt.getString("id");
-		} catch (SQLException e) {
-			JOptionPane
-					.showMessageDialog(
-							gui,
-							"Verbindung konnte nicht aufgebaut werden! Es wurde kein Index-Eintrag für die Datenbank gefunden.");
-			return null;
-		}
-	}
+        // start WBS-Tool
+        final User threadUser = userData;
+        Thread loader = new Thread() {
+            public void run() {
+                Loader splashScreen = new Loader(gui);
+                WpManager.loadDB();
+                new WPOverview(threadUser, gui);
+                splashScreen.dispose();
+            }
+        };
+        loader.start();
+        gui.dispose();
+    }
 
-	/**
-	 * Tries out the currently used database connection.
-	 * @return Returns true if the connection works. False if otherwise.
-	 * @throws Exception
-	 */
-	private boolean tryConnection() throws Exception {
-		try {
-			// direct use and not use through SQLExecuter to circumvent
-			// Exception Handling
-			Connection c = MySqlConnect.getConnection();
-			Statement stmt = c.createStatement(
-					ResultSet.TYPE_SCROLL_INSENSITIVE,
-					ResultSet.CONCUR_READ_ONLY);
-			stmt.executeQuery("call project_select()");
-			return true;
-		} catch (Exception e) {
-			throw e;
-		}
-	}
+    /**
+     * This method queries the unique id in the id_wbs db for a given dbName
+     * 
+     * @param host
+     *            Host where db is located.
+     * @param db
+     *            Database for which the id is required.
+     * @param indexDbPw
+     *            Password for the user of the id_wbs db.
+     * @return Unique id of the given database.
+     */
+    private String getDatabaseIndex(final String host, final String db,
+            final String indexDbPw) {
+        MySqlConnect.setDbConncetion(host, "id_wbs", "", "idxUser", indexDbPw);
+        try {
+            ResultSet rslt =
+                    SQLExecuter.executeQuery("call "
+                            + "db_identifier_select_by_dbname('" + db + "');");
+            rslt.next();
+            return rslt.getString("id");
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(gui,
+                    "Verbindung konnte nicht aufgebaut werden! "
+                            + "Es wurde kein Index-Eintrag für "
+                            + "die Datenbank gefunden.");
+            return null;
+        }
+    }
 
-	/**
-	 * saveLastDB: writes the login data, except the user password, into a file,
-	 * which is loaded on the next startup.
-	 * 
-	 * @param host
-	 *            host of the database.
-	 * @param db
-	 *            name of the database.
-	 * @param user
-	 *            user of the database, without database index präfix.
-	 * @param indexPw
-	 *            password for the index database.
-	 */
-	private void saveLastDB(final String host, final String db,
-			final String user, final String indexPw) {
-		File dbConfig = new File("DbConfig.txt");
-		try {
-			PrintWriter out = new PrintWriter(dbConfig);
-			out.println(host);
-			out.println(db);
-			out.println(indexPw);
-			out.println(user);
-			out.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+    /**
+     * Tries out the currently used database connection.
+     * 
+     * @return Returns true if the connection works. False if otherwise.
+     * @throws Exception
+     *             throws any occurring exception
+     */
+    private boolean tryConnection() throws Exception {
+        try {
+            // direct use and not use through SQLExecuter to circumvent
+            // Exception Handling
+            Connection c = MySqlConnect.getConnection();
+            Statement stmt =
+                    c.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
+                            ResultSet.CONCUR_READ_ONLY);
+            stmt.executeQuery("call project_select()");
+            return true;
+        } catch (Exception e) {
+            throw e;
+        }
+    }
 
-	}
+    /**
+     * saveLastDB: writes the login data, except the user password, into a file,
+     * which is loaded on the next startup.
+     * 
+     * @param host
+     *            host of the database.
+     * @param db
+     *            name of the database.
+     * @param user
+     *            user of the database, without database index präfix.
+     * @param indexPw
+     *            password for the index database.
+     */
+    private void saveLastDB(final String host, final String db,
+            final String user, final String indexPw) {
+        File dbConfig = new File("DbConfig.txt");
+        try {
+            PrintWriter out = new PrintWriter(dbConfig);
+            out.println(host);
+            out.println(db);
+            out.println(indexPw);
+            out.println(user);
+            out.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-	/**
-	 * loadLastDB(): loads the data of the last used db into the data elements
-	 * of this class.
-	 */
-	private void loadLastDB() {
-		File dbConfig = new File("DbConfig.txt");
-		if (dbConfig.canRead()) {
-			try {
-				BufferedReader in = new BufferedReader(new FileReader(dbConfig));
-				this.lastDbHost = in.readLine();
-				this.lastDbName = in.readLine();
-				this.lastDbIndexPw = in.readLine();
-				this.lastDbUser = in.readLine();
-				in.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-	}
+    }
 
-	/**
-	 * Start of the application.
-	 * Creates a DBChooser objects and therefore starts the login gui.
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		new DBChooser();
-	}
+    /**
+     * loadLastDB(): loads the data of the last used db into the data elements
+     * of this class.
+     */
+    private void loadLastDB() {
+        File dbConfig = new File("DbConfig.txt");
+        if (dbConfig.canRead()) {
+            try {
+                BufferedReader in =
+                        new BufferedReader(new FileReader(dbConfig));
+                this.lastDbHost = in.readLine();
+                this.lastDbName = in.readLine();
+                this.lastDbIndexPw = in.readLine();
+                this.lastDbUser = in.readLine();
+                in.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
-	/**
-	 * @return the lastDbHost
-	 */
-	public final String getLastDbHost() {
-		return lastDbHost;
-	}
+    /**
+     * Start of the application. Creates a DBChooser objects and therefore
+     * starts the login gui.
+     */
+    public static void main() {
+        new DBChooser();
+    }
 
-	/**
-	 * @return the lastDbName
-	 */
-	public final String getLastDbName() {
-		return lastDbName;
-	}
+    /**
+     * @return the lastDbHost
+     */
+    public final String getLastDbHost() {
+        return lastDbHost;
+    }
 
-	/**
-	 * @return the lastDbIndexPw
-	 */
-	public final String getLastDbIndexPw() {
-		return lastDbIndexPw;
-	}
+    /**
+     * @return the lastDbName
+     */
+    public final String getLastDbName() {
+        return lastDbName;
+    }
 
-	/**
-	 * @return the lastDbUser
-	 */
-	public final String getLastDbUser() {
-		return lastDbUser;
-	}
-	
-	/**
-	 * @return the gui
-	 */
-	public final DBChooserGUI getGui(){
-		return gui;
-	}
+    /**
+     * @return the lastDbIndexPw
+     */
+    public final String getLastDbIndexPw() {
+        return lastDbIndexPw;
+    }
+
+    /**
+     * @return the lastDbUser
+     */
+    public final String getLastDbUser() {
+        return lastDbUser;
+    }
+
+    /**
+     * @return the gui
+     */
+    public final DBChooserGUI getGui() {
+        return gui;
+    }
 }
