@@ -37,7 +37,8 @@ import java.util.List;
 public class MySQLWorkpackageModelTest {
 
     private WorkpackageModel wpModel;
-    private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat(
+            "yyyy-mm-dd hh:mm:ss");
 
     @Before
     public final void setup() {
@@ -50,7 +51,7 @@ public class MySQLWorkpackageModelTest {
     }
 
     @Test
-    public final void testAddNewWorkpackage() throws ParseException{
+    public final void testAddNewWorkpackage() throws ParseException {
 
         // setup new work package
         Workpackage wp = new Workpackage();
@@ -97,7 +98,6 @@ public class MySQLWorkpackageModelTest {
         assertThat(addedWP.getName(), equalTo("Stuff"));
         assertThat(addedWP.getDescription(), equalTo("Do some stuff."));
         assertThat(addedWP.getBac(), equalTo(1.0));
-
 
         // change test data back to original state
         TestData.reloadData(SQLExecuter.getConnection());
@@ -198,14 +198,16 @@ public class MySQLWorkpackageModelTest {
 
     @Test
     public final void testGetWorkpackagesInDateRange1() throws ParseException {
-        //final SimpleDateFormat format = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
+        // final SimpleDateFormat format = new
+        // SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
         final String startDateString = "2014-01-02 00:00:01";
         final String endDateString = "2014-01-03 09:59:59";
 
         final Date startDate = dateFormat.parse(startDateString);
         final Date endDate = dateFormat.parse(endDateString);
 
-        List<Workpackage> wpList = wpModel.getWorkpackagesInDateRange(startDate, endDate);
+        List<Workpackage> wpList =
+                wpModel.getWorkpackagesInDateRange(startDate, endDate);
         assertThat(wpList, notNullValue());
 
         assertThat(wpList.size(), equalTo(1));
@@ -213,14 +215,16 @@ public class MySQLWorkpackageModelTest {
 
     @Test
     public final void testGetWorkpackagesInDateRange2() throws ParseException {
-        final SimpleDateFormat format = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
+        final SimpleDateFormat format =
+                new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
         final String startDateString = "2014-01-01 00:00:01";
         final String endDateString = "2014-01-01 08:01:01";
 
         final Date startDate = format.parse(startDateString);
         final Date endDate = format.parse(endDateString);
 
-        List<Workpackage> wpList = wpModel.getWorkpackagesInDateRange(startDate, endDate);
+        List<Workpackage> wpList =
+                wpModel.getWorkpackagesInDateRange(startDate, endDate);
         assertThat(wpList, notNullValue());
 
         assertThat(wpList.size(), equalTo(3));
@@ -228,14 +232,16 @@ public class MySQLWorkpackageModelTest {
 
     @Test
     public final void testGetWorkpackagesInDateRange3() throws ParseException {
-        final SimpleDateFormat format = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
+        final SimpleDateFormat format =
+                new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
         final String startDateString = "2014-01-03 10:01:01";
         final String endDateString = "2014-01-04 10:00:00";
 
         final Date startDate = format.parse(startDateString);
         final Date endDate = format.parse(endDateString);
 
-        List<Workpackage> wpList = wpModel.getWorkpackagesInDateRange(startDate, endDate);
+        List<Workpackage> wpList =
+                wpModel.getWorkpackagesInDateRange(startDate, endDate);
         assertThat(wpList, notNullValue());
 
         assertThat(wpList.size(), equalTo(0));
@@ -267,21 +273,15 @@ public class MySQLWorkpackageModelTest {
         assertThat(wpToDelte, notNullValue());
 
         /*
-         * TODO: not really working right now.
-         * wp_allocation holds foreign key to this work package
+         * TODO: not really working right now. wp_allocation holds foreign key
+         * to this work package
          */
-        //wpModel.deleteWorkpackage(wpToDeleteID);
-        //Workpackage deletedWP = wpModel.getWorkpackage("3.2.0.0");
-        //assertThat(deletedWP, nullValue());
+        // wpModel.deleteWorkpackage(wpToDeleteID);
+        // Workpackage deletedWP = wpModel.getWorkpackage("3.2.0.0");
+        // assertThat(deletedWP, nullValue());
 
         // change test data back to original state
         TestData.reloadData(SQLExecuter.getConnection());
     }
 
 }
-
-
-
-
-
-

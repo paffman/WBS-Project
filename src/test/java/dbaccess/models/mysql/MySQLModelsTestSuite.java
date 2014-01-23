@@ -28,14 +28,11 @@ import org.junit.runners.Suite;
 import sqlutils.TestData;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({
-        MySQLWorkpackageModelTest.class,
+@Suite.SuiteClasses({ MySQLWorkpackageModelTest.class,
         MySQLSemaphoreModelTest.class,
         MySQLWorkpackageAllocationModelTest.class,
-        MySQLWorkEffortModelTest.class,
-        MySQLPlannedValueModelTest.class,
-        MySQLHolidaysCalendarModelTest.class
-})
+        MySQLWorkEffortModelTest.class, MySQLPlannedValueModelTest.class,
+        MySQLHolidaysCalendarModelTest.class })
 public class MySQLModelsTestSuite {
 
     @BeforeClass

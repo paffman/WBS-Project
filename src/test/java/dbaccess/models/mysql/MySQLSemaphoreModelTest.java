@@ -27,10 +27,10 @@ import org.junit.*;
 
 public class MySQLSemaphoreModelTest {
 
-	private SemaphoreModel semaphoreModel;
-	
-	@Before
-    public final void setup() {		
+    private SemaphoreModel semaphoreModel;
+
+    @Before
+    public final void setup() {
         semaphoreModel = new MySQLSemaphoreModel();
     }
 
@@ -38,43 +38,42 @@ public class MySQLSemaphoreModelTest {
     public final void cleanup() {
         semaphoreModel = null;
     }
-    
+
     @Test
-    public final void testSemaphore(){
-    	boolean entered = semaphoreModel.enterSemaphore("pl", 1);    	
-    	assertThat(entered, equalTo(true));
-    	
-    	entered = semaphoreModel.enterSemaphore("pl", 1);    	
-    	assertThat(entered, equalTo(false));
-    	
-    	entered = semaphoreModel.enterSemaphore("pl2", 1);    	
-    	assertThat(entered, equalTo(true));
-    	
-    	entered = semaphoreModel.enterSemaphore("pl2", 1);    	
-    	assertThat(entered, equalTo(false));
-    	
-    	semaphoreModel.leaveSemaphore("pl2", 1);
-    	
-    	entered = semaphoreModel.enterSemaphore("pl2", 1);    	
-    	assertThat(entered, equalTo(true));
-    	
-    	entered = semaphoreModel.enterSemaphore("pl", 2);    	
-    	assertThat(entered, equalTo(false));
-    	
-    	entered = semaphoreModel.enterSemaphore("pl", 2, true);    	
-    	assertThat(entered, equalTo(true));
-    	
-    	entered = semaphoreModel.enterSemaphore("pl", 1, true);    	
-    	assertThat(entered, equalTo(true));
-    	
-    	entered = semaphoreModel.enterSemaphore("pl", 2, false);    	
-    	assertThat(entered, equalTo(false));
-    	
-    	semaphoreModel.leaveSemaphore("pl", 1);
-    	
-    	entered = semaphoreModel.enterSemaphore("pl", 2, false);    	
-    	assertThat(entered, equalTo(true));    	
-    }   
-  
-    
+    public final void testSemaphore() {
+        boolean entered = semaphoreModel.enterSemaphore("pl", 1);
+        assertThat(entered, equalTo(true));
+
+        entered = semaphoreModel.enterSemaphore("pl", 1);
+        assertThat(entered, equalTo(false));
+
+        entered = semaphoreModel.enterSemaphore("pl2", 1);
+        assertThat(entered, equalTo(true));
+
+        entered = semaphoreModel.enterSemaphore("pl2", 1);
+        assertThat(entered, equalTo(false));
+
+        semaphoreModel.leaveSemaphore("pl2", 1);
+
+        entered = semaphoreModel.enterSemaphore("pl2", 1);
+        assertThat(entered, equalTo(true));
+
+        entered = semaphoreModel.enterSemaphore("pl", 2);
+        assertThat(entered, equalTo(false));
+
+        entered = semaphoreModel.enterSemaphore("pl", 2, true);
+        assertThat(entered, equalTo(true));
+
+        entered = semaphoreModel.enterSemaphore("pl", 1, true);
+        assertThat(entered, equalTo(true));
+
+        entered = semaphoreModel.enterSemaphore("pl", 2, false);
+        assertThat(entered, equalTo(false));
+
+        semaphoreModel.leaveSemaphore("pl", 1);
+
+        entered = semaphoreModel.enterSemaphore("pl", 2, false);
+        assertThat(entered, equalTo(true));
+    }
+
 }
