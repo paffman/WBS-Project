@@ -46,12 +46,12 @@ public class MySQLEmployeeCalendarModel implements EmployeeCalendarModel {
     private Connection connection;
 
     @Override
-    public void addNewEmployeeCalendar(EmployeeCalendar empCal) {
+    public final void addNewEmployeeCalendar(final EmployeeCalendar empCal) {
         connection = SQLExecuter.getConnection();
         try {
             PreparedStatement stm = null;
 
-            String storedProcedure = "CALL employee_calendar_new (?,?,?,?,?,?)";
+            String storedProcedure = "CALL employee_calendar_new(?,?,?,?,?,?)";
 
             stm = connection.prepareStatement(storedProcedure);
             stm.setInt(1, empCal.getFid_emp());
@@ -60,30 +60,32 @@ public class MySQLEmployeeCalendarModel implements EmployeeCalendarModel {
             stm.setString(4, empCal.getDescription());
             stm.setBoolean(5, empCal.isAvailability());
             stm.setBoolean(6, empCal.isFull_time());
-            
+
             stm.execute();
-            
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
     @Override
-    public List<EmployeeCalendar> getEmployeeCalendar() {
+    public final List<EmployeeCalendar> getEmployeeCalendar() {
         connection = SQLExecuter.getConnection();
         List<EmployeeCalendar> empCalList = new ArrayList<EmployeeCalendar>();
         try {
             ResultSet result = null;
             EmployeeCalendar employeeCalendar = null;
             Statement stm = connection.createStatement();
-            result = stm.executeQuery("CALL employee_calendar_select(NULL,NULL)");
+            result =
+                    stm.executeQuery("CALL "
+                            + "employee_calendar_select(NULL,NULL)");
             while (result.next()) {
                 employeeCalendar = EmployeeCalendar.fromResultSet(result);
                 empCalList.add(employeeCalendar);
             }
-           
+
             return empCalList;
-            
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -91,21 +93,21 @@ public class MySQLEmployeeCalendarModel implements EmployeeCalendarModel {
     }
 
     @Override
-    public EmployeeCalendar getEmployeeCalendar(int id) {
+    public final EmployeeCalendar getEmployeeCalendar(final int id) {
         connection = SQLExecuter.getConnection();
         EmployeeCalendar employeeCalendar = null;
         try {
             ResultSet result = null;
-            
+
             PreparedStatement stm = null;
 
-            String storedProcedure = "CALL employee_calendar_select (?,NULL)";
+            String storedProcedure = "CALL employee_calendar_select(?,NULL)";
 
             stm = connection.prepareStatement(storedProcedure);
             stm.setInt(1, id);
-     
-            result=stm.executeQuery();
-            
+
+            result = stm.executeQuery();
+
             if (result.next()) {
                 employeeCalendar = EmployeeCalendar.fromResultSet(result);
             }
@@ -118,22 +120,23 @@ public class MySQLEmployeeCalendarModel implements EmployeeCalendarModel {
     }
 
     @Override
-    public List<EmployeeCalendar> getEmployeeCalendarForFID(int fid) {
+    public final List<EmployeeCalendar>
+            getEmployeeCalendarForFID(final int fid) {
         connection = SQLExecuter.getConnection();
         List<EmployeeCalendar> empCalList = new ArrayList<EmployeeCalendar>();
         try {
             ResultSet result = null;
             EmployeeCalendar employeeCalendar = null;
-            
+
             PreparedStatement stm = null;
 
-            String storedProcedure = "CALL employee_calendar_select (?,true)";
+            String storedProcedure = "CALL employee_calendar_select(?,true)";
 
             stm = connection.prepareStatement(storedProcedure);
             stm.setInt(1, fid);
-     
-            result=stm.executeQuery();
-            
+
+            result = stm.executeQuery();
+
             while (result.next()) {
                 employeeCalendar = EmployeeCalendar.fromResultSet(result);
                 empCalList.add(employeeCalendar);
@@ -147,56 +150,26 @@ public class MySQLEmployeeCalendarModel implements EmployeeCalendarModel {
     }
 
     @Override
-    public List<EmployeeCalendar> getEmployeeCalendarInDateRange(Date from, Date to) {
+    public final List<EmployeeCalendar> getEmployeeCalendarInDateRange(
+            final Date from, final Date to) {
         connection = SQLExecuter.getConnection();
         List<EmployeeCalendar> empCalList = new ArrayList<EmployeeCalendar>();
         try {
-           
+
             ResultSet result = null;
             EmployeeCalendar employeeCalendar = null;
-            
+
             PreparedStatement stm = null;
 
-            String storedProcedure = "CALL employee_calendar_select_by_date (?,?,NULL)";
+            String storedProcedure =
+                    "CALL employee_calendar_select_by_date(?,?)";
 
             stm = connection.prepareStatement(storedProcedure);
             stm.setTimestamp(1, new Timestamp(from.getTime()));
             stm.setTimestamp(2, new Timestamp(to.getTime()));
-          
-            result=stm.executeQuery();
-            
-            while (result.next()) {
-                employeeCalendar = EmployeeCalendar.fromResultSet(result);
-                empCalList.add(employeeCalendar);
-            }
-            
-            return empCalList;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-    
-    @Override
-    public List<EmployeeCalendar> getEmployeeCalendarInDateRange(Date from, Date to, boolean mode2) {
-        connection = SQLExecuter.getConnection();
-      
-        List<EmployeeCalendar> empCalList = new ArrayList<EmployeeCalendar>();
-        try {
-            ResultSet result = null;
-            EmployeeCalendar employeeCalendar = null;
-            
-            PreparedStatement stm = null;
 
-            String storedProcedure = "CALL employee_calendar_select_by_date (?,?,?)";
+            result = stm.executeQuery();
 
-            stm = connection.prepareStatement(storedProcedure);
-            stm.setTimestamp(1, new Timestamp(from.getTime()));
-            stm.setTimestamp(2, new Timestamp(to.getTime()));
-            stm.setBoolean(3, mode2);
-            
-            result=stm.executeQuery();
-            
             while (result.next()) {
                 employeeCalendar = EmployeeCalendar.fromResultSet(result);
                 empCalList.add(employeeCalendar);
@@ -208,22 +181,56 @@ public class MySQLEmployeeCalendarModel implements EmployeeCalendarModel {
         }
         return null;
     }
-    
+
     @Override
-    public void deleteEmployeeCalendar(int id) {
+    public final void deleteEmployeeCalendar(final int id) {
         connection = SQLExecuter.getConnection();
         try {
             PreparedStatement stm = null;
 
-            String storedProcedure = "CALL employee_calendar_delete_by_id (?)";
+            String storedProcedure = "CALL employee_calendar_delete_by_id(?)";
 
             stm = connection.prepareStatement(storedProcedure);
-            stm.setInt(1,id);
-          
+            stm.setInt(1, id);
+
             stm.execute();
-            
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public final List<EmployeeCalendar> getEmployeeCalendarForFIDInDateRange(
+            final int fid, final Date from, final Date to) {
+        connection = SQLExecuter.getConnection();
+        List<EmployeeCalendar> empCalList = new ArrayList<EmployeeCalendar>();
+        try {
+
+            ResultSet result = null;
+            EmployeeCalendar employeeCalendar = null;
+
+            PreparedStatement stm = null;
+
+            String storedProcedure =
+                    "CALL employee_calendar_select_by_date_and_emp(?,?,?)";
+
+            stm = connection.prepareStatement(storedProcedure);
+            stm.setTimestamp(1, new Timestamp(from.getTime()));
+            stm.setTimestamp(2, new Timestamp(to.getTime()));
+            stm.setInt(3, fid);
+
+            result = stm.executeQuery();
+
+            while (result.next()) {
+                employeeCalendar = EmployeeCalendar.fromResultSet(result);
+                empCalList.add(employeeCalendar);
+            }
+
+            return empCalList;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
