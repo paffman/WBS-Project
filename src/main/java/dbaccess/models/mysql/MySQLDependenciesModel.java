@@ -21,6 +21,7 @@
 package dbaccess.models.mysql;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -47,10 +48,16 @@ public class MySQLDependenciesModel implements DependenciesModel {
     public void addNewDependency(Dependency dependency) {
         connection=SQLExecuter.getConnection();
         try {
-            Statement stm = connection.createStatement();
-            stm.execute("CALL dependencies_new ("
-                    + dependency.getFid_wp_predecessor() + ","
-                    + dependency.getFid_wp_successor() + ")");
+            PreparedStatement stm = null;
+
+            String storedProcedure = "CALL dependencies_new (?,?)";
+
+            stm = connection.prepareStatement(storedProcedure);
+            stm.setInt(1, dependency.getFid_wp_predecessor());
+            stm.setInt(2, dependency.getFid_wp_successor());
+            
+            stm.execute();
+            
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -82,9 +89,16 @@ public class MySQLDependenciesModel implements DependenciesModel {
     public void deleteDependency(int predecessorWpID, int successorWpID) {
         connection=SQLExecuter.getConnection();
         try {
-            Statement stm = connection.createStatement();
-            stm.execute("CALL dependencies_delete_by_key("
-                    + predecessorWpID + "," + successorWpID+")");
+            PreparedStatement stm = null;
+
+            String storedProcedure = "CALL dependencies_delete_by_key (?,?)";
+
+            stm = connection.prepareStatement(storedProcedure);
+            stm.setInt(1, predecessorWpID);
+            stm.setInt(2, successorWpID);
+            
+            stm.execute();
+            
         } catch (SQLException e) {
             e.printStackTrace();
         }

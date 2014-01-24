@@ -21,6 +21,7 @@
 package dbaccess.models.mysql;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -47,11 +48,18 @@ public class MySQLBaselineModel implements BaselineModel {
     public void addNewBaseline(Baseline line) {
         connection=SQLExecuter.getConnection();
         try {
-            Statement stm = connection.createStatement();
+            PreparedStatement stm = null;
+
+            String storedProcedure = "CALL baseline_new (?,?,?)";
+
+            stm = connection.prepareStatement(storedProcedure);
+            stm.setInt(1, line.getFid_project());
+            stm.setTimestamp(2, new Timestamp(line.getBl_date().getTime()));
+            stm.setString(3, line.getDescription());
             
-            stm.execute("CALL baseline_new ("
-                    + line.getFid_project() + ",'" + new Timestamp(line.getBl_date().getTime()) + "','"
-                    + line.getDescription() + "')");
+            stm.execute();
+            
+            
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -64,6 +72,8 @@ public class MySQLBaselineModel implements BaselineModel {
         try {
             ResultSet result = null;
             Baseline baseline=new Baseline();
+            
+            
             Statement stm = connection.createStatement();
             result = stm.executeQuery("CALL baseline_select(NULL)");
 
@@ -76,7 +86,7 @@ public class MySQLBaselineModel implements BaselineModel {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return null;
+        return blList;
     }
 
     @Override
@@ -85,10 +95,16 @@ public class MySQLBaselineModel implements BaselineModel {
         Baseline baseline = new Baseline();
         try {
             ResultSet result = null;
-            Statement stm = connection.createStatement();
-            result = stm.executeQuery("CALL baseline_select("
-                    + baselineID + ")");
+            
+            PreparedStatement stm = null;
 
+            String storedProcedure = "CALL baseline_select(?)";
+
+            stm = connection.prepareStatement(storedProcedure);
+            stm.setInt(1, baselineID);
+            
+            result=stm.executeQuery();
+            
             if (result.next()){
                 baseline = Baseline.fromResultSet(result);
             }
@@ -97,6 +113,6 @@ public class MySQLBaselineModel implements BaselineModel {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return null;
+        return baseline;
     }
 }

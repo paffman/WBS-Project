@@ -21,10 +21,12 @@ package dbaccess.models.mysql;
 
 import jdbcConnection.MySqlConnect;
 import jdbcConnection.SQLExecuter;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
+
 import sqlutils.TestData;
 
 @RunWith(Suite.class)
@@ -33,6 +35,14 @@ import sqlutils.TestData;
         MySQLWorkpackageAllocationModelTest.class,
         MySQLWorkEffortModelTest.class, MySQLPlannedValueModelTest.class,
         MySQLHolidaysCalendarModelTest.class })
+@Suite.SuiteClasses({
+        MySQLConflictsModelTest.class,
+        MySQLAnalyseDataModelTest.class,
+        MySQLBaselineModelTest.class,
+        MySQLDependenciesModelTest.class,
+        MySQLEmployeeCalendarModelTest.class,
+        MySQLEmployeesModelTest.class
+})
 public class MySQLModelsTestSuite {
 
     @BeforeClass
