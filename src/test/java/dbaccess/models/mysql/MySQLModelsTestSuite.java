@@ -33,9 +33,10 @@ import sqlutils.TestData;
 @Suite.SuiteClasses({ MySQLWorkpackageModelTest.class,
         MySQLSemaphoreModelTest.class,
         MySQLWorkpackageAllocationModelTest.class,
-        MySQLWorkEffortModelTest.class, MySQLPlannedValueModelTest.class,
-        MySQLHolidaysCalendarModelTest.class })
-@Suite.SuiteClasses({
+        MySQLWorkEffortModelTest.class,
+        MySQLPlannedValueModelTest.class,
+        MySQLProjectModelTest.class,
+        MySQLHolidaysCalendarModelTest.class,
         MySQLConflictsModelTest.class,
         MySQLAnalyseDataModelTest.class,
         MySQLBaselineModelTest.class,
@@ -47,7 +48,7 @@ public class MySQLModelsTestSuite {
 
     @BeforeClass
     public static final void setUp() throws Exception {
-        MySqlConnect.setDbConncetion("localhost", "mbtest", "", "unittest",
+        MySqlConnect.setDbConncetion("localhost", "mbtest", "9999", "unittest",
                 "junit411");
         TestData.reloadData(SQLExecuter.getConnection());
     }
