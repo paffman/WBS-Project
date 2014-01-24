@@ -2,19 +2,23 @@ package wpWorker;
 
 /**
  * Studienprojekt:	WBS
- * 
+ *
  * Kunde:				Pentasys AG, Jens von Gersdorff
- * Projektmitglieder:	Andre Paffenholz, 
- * 						Peter Lange, 
+ * Projektmitglieder:	Andre Paffenholz,
+ * 						Peter Lange,
  * 						Daniel Metzler,
  * 						Samson von Graevenitz
- * 
+ *
  * GUI ändern des eigenen Passwortes
- * 
+ *
  * @author Samson von Graevenitz
  * @version 0.5 - 28.11.2010
  */
 
+import c10n.C10N;
+import de.fhbingen.wbs.translation.Button;
+import de.fhbingen.wbs.translation.Login;
+import de.fhbingen.wbs.translation.Messages;
 import globals.FilterJTextField;
 
 import java.awt.Component;
@@ -26,13 +30,15 @@ import java.awt.Toolkit;
 
 import javax.swing.*;
 
-
-public class ChangePWGUI extends JFrame{
-	private static final long serialVersionUID = 1L;
-	protected GridBagLayout gbl;
+public class ChangePWGUI extends JFrame{//TODO extend JDialog
+    private static final long serialVersionUID = 1L;
+    private final Login login;
+    private final Messages messages;
+    private final Button buttons;
+    protected GridBagLayout gbl;
 
 	public JLabel lblUser, lblOldPW, lblNewPW, lblNewPWConfirm;
-	public JTextField txfUser; 
+	public JTextField txfUser;
 	public JPasswordField txfOldPW, txfNewPW, txfNewPWConfirm;
 	public JButton btnOk, btnCancel;
 
@@ -43,30 +49,34 @@ public class ChangePWGUI extends JFrame{
 	 * und zu dem GridBagLayout hinzugefügt und angeordnet mittels createGbc
 	 */
 	public ChangePWGUI(){
-		super("Passwort ändern");
+		super();
+        login = C10N.get(Login.class);
+        messages = C10N.get(Messages.class);
+        buttons = C10N.get(Button.class);
+        setTitle(login.changePassword());
 		setResizable(false);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-		try {
+		try { //TODO wird das nicht schon woanders gesetzt?
 			UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
 			SwingUtilities.updateComponentTreeUI(this);
 		} catch (Exception e) {
-			System.err.println("Could not load LookAndFeel");
-		}
+            System.err.println(messages.couldNotLoadLookAndFeel());
+        }
 		initialize();
-		
+
 		lblUser = new JLabel("Aktueller User");
 		txfUser = new FilterJTextField();
 		txfUser.setEnabled(false);
-		lblOldPW = new JLabel("Altes Passwort");
+		lblOldPW = new JLabel(login.oldPassword());
 		txfOldPW = new JPasswordField();
-		lblNewPW = new JLabel("Neues Passwort");
+		lblNewPW = new JLabel(login.newPassword());
 		txfNewPW = new JPasswordField();
-		lblNewPWConfirm = new JLabel("Passwort bestätigen");
+		lblNewPWConfirm = new JLabel(login.repeatPassword());
 		txfNewPWConfirm = new JPasswordField();
-		btnOk = new JButton("Ok");
-		btnCancel = new JButton("Cancel");
-		
-		
+		btnOk = new JButton(buttons.ok());
+		btnCancel = new JButton(buttons.cancel());
+
+
 		createGBC(lblUser, 0, 0, 1, 1);
 		createGBC(txfUser, 1, 0, 1, 1);
 		createGBC(lblOldPW, 0, 1, 1, 1);
@@ -78,7 +88,7 @@ public class ChangePWGUI extends JFrame{
 		createGBC(btnOk, 0, 4, 1, 1);
 		createGBC(btnCancel, 1, 4, 1, 1);
 	}
-	
+
 	/**
 	 * Methode initialize zum Layout erstellen
 	 * Es wird ein GridbagLayout verwendet
@@ -90,13 +100,13 @@ public class ChangePWGUI extends JFrame{
 		Toolkit tk=Toolkit.getDefaultToolkit();
 		Dimension screenSize=tk.getScreenSize();
 		setLocation((int)(screenSize.getWidth()/2)-width/2,(int)(screenSize.getHeight()/2)-height/2);
-		
+
 		this.setSize(new Dimension(width, height));
         gbl = new GridBagLayout();
 		getContentPane().setLayout(gbl);
 		setVisible(true);
 	}
-	
+
 	/**
 	 * void createGBC(args)
 	 * Methode createGBC zum Hinzufügen der einzelnen Komponenten zum GridBagLayout
@@ -109,9 +119,9 @@ public class ChangePWGUI extends JFrame{
 	private void createGBC(Component c, int x, int y, int width, int height){
 	  	GridBagConstraints gbc = new GridBagConstraints();
 	  	gbc.fill=GridBagConstraints.HORIZONTAL;
-	  	gbc.gridx = x;                        
-	  	gbc.gridy = y;  
-	  	gbc.gridwidth = width;  
+	  	gbc.gridx = x;
+	  	gbc.gridy = y;
+	  	gbc.gridwidth = width;
 	  	gbc.weightx =width;
 	  	gbc.weighty = height;
 	  	gbc.gridheight = height;
