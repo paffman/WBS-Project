@@ -1,4 +1,4 @@
 /**
- * Created by Maxi on 02.01.14.
+ * Package containing all controlling classes.
  */
-package de.controller;
+package de.fhbingen.wbs.controller;

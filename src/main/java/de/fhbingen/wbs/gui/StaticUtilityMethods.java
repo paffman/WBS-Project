@@ -6,9 +6,15 @@ import java.awt.GridBagConstraints;
 import java.awt.Insets;
 
 /**
- * Created by Maxi on 20.01.14.
+ * Static utility methods for general UI tasks.
  */
-public class StaticUtilityMethods {
+public final class StaticUtilityMethods {
+    /**
+     * Private constructor to prevent instantiation.
+     */
+    private StaticUtilityMethods() {
+
+    }
     /**
      * Gridbaglayout helper method.
      * @param container container that component gets added on.

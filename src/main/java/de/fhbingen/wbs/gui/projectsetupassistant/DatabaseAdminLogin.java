@@ -20,10 +20,6 @@ public class DatabaseAdminLogin extends JDialog {
      * Default preferred size.
      */
     private static final Dimension PREFERRED_SIZE = new Dimension(450, 200);
-    /**
-     * JPanel that holds all other panels and content.
-     */
-    private final JPanel contentPane;
 
     /**
      * Panel for southern buttons (ok, cancel, back).
@@ -50,12 +46,29 @@ public class DatabaseAdminLogin extends JDialog {
      */
     private final JButton buttonBack;
 
+    /**
+     * Text field for server address.
+     */
     private final JTextField textFieldServerAddress;
+    /**
+     * Text field for root user on the server.
+     */
     private final JTextField textFieldUserName;
+    /**
+     * Password field for root password on the server.
+     */
     private final JPasswordField textFieldPassword;
-
+    /**
+     * Label for server address text field.
+     */
     private final JLabel labelTextFieldServerAddress;
+    /**
+     * Label for user name text field.
+     */
     private final JLabel labelTextFieldUserName;
+    /**
+     * Label for password field.
+     */
     private final JLabel labelTextFieldPassword;
 
     /**
@@ -68,6 +81,10 @@ public class DatabaseAdminLogin extends JDialog {
      */
     private final ProjectSetup msg;
 
+    /**
+     * Interface do define possible user actions to be handled by the
+     * controller.
+     */
     public interface Actions {
         /**
          * Gets called by the ok button.
@@ -98,7 +115,8 @@ public class DatabaseAdminLogin extends JDialog {
 
         //Layout Elements
         final BorderLayout layoutBorderContentPane = new BorderLayout();
-        contentPane = new JPanel(layoutBorderContentPane);
+
+        JPanel contentPane = new JPanel(layoutBorderContentPane);
         setContentPane(contentPane);
 
         southPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
@@ -211,6 +229,7 @@ public class DatabaseAdminLogin extends JDialog {
         setLocationRelativeTo(getParent());
         setPreferredSize(PREFERRED_SIZE);
         setMinimumSize(PREFERRED_SIZE);
+        setMaximumSize(PREFERRED_SIZE);
     }
 
     /**
@@ -243,6 +262,13 @@ public class DatabaseAdminLogin extends JDialog {
                 actionHandler.cancelButtonPressed();
             }
         });
+    }
+
+    /**
+     * Sets the text of password field to "" to increase security.
+     */
+    public final void clearPasswordField() {
+        textFieldPassword.setText("");
     }
 
 }

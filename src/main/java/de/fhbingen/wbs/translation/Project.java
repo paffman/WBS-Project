@@ -4,7 +4,7 @@ import c10n.annotations.De;
 import c10n.annotations.En;
 
 /**
- * Created by Maxi on 20.01.14.
+ * Project related translations.
  */
 public interface Project {
     @En("Project Manager")
@@ -15,11 +15,11 @@ public interface Project {
     @De("Projektname")
     String projectName();
 
-    @En("Project tier")
+    @En("Project depth")
     @De("Projektebene")
     String projectTier();
 
-    @En("Project tiers")
+    @En("Project depth")
     @De("Projektebenen")
     String projectTiers();
 

@@ -16,6 +16,10 @@ public interface Login {
     @De("Passwort")
     String password();
 
+    @De("Altes Passwort")
+    String oldPassword();
+    @De("Neues Passwort")
+    String newPassword();
     @En("Repeat password")
     @De("Passwort wiederholen")
     String repeatPassword();
@@ -32,4 +36,6 @@ public interface Login {
     @De("Nachname")
     String surname();
 
+    @De("Passwort \u00e4ndern")
+    String changePassword();
 }

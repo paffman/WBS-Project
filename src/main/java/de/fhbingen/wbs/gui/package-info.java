@@ -1,4 +1,4 @@
 /**
- * Created by Maxi on 02.01.14.
+ * Parent package for all gui classes.
  */
-package de.gui;
+package de.fhbingen.wbs.gui;

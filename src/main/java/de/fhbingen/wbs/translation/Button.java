@@ -27,10 +27,6 @@ public interface Button {
     @En("Confirm")
     String confirm();
 
-    @De("Sind sie sicher, dass sie {0} wollen?")
-    @En("Are you sure you want to {0}?")
-    String confirmText(String actionName);
-
     @De("Schlie\u00dfen")
     @En("Exit")
     String exit();
