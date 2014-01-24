@@ -2,6 +2,7 @@ package dbaccess.models.mysql;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.util.List;
@@ -30,18 +31,19 @@ public class MySQLEmployeesModelTest {
     }
     
     @Test
-    public final void testAddNewEmployee() {
-        //TODO: funktioniert nicht(bzw nur das erste mal), da in die datenbank "mysql" daten eingetragen werden, welche nicht zurückgesetzt werden => einkommentieren wenn janek/hendrik das berichtigt haben
-        Employee ep=new Employee();
-        ep.setId(10);
+    public final void testAddNewEmployeeAndDeleteEmployee() {
+        Employee ep = new Employee();
         ep.setLogin("test");
+        ep.setPassword("1234");
         ep.setLast_name("Test");
         ep.setFirst_name("Nur ein");
         ep.setProject_leader(true);
         ep.setDaily_rate(42.5);
         ep.setTime_preference(10);
-       /* empModel.addNewEmployee(ep);
-        Employee employee=empModel.getEmployee("test");
+
+        empModel.addNewEmployee(ep);
+
+        Employee employee = empModel.getEmployee("test");
         assertThat(employee, notNullValue());
         assertThat(employee.getId(),equalTo(5));
         assertThat(employee.getLast_name(),equalTo("Test"));
@@ -49,8 +51,13 @@ public class MySQLEmployeesModelTest {
         assertThat(employee.isProject_leader(),equalTo(true));
         assertThat(employee.getDaily_rate(),equalTo(42.5));
         assertThat(employee.getTime_preference(),equalTo(10));
+
+        empModel.deleteEmployee(employee.getId());
+
+        Employee deletedEmpl = empModel.getEmployee("test");
+        assertThat(deletedEmpl, nullValue());
+
         TestData.reloadData(SQLExecuter.getConnection());
-        */
     }
     
     @Test
