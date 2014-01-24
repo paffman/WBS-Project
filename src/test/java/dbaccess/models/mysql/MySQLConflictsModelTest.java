@@ -72,6 +72,7 @@ public class MySQLConflictsModelTest {
     
     @Test
     public final void testDeleteConflict() {
+        //delete a conflict with id
         cfModel.deleteConflict(1);
         List<Conflict> cfList = cfModel.getConflicts();
         assertThat(cfList, notNullValue());
@@ -84,6 +85,7 @@ public class MySQLConflictsModelTest {
     
     @Test
     public final void testDeleteConflicts() {
+        //Delete all conflicts
         cfModel.deleteConflicts();
         List<Conflict> cfList = cfModel.getConflicts();
         assertThat(cfList, notNullValue());

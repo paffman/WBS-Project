@@ -20,6 +20,7 @@
 package dbaccess.models.mysql;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -47,11 +48,19 @@ public class MySQLConflictsModel implements ConflictsModel {
     public void addNewConflict(Conflict conflict) {
         connection = SQLExecuter.getConnection();
         try {
-            Statement stm = connection.createStatement();
-            stm.execute("CALL conflicts_new (" + conflict.getFid_wp() + ","
-                    + conflict.getFid_wp_affected() + ","
-                    + conflict.getFid_emp() + "," + conflict.getReason() + ",'"
-                    + new Timestamp(conflict.getOccurence_date().getTime()) + "')");
+            PreparedStatement stm = null;
+
+            String storedProcedure = "CALL conflicts_new (?,?,?,?,?)";
+
+            stm = connection.prepareStatement(storedProcedure);
+            stm.setInt(1, conflict.getFid_wp());
+            stm.setInt(2, conflict.getFid_wp_affected());
+            stm.setInt(3, conflict.getFid_emp());
+            stm.setInt(4, conflict.getReason());
+            stm.setTimestamp(5, new Timestamp(conflict.getOccurence_date().getTime()));
+            
+            stm.execute();
+            
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -94,8 +103,15 @@ public class MySQLConflictsModel implements ConflictsModel {
     public void deleteConflict(int id) {
         connection = SQLExecuter.getConnection();
         try {
-            Statement stm = connection.createStatement();
-            stm.execute("CALL conflicts_delete_by_id(" + id + ")");
+            PreparedStatement stm = null;
+
+            String storedProcedure = "CALL conflicts_delete_by_id (?)";
+
+            stm = connection.prepareStatement(storedProcedure);
+            stm.setInt(1, id);
+         
+            stm.execute();
+            
         } catch (SQLException e) {
             e.printStackTrace();
         }

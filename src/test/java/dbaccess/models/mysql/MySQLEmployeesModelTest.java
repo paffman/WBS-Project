@@ -31,7 +31,7 @@ public class MySQLEmployeesModelTest {
     
     @Test
     public final void testAddNewEmployee() {
-        //TODO: funktioniert nicht(bzw nur das erste mal), da in die datenbank "mysql" daten eingetragen werden, welche nicht zurückgesetzt werden
+        //TODO: funktioniert nicht(bzw nur das erste mal), da in die datenbank "mysql" daten eingetragen werden, welche nicht zurückgesetzt werden => einkommentieren wenn janek/hendrik das berichtigt haben
         Employee ep=new Employee();
         ep.setId(10);
         ep.setLogin("test");
@@ -96,16 +96,18 @@ public class MySQLEmployeesModelTest {
     
     @Test
     public final void testUpdateEmployee() {
-        //TODO: gibt probleme mit umlauten ä,ö,ü z.b. bei "Müller"
         //Setup employee
         Employee ep=empModel.getEmployee("p.pan");
         ep.setProject_leader(true);
+        ep.setDaily_rate(122.25);
             
         empModel.updateEmployee(ep);
         ep=empModel.getEmployee("p.pan");
+        
         assertThat(ep.isProject_leader(),equalTo(true));
+        assertThat(ep.getDaily_rate(),equalTo(122.25));
+        
         TestData.reloadData(SQLExecuter.getConnection());
-        //TODO: implementieren
     }
     
 }

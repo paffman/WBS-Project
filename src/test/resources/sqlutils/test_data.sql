@@ -243,7 +243,8 @@ INSERT INTO wp_allocation (fid_wp, fid_emp) VALUES
 (8, 3);
 
 INSERT INTO analyse_data VALUES
-(1,1,1,'TestanalyseData',2.1,2.2,2.3,2.4,2.5,2.6,2.7,2.8,2.9,3,4,5);
+(1,1,1,'TestanalyseData',2.1,2.2,2.3,2.4,2.5,2.6,2.7,2.8,2.9,3,4,5),
+(2,4,1,'TestanalyseData2',5.1,5.2,5.3,5.4,5.5,5.6,5.7,5.8,5.9,6,7,8);
 
 INSERT INTO conflicts VALUES
 (1,1,2,3,1,'2014-01-22 00:00:00'),

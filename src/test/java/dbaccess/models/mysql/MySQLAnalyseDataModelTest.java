@@ -54,7 +54,7 @@ public class MySQLAnalyseDataModelTest {
         adModel.addNewAnalyseData(ad);
         AnalyseData aData = adModel.getAnalyseData(2);
         assertThat(aData, notNullValue());
-        assertThat(aData.getId(), equalTo(2));
+        assertThat(aData.getId(), equalTo(3));
         assertThat(aData.getFid_wp(), equalTo(2));
         assertThat(aData.getFid_baseline(), equalTo(1));
         assertThat(aData.getName(), equalTo("TestData"));
@@ -74,7 +74,6 @@ public class MySQLAnalyseDataModelTest {
         TestData.reloadData(SQLExecuter.getConnection());
     }
     
-    //TODO: Tests müssen noch implementiert werden
     @Test
     public final void testGetAnalyseData() {
 

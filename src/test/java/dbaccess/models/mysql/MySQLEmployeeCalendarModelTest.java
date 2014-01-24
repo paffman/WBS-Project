@@ -36,11 +36,11 @@ public class MySQLEmployeeCalendarModelTest {
     public final void testAddNewEmployeeCalendar() {
         // add a new employee calendar
 
-        // Setup employee calendar
+        
         EmployeeCalendar empCal = new EmployeeCalendar();
 
         try {
-
+            // Setup employee calendar
             empCal.setFid_emp(1);
             empCal.setBegin_time(dateFormat.parse("2014-01-13 00:00:00"));
             empCal.setEnd_time(dateFormat.parse("2014-01-14 11:30:45"));
@@ -155,13 +155,14 @@ public class MySQLEmployeeCalendarModelTest {
     @Test
     public final void testGetEmployeeCalendarInDateRange1() {
         //get all employee calendars in a specific period mode2
-        //TODO: was macht es => test implementieren
+        //TODO: was macht das
+        
         List<EmployeeCalendar> empCalList;
         try {
-            empCalList = empCalModel.getEmployeeCalendarInDateRange(dateFormat.parse("2014-01-10 00:00:00"),dateFormat.parse("2014-01-15 00:00:00"),true);
-            /*assertThat(empCalList, notNullValue());
+            empCalList = empCalModel.getEmployeeCalendarInDateRange(dateFormat.parse("2014-01-15 00:00:00"),dateFormat.parse("2014-01-20 00:00:00"),true);
+            assertThat(empCalList, notNullValue());
             assertThat(empCalList.size(),equalTo(1));
-            assertThat(empCalList.get(0).getFid_emp(),equalTo(3));*/
+            assertThat(empCalList.get(0).getFid_emp(),equalTo(3));
             
         } catch (ParseException e) {
             e.printStackTrace();
