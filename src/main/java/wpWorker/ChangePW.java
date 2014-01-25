@@ -37,7 +37,6 @@ public class ChangePW {
 	protected ChangePWGUI gui;
 	private ChangePW dies;
 	protected Worker usr;
-	protected SQLExecuter sqlExec;
 	
 	/**
 	 * Konstruktoraufruf zum ändern des Passworts des aktuellen Users
@@ -47,7 +46,6 @@ public class ChangePW {
 		dies = this;
 		this.usr = usr;
 		gui = new ChangePWGUI();
-		sqlExec = new SQLExecuter();
 		new ChangePWButtonAction(dies);
 	}
 	

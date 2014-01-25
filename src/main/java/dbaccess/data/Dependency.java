@@ -19,6 +19,82 @@
 
 package dbaccess.data;
 
-public class Dependency {
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
+/**
+ * A simple container class representing a Dependency. It mirrors all the
+ * dependencies fields in the dependencies table.
+ */
+public class Dependency{
+    
+    /** Work package which must be done before another work package. */
+    private int fid_wp_predecessor;
+    
+    /** Work package which has a work package that must be done before it. */
+    private int fid_wp_successor;
+    
+    /**
+     * Creates a <code>Dependency</code> based on a <code>ResultSet</code>.
+     *
+     * @param resSet The result set containing the data
+     * @return A <code>Dependency</code> object
+     */
+    public static final Dependency fromResultSet(ResultSet resSet){
+        Dependency dp=new Dependency();
+
+        try {
+            dp.setFid_wp_predecessor(resSet.getInt("fid_wp_predecessor"));
+            dp.setFid_wp_successor(resSet.getInt("fid_wp_successor"));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        
+        return dp;
+    }
+    
+    /**
+     * Returns the work package which has to be done before.
+     *
+     * @return The work packages id
+     */
+    public int getFid_wp_predecessor() {
+        return fid_wp_predecessor;
+    }
+
+    /**
+     * Sets work package which has to be done before.
+     *
+     * @param fid_wp_predeccessor The id of the work package
+     */
+    public void setFid_wp_predecessor(int fid_wp_predecessor) {
+        this.fid_wp_predecessor = fid_wp_predecessor;
+    }
+
+    /**
+     * Returns the work package which has to be done after.
+     *
+     * @return The workpackages id
+     */
+    public int getFid_wp_successor() {
+        return fid_wp_successor;
+    }
+
+    /**
+     * Sets work package which has to be done after.
+     *
+     * @param fid_wp_successor The id of the work package
+     */
+    public void setFid_wp_successor(int fid_wp_successor) {
+        this.fid_wp_successor = fid_wp_successor;
+    }
+
+    /**
+     * Convert the dependencies to a String
+     *
+     * @return the dependencies as String
+     */
+    public String toString(){
+        return fid_wp_predecessor+" "+fid_wp_successor;
+    }
 }

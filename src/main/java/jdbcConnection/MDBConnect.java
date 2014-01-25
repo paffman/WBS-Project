@@ -7,6 +7,7 @@ import java.util.Properties;
 import javax.swing.JOptionPane;
 
 /**
+ * @deprecated
  * Studienprojekt:	WBS
  * 
  * Kunde:				Pentasys AG, Jens von Gersdorff

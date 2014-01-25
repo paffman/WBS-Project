@@ -36,7 +36,7 @@ public interface BaselineModel {
      * A method to get all baselines from the project.
      * @returns Returns a list with all baselines from the project.
      */
-    public List<?> getBaseline();
+    public List<Baseline> getBaseline();
     
     /**
      * A method to get a specific baseline.

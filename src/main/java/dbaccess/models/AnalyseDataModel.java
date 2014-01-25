@@ -44,6 +44,6 @@ public interface AnalyseDataModel {
      * @param baseline Baseline for which the data is analysed.
      * @return Returns a list with the data from the selected baseline.
      */
-    public List<?> getAnalyseDataForBaseline(int baseline);
+    public List<AnalyseData> getAnalyseDataForBaseline(int baseline);
     
 }
