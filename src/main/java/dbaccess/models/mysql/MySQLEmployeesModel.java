@@ -44,7 +44,7 @@ public class MySQLEmployeesModel implements EmployeesModel {
     private Connection connection;
 
     @Override
-    public void addNewEmployee(Employee employee) {
+    public void addNewEmployee(final Employee employee) {
         connection = SQLExecuter.getConnection();
         try {
             Statement stm = connection.createStatement();
@@ -85,14 +85,15 @@ public class MySQLEmployeesModel implements EmployeesModel {
     }
 
     @Override
-    public Employee getEmployee(String login) {
+    public Employee getEmployee(final String login) {
         connection = SQLExecuter.getConnection();
         Employee employee = null;
         try {
             ResultSet result = null;
             Statement stm = connection.createStatement();
-            result = stm.executeQuery("CALL employees_select_by_login ('"
-                    + login + "')");
+            result =
+                    stm.executeQuery("CALL employees_select_by_login ('"
+                            + login + "')");
 
             if (result.next()) {
                 employee = Employee.fromResultSet(result);
@@ -105,17 +106,15 @@ public class MySQLEmployeesModel implements EmployeesModel {
         return null;
     }
 
-    // TODO: die procedure macht nicht das was ich erwartet hätte...
     @Override
-    public List<Employee> getEmployee(boolean isLeader) {
+    public List<Employee> getEmployee(final boolean noLeaders) {
         connection = SQLExecuter.getConnection();
         List<Employee> empList = new ArrayList<Employee>();
         try {
             ResultSet result = null;
             Employee employee = null;
             Statement stm = connection.createStatement();
-            result = stm.executeQuery("CALL employees_select (" + isLeader
-                    + ")");
+            result = stm.executeQuery("CALL employees_select(true)");
 
             while (result.next()) {
                 employee = Employee.fromResultSet(result);
@@ -130,7 +129,7 @@ public class MySQLEmployeesModel implements EmployeesModel {
     }
 
     @Override
-    public void updateEmployee(Employee employee) {
+    public void updateEmployee(final Employee employee) {
         connection = SQLExecuter.getConnection();
         try {
             Statement stm = connection.createStatement();
@@ -148,7 +147,7 @@ public class MySQLEmployeesModel implements EmployeesModel {
     }
 
     @Override
-    public void deleteEmployee(int id) {
+    public void deleteEmployee(final int id) {
         connection = SQLExecuter.getConnection();
         try {
             Statement stm = connection.createStatement();
@@ -156,5 +155,11 @@ public class MySQLEmployeesModel implements EmployeesModel {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public Employee getEmployee(final int id) {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

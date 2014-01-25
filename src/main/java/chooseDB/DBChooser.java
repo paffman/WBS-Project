@@ -138,15 +138,47 @@ public class DBChooser {
             return;
         }
 
-        // %% Check project-leader
+        // check Project Leader authority and semaphore
         if (pl) {
-
-            // %% Check Semaphore if project-leader
-
+            if (!employee.isProject_leader()) {
+                JOptionPane.showMessageDialog(gui,
+                        "Der Benutzer hat keine Projekleiter Berechtigungen!");
+                return;
+            }
+            if (!DBModelManager.getSemaphoreModel().enterSemaphore("pl",
+                    employee.getId())) {
+                int answer =
+                        JOptionPane
+                                .showConfirmDialog(
+                                        gui,
+                                        "Es ist bereits ein Projektleiter "
+                                                + "eingeloggt. Wollen sie sich "
+                                                + "trotzdem einloggen? "
+                                                + "Warnung: "
+                                                + "Die Daten können "
+                                                + "inkonsistent werden, "
+                                                + "wenn mehrere "
+                                                + "Projektleiter daran "
+                                                + "arbeiten.",
+                                        "Projektleiterlogin",
+                                        JOptionPane.YES_NO_OPTION);
+                if (answer == JOptionPane.YES_OPTION) {
+                    if (!DBModelManager.getSemaphoreModel().enterSemaphore(
+                            "pl", employee.getId(), true)) {
+                        JOptionPane.showMessageDialog(gui,
+                                "Der Projektleiterlogin ist fehlgeschlagen!");
+                        return;
+                    }
+                } else {
+                    return;
+                }
+            }
         }
 
         // create user data
-        User userData = null;
+        User userData =
+                new User(employee.getLogin(), employee.getId(),
+                        employee.getLast_name(), employee.getFirst_name(), pl);
 
         // start WBS-Tool
         final User threadUser = userData;

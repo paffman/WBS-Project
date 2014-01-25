@@ -13,13 +13,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+
 import javax.swing.JOptionPane;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import chooseDB.DBChooser;
 import dbServices.SemaphoreService;
-
-import login.Login;
 import wpWorker.ChangePW;
 
 /**
@@ -124,7 +124,7 @@ public class WPOverviewButtonAction {
 
 		gui.miAbmelden.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				new Login();
+				new DBChooser();
 				gui.dispose();
 				Controller.leaveDB();
 			}

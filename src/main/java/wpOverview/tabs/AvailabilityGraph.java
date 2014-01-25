@@ -375,8 +375,8 @@ public class AvailabilityGraph {
 
 			stdTasks.add(createWorkerTask(worker, CalendarService.getRealWorkerAvailability(worker.getLogin(), actualStart.getTime(), actualEnd.getTime())));
 			if (showManualAv) {
-				notTasks.add(createWorkerTask(worker, CalendarService.getAllWorkerAvailability(worker.getLogin(), false)));
-				manualTasks.add(createWorkerTask(worker, CalendarService.getAllWorkerAvailability(worker.getLogin(), true)));
+				notTasks.add(createWorkerTask(worker, CalendarService.getAllWorkerAvailability(worker.getId(), false)));
+				manualTasks.add(createWorkerTask(worker, CalendarService.getAllWorkerAvailability(worker.getId(), true)));
 			}
 
 		}
