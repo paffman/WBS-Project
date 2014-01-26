@@ -1,5 +1,7 @@
 package chooseDB;
 
+import c10n.C10N;
+import c10n.annotations.DefaultC10NAnnotations;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -34,7 +36,7 @@ import jdbcConnection.SQLExecuter;
  * Lin Yang<br/>
  * Ruft die DBChooserGUI auf<br/>
  * setzt nach der Pfadeingabe den Pfad in der MDBConnect Klasse<br/>
- * 
+ *
  * @author Samson von Graevenitz, Daniel Metzler, Michael Anstatt
  * @version 2.0 - 2012-08-20
  */
@@ -164,7 +166,7 @@ public class DBChooser {
 
     /**
      * This method queries the unique id in the id_wbs db for a given dbName
-     * 
+     *
      * @param host
      *            Host where db is located.
      * @param db
@@ -185,7 +187,7 @@ public class DBChooser {
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(gui,
                     "Verbindung konnte nicht aufgebaut werden! "
-                            + "Es wurde kein Index-Eintrag für "
+                            + "Es wurde kein Index-Eintrag fï¿½r "
                             + "die Datenbank gefunden.");
             return null;
         }
@@ -193,7 +195,7 @@ public class DBChooser {
 
     /**
      * Tries out the currently used database connection.
-     * 
+     *
      * @return Returns true if the connection works. False if otherwise.
      * @throws Exception
      *             throws any occurring exception
@@ -222,7 +224,7 @@ public class DBChooser {
      * @param db
      *            name of the database.
      * @param user
-     *            user of the database, without database index präfix.
+     *            user of the database, without database index prï¿½fix.
      * @param indexPw
      *            password for the index database.
      */
