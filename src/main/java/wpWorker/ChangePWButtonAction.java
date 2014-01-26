@@ -6,6 +6,8 @@ import java.sql.ResultSet;
 
 import javax.swing.JOptionPane;
 
+import c10n.C10N;
+import de.fhbingen.wbs.translation.Messages;
 import jdbcConnection.SQLExecuter;
 
 import wpOverview.WPOverviewGUI;
@@ -13,9 +15,11 @@ import wpOverview.WPOverviewGUI;
 public class ChangePWButtonAction {
 
 	private ChangePW changepw;
-	
-	public ChangePWButtonAction(ChangePW changepw) {
-		this.changepw = changepw;
+    private final Messages messages;
+
+    public ChangePWButtonAction(ChangePW changepw) {
+        messages = C10N.get(Messages.class);
+        this.changepw = changepw;
 		addButtonAction();
 	}
 
@@ -25,7 +29,7 @@ public class ChangePWButtonAction {
 	 */
 	public void addButtonAction(){
 		changepw.gui.txfUser.setText(changepw.usr.getName());
-		
+
 		changepw.gui.btnOk.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				//Prüfung ob alle Felder ausgefüllt
@@ -38,30 +42,34 @@ public class ChangePWButtonAction {
 						if(changepw.checkNewPW()){
 							//setzen des neuen Passwortes
 							changepw.setNewPassword(user);
-							WPOverviewGUI.setStatusText("Passwort geändert");
+							WPOverviewGUI.setStatusText(messages.passwordChangeConfirm());
 							changepw.gui.dispose();
-							
+
 						}else{
-							JOptionPane.showMessageDialog(changepw.gui, "Passwort und Bestätigung stimmen nicht überein",null,
+							JOptionPane.showMessageDialog(changepw.gui,
+                                    messages.passwordsNotMatchingError(),
+                                    null,
 									JOptionPane.INFORMATION_MESSAGE);
 						}
 					} else{
-						JOptionPane.showMessageDialog(changepw.gui, "altes Passwort inkorrekt",null,
+						JOptionPane.showMessageDialog(changepw.gui,
+                                messages.passwordOldWrong(),null,
 								JOptionPane.INFORMATION_MESSAGE);
 					}
 				}else{
-					JOptionPane.showMessageDialog(changepw.gui, "Felder wurden nicht vollständig eingegeben",null,
+					JOptionPane.showMessageDialog(changepw.gui, messages.fillAllFieldsError(),
+                            null,
 							JOptionPane.INFORMATION_MESSAGE);
 				}
-			
+
 			}
 		});
-		
+
 		changepw.gui.btnCancel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				changepw.gui.dispose();
 			}
 		});
-		
+
 	}
 }
