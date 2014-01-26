@@ -1,183 +1,187 @@
 package wpAddAufwand;
 
+import dbServices.WorkerService;
 import globals.Workpackage;
-
-import java.sql.*;
+import java.sql.Date;
+import java.sql.ResultSet;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
-
-import dbServices.WorkerService;
-
-
 import jdbcConnection.SQLExecuter;
-import wpShow.*;
+import wpShow.WPShow;
 import wpWorker.Worker;
 
 /**
- * Studienprojekt:	WBS
- * 
- * Kunde:				Pentasys AG, Jens von Gersdorff<br/>
- * Projektmitglieder:	Andre Paffenholz, <br/>
- * 						Peter Lange, <br/>
- * 						Daniel Metzler,<br/>
- * 						Samson von Graevenitz<br/>
- * 
- * Studienprojekt:	PSYS WBS 2.0<br/>
- * 
- * Kunde:		Pentasys AG, Jens von Gersdorff<br/>
- * Projektmitglieder:	<br/>
- *			Michael Anstatt,<br/>
- *			Marc-Eric Baumgärtner,<br/>
- *			Jens Eckes,<br/>
- *			Sven Seckler,<br/>
- *			Lin Yang<br/>
- * 
- * Funktionen zum Hinzufügen eines Arbeitspaketes<br/>
- * 
- * @author Daniel Metzler, Michael Anstatt
- * @version 2.0 2012-08-21
+ * Funktionen zum Hinzufügen eines Arbeitspaketes.
  */
 public class AddAufwand {
-	
-	/**
-	 * Variablen für die AddAufwandGui und den SQLExecuter
-	 * Variablen für den User, WPID's und WPName
-	 */
-	public AddAufwandGui gui;
-	public WPShow wpshow;
-	private Workpackage wp;
-	
-	
-	/**
-	 * Default-Konstruktor
-	 * @param workpackage 
-	 * @param wpID ID des Arbeitspakets
-	 * @param usr Benutzer dessen Aufwand eingetragen werden soll
-	 * @param show WPSHow GUI zur Referenzierung
-	 * @param wpname Names des Arbeitspaketes
-	 * Werte aus der WPShow werden übergeben
-	 * 
-	 */
-	public AddAufwand(WPShow wpshow, Workpackage wp){
-		gui = new AddAufwandGui();
-		this.wp = wp;
-		this.wpshow = wpshow;
-		new AddAufwandButtonAction(this);
-		initialize();
-		gui.setTitle("Aufwand für " + wp);
-		gui.setLocationRelativeTo(wpshow.getMainFrame());
-		gui.setLocation((int)gui.getLocation().getX()-gui.getHeight()/2, (int) (gui.getLocation().getY()-gui.getWidth()/2));
-	}
-	
-	
-	/**
-	 * wird im Konstruktor aufgerufen
-	 * Die LVLID's werden initialisiert durch die im Konstrukor übergebene wpID
-	 * Textfelder für die ArbeitspaketID und den Arbeitspaket Name werden gefüllt
-	 * wenn Projektleiterrechte vorliegen wird die ComboBox für die Benutzer mit allen zuständigen für dieses WP hinzugefügt
-	 * ansonsten nur der Mitarbeiter selbst 
-	 */
-	public void initialize(){	
-	
-		gui.txfNr.setText(wp.getStringID());
-		gui.txfName.setText(wp.getName());
-		
-		List<Worker> allWorkers = WorkerService.getRealWorkers();
-		List<String> workerIDs = wp.getWorkers();
-		List<Worker> dummies = new ArrayList<Worker>();
-		
-		for(String actualID : workerIDs) {
-			dummies.add(new Worker(actualID));
-		}
-		
-		if(wpshow.getUser().getProjLeiter()){
-			for(Worker actualWorker : allWorkers) {
-				if(dummies.contains(actualWorker)) {
-					gui.cobUser.addItem(actualWorker);
-				}
-			}
-		} else{
-			for(Worker actualWorker : allWorkers) {
-				if(dummies.contains(actualWorker) && wpshow.getUser().getLogin().equals(actualWorker.getLogin())) {
-					gui.cobUser.addItem(actualWorker);
-					gui.cobUser.setSelectedItem(actualWorker);
-				}
-			}
-			
-			gui.cobUser.setEnabled(false);
-		}	
-	}	
-	
-	
 
-	/**
-	 * prüft ob alle Eingabe ausgefüllt sind
-	 * @return true/false, je nachdem ob Felder gefüllt oder nicht
-	 */
-	public boolean checkFieldsFilled(){
-		if(gui.txfBeschreibung.getText().length() > 0 &&
-				gui.txfAufwand.getText().length() > 0){
-			return true;
-		}
-		return false;
-	}
-			
-	
-	
-	/**
-	 * wird vom Betätigen des Buttons für Editieren aufgerufen
-	 * Der neue Aufwand wird in die "Aufwand"-Tabelle geschrieben
-	 * @return true wenn Schreiben erfolgreich war, bei Fehler false
-	 */
-	public boolean addAufwand(){					
-		try{
-			
-			//Prüfen, ob Datum valide ist
-			String[] tmpDate;
-			int month, day;
-						
-			if(!gui.txfDatum.getText().startsWith(".")){
-				tmpDate = gui.txfDatum.getText().split("\\.");
-				day = Integer.parseInt(tmpDate[0]);
-				month = Integer.parseInt(tmpDate[1]);
-				if(day < 1 || day > 31 || month < 1 || month > 12)
-						return false;
-			}
-			else
-				return false;
-			
-			//Datum wird vom Textfeld "Datum" geholt und als SQL Date umgewandelt (nötig für das Reinschreiben in die Datenbank-Tabelle)
-			java.sql.Date dte=null;
-			SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy");
-			java.util.Date dt = formatter.parse(gui.txfDatum.getText());
-			dte=new java.sql.Date(dt.getTime());
-			//Kommas des Textfeldes Aufwand werden durch Punkte ersetzt, damit es zu keinen Fehlern kommt
-			String myaufwand = gui.txfAufwand.getText().replace(",", ".");
-			
-			String login = gui.cobUser.getSelectedItem().toString();   
-		    int loginIndex = login.indexOf("|");
-		    String userLogin = login.substring(0,loginIndex-1);
-			//neuer Aufwand wird in die Datenbanktabelle Aufwand geschrieben
-			ResultSet rs1 = SQLExecuter.executeQuery("SELECT * FROM  Aufwand");
-			rs1.moveToInsertRow();
-			rs1.updateInt("FID_Proj", 1);
-			rs1.updateInt("LVL1ID", wp.getLvl1ID());
-			rs1.updateInt("LVL2ID", wp.getLvl2ID());
-			rs1.updateInt("LVL3ID", wp.getLvl3ID());
-			rs1.updateString("LVLxID", wp.getLvlxID());
-			rs1.updateString("FID_Ma", userLogin);
-			rs1.updateDate("Datum", dte);
-			rs1.updateDouble("Aufwand", Double.parseDouble(myaufwand));
-			rs1.updateString("Beschreibung", gui.txfBeschreibung.getText());	
-			rs1.insertRow();
-			rs1.close();	
-			return true;
-			
-		} catch (Exception e) {		
-			e.printStackTrace();
-			return false;
-		}
-				
-	}
+    /**
+     * UI element for aufwand entry.
+     */
+    private final AddAufwandGui gui;
+    /**
+     * Work package window.
+     */
+    private final WPShow wpshow;
+    /**
+     * Current work package.
+     */
+    private final Workpackage wp;
+
+    /**
+     * Maximum days a month can have.
+     */
+    private static final int MAX_DAY_OF_MONTH = 31;
+    /**
+     * Maximum month a year can have.
+     */
+    private static final int MAX_MONTH_OF_YEAR = 12;
+
+    /**
+     * Default-Konstruktor.
+     *
+     * @param workpackage            workpackage.
+     * @param show        WPSHow GUI zur Referenzierung
+     */
+    public AddAufwand(final WPShow show, final Workpackage workpackage) {
+        gui = new AddAufwandGui();
+        this.wp = workpackage;
+        this.wpshow = show;
+        new AddAufwandButtonAction(this);
+        initialize();
+        getGui().setTitle("Aufwand für " + workpackage);
+        getGui().setLocationRelativeTo(show.getMainFrame());
+        getGui().setLocation((int) getGui().getLocation().getX() - getGui()
+                .getHeight() / 2, (int) (getGui().getLocation().getY()
+                - getGui().getWidth() / 2));
+    }
+
+    /**
+     * Wird im Konstruktor aufgerufen.
+     * Die LVLID's werden initialisiert durch die im Konstrukor übergebene wpID
+     * Textfelder für die ArbeitspaketID und den Arbeitspaket Name werden
+     * gefüllt
+     * wenn Projektleiterrechte vorliegen wird die ComboBox für die Benutzer
+     * mit allen zuständigen für dieses WP hinzugefügt
+     * ansonsten nur der Mitarbeiter selbst
+     */
+    private void initialize() {
+
+        getGui().getTxfNr().setText(wp.getStringID());
+        getGui().getTxfName().setText(wp.getName());
+
+        List<Worker> allWorkers = WorkerService.getRealWorkers();
+        List<String> workerIDs = wp.getWorkers();
+        List<Worker> dummies = new ArrayList<>();
+
+        for (String actualID : workerIDs) {
+            dummies.add(new Worker(actualID));
+        }
+
+        if (getWpshow().getUser().getProjLeiter()) {
+            for (Worker actualWorker : allWorkers) {
+                if (dummies.contains(actualWorker)) {
+                    getGui().getCobUser().addItem(actualWorker);
+                }
+            }
+        } else {
+            for (Worker actualWorker : allWorkers) {
+                if (dummies.contains(actualWorker) && getWpshow().getUser()
+                        .getLogin().equals(actualWorker.getLogin())) {
+                    getGui().getCobUser().addItem(actualWorker);
+                    getGui().getCobUser().setSelectedItem(actualWorker);
+                }
+            }
+
+            getGui().getCobUser().setEnabled(false);
+        }
+    }
+
+    /**
+     * Prüft ob alle Eingabe ausgefüllt sind.
+     *
+     * @return true/false, je nachdem ob Felder gefüllt oder nicht
+     */
+    public final boolean checkFieldsFilled() {
+        return getGui().getTxfBeschreibung().getText().length() > 0 && getGui().getTxfAufwand().getText().length() > 0;
+    }
+
+    /**
+     * Wird vom Betätigen des Buttons für Editieren aufgerufen.
+     * Der neue Aufwand wird in die "Aufwand"-Tabelle geschrieben.
+     *
+     * @return true wenn Schreiben erfolgreich war, bei Fehler false
+     */
+    public final boolean addAufwand() {
+        try {
+
+            //Prüfen, ob Datum valide ist
+            String[] tmpDate;
+            int month, day;
+
+            if (!getGui().getTxfDatum().getText().startsWith(".")) {
+                tmpDate = getGui().getTxfDatum().getText().split("\\.");
+                day = Integer.parseInt(tmpDate[0]);
+                month = Integer.parseInt(tmpDate[1]);
+                if (day < 1 || day > MAX_DAY_OF_MONTH || month < 1 || month
+                        > MAX_MONTH_OF_YEAR) {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+
+            //Datum wird vom Textfeld "Datum" geholt und als SQL Date
+            // umgewandelt (nötig für das Reinschreiben in die
+            // Datenbank-Tabelle)
+            SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy");
+            java.util.Date dt = formatter.parse(getGui().getTxfDatum().getText());
+            Date dte = new Date(dt.getTime());
+            //Kommas des Textfeldes Aufwand werden durch Punkte ersetzt,
+            // damit es zu keinen Fehlern kommt
+            String myaufwand = getGui().getTxfAufwand().getText().replace(",", ".");
+
+            String login = getGui().getCobUser().getSelectedItem().toString();
+            int loginIndex = login.indexOf("|");
+            String userLogin = login.substring(0, loginIndex - 1);
+            //neuer Aufwand wird in die Datenbanktabelle Aufwand geschrieben
+            ResultSet rs1 = SQLExecuter.executeQuery("SELECT * FROM  Aufwand");
+            rs1.moveToInsertRow();
+            rs1.updateInt("FID_Proj", 1);
+            rs1.updateInt("LVL1ID", wp.getLvl1ID());
+            rs1.updateInt("LVL2ID", wp.getLvl2ID());
+            rs1.updateInt("LVL3ID", wp.getLvl3ID());
+            rs1.updateString("LVLxID", wp.getLvlxID());
+            rs1.updateString("FID_Ma", userLogin);
+            rs1.updateDate("Datum", dte);
+            rs1.updateDouble("Aufwand", Double.parseDouble(myaufwand));
+            rs1.updateString("Beschreibung",
+                    getGui().getTxfBeschreibung().getText());
+            rs1.insertRow();
+            rs1.close();
+            return true;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+
+    }
+
+    /**
+     * Gets GUI.
+     * @return gui instance.
+     */
+    public final AddAufwandGui getGui() {
+        return gui;
+    }
+
+    /**
+     * Gets work package ui element.
+     * @return work package ui element.
+     */
+    public final WPShow getWpshow() {
+        return wpshow;
+    }
 }
