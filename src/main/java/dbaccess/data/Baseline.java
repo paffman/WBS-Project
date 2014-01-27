@@ -76,7 +76,7 @@ public class Baseline {
      *
      * @param id The id of the baseline
      */
-    public void setId(int id) {
+    private void setId(int id) {
         this.id = id;
     }
 

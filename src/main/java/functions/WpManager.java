@@ -82,7 +82,7 @@ public class WpManager {
 		if (list.setAncestor(anchestor, main)) {
 			// System.out.println("System: Setze " + anchestor.getStringID() + " als Vorgänger von " + main);
 			WorkpackageService.setAncestor(main.getStringID(), anchestor.getStringID());
-			WPOverview.throwConflict(new Conflict(new Date(System.currentTimeMillis()), Conflict.CHANGED_DEPENDECIES, WPOverview.getUser().getLogin(), main));
+			WPOverview.throwConflict(new Conflict(new Date(System.currentTimeMillis()), Conflict.CHANGED_DEPENDECIES, WPOverview.getUser().getId(), main));
 			return true;
 		} else {
 			return false;
@@ -101,7 +101,7 @@ public class WpManager {
 		if (list.setFollower(follower, main)) {
 			// System.out.println("System: Setze " + follower.getStringID() + " als Nachfolger von " + main);
 			WorkpackageService.setFollower(main.getStringID(), follower.getStringID());
-			WPOverview.throwConflict(new Conflict(new Date(System.currentTimeMillis()), Conflict.CHANGED_DEPENDECIES, WPOverview.getUser().getLogin(), main));
+			WPOverview.throwConflict(new Conflict(new Date(System.currentTimeMillis()), Conflict.CHANGED_DEPENDECIES, WPOverview.getUser().getId(), main));
 			return true;
 		} else {
 			return false;
@@ -118,7 +118,7 @@ public class WpManager {
 	public static boolean removeAncestor(Workpackage ancestor, Workpackage main) {
 		list.removeAncestor(ancestor, main);
 		if (WorkpackageService.deleteAncestor(main.getStringID(), ancestor.getStringID())) {
-			WPOverview.throwConflict(new Conflict(new Date(System.currentTimeMillis()), Conflict.CHANGED_DEPENDECIES, WPOverview.getUser().getLogin(), main));
+			WPOverview.throwConflict(new Conflict(new Date(System.currentTimeMillis()), Conflict.CHANGED_DEPENDECIES, WPOverview.getUser().getId(), main));
 			return true;
 		} else {
 			System.out.println("Fehler beim loeschen aus der Datenbank");
@@ -137,7 +137,7 @@ public class WpManager {
 	public static boolean removeFollower(Workpackage follower, Workpackage main) {
 		list.removeFollower(follower, main);
 		if (WorkpackageService.deleteFollower(main.getStringID(), follower.getStringID())) {
-			WPOverview.throwConflict(new Conflict(new Date(System.currentTimeMillis()), Conflict.CHANGED_DEPENDECIES, WPOverview.getUser().getLogin(), main));
+			WPOverview.throwConflict(new Conflict(new Date(System.currentTimeMillis()), Conflict.CHANGED_DEPENDECIES, WPOverview.getUser().getId(), main));
 			return true;
 		} else {
 			System.out.println("Fehler beim loeschen aus der Datenbank");
@@ -163,7 +163,7 @@ public class WpManager {
 							for (String actualWorker : removeWp.getWorkers()) {
 								removeWp.removeWorker(actualWorker);
 							}
-							WPOverview.throwConflict(new Conflict(new Date(System.currentTimeMillis()), Conflict.DELETED_WP, WPOverview.getUser().getLogin(), WpManager.getRootAp()));
+							WPOverview.throwConflict(new Conflict(new Date(System.currentTimeMillis()), Conflict.DELETED_WP, WPOverview.getUser().getId(), WpManager.getRootAp()));
 							list.removeWp(removeWp);
 						} else {
 							JOptionPane.showMessageDialog(null, "Paket kann nicht aus der Datenbank gelöscht werden!");

@@ -29,18 +29,10 @@ import sqlutils.TestData;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({ MySQLWorkpackageModelTest.class,
-    MySQLSemaphoreModelTest.class,
-    MySQLWorkpackageAllocationModelTest.class,
-    MySQLWorkEffortModelTest.class,
-    MySQLPlannedValueModelTest.class,
-    MySQLProjectModelTest.class,
-    MySQLHolidaysCalendarModelTest.class,
-    MySQLConflictsModelTest.class,
-    MySQLAnalyseDataModelTest.class,
-    MySQLBaselineModelTest.class,
-    MySQLDependenciesModelTest.class,
-    MySQLEmployeeCalendarModelTest.class,
-    MySQLEmployeesModelTest.class })
+        MySQLSemaphoreModelTest.class,
+        MySQLWorkpackageAllocationModelTest.class,
+        MySQLWorkEffortModelTest.class, MySQLPlannedValueModelTest.class,
+        MySQLProjectModelTest.class, MySQLHolidaysCalendarModelTest.class })
 public class MySQLModelsTestSuite {
 
     @BeforeClass

@@ -78,6 +78,7 @@ public interface HolidaysCalendarModel {
      * 
      * @param calID
      *            The id from the calendar which is deleted.
+     * @return success of delete action.
      */
-    void deleteHolidayCalendar(int calID);
+    boolean deleteHolidayCalendar(int calID);
 }

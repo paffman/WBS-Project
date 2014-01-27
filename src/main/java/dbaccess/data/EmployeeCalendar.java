@@ -88,7 +88,7 @@ public class EmployeeCalendar {
      *
      * @param id The employee calendars id
      */
-    public void setId(int id) {
+    private void setId(int id) {
         this.id = id;
     }
 

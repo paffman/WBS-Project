@@ -49,10 +49,8 @@ public class MySQLHolidaysCalendarModel implements HolidaysCalendarModel {
         try {
             stm = connection.prepareStatement(storedProcedure);
             stm.setString(1, holCal.getTitle());
-            stm.setTimestamp(2, 
-                    new Timestamp(holCal.getBegin_time().getTime()));
-            stm.setTimestamp(3, 
-                    new Timestamp(holCal.getEnd_time().getTime()));
+            stm.setTimestamp(2, new Timestamp(holCal.getBegin_time().getTime()));
+            stm.setTimestamp(3, new Timestamp(holCal.getEnd_time().getTime()));
             stm.setBoolean(4, holCal.isAvailability());
             stm.setBoolean(5, holCal.isFull_time());
 
@@ -141,8 +139,8 @@ public class MySQLHolidaysCalendarModel implements HolidaysCalendarModel {
     }
 
     @Override
-    public final List<HolidayCalendar> getHolidayCalendar(
-            final Date from, final Date to, final boolean mode2) {
+    public final List<HolidayCalendar> getHolidayCalendar(final Date from,
+            final Date to, final boolean mode2) {
         final Connection connection = SQLExecuter.getConnection();
         List<HolidayCalendar> hcList = new ArrayList<HolidayCalendar>();
 
@@ -192,10 +190,8 @@ public class MySQLHolidaysCalendarModel implements HolidaysCalendarModel {
             stm = connection.prepareStatement(storedProcedure);
             stm.setInt(1, hc.getId());
             stm.setString(2, hc.getTitle());
-            stm.setTimestamp(3, 
-                    new Timestamp(hc.getBegin_time().getTime()));
-            stm.setTimestamp(4, 
-                    new Timestamp(hc.getEnd_time().getTime()));
+            stm.setTimestamp(3, new Timestamp(hc.getBegin_time().getTime()));
+            stm.setTimestamp(4, new Timestamp(hc.getEnd_time().getTime()));
             stm.setBoolean(5, hc.isAvailability());
             stm.setBoolean(6, hc.isFull_time());
 
@@ -214,10 +210,10 @@ public class MySQLHolidaysCalendarModel implements HolidaysCalendarModel {
     }
 
     @Override
-    public final void deleteHolidayCalendar(final int calID) {
+    public final boolean deleteHolidayCalendar(final int calID) {
         final Connection connection = SQLExecuter.getConnection();
         PreparedStatement stm = null;
-
+        boolean success = false;
         String storedProcedure = "CALL holidays_calendar_delete_by_id(?)";
 
         try {
@@ -225,6 +221,7 @@ public class MySQLHolidaysCalendarModel implements HolidaysCalendarModel {
             stm.setInt(1, calID);
 
             stm.execute();
+            success = true;
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
@@ -236,5 +233,6 @@ public class MySQLHolidaysCalendarModel implements HolidaysCalendarModel {
                 e.printStackTrace();
             }
         }
+        return success;
     }
 }

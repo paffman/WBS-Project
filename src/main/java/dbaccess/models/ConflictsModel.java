@@ -29,8 +29,9 @@ public interface ConflictsModel {
     /**
      * A method to add a new conflict to the project.
      * @param conflict The conflict which is added to the project.
+     * @return Success of insert action.
      */
-    public void addNewConflict(Conflict conflict);
+    public boolean addNewConflict(Conflict conflict);
     
     /**
      * A method to get all conflicts.

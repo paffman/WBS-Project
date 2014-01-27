@@ -65,11 +65,7 @@ public class TimeCalc {
 
 	public TimeCalc() {
 		Loader.setLoadingText("initialisieren...");
-		try {
-			ConflictService.deleteAll(); // Alle bisherigen Konflikte verwerfen, sie werden waehrend der Berechnung neu angelegt, falls noch aktuell
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+		ConflictService.deleteAll(); // Alle bisherigen Konflikte verwerfen, sie werden waehrend der Berechnung neu angelegt, falls noch aktuell
 		WPOverview.releaseAllConflicts(); // s.o. nur fuer GUI
 
 		Set<Workpackage> allAp = WpManager.getAllAp();
@@ -149,7 +145,7 @@ public class TimeCalc {
 			if (!actualWp.isIstInaktiv()) {
 				if (actualWp.getEndDateHope() != null && actualWp.getEndDateCalc().after(actualWp.getEndDateHope())) {
 					// Gewuneschtes Enddatum kann nicht eingehalten werden
-					WPOverview.throwConflict(new Conflict(new Date(System.currentTimeMillis()), Conflict.ENDWISH_FAIL, WPOverview.getUser().getLogin(),
+					WPOverview.throwConflict(new Conflict(new Date(System.currentTimeMillis()), Conflict.ENDWISH_FAIL, WPOverview.getUser().getId(),
 							actualWp));
 				}
 				Calendar cal = new GregorianCalendar();
@@ -228,7 +224,7 @@ public class TimeCalc {
 						actualWp.setStartDateCalc(startHope);
 						fillUAPHopes(actualWp, startHope);
 					} else if (actualWp.getStartDateCalc() != null && actualWp.getStartDateHope() != null && actualWp.getStartDateCalc().before(startHope)) {
-						WPOverview.throwConflict(new Conflict(new Date(System.currentTimeMillis()), Conflict.STARTWISH_FAIL, WPOverview.getUser().getLogin(),
+						WPOverview.throwConflict(new Conflict(new Date(System.currentTimeMillis()), Conflict.STARTWISH_FAIL, WPOverview.getUser().getId(),
 								actualWp));
 					}
 
@@ -301,7 +297,7 @@ public class TimeCalc {
 						actualUAP.setStartDateCalc(startHope);
 					} else if (actualUAP.getStartDateCalc() != null && actualUAP.getStartDateHope() != null
 							&& actualUAP.getStartDateCalc().before(avManager.getNextWorkDate(actualUAP.getStartDateHope()))) {
-						WPOverview.throwConflict(new Conflict(new Date(System.currentTimeMillis()), Conflict.STARTWISH_FAIL, WPOverview.getUser().getLogin(),
+						WPOverview.throwConflict(new Conflict(new Date(System.currentTimeMillis()), Conflict.STARTWISH_FAIL, WPOverview.getUser().getId(),
 								actualOAP, actualUAP));
 					}
 				}
@@ -394,7 +390,7 @@ public class TimeCalc {
 			startDate = avManager.getNextWorkDate(uap.getStartDateHope());
 			uap.setStartDateCalc(startDate);
 		} else if (startDate != null && startDate.after(startDate)) {
-			WPOverview.throwConflict(new Conflict(new Date(System.currentTimeMillis()), Conflict.STARTWISH_FAIL, WPOverview.getUser().getLogin(), uap));
+			WPOverview.throwConflict(new Conflict(new Date(System.currentTimeMillis()), Conflict.STARTWISH_FAIL, WPOverview.getUser().getId(), uap));
 		}
 
 		int bac = (int) uap.getBacStunden().doubleValue();

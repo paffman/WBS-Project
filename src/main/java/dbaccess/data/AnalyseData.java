@@ -124,7 +124,7 @@ public class AnalyseData {
      *
      * @param id The new ID
      */
-    public void setId(int id) {
+    private void setId(int id) {
         this.id = id;
     }
     

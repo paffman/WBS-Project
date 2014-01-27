@@ -17,11 +17,10 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import calendar.Availability;
-import calendar.DateFunctions;
 import calendar.Day;
 import dbaccess.DBModelManager;
 import dbaccess.data.EmployeeCalendar;
-import jdbcConnection.SQLExecuter;
+import dbaccess.data.HolidayCalendar;
 import wpOverview.tabs.AvailabilityGraph;
 
 /**
@@ -60,10 +59,8 @@ public class CalendarService {
                     fillMaAvailability(tempSet, DBModelManager
                             .getEmployeeCalendarModel().getEmployeeCalendar());
             tempSet =
-                    fillHolidayAvailability(
-                            tempSet,
-                            SQLExecuter
-                                    .executeQuery("SELECT * FROM Feiertagskalender"));
+                    fillHolidayAvailability(tempSet, DBModelManager
+                            .getHolidaysCalendarModel().getHolidayCalendar());
         } catch (SQLException e) {
             e.printStackTrace();
             return null;
@@ -92,17 +89,9 @@ public class CalendarService {
                             .getEmployeeCalendarModel()
                             .getEmployeeCalendarInDateRange(from, to));
             tempSet =
-                    fillHolidayAvailability(
-                            tempSet,
-                            SQLExecuter
-                                    .executeQuery("SELECT * FROM Feiertagskalender WHERE Startzeit BETWEEN "
-                                            + DateFunctions.getDateString(from)
-                                            + " AND "
-                                            + DateFunctions.getDateString(to)
-                                            + " OR Endzeit BETWEEN "
-                                            + DateFunctions.getDateString(from)
-                                            + " AND "
-                                            + DateFunctions.getDateString(to)));
+                    fillHolidayAvailability(tempSet,
+                            DBModelManager.getHolidaysCalendarModel()
+                                    .getHolidayCalendar(from, to, false));
         } catch (SQLException e) {
             e.printStackTrace();
             return null;
@@ -167,10 +156,8 @@ public class CalendarService {
 
         try {
             tempSet =
-                    fillHolidayAvailability(
-                            tempSet,
-                            SQLExecuter
-                                    .executeQuery("SELECT * FROM Feiertagskalender"));
+                    fillHolidayAvailability(tempSet, DBModelManager
+                            .getHolidaysCalendarModel().getHolidayCalendar());
         } catch (SQLException e) {
             e.printStackTrace();
             return null;
@@ -190,20 +177,10 @@ public class CalendarService {
 
         Set<Availability> tempSet = new HashSet<Availability>();
         try {
-            String query =
-                    "SELECT * FROM Feiertagskalender WHERE (Startzeit < "
-                            + DateFunctions.getDateString(start)
-                            + " AND Endzeit > "
-                            + DateFunctions.getDateString(end)
-                            + ") OR (Startzeit BETWEEN "
-                            + DateFunctions.getDateString(start) + " AND "
-                            + DateFunctions.getDateString(end)
-                            + " OR Endzeit BETWEEN "
-                            + DateFunctions.getDateString(start) + " AND "
-                            + DateFunctions.getDateString(end) + ")";
             tempSet =
                     fillHolidayAvailability(tempSet,
-                            SQLExecuter.executeQuery(query));
+                            DBModelManager.getHolidaysCalendarModel()
+                                    .getHolidayCalendar(start, end, true));
         } catch (SQLException e) {
             e.printStackTrace();
             return null;
@@ -213,7 +190,7 @@ public class CalendarService {
     }
 
     /**
-     * Setzt die Verfuegbarkeit fuer einen bestimmten Mitarbeiter
+     * Setzt die Verfuegbarkeit fuer einen bestimmten Mitarbeiter.
      * 
      * @param workerID
      *            ID des Mitarbeiters fuer den die Verfuegbarkeit gestzt werden
@@ -222,47 +199,34 @@ public class CalendarService {
      *            Verfuegbarkeit des Mitarbeiters.
      * @throws SQLException
      */
-    static public void setWorkerAvailability(String workerID,
-            Availability availability) throws SQLException {
+    public static void setWorkerAvailability(String workerID,
+            Availability availability) {
 
-        ResultSet result =
-                SQLExecuter.executeQuery("SELECT * FROM MAKalender WHERE ID = "
-                        + availability.getId() + ";");
-        try {
-            if (result.next()) {
-                SQLExecuter.executeUpdate("UPDATE MAKalender SET FID_Ma = '"
-                        + availability.getUserID() + "', Startzeit='"
-                        + SQL_DATE_FORMAT.format(availability.getStartTime())
-                        + "', Endzeit='"
-                        + SQL_DATE_FORMAT.format(availability.getEndTime())
-                        + "', Beschreibung='" + availability.getDescription()
-                        + "', Verfuegbar=" + availability.isAvailabe()
-                        + ", Ganztaegig=" + availability.isAllDay()
-                        + " WHERE ID = " + availability.getId() + ";");
-            } else {
-                SQLExecuter
-                        .executeUpdate("INSERT INTO MAKalender (FID_Ma, Startzeit, Endzeit, Beschreibung, Verfuegbar, Ganztaegig) VALUES ('"
-                                + availability.getUserID()
-                                + "', '"
-                                + SQL_DATE_FORMAT.format(availability
-                                        .getStartTime())
-                                + "', '"
-                                + SQL_DATE_FORMAT.format(availability
-                                        .getEndTime())
-                                + "', '"
-                                + availability.getDescription()
-                                + "', "
-                                + availability.isAvailabe()
-                                + ","
-                                + availability.isAllDay() + ");");
-            }
+        EmployeeCalendar empCal =
+                DBModelManager.getEmployeeCalendarModel().getEmployeeCalendar(
+                        availability.getId());
 
-        } catch (SQLException e1) {
-            e1.printStackTrace();
-            throw e1;
-        } finally {
-            result.close();
+        if (empCal != null) {
+            empCal.setFid_emp(availability.getUserID());
+            empCal.setBegin_time(availability.getStartTime());
+            empCal.setEnd_time(availability.getEndTime());
+            empCal.setDescription(availability.getDescription());
+            empCal.setAvailability(availability.isAvailabe());
+            empCal.setFull_time(availability.isAllDay());
+            DBModelManager.getEmployeeCalendarModel().updateEmployeeCalendar(
+                    empCal);
+        } else {
+            empCal = new EmployeeCalendar();
+            empCal.setFid_emp(availability.getUserID());
+            empCal.setBegin_time(availability.getStartTime());
+            empCal.setEnd_time(availability.getEndTime());
+            empCal.setDescription(availability.getDescription());
+            empCal.setAvailability(availability.isAvailabe());
+            empCal.setFull_time(availability.isAllDay());
+            DBModelManager.getEmployeeCalendarModel().addNewEmployeeCalendar(
+                    empCal);
         }
+
     }
 
     /**
@@ -273,55 +237,31 @@ public class CalendarService {
      * @return true wenn die Projektverfuegbarkeit erfolgreich gespeichert wurde
      *         sonst false
      */
-    static public boolean setProjectAvailability(Availability availability) {
-        ResultSet result =
-                SQLExecuter
-                        .executeQuery("SELECT * FROM Feiertagskalender WHERE ID = "
-                                + availability.getId() + ";");
-        try {
-            if (result.next()) {
-                SQLExecuter
-                        .executeUpdate("UPDATE Feiertagskalender SET Startzeit = '"
-                                + SQL_DATE_FORMAT.format(availability
-                                        .getStartTime())
-                                + "',Endzeit ='"
-                                + SQL_DATE_FORMAT.format(availability
-                                        .getEndTime())
-                                + "', Titel ='"
-                                + availability.getDescription()
-                                + "', Ganztaegig="
-                                + availability.isAllDay()
-                                + ", Verfuegbar="
-                                + availability.isAvailabe()
-                                + " WHERE ID = " + availability.getId() + ";");
-            } else {
-                String sql =
-                        "INSERT INTO Feiertagskalender(Startzeit, Endzeit, Titel, Ganztaegig, Verfuegbar) "
-                                + "VALUES('"
-                                + SQL_DATE_FORMAT.format(availability
-                                        .getStartTime())
-                                + "', '"
-                                + SQL_DATE_FORMAT.format(availability
-                                        .getEndTime())
-                                + "', '"
-                                + availability.getDescription()
-                                + "', "
-                                + availability.isAllDay()
-                                + ", "
-                                + availability.isAvailabe() + ");";
-                SQLExecuter.executeUpdate(sql);
-            }
-            result.close();
-            return true;
-        } catch (SQLException e1) {
-            e1.printStackTrace();
-            return false;
-        } finally {
-            try {
-                result.close();
-            } catch (SQLException e) {
-            }
+    public static boolean setProjectAvailability(Availability availability) {
+        HolidayCalendar holCal =
+                DBModelManager.getHolidaysCalendarModel().getHolidayCalendar(
+                        availability.getId());
+
+        if (holCal != null) {
+            holCal.setBegin_time(availability.getStartTime());
+            holCal.setEnd_time(availability.getEndTime());
+            holCal.setTitle(availability.getDescription());
+            holCal.setFull_time(availability.isAllDay());
+            holCal.setAvailability(availability.isAvailabe());
+            DBModelManager.getHolidaysCalendarModel().updateHolidayCalendar(
+                    holCal);
+        } else {
+            holCal = new HolidayCalendar();
+            holCal.setBegin_time(availability.getStartTime());
+            holCal.setEnd_time(availability.getEndTime());
+            holCal.setTitle(availability.getDescription());
+            holCal.setFull_time(availability.isAllDay());
+            holCal.setAvailability(availability.isAvailabe());
+            DBModelManager.getHolidaysCalendarModel().addNewHolidayCalendar(
+                    holCal);
         }
+
+        return true;
     }
 
     /**
@@ -331,18 +271,9 @@ public class CalendarService {
      *            zu loeschende Verfuegbarkeit vom Typ Availability
      * @return ture wenn es bei Dem Loeschen keien Fehler gab sonst false
      */
-    public static boolean deleteProjectAvailability(Availability av) {
-
-        try {
-            SQLExecuter
-                    .executeUpdate("DELETE FROM Feiertagskalender WHERE ID = "
-                            + av.getId() + ";");
-            return true;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
-
+    public static boolean deleteProjectAvailability(final Availability av) {
+        return DBModelManager.getHolidaysCalendarModel().deleteHolidayCalendar(
+                av.getId());
     }
 
     /**
@@ -353,16 +284,8 @@ public class CalendarService {
      * @return ture wenn es bei Dem Loeschen keien Fehler gab sonst false
      */
     public static boolean deleteWorkerAvailability(Availability av) {
-
-        try {
-            SQLExecuter.executeUpdate("DELETE FROM MAKalender WHERE ID = "
-                    + av.getId() + ";");
-            return true;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
-
+        return DBModelManager.getEmployeeCalendarModel()
+                .deleteEmployeeCalendar(av.getId());
     }
 
     /**
@@ -401,34 +324,15 @@ public class CalendarService {
      * @throws SQLException
      */
     private static Set<Availability> fillHolidayAvailability(
-            Set<Availability> avlSet, ResultSet holidayResultSet)
+            Set<Availability> avlSet, List<HolidayCalendar> holCal)
             throws SQLException {
-        while (holidayResultSet.next()) {
+        for (HolidayCalendar holiday : holCal) {
             avlSet.add(new Availability(AvailabilityGraph.PROJECT_WORKER
-                    .getId(), holidayResultSet.getBoolean("Ganztaegig"),
-                    holidayResultSet.getBoolean("Verfuegbar"),
-                    createDate(holidayResultSet.getTimestamp("Startzeit")),
-                    createDate(holidayResultSet.getTimestamp("Endzeit")),
-                    holidayResultSet.getString("Titel"), holidayResultSet
-                            .getInt("ID")));
+                    .getId(), holiday.isFull_time(), holiday.isAvailability(),
+                    holiday.getBegin_time(), holiday.getEnd_time(), holiday
+                            .getTitle(), holiday.getId()));
         }
-        holidayResultSet.getStatement().close();
         return avlSet;
-    }
-
-    /**
-     * Erzeugt aus SQL-Tiomestamp ein Date-Objekt
-     * 
-     * @param ts
-     *            Timestamp
-     * @return das passende Datum
-     */
-    private static Date createDate(Timestamp ts) {
-        if (ts != null) {
-            return new Date(ts.getTime() + ts.getNanos() / 1000000);
-        } else {
-            return null;
-        }
     }
 
     /**

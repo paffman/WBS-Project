@@ -90,7 +90,7 @@ public class Employee {
      *
      * @param id The id of the employee
      */
-    public void setId(int id) {
+    private void setId(int id) {
         this.id = id;
     }
 

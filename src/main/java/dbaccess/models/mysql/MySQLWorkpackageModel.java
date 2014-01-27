@@ -31,7 +31,9 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * The <code>MySQLWorkpackageModel</code> class implements the
@@ -83,10 +85,8 @@ public class MySQLWorkpackageModel implements WorkpackageModel {
             stm.setTimestamp(17, new Timestamp(wp.getReleaseDate().getTime()));
             stm.setBoolean(18, wp.isTopLevel());
             stm.setBoolean(19, wp.isInactive());
-            stm.setTimestamp(20, new Timestamp(wp.getStartDateCalc()
-                    .getTime()));
-            stm.setTimestamp(21, new Timestamp(wp.getStartDateWish()
-                    .getTime()));
+            stm.setTimestamp(20, new Timestamp(wp.getStartDateCalc().getTime()));
+            stm.setTimestamp(21, new Timestamp(wp.getStartDateWish().getTime()));
             stm.setTimestamp(22, new Timestamp(wp.getEndDateCalc().getTime()));
 
             stm.execute();
@@ -120,8 +120,8 @@ public class MySQLWorkpackageModel implements WorkpackageModel {
 
         try {
             stm = connection.createStatement();
-            String sql = String.format("CALL workpackage_select(%b)",
-                    onlyLeaves);
+            String sql =
+                    String.format("CALL workpackage_select(%b)", onlyLeaves);
             sqlResult = stm.executeQuery(sql);
 
             while (sqlResult.next()) {
@@ -156,7 +156,8 @@ public class MySQLWorkpackageModel implements WorkpackageModel {
         ResultSet sqlResult = null;
 
         PreparedStatement stm = null;
-        final String storedProcedure = "CALL workpackage_select_by_id(?, ?)";
+        final String storedProcedure =
+                "CALL workpackage_select_by_id(?, ?, null)";
 
         try {
             stm = connection.prepareStatement(storedProcedure);
@@ -189,7 +190,7 @@ public class MySQLWorkpackageModel implements WorkpackageModel {
 
     @Override
     public final List<Workpackage> getWorkpackagesInDateRange(final Date from,
-                                                              final Date to) {
+            final Date to) {
         final Connection connection = SQLExecuter.getConnection();
         final List<Workpackage> wpList = new ArrayList<Workpackage>();
         ResultSet sqlResult = null;
@@ -268,10 +269,8 @@ public class MySQLWorkpackageModel implements WorkpackageModel {
             stm.setTimestamp(16, new Timestamp(wp.getReleaseDate().getTime()));
             stm.setBoolean(17, wp.isTopLevel());
             stm.setBoolean(18, wp.isInactive());
-            stm.setTimestamp(19, new Timestamp(wp.getStartDateCalc()
-                    .getTime()));
-            stm.setTimestamp(20, new Timestamp(wp.getStartDateWish()
-                    .getTime()));
+            stm.setTimestamp(19, new Timestamp(wp.getStartDateCalc().getTime()));
+            stm.setTimestamp(20, new Timestamp(wp.getStartDateWish().getTime()));
             stm.setTimestamp(21, new Timestamp(wp.getEndDateCalc().getTime()));
 
             stm.execute();
@@ -295,12 +294,80 @@ public class MySQLWorkpackageModel implements WorkpackageModel {
         final int projectID = 1;
 
         PreparedStatement stm = null;
-        final String storedProcedure = "CALL workpackage_delete_by_id(?, ?)";
+        final String storedProcedure =
+                "CALL workpackage_delete_by_id(?, ?, null)";
 
         try {
             stm = connection.prepareStatement(storedProcedure);
             stm.setString(1, stringID);
             stm.setInt(2, projectID);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (stm != null) {
+                    stm.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Override
+    public Workpackage getWorkpackage(int id) {
+        final Connection connection = SQLExecuter.getConnection();
+        final int projectID = 1;
+
+        Workpackage wp = null;
+        ResultSet sqlResult = null;
+
+        PreparedStatement stm = null;
+        final String storedProcedure =
+                "CALL workpackage_select_by_id(null, ?, ?)";
+
+        try {
+            stm = connection.prepareStatement(storedProcedure);
+            stm.setInt(1, projectID);
+            stm.setInt(2, id);
+
+            sqlResult = stm.executeQuery();
+
+            if (sqlResult.next()) {
+                wp = Workpackage.fromResultSet(sqlResult);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (sqlResult != null) {
+                    sqlResult.close();
+                }
+                if (stm != null) {
+                    stm.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return wp;
+    }
+
+    @Override
+    public void deleteWorkpackage(int id) {
+        final Connection connection = SQLExecuter.getConnection();
+        final int projectID = 1;
+
+        PreparedStatement stm = null;
+        final String storedProcedure =
+                "CALL workpackage_delete_by_id(null, ?, ?)";
+
+        try {
+            stm = connection.prepareStatement(storedProcedure);
+            stm.setInt(1, projectID);
+            stm.setInt(2, id);
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {

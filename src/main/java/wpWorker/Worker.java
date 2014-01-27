@@ -1,5 +1,7 @@
 package wpWorker;
 
+import dbaccess.DBModelManager;
+
 /**
  * Studienprojekt: WBS Kunde: Pentasys AG, Jens von Gersdorff Projektmitglieder:
  * Andre Paffenholz, Peter Lange, Daniel Metzler, Samson von Graevenitz
@@ -73,6 +75,16 @@ public class Worker {
     //
     public Worker(String login) {
         this.login = login;
+        this.id = -1;
+        this.vorname = "";
+        this.name = "";
+        this.leiter = false;
+        this.tagessatz = 0;
+    }
+    
+    public Worker(int id) {
+        this.login = DBModelManager.getEmployeesModel().getEmployee(id).getLogin();
+        this.id = id;
         this.vorname = "";
         this.name = "";
         this.leiter = false;

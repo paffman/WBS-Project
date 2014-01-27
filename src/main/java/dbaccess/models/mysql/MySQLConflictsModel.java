@@ -42,18 +42,21 @@ public class MySQLConflictsModel implements ConflictsModel {
      * The MySQL connection to use.
      */
     private Connection connection;
-    
+
     @Override
-    public void addNewConflict(Conflict conflict) {
+    public boolean addNewConflict(Conflict conflict) {
         connection = SQLExecuter.getConnection();
         try {
             Statement stm = connection.createStatement();
             stm.execute("CALL conflicts_new (" + conflict.getFid_wp() + ","
                     + conflict.getFid_wp_affected() + ","
                     + conflict.getFid_emp() + "," + conflict.getReason() + ",'"
-                    + new Timestamp(conflict.getOccurence_date().getTime()) + "')");
+                    + new Timestamp(conflict.getOccurence_date().getTime())
+                    + "')");
+            return true;
         } catch (SQLException e) {
             e.printStackTrace();
+            return false;
         }
     }
 

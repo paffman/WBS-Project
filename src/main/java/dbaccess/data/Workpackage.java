@@ -159,7 +159,7 @@ public class Workpackage {
      * @param id
      *            The new ID
      */
-    public final void setId(final int id) {
+    private final void setId(final int id) {
         this.id = id;
     }
 

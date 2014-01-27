@@ -328,26 +328,26 @@ public class WPShow {
         if (newWp) {
             WPOverview.throwConflict(new Conflict(new Date(System
                     .currentTimeMillis()), Conflict.NEW_WP, WPOverview
-                    .getUser().getLogin(), wp));
+                    .getUser().getId(), wp));
         }
 
         if (gui.getIsInaktiv() != wp.isIstInaktiv()) {
             WPOverview.throwConflict(new Conflict(new Date(System
                     .currentTimeMillis()), Conflict.CHANGED_ACTIVESTATE,
-                    WPOverview.getUser().getLogin(), wp));
+                    WPOverview.getUser().getId(), wp));
         }
 
         try {
             if (!gui.getBAC().equals(wp.getBac())) {
                 WPOverview.throwConflict(new Conflict(new Date(System
                         .currentTimeMillis()), Conflict.CHANGED_BAC, WPOverview
-                        .getUser().getLogin(), wp));
+                        .getUser().getId(), wp));
             }
             if (gui.getStartHope() != null
                     && !gui.getStartHope().equals(wp.getStartDateHope())) {
                 WPOverview.throwConflict(new Conflict(new Date(System
                         .currentTimeMillis()), Conflict.CHANGED_WISHDATES,
-                        WPOverview.getUser().getLogin(), wp));
+                        WPOverview.getUser().getId(), wp));
             }
         } catch (ParseException e) {/* Wurde bereits ausgeschlossen */
         }
@@ -362,7 +362,7 @@ public class WPShow {
                     || wpWorkers.get(i).equals(guiWorkers[i])) {
                 WPOverview.throwConflict(new Conflict(new Date(System
                         .currentTimeMillis()), Conflict.CHANGED_RESOURCES,
-                        WPOverview.getUser().getLogin(), wp));
+                        WPOverview.getUser().getId(), wp));
             }
         }
     }

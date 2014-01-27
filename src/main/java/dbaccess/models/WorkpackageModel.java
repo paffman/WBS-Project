@@ -31,60 +31,84 @@ public interface WorkpackageModel {
 
     /**
      * Adds a new workpackage to the project.
-     *
-     * @param workpackage The workpackage which is added to the project.
+     * 
+     * @param workpackage
+     *            The workpackage which is added to the project.
      */
     void addNewWorkpackage(Workpackage workpackage);
 
     /**
      * Gets all workpackages from the project.
-     *
+     * 
      * @return Returns a list with all workpackages from the project.
      */
     List<Workpackage> getWorkpackage();
 
     /**
      * Gets specific workpackages from the project.
-     *
-     * @param onlyLeaves Information if the method should return all
-     *                   workpackages or only the leaves.
+     * 
+     * @param onlyLeaves
+     *            Information if the method should return all workpackages or
+     *            only the leaves.
      * @return If this parameter is true, the method returns a list with only
-     * the leaves from the project. Otherwise the method returns all
-     * workpackages.
+     *         the leaves from the project. Otherwise the method returns all
+     *         workpackages.
      */
     List<Workpackage> getWorkpackage(boolean onlyLeaves);
 
     /**
      * Gets a single workpackage.
-     *
-     * @param stringID The complete hierachical ID of a workpackage. Unique
-     *                 within a project.
+     * 
+     * @param stringID
+     *            The complete hierachical ID of a workpackage. Unique within a
+     *            project.
      * @return Returns the selected workpackage.
      */
     Workpackage getWorkpackage(String stringID);
 
     /**
+     * Gets a single workpackage.
+     * 
+     * @param id
+     *            The unique id of a workpackage.
+     * @return Returns the selected workpackage.
+     */
+    Workpackage getWorkpackage(int id);
+
+    /**
      * Gets all workpackages in a range.
-     *
-     * @param from The start date for this workpackage
-     * @param to   The end date for this workpackage
+     * 
+     * @param from
+     *            The start date for this workpackage
+     * @param to
+     *            The end date for this workpackage
      * @return A list of work packages
      */
     List<Workpackage> getWorkpackagesInDateRange(Date from, Date to);
 
     /**
      * Updates a workpackage.
-     *
-     * @param wp The workpackage which has to be updated.
+     * 
+     * @param wp
+     *            The workpackage which has to be updated.
      */
     void updateWorkpackage(Workpackage wp);
 
     /**
      * Deletes a workpackage.
-     *
-     * @param stringID The complete hierachical ID of a workpackage. Unique
-     *                 within a project.
+     * 
+     * @param stringID
+     *            The complete hierachical ID of a workpackage. Unique within a
+     *            project.
      */
     void deleteWorkpackage(String stringID);
 
+    /**
+     * Deletes a workpackage.
+     * 
+     * @param id
+     *            Unique id of the workpackage.
+     */
+    void deleteWorkpackage(int id);
+    
 }
