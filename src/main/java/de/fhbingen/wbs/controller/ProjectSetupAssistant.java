@@ -164,7 +164,7 @@ public final class ProjectSetupAssistant implements ProjectProperties.Actions,
      */
     private int showSummary() {
         String summary = "<html><b><i>" + labels.projectProperties() //NON-NLS
-                        + "</i></b><br />" //NON-NLS
+                        + "</i></b><br /><table>" //NON-NLS
                         + newSummaryLine(labels.projectName(),
                         projectProperties.getProjectName())
                         + newSummaryLine(labels.projectTiers(),
@@ -179,14 +179,14 @@ public final class ProjectSetupAssistant implements ProjectProperties.Actions,
                         projectProperties.getSurname())
                         + newSummaryLine(labels.login(),
                         projectProperties.getUserName())
-                        + "<br /><b><i>"//NON-NLS
+                        + "</table><br /><b><i>"//NON-NLS
                         + labels.databaseAdminLogin()
-                        + "</i></b><br />" //NON-NLS
+                        + "</i></b><br /><table>" //NON-NLS
                         + newSummaryLine(labels.serverAddress(),
                         databaseAdminLogin.getServerAddress())
                         + newSummaryLine(labels.rootLoginName(),
                         databaseAdminLogin.getUserName())
-                        + "<br /><br />" //NON-NLS
+                        + "</table><br /><br />" //NON-NLS
                         + messages.valuesCorrect() + "</html>"; //NON-NLS
         JLabel label = new JLabel(summary);
         return JOptionPane.showConfirmDialog(databaseAdminLogin,
@@ -195,7 +195,8 @@ public final class ProjectSetupAssistant implements ProjectProperties.Actions,
 
     private final String newSummaryLine(final String label,
                                         final String value) {
-        return label + ": " + value + "<br />"; //NON-NLS
+        return "<tr><td>" + label + ": </td>" //NON-NLS
+                + "<td>" + value + "</td></tr>"; //NON-NLS
     }
 
 
