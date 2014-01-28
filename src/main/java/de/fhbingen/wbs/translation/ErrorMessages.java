@@ -57,4 +57,6 @@ public interface ErrorMessages {
     String dateInvalid();
 
     String databaseNameAlreadyExists();
+
+    String databaseNameInvalid();
 }

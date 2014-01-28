@@ -278,7 +278,17 @@ public final class ProjectSetupAssistant implements ProjectProperties.Actions,
             returnValue = false;
             showErrorMessage(messages.dateInvalid());
         }
+        if (returnValue && !isDatabaseNameValid(projectProperties
+                .getDatabaseName())) {
+            returnValue = false;
+            showErrorMessage(messages.databaseNameInvalid());
+        }
         return returnValue;
+    }
+
+    private boolean isDatabaseNameValid(String databaseName) {
+        //TODO check database name
+        return false;
     }
 
     /**
@@ -379,7 +389,7 @@ public final class ProjectSetupAssistant implements ProjectProperties.Actions,
         boolean onlyAscii = true;
         for (char c : password) {
             onlyAscii &= asciiEncoder.canEncode(c);
-        }
+        } //TODO check for minimum character variety
         Arrays.fill(password, '0');
         return onlyAscii;
     }
@@ -424,7 +434,8 @@ public final class ProjectSetupAssistant implements ProjectProperties.Actions,
         char[] password = databaseAdminLogin.getPassword();
             try {
                 connection = DriverManager.getConnection(
-                                databaseAdminLogin.getServerAddress(),
+                                "jdbc:mysql://" //NON-NLS
+                                        + databaseAdminLogin.getServerAddress(),
                                 databaseAdminLogin.getUserName(),
                                 new String(password));
             } catch (SQLException e) {
@@ -450,7 +461,7 @@ public final class ProjectSetupAssistant implements ProjectProperties.Actions,
      * Creates stored procedures on the database.
      */
     private void createStoredProcedures() {
-        //TODO
+        //TODO create stored procedures
     }
 
     /**
