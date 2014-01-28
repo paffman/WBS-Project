@@ -31,6 +31,7 @@ import java.util.List;
 
 import jdbcConnection.SQLExecuter;
 import dbaccess.data.EmployeeCalendar;
+import dbaccess.data.HolidayCalendar;
 import dbaccess.models.EmployeeCalendarModel;
 
 /**
@@ -159,29 +160,42 @@ public class MySQLEmployeeCalendarModel implements EmployeeCalendarModel {
 
     @Override
     public List<EmployeeCalendar> getEmployeeCalendarInDateRange(Date from,
-            Date to, boolean mode2) {
+            Date to, int empId ) {
         connection = SQLExecuter.getConnection();
-        // TODO was macht es?
-        List<EmployeeCalendar> empCalList = new ArrayList<EmployeeCalendar>();
+        List<EmployeeCalendar> ecList = new ArrayList<EmployeeCalendar>();
+
+        ResultSet sqlResult = null;
+        PreparedStatement stm = null;
+
+        final String storedProcedure =
+                "CALL employee_calendar_select_by_date_and_emp(?,?,?)";
+
         try {
-            ResultSet result = null;
-            EmployeeCalendar employeeCalendar = null;
-            Statement stm = connection.createStatement();
-            result =
-                    stm.executeQuery("CALL employee_calendar_select_by_date( "
-                            + new Timestamp(from.getTime()) + ","
-                            + new Timestamp(to.getTime()) + "," + mode2 + ")");
+            stm = connection.prepareStatement(storedProcedure);
+            stm.setTimestamp(1, new Timestamp(from.getTime()));
+            stm.setTimestamp(2, new Timestamp(to.getTime()));
+            stm.setInt(3, empId);
 
-            while (result.next()) {
-                employeeCalendar = EmployeeCalendar.fromResultSet(result);
-                empCalList.add(employeeCalendar);
+            sqlResult = stm.executeQuery();
+
+            while (sqlResult.next()) {
+                ecList.add(EmployeeCalendar.fromResultSet(sqlResult));
             }
-
-            return empCalList;
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                if (sqlResult != null) {
+                    sqlResult.close();
+                }
+                if (stm != null) {
+                    stm.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
-        return null;
+        return ecList;        
     }
 
     @Override

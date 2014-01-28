@@ -55,7 +55,8 @@ import chart.ChartCPIView;
 import chart.ChartCompleteView;
 import dbServices.WorkerService;
 import dbaccess.DBModelManager;
-import jdbcConnection.SQLExecuter;
+import dbaccess.data.Employee;
+import dbaccess.data.WorkEffort;
 import wpAddAufwand.AddAufwand;
 import wpConflict.Conflict;
 import wpOverview.WPOverview;
@@ -107,8 +108,8 @@ public class WPShow {
             this.gui =
                     new WPShowGUI(wp.getStringID() + " | " + wp.getName(),
                             this, parent);
-            wp.setwptagessatz(WpManager.calcTagessatz(wp.getWorkers()));
-            actualWPWorkers = new HashSet<String>(wp.getWorkers());
+            wp.setwptagessatz(WpManager.calcTagessatz(wp.getWorkerLogins()));
+            actualWPWorkers = new HashSet<String>(wp.getWorkerLogins());
         }
 
         if (wp.isIstOAP()) {
@@ -236,39 +237,18 @@ public class WPShow {
 
     private String[][] getAufwandArray() {
         List<String[]> all = new ArrayList<String[]>();
-        ResultSet aufwand;
-        // if (this.getUser().getProjLeiter()) {
-        aufwand =
-                SQLExecuter.executeQuery("SELECT * FROM Aufwand "
-                        + "WHERE LVL1ID = " + wp.getLvl1ID() + "and LVL2ID = "
-                        + wp.getLvl2ID() + "and LVL3ID = " + wp.getLvl3ID()
-                        + "and LVLxID = '" + wp.getLvlxID() + "';");
-        // } else {
-        // aufwand = SQLExecuter.executeQuery("SELECT * FROM Aufwand " +
-        // "WHERE LVL1ID = " + wp.getLvl1ID() + "and LVL2ID = " + wp.getLvl2ID()
-        // + "and LVL3ID = " + wp.getLvl3ID() + "and LVLxID = '" +
-        // wp.getLvlxID() + "'" + "and FID_Ma = '" + getUser().getLogin() +
-        // "';");
-        // }
-
-        try {
-
-            while (aufwand.next()) {
-                String[] row = new String[4];
-                // if (this.getUser().getProjLeiter()) {
-                row[0] = aufwand.getString("FID_Ma");
-                // }
-                row[1] =
-                        Controller.DECFORM.format(aufwand.getDouble("Aufwand"));
-                row[2] = Controller.DATE_DAY.format(aufwand.getDate("Datum"));
-                row[3] = aufwand.getString("Beschreibung");
-                all.add(row);
-            }
-            aufwand.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
+        List<WorkEffort> efforts =
+                DBModelManager.getWorkEffortModel().getWorkEffort(wp.getWpId());
+        for (WorkEffort effort : efforts) {
+            String[] row = new String[4];
+            row[0] =
+                    DBModelManager.getEmployeesModel()
+                            .getEmployee(effort.getFid_emp()).getLogin();
+            row[1] = Controller.DECFORM.format(effort.getEffort());
+            row[2] = Controller.DATE_DAY.format(effort.getRec_date());
+            row[3] = effort.getDescription();
+            all.add(row);
         }
-
         return all.toArray(new String[1][1]);
     }
 
@@ -352,7 +332,7 @@ public class WPShow {
         } catch (ParseException e) {/* Wurde bereits ausgeschlossen */
         }
 
-        List<String> wpWorkers = wp.getWorkers();
+        List<String> wpWorkers = wp.getWorkerLogins();
         String[] guiWorkers = gui.getWorkers();
         Collections.sort(wpWorkers);
         Arrays.sort(guiWorkers);
@@ -425,8 +405,10 @@ public class WPShow {
             }
         }
         String leiter = "";
+        int leiterId = -1;
         if (gui.getLeiter() != null) {
             leiter = gui.getLeiter().getLogin();
+            leiterId = gui.getLeiter().getId();
         }
         if (leiter.equals("")) {
             JOptionPane.showMessageDialog(gui, "Bitte Leiter auswählen");
@@ -472,8 +454,7 @@ public class WPShow {
             wp.setStartDateHope(startHope);
             wp.setEndDateHope(endHope);
             wp.setName(name);
-            wp.setFid_Leiter(DBModelManager.getEmployeesModel()
-                    .getEmployee(leiter).getId());
+            wp.setFid_Leiter(leiterId);
             wp.setBeschreibung(gui.getDescription());
             wp.setIstInaktiv(gui.getIsInaktiv());
 
@@ -489,7 +470,7 @@ public class WPShow {
                 wp.setEtc_kosten(0.);
                 wp.setwptagessatz(0.);
                 wp.setIstOAP(true);
-                for (String actualWorker : wp.getWorkers()) {
+                for (Employee actualWorker : wp.getWorkers()) {
                     wp.removeWorker(actualWorker);
                 }
             }
@@ -509,7 +490,8 @@ public class WPShow {
     private boolean saveUAP() {
         boolean save = true;
 
-        String name, description, fid_Leiter;
+        String name, description, leiterLogin;
+        int fid_Leiter = -1;
         boolean istOAP = false, istInaktiv = gui.getIsInaktiv();
         Date startDateHope = null, endDateHope = null;
         Double bac = 0.0;
@@ -535,12 +517,13 @@ public class WPShow {
         description = gui.getDescription();
         if (gui.getLeiter() == null) {
             save = false;
-            fid_Leiter = "";
+            leiterLogin = "";
         } else {
-            fid_Leiter = gui.getLeiter().getLogin();
+            leiterLogin = gui.getLeiter().getLogin();
+            fid_Leiter = gui.getLeiter().getId();
 
         }
-        if (fid_Leiter.equals("")) {
+        if (leiterLogin.equals("")) {
             save = false;
             JOptionPane.showMessageDialog(gui, "Bitte Leiter angeben");
         }
@@ -551,8 +534,8 @@ public class WPShow {
                 actualWPWorkers.add(actualWorkerID);
             }
         }
-        if (!actualWPWorkers.contains(fid_Leiter)) {
-            actualWPWorkers.add(fid_Leiter);
+        if (!actualWPWorkers.contains(leiterLogin)) {
+            actualWPWorkers.add(leiterLogin);
         }
         try {
             startDateHope = gui.getStartHope();
@@ -615,21 +598,14 @@ public class WPShow {
 
         if (save) {
 
-            for (String actualWorker : wp.getWorkers()) {
+            for (Employee actualWorker : wp.getWorkers()) {
                 wp.removeWorker(actualWorker);
             }
             for (String actualWorker : actualWPWorkers) {
-                wp.addWorker(actualWorker);
+                wp.addWorker(DBModelManager.getEmployeesModel().getEmployee(
+                        actualWorker));
             }
-
-            try {
-                acKosten = WpManager.calcACKosten(wp);
-            } catch (SQLException e1) {
-                JOptionPane.showMessageDialog(gui,
-                        "Unbekannter Fehler in der Kostenberechnung");
-                save = false;
-                e1.printStackTrace();
-            }
+            acKosten = WpManager.calcACKosten(wp);
 
             double cpi = WpManager.calcCPI(acKosten, etcKosten, bacKosten);
 
@@ -637,8 +613,7 @@ public class WPShow {
             wp.setIstOAP(istOAP);
             wp.setIstInaktiv(istInaktiv);
             wp.setBeschreibung(description);
-            wp.setFid_Leiter(DBModelManager.getEmployeesModel()
-                    .getEmployee(fid_Leiter).getId());
+            wp.setFid_Leiter(fid_Leiter);
             wp.setStartDateHope(startDateHope);
             wp.setEndDateHope(endDateHope);
             wp.setBac(bac);

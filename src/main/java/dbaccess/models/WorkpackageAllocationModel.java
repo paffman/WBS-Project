@@ -33,8 +33,9 @@ public interface WorkpackageAllocationModel {
      * 
      * @param wpAllocation
      *            The allocation which is added.
+     * @return success of the action.
      */
-    void addNewWorkpackageAllocation(WorkpackageAllocation wpAllocation);
+    boolean addNewWorkpackageAllocation(WorkpackageAllocation wpAllocation);
 
     /**
      * A method to get all workpackage allocations.
@@ -85,7 +86,8 @@ public interface WorkpackageAllocationModel {
      *            The id from the employee.
      * @param workpackageID
      *            The id from the workpackage.
+     * @return success of deletion.
      */
-    void deleteWorkpackageAllocation(int employeeID, int workpackageID);
+    boolean deleteWorkpackageAllocation(int employeeID, int workpackageID);
 
 }

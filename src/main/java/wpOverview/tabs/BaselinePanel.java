@@ -11,6 +11,8 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Date;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -19,8 +21,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import jdbcConnection.SQLExecuter;
-
+import dbaccess.DBModelManager;
+import dbaccess.data.Baseline;
 import wpOverview.WPOverview;
 /**
  * Studienprojekt:	PSYS WBS 2.0<br/>
@@ -99,29 +101,29 @@ public class BaselinePanel extends JPanel {
 	protected void getBaselines(boolean leiter) {
 		if (leiter) {			
 			cobChooseBaseline.removeAllItems();
-			try {
-				ResultSet rsBaseline = SQLExecuter.executeQuery("SELECT * FROM Baseline");
-				while (rsBaseline.next()) {
-					String Beschreibung = rsBaseline.getString("Beschreibung");
-					java.sql.Date dte = rsBaseline.getDate("Datum");
-					int number = rsBaseline.getInt("ID");
-					cobChooseBaseline.addItem(number + " | " + dte + " | " + Beschreibung);
-				}
-				rsBaseline.close();
-				cobChooseBaseline.setSelectedIndex(cobChooseBaseline.getItemCount() - 1);
-				cobChooseBaseline.setMinimumSize(new Dimension((int)cobChooseBaseline.getPreferredSize().getHeight(), 400));
-				if (cobChooseBaseline.getItemCount() == 0) {
-					btnShowBaseline.setEnabled(false);
-					btnChart.setEnabled(false);
-					btnComp.setEnabled(false);
-				} else {
-					btnShowBaseline.setEnabled(true);
-					btnChart.setEnabled(true);
-					btnComp.setEnabled(true);
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+            List<Baseline> baselines =
+                    DBModelManager.getBaselineModel().getBaseline();
+            for (Baseline b : baselines) {
+                String Beschreibung = b.getDescription();
+                Date dte = b.getBl_date();
+                int number = b.getId();
+                cobChooseBaseline.addItem(number + " | " + dte + " | "
+                        + Beschreibung);
+            }
+            cobChooseBaseline
+                    .setSelectedIndex(cobChooseBaseline.getItemCount() - 1);
+            cobChooseBaseline
+                    .setMinimumSize(new Dimension((int) cobChooseBaseline
+                            .getPreferredSize().getHeight(), 400));
+            if (cobChooseBaseline.getItemCount() == 0) {
+                btnShowBaseline.setEnabled(false);
+                btnChart.setEnabled(false);
+                btnComp.setEnabled(false);
+            } else {
+                btnShowBaseline.setEnabled(true);
+                btnChart.setEnabled(true);
+                btnComp.setEnabled(true);
+            }
 		}
 	}
 	

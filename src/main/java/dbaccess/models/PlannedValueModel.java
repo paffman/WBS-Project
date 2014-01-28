@@ -32,8 +32,9 @@ public interface PlannedValueModel {
      * 
      * @param pValue
      *            The planned value which is added to the project.
+     * @return success of action.
      */
-    void addNewPlannedValue(PlannedValue pValue);
+    boolean addNewPlannedValue(PlannedValue pValue);
 
     /**
      * A method to get the planned value in a specific period.
@@ -72,7 +73,23 @@ public interface PlannedValueModel {
      * @return Returns a list with the planned value from the selected
      *         workpackage and date.
      */
-    int getPlannedValue(Date aDate, int wpID);
+    double getPlannedValue(Date aDate, int wpID);
+
+    /**
+     * A method to get the planned value from a specific workpackage on a
+     * specific date.
+     * 
+     * @param aDate
+     *            The specific date.
+     * @param wpID
+     *            The id from the workpackage.
+     * @param nextLowerDate
+     *            selects date with < instead of = and returns the value of the
+     *            first value found, orderd by DESC
+     * @return Returns a list with the planned value from the selected
+     *         workpackage and date.
+     */
+    double getPlannedValue(Date aDate, int wpID, boolean nextLowerDate);
 
     /**
      * A method to update a planned value.
@@ -80,17 +97,20 @@ public interface PlannedValueModel {
      * @param aDate
      *            The specific date.
      * @param wpID
-     *            The id of the workpacke from which the planned value has to be
-     *            updated.
+     *            The id of the workpackage from which the planned value has to
+     *            be updated.
      * @param newValue
      *            The new value for the planned value.
+     * @return success of action.
      */
-    void updatePlannedValue(Date aDate, int wpID, int newValue);
+    boolean updatePlannedValue(Date aDate, int wpID, double newValue);
 
     /**
      * A method to delete all planed values.
+     * 
+     * @return success of action.
      */
-    void deletePlannedValue();
+    boolean deletePlannedValue();
 
     /**
      * A method to delete a specific planned value
@@ -98,18 +118,20 @@ public interface PlannedValueModel {
      * @param wpID
      *            The id of the workpackage from where the planned value is
      *            deleted.
+     * @return success of action.
      */
-    void deletePlannedValue(int wpID);
+    boolean deletePlannedValue(int wpID);
 
     /**
-     * A method to delete a planned value on a specif date and a specific
+     * A method to delete a planned value on a specific date and a specific
      * workpackage.
      * 
      * @param aDate
      *            The specific date.
      * @param wpID
      *            The id of the workpackage.
+     * @return success of action.
      */
-    void deletePlannedValue(Date aDate, int wpID);
+    boolean deletePlannedValue(Date aDate, int wpID);
 
 }

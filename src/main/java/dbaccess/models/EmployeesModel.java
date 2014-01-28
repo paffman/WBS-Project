@@ -77,8 +77,9 @@ public interface EmployeesModel {
      * 
      * @param employee
      *            The specific employee which is updated.
+     * @return Success of update.
      */
-    void updateEmployee(Employee employee);
+    boolean updateEmployee(Employee employee);
 
     /**
      * A method to delete a specific employee.

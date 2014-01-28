@@ -43,10 +43,11 @@ import java.util.Map;
 public class MySQLWorkpackageModel implements WorkpackageModel {
 
     @Override
-    public final void addNewWorkpackage(final Workpackage wp) {
+    public final boolean addNewWorkpackage(final Workpackage wp) {
         final Connection connection = SQLExecuter.getConnection();
         final int paramCount = 22;
         PreparedStatement stm = null;
+        boolean success = false;
 
         String storedProcedure = "CALL workpackage_new(";
 
@@ -90,7 +91,7 @@ public class MySQLWorkpackageModel implements WorkpackageModel {
             stm.setTimestamp(22, new Timestamp(wp.getEndDateCalc().getTime()));
 
             stm.execute();
-
+            success = true;
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
@@ -102,7 +103,7 @@ public class MySQLWorkpackageModel implements WorkpackageModel {
                 e.printStackTrace();
             }
         }
-
+        return success;
     }
 
     @Override
@@ -228,10 +229,11 @@ public class MySQLWorkpackageModel implements WorkpackageModel {
     }
 
     @Override
-    public final void updateWorkpackage(final Workpackage wp) {
+    public final boolean updateWorkpackage(final Workpackage wp) {
         final Connection connection = SQLExecuter.getConnection();
         final int paramCount = 21;
         PreparedStatement stm = null;
+        boolean success = false;
 
         String storedProcedure = "CALL workpackage_update_by_id(";
 
@@ -274,7 +276,7 @@ public class MySQLWorkpackageModel implements WorkpackageModel {
             stm.setTimestamp(21, new Timestamp(wp.getEndDateCalc().getTime()));
 
             stm.execute();
-
+            success = true;
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
@@ -286,13 +288,14 @@ public class MySQLWorkpackageModel implements WorkpackageModel {
                 e.printStackTrace();
             }
         }
+        return success;
     }
 
     @Override
-    public final void deleteWorkpackage(String stringID) {
+    public final boolean deleteWorkpackage(final String stringID) {
         final Connection connection = SQLExecuter.getConnection();
         final int projectID = 1;
-
+        boolean success = false;
         PreparedStatement stm = null;
         final String storedProcedure =
                 "CALL workpackage_delete_by_id(?, ?, null)";
@@ -301,6 +304,8 @@ public class MySQLWorkpackageModel implements WorkpackageModel {
             stm = connection.prepareStatement(storedProcedure);
             stm.setString(1, stringID);
             stm.setInt(2, projectID);
+            stm.execute();
+            success = true;
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
@@ -312,6 +317,7 @@ public class MySQLWorkpackageModel implements WorkpackageModel {
                 e.printStackTrace();
             }
         }
+        return success;
     }
 
     @Override
@@ -356,10 +362,10 @@ public class MySQLWorkpackageModel implements WorkpackageModel {
     }
 
     @Override
-    public void deleteWorkpackage(int id) {
+    public boolean deleteWorkpackage(int id) {
         final Connection connection = SQLExecuter.getConnection();
         final int projectID = 1;
-
+        boolean success = false;
         PreparedStatement stm = null;
         final String storedProcedure =
                 "CALL workpackage_delete_by_id(null, ?, ?)";
@@ -368,6 +374,8 @@ public class MySQLWorkpackageModel implements WorkpackageModel {
             stm = connection.prepareStatement(storedProcedure);
             stm.setInt(1, projectID);
             stm.setInt(2, id);
+            stm.execute();
+            success = true;
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
@@ -379,6 +387,7 @@ public class MySQLWorkpackageModel implements WorkpackageModel {
                 e.printStackTrace();
             }
         }
+        return success;
     }
 
 }

@@ -299,7 +299,7 @@ public class DBChooser {
      * Start of the application. Creates a DBChooser objects and therefore
      * starts the login gui.
      */
-    public static void main() {
+    public static void main(String[] args) {
         new DBChooser();
     }
 

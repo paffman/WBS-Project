@@ -180,7 +180,7 @@ public class AVManager {
 		completeAvailabilities.put(actualDay, new HashMap<String, List<Availability>>());
 		for (Worker actualWorker : allProjectWorkers) {
 			avs = new ArrayList<Availability>();
-			avs.addAll(CalendarService.getRealWorkerAvailability(actualWorker.getLogin(), actualDay, new Day(actualDay, true)));
+			avs.addAll(CalendarService.getRealWorkerAvailability(actualWorker.getId(), actualDay, new Day(actualDay, true)));
 			completeAvailabilities.get(actualDay).put(actualWorker.getLogin(), avs);
 			availableDayWorks.put(actualWorker.getLogin(), getCompleteWorkerDayWork(actualWorker.getLogin(), actualDay));
 			consumedDayWorks.put(actualWorker.getLogin(), 0);

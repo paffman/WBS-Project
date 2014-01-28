@@ -44,17 +44,20 @@ public class MySQLBaselineModel implements BaselineModel {
     private Connection connection;
     
     @Override
-    public void addNewBaseline(Baseline line) {
+    public boolean addNewBaseline(Baseline line) {
         connection=SQLExecuter.getConnection();
+        boolean success = false;
         try {
             Statement stm = connection.createStatement();
             
             stm.execute("CALL baseline_new ("
                     + line.getFid_project() + ",'" + new Timestamp(line.getBl_date().getTime()) + "','"
                     + line.getDescription() + "')");
+            success = true;
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return success;
     }
 
     @Override

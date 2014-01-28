@@ -134,14 +134,14 @@ public class CalendarService {
      *            Enddatum des Zeitraums
      * @return Set<Availability> alle Verfuegbarkeiten
      */
-    public static Set<Availability> getAllWorkerAvailability(String workerID,
+    public static Set<Availability> getAllWorkerAvailability(int workerID,
             Date from, Date to) {
 
         Set<Availability> tempSet = new HashSet<Availability>();
         tempSet =
                 fillMaAvailability(tempSet, DBModelManager
                         .getEmployeeCalendarModel()
-                        .getEmployeeCalendarInDateRange(from, to, true));
+                        .getEmployeeCalendarInDateRange(from, to, workerID));
         return tempSet;
     }
 
@@ -348,7 +348,7 @@ public class CalendarService {
      * @return TreeSet mit Verfuegbarkeiten
      */
     public static TreeSet<Availability> getRealWorkerAvailability(
-            String workerID, Date start, Date end) {
+            int workerID, Date start, Date end) {
         Set<Availability> workerAv =
                 getAllWorkerAvailability(workerID, start, end);
 

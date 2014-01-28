@@ -20,6 +20,7 @@ import javax.swing.event.ChangeListener;
 
 import chooseDB.DBChooser;
 import dbServices.SemaphoreService;
+import dbaccess.DBModelManager;
 import wpWorker.ChangePW;
 
 /**
@@ -153,8 +154,10 @@ public class WPOverviewButtonAction {
 		// Fenster Schließen
 		gui.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
-				gui.dispose();
-				SemaphoreService.releaseLeaderSemaphore(WPOverview.getUser().getLogin());
+				gui.dispose();				
+				if ( WPOverview.getUser().getProjLeiter()){
+				    DBModelManager.getSemaphoreModel().leaveSemaphore("pl", WPOverview.getUser().getId());
+				}
 //				System.out.println("Benutzer wurde abgemeldet");
 			}
 		});

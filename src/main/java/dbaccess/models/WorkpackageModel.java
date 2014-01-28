@@ -34,8 +34,9 @@ public interface WorkpackageModel {
      * 
      * @param workpackage
      *            The workpackage which is added to the project.
+     * @return success of the action.
      */
-    void addNewWorkpackage(Workpackage workpackage);
+    boolean addNewWorkpackage(Workpackage workpackage);
 
     /**
      * Gets all workpackages from the project.
@@ -91,8 +92,9 @@ public interface WorkpackageModel {
      * 
      * @param wp
      *            The workpackage which has to be updated.
+     * @return the success of the update.
      */
-    void updateWorkpackage(Workpackage wp);
+    boolean updateWorkpackage(Workpackage wp);
 
     /**
      * Deletes a workpackage.
@@ -100,15 +102,17 @@ public interface WorkpackageModel {
      * @param stringID
      *            The complete hierachical ID of a workpackage. Unique within a
      *            project.
+     * @return success of the deletion
      */
-    void deleteWorkpackage(String stringID);
+    boolean deleteWorkpackage(String stringID);
 
     /**
      * Deletes a workpackage.
      * 
      * @param id
      *            Unique id of the workpackage.
+     * @return success of the deletion
      */
-    void deleteWorkpackage(int id);
-    
+    boolean deleteWorkpackage(int id);
+
 }

@@ -347,8 +347,9 @@ public class WPOverviewGUI extends JFrame {
 	/**
 	 * Laedt den Baum neu
 	 */
-	protected void reloadTrees() {
+	protected void reloadTrees() {	    
 		ArrayList<Workpackage> allUserWp = new ArrayList<Workpackage>(WpManager.getUserWp(WPOverview.getUser()));
+		System.out.println("gui: "+ allUserWp); //%%
 		treeAlle.setNodes(allUserWp, allUserWp);
 		treeAlle.reload();
 		treeOffen.setNodes(allUserWp, new ArrayList<Workpackage>(WpManager.getUserWpOpen(WPOverview.getUser())));

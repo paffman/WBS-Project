@@ -39,10 +39,10 @@ import dbaccess.models.WorkEffortModel;
 public class MySQLWorkEffortModel implements WorkEffortModel {
 
     @Override
-    public final void addNewWorkEffort(final WorkEffort effort) {
+    public final boolean addNewWorkEffort(final WorkEffort effort) {
         final Connection connection = SQLExecuter.getConnection();
         PreparedStatement stm = null;
-
+        boolean success = false;
         String storedProcedure = "CALL work_effort_new(?,?,?,?,?)";
 
         try {
@@ -54,6 +54,7 @@ public class MySQLWorkEffortModel implements WorkEffortModel {
             stm.setString(5, effort.getDescription());
 
             stm.execute();
+            success = true;
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
@@ -65,6 +66,7 @@ public class MySQLWorkEffortModel implements WorkEffortModel {
                 e.printStackTrace();
             }
         }
+        return success;
     }
 
     @Override
@@ -136,6 +138,42 @@ public class MySQLWorkEffortModel implements WorkEffortModel {
             }
         }
         return effortList;
+    }
+
+    @Override
+    public double getWorkEffortSum(int wpId) {
+        final Connection connection = SQLExecuter.getConnection();
+        double result = 0.0;
+
+        ResultSet sqlResult = null;
+        PreparedStatement stm = null;
+
+        final String storedProcedure = "CALL work_effort_select_sum(?)";
+
+        try {
+            stm = connection.prepareStatement(storedProcedure);
+            stm.setInt(1, wpId);
+            sqlResult = stm.executeQuery();
+
+            while (sqlResult.next()) {
+                result = sqlResult.getDouble(1);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (sqlResult != null) {
+                    sqlResult.close();
+                }
+                if (stm != null) {
+                    stm.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return result;
     }
 
 }

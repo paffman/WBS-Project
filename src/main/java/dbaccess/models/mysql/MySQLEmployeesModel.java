@@ -129,21 +129,32 @@ public class MySQLEmployeesModel implements EmployeesModel {
     }
 
     @Override
-    public void updateEmployee(final Employee employee) {
+    public boolean updateEmployee(final Employee employee) {
         connection = SQLExecuter.getConnection();
+        boolean success = false;
         try {
             Statement stm = connection.createStatement();
-            stm.execute("CALL employees_update_by_id(" + employee.getId()
-                    + ",'" + employee.getLast_name() + "','"
-                    + employee.getFirst_name() + "',"
-                    + employee.isProject_leader() + ","
-                    + employee.getDaily_rate() + ","
-                    + employee.getTime_preference() + ",'"
-                    + employee.getPassword() + "','" + MySqlConnect.getId()
-                    + "','" + MySqlConnect.getHost() + "')");
+            stm.execute("CALL employees_update_by_id("
+                    + employee.getId()
+                    + ",'"
+                    + employee.getLast_name()
+                    + "','"
+                    + employee.getFirst_name()
+                    + "',"
+                    + employee.isProject_leader()
+                    + ","
+                    + employee.getDaily_rate()
+                    + ","
+                    + employee.getTime_preference()
+                    + ",'"
+                    + (employee.changePassword() ? employee.getPassword()
+                            : "null") + "','" + MySqlConnect.getId() + "','"
+                    + MySqlConnect.getHost() + "')");
+            success = true;
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return success;
     }
 
     @Override

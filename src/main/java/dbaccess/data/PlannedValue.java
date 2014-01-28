@@ -39,7 +39,7 @@ public class PlannedValue {
     private Date pv_date;
 
     /** The planned value. */
-    private int pv;
+    private double pv;
 
     /**
      * @return the fid_wp
@@ -74,7 +74,7 @@ public class PlannedValue {
     /**
      * @return the pv
      */
-    public final int getPv() {
+    public final double getPv() {
         return pv;
     }
 
@@ -82,7 +82,7 @@ public class PlannedValue {
      * @param pv
      *            the pv to set
      */
-    public final void setPv(final int pv) {
+    public final void setPv(final double pv) {
         this.pv = pv;
     }
 
@@ -115,7 +115,7 @@ public class PlannedValue {
             pv.setId(resSet.getInt("id"));
             pv.setFid_wp(resSet.getInt("fid_wp"));
             pv.setPv_date(resSet.getDate("pv_date"));
-            pv.setPv(resSet.getInt("pv"));
+            pv.setPv(resSet.getDouble("pv"));
         } catch (SQLException e) {
             e.printStackTrace();
         }

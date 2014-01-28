@@ -52,6 +52,9 @@ public class Employee {
     /** Preference of the employee to use and display times in minutes, hours or days. */
     private int time_preference;
 
+    /** Tag if password was set for change.*/
+    private boolean setPassword = false;
+    
     /**
      * Creates a <code>Employee</code> based on a <code>ResultSet</code>.
      *
@@ -182,6 +185,7 @@ public class Employee {
      */
     public void setPassword(String password) {
         this.password = password;
+        setPassword = true;
     }
 
     /**
@@ -218,6 +222,13 @@ public class Employee {
      */
     public void setTime_preference(int time_preference) {
         this.time_preference = time_preference;
+    }
+    
+    /**
+     * @return True if the password was set to change.
+     */
+    public final boolean changePassword(){
+        return setPassword;
     }
 
     /**

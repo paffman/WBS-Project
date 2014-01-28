@@ -13,10 +13,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import wpWorker.Worker;
 import calendar.DateFunctions;
 import dbaccess.DBModelManager;
+import dbaccess.data.Dependency;
+import dbaccess.data.Employee;
 import dbaccess.data.WorkpackageAllocation;
-import jdbcConnection.SQLExecuter;
 
 /**
  * Studienprojekt: PSYS WBS 2.0<br/>
@@ -50,7 +52,7 @@ public class WorkpackageService {
                 DBModelManager.getWorkpackageModel().getWorkpackage(stringID);
 
         if (workpackage != null) {
-            ArrayList<String> maIds = new ArrayList<String>();
+            ArrayList<Employee> maIds = new ArrayList<Employee>();
 
             // Konstruktor Aufruf des Workpackage mit Initialisierung aus
             // der Datenbank
@@ -61,8 +63,8 @@ public class WorkpackageService {
                     DBModelManager.getWorkpackageAllocationModel()
                             .getWorkpackageAllocation(workpackage.getId());
             for (WorkpackageAllocation wpAllocation : wpAllocations) {
-                maIds.add(DBModelManager.getEmployeesModel()
-                        .getEmployee(wpAllocation.getFid_emp()).getLogin());
+                maIds.add(DBModelManager.getEmployeesModel().getEmployee(
+                        wpAllocation.getFid_emp()));
             }
             return erg;
         }
@@ -99,61 +101,9 @@ public class WorkpackageService {
      * @return Bestaetigt das erfolgreiche durchlaufen.
      */
     public static boolean insertWorkpackage(Workpackage wp) {
-        try {
-            String query =
-                    "INSERT INTO Arbeitspaket (StringID, FID_Proj, LVL1ID, LVL2ID, LVL3ID, LVLxID, FID_Leiter, Name, Beschreibung, BAC, AC, "
-                            + "EV, ETC, EAC, CPI, BAC_Kosten, AC_Kosten, ETC_Kosten, WP_Tagessatz, Release, istOAP, istInaktiv, StartdatumWunsch)"
-                            + "VALUES ('"
-                            + getStringIdFromWp(wp)
-                            + "', 1, "
-                            + wp.getLvl1ID()
-                            + ", "
-                            + wp.getLvl2ID()
-                            + ", "
-                            + wp.getLvl3ID()
-                            + ", '"
-                            + wp.getLvlxID()
-                            + "', '"
-                            + wp.getFid_Leiter()
-                            + "', '"
-                            + wp.getName()
-                            + "', '"
-                            + wp.getBeschreibung()
-                            + "', "
-                            + wp.getBac()
-                            + ","
-                            + wp.getAc()
-                            + ", "
-                            + wp.getEv()
-                            + ", "
-                            + wp.getEtc()
-                            + ", "
-                            + wp.getEac()
-                            + ", "
-                            + wp.getCpi()
-                            + ", "
-                            + wp.getBac_kosten()
-                            + ", "
-                            + wp.getAc_kosten()
-                            + ", "
-                            + wp.getEtc_kosten()
-                            + ", "
-                            + wp.getWptagessatz()
-                            + ", "
-                            + DateFunctions.getDateString(wp.getEndDateCalc())
-                            + ", "
-                            + wp.isIstOAP()
-                            + ", "
-                            + wp.isIstInaktiv()
-                            + ", "
-                            + DateFunctions
-                                    .getDateString(wp.getStartDateHope()) + ")";
-            SQLExecuter.executeUpdate(query);
-            return true;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
+        wp.setParentID();
+        return DBModelManager.getWorkpackageModel().addNewWorkpackage(
+                wp.getWp());
     }
 
     /**
@@ -165,62 +115,8 @@ public class WorkpackageService {
      * @return Bestaetigt das erfolgreiche durchlaufen.
      */
     public static boolean updateWorkpackage(Workpackage wp) {
-        String query = "";
-        try {
-            query =
-                    "UPDATE Arbeitspaket " + "SET Name = '"
-                            + wp.getName()
-                            + "'"
-                            + ", Beschreibung = '"
-                            + wp.getBeschreibung()
-                            + "'"
-                            + ", CPI = "
-                            + wp.getCpi()
-                            + ", BAC = "
-                            + wp.getBac()
-                            + ", AC = "
-                            + wp.getAc()
-                            + ", EV = "
-                            + wp.getEv()
-                            + ", ETC = "
-                            + wp.getEtc()
-                            + ", WP_Tagessatz = "
-                            + wp.getWptagessatz()
-                            + ", EAC = "
-                            + wp.getEac()
-                            + ", BAC_Kosten = "
-                            + wp.getBac_kosten()
-                            + ", AC_Kosten = "
-                            + wp.getAc_kosten()
-                            + ", ETC_Kosten = "
-                            + wp.getEtc_kosten()
-                            + ", Release = "
-                            + DateFunctions.getDateString(wp.getEndDateHope())
-                            + ", istOAP = "
-                            + wp.isIstOAP()
-                            + ", istInaktiv = "
-                            + wp.isIstInaktiv()
-                            + ", FID_Leiter = '"
-                            + wp.getFid_Leiter()
-                            + "'"
-                            + ", StartdatumRech = "
-                            + DateFunctions
-                                    .getDateString(wp.getStartDateCalc())
-                            + ", StartdatumWunsch = "
-                            + DateFunctions
-                                    .getDateString(wp.getStartDateHope())
-                            + ", EnddatumRech = "
-                            + DateFunctions.getDateString(wp.getEndDateCalc())
-                            + " WHERE StringID = '" + getStringIdFromWp(wp)
-                            + "'";
-
-            SQLExecuter.executeUpdate(query);
-            return true;
-        } catch (SQLException e) {
-            System.err.println(query);
-            e.printStackTrace();
-            return false;
-        }
+        return DBModelManager.getWorkpackageModel().updateWorkpackage(
+                wp.getWp());
     }
 
     /**
@@ -231,46 +127,8 @@ public class WorkpackageService {
      * @return Bestaetigt das erfolgreiche durchlaufen.
      */
     public static boolean deleteWorkpackage(Workpackage wp) {
-        try {
-            String query =
-                    "DELETE FROM Arbeitspaket WHERE StringID = '"
-                            + getStringIdFromWp(wp) + "'";
-            SQLExecuter.executeUpdate(query);
-            return true;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    /**
-     * ### Wird nur noch zum Testen bei testService/TestWorkpackageService.java
-     * verwendet Liefert ein Set von Workpackage-Objekte die Nachfolgern eines
-     * bestimmten Arbeitspaketes sind.
-     * 
-     * @param stringID
-     *            ein konkatenierten hierarchisch ID eines Arbeitspaketes.
-     * @return Set<Workpackage> liefert ein Set von Vorgaenger-Workpackages mit
-     *         allen Daten aus der Datenbank.
-     */
-    @Deprecated
-    public static Set<Workpackage> getFollowers(String stringID) {
-        return getConnection(stringID, "FID_Nachfolger", "FID_Vorgaenger");
-    }
-
-    /**
-     * ### Wird nur noch zum Testen bei testService/TestWorkpackageService.java
-     * verwendet Liefert ein Set von Workpackage-Objekte die Vorgaenger eines
-     * bestimmten Arbeitspaketes sind.
-     * 
-     * @param stringID
-     *            ein konkatenierten hierarchisch ID eines Arbeitspaketes.
-     * @return Set<Workpackage> liefert ein Set von Nachfolger-Workpackages mit
-     *         allen Daten aus der Datenbank.
-     */
-    @Deprecated
-    public static Set<Workpackage> getAncestors(String stringID) {
-        return getConnection(stringID, "FID_Vorgaenger", "FID_Nachfolger");
+        return DBModelManager.getWorkpackageModel().deleteWorkpackage(
+                wp.getWpId());
     }
 
     /**
@@ -278,8 +136,8 @@ public class WorkpackageService {
      * 
      * @return Map<String, Set<String>> Alle Arbeitspaket zu ihren Vorgaenger
      */
-    public static Map<String, Set<String>> getFollowerToAncestorsIdMap() {
-        return getConnectionIdMap("FID_Nachfolger", "FID_Vorgaenger");
+    public static Map<Integer, Set<Integer>> getFollowerToAncestorsIdMap() {
+        return getConnectionIdMap(true);
     }
 
     /**
@@ -287,8 +145,8 @@ public class WorkpackageService {
      * 
      * @return Map<String, Set<String>> Alle Arbeitspaket zu ihren Nachfolgern
      */
-    public static Map<String, Set<String>> getAncestorToFollowersIdMap() {
-        return getConnectionIdMap("FID_Vorgaenger", "FID_Nachfolger");
+    public static Map<Integer, Set<Integer>> getAncestorToFollowersIdMap() {
+        return getConnectionIdMap(false);
     }
 
     /**
@@ -301,17 +159,11 @@ public class WorkpackageService {
      *            StringID des Nachfolgers welcher gespeichert werden soll.
      * @return Bestaetigt das erfolgreiche durchlaufen.
      */
-    public static boolean setFollower(String thisAP, String followerAP) {
-        try {
-            String query =
-                    "INSERT INTO Abhaengigkeiten (FID_Vorgaenger, FID_Nachfolger) VALUES ('"
-                            + thisAP + "', '" + followerAP + "')";
-            SQLExecuter.executeUpdate(query);
-            return true;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
+    public static boolean setFollower(int thisAP, int followerAP) {
+        Dependency dep = new Dependency();
+        dep.setFid_wp_predecessor(thisAP);
+        dep.setFid_wp_successor(followerAP);
+        return DBModelManager.getDependenciesModel().addNewDependency(dep);
     }
 
     /**
@@ -324,7 +176,7 @@ public class WorkpackageService {
      *            StringID des Vorgaengers welcher gespeichert werden soll.
      * @return Bestaetigt das erfolgreiche durchlaufen.
      */
-    public static boolean setAncestor(String thisAP, String ancestorAP) {
+    public static boolean setAncestor(int thisAP, int ancestorAP) {
         return setFollower(ancestorAP, thisAP);
     }
 
@@ -338,18 +190,9 @@ public class WorkpackageService {
      *            ist die StringID eines bestimmten Nachfolgers.
      * @return Bestaetigt das erfolgreiche durchlaufen.
      */
-    public static boolean deleteFollower(String thisAP, String followerAP) {
-        try {
-            String query =
-                    "DELETE FROM Abhaengigkeiten WHERE FID_Vorgaenger = '"
-                            + thisAP + "'" + " AND FID_Nachfolger = '"
-                            + followerAP + "'";
-            SQLExecuter.executeUpdate(query);
-            return true;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
+    public static boolean deleteFollower(int thisAP, int followerAP) {
+        return DBModelManager.getDependenciesModel().deleteDependency(thisAP,
+                followerAP);
     }
 
     /**
@@ -362,21 +205,8 @@ public class WorkpackageService {
      *            ist die StringID eines bestimmten Vorgaenger.
      * @return Bestaetigt das erfolgreiche durchlaufen.
      */
-    public static boolean deleteAncestor(String thisAP, String ancestorAP) {
+    public static boolean deleteAncestor(int thisAP, int ancestorAP) {
         return deleteFollower(ancestorAP, thisAP);
-    }
-
-    /**
-     * ### Abhaengigkeiten duerfen bisher nur einzeln geloescht werden. Loescht
-     * alle Abhaengigkeiten eines Arbeitspaketes
-     * 
-     * @param thisAP
-     *            ist die generierte ID des Arbeitspaketes was keine
-     *            Abhaengigkeit mehr haben soll
-     */
-    @Deprecated
-    public static boolean deleteConnections(String thisAP) {
-        return deleteAncestors(thisAP) && deleteFollowers(thisAP);
     }
 
     /**
@@ -388,24 +218,12 @@ public class WorkpackageService {
      *            der Login eines neuen Arbeiters.
      * @return Bestaetigt das erfolgreiche durchlaufen.
      */
-    public static boolean addWpWorker(Workpackage wp, String workerID) {
-        try {
-            String query =
-                    "INSERT INTO Paketzuweisung (FID_Proj, FID_LVL1ID, FID_LVL2ID, FID_LVL3ID, FID_LVLxID, FID_Ma) "
-                            + "VALUES( 1 ,"
-                            + wp.getLvl1ID()
-                            + ", "
-                            + wp.getLvl2ID()
-                            + ", "
-                            + wp.getLvl3ID()
-                            + ", '"
-                            + wp.getLvlxID() + "', '" + workerID + "')";
-            SQLExecuter.executeUpdate(query);
-            return true;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
+    public static boolean addWpWorker(Workpackage wp, int workerID) {
+        WorkpackageAllocation wpAlloc = new WorkpackageAllocation();
+        wpAlloc.setFid_emp(workerID);
+        wpAlloc.setFid_wp(wp.getWpId());
+        return DBModelManager.getWorkpackageAllocationModel()
+                .addNewWorkpackageAllocation(wpAlloc);
     }
 
     /**
@@ -417,21 +235,9 @@ public class WorkpackageService {
      *            der Login eines Arbeiters.
      * @return Bestaetigt das erfolgreiche durchlaufen.
      */
-    public static boolean removeWpWorker(Workpackage wp, String workerID) {
-        try {
-            String query =
-                    "DELETE FROM Paketzuweisung " + "WHERE FID_Proj = 1 "
-                            + " AND FID_LVL1ID = " + wp.getLvl1ID()
-                            + " AND FID_LVL2ID = " + wp.getLvl2ID()
-                            + " AND FID_LVL3ID = " + wp.getLvl3ID()
-                            + " AND FID_LVLxID = '" + wp.getLvlxID() + "'"
-                            + " AND FID_Ma = '" + workerID + "'";
-            SQLExecuter.executeUpdate(query);
-            return true;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
+    public static boolean removeWpWorker(Workpackage wp, int workerID) {
+        return DBModelManager.getWorkpackageAllocationModel()
+                .deleteWorkpackageAllocation(workerID, wp.getWpId());
     }
 
     /**
@@ -451,121 +257,37 @@ public class WorkpackageService {
     }
 
     /**
-     * ### Wird nur noch zum Testen bei testService/TestWorkpackageService.java
-     * verwendet Sucht nach den mitgegebenen Abhaengigkeiten von einer StringID
-     * 
-     * @param stringID
-     *            gibt die StingID nach der gesucht wird an.
-     * @param select
-     *            gibt den Namen der Spalte mit den Informationen an.
-     * @param where
-     *            gibt den Namen der Spalten von stringID an.
-     * @return Set<Workpackage> mit allen Objekten in der mitgegebenen
-     *         Abhaengigkeit.
-     */
-    @Deprecated
-    private static Set<Workpackage> getConnection(String stringID,
-            String select, String where) {
-        try {
-            String query =
-                    "SELECT " + select + " FROM Abhaengigkeiten WHERE " + where
-                            + " = '" + stringID + "'";
-            ResultSet resSet = SQLExecuter.executeQuery(query);
-
-            Set<String> ergSet = new HashSet<String>();
-            while (resSet.next()) {
-                ergSet.add(resSet.getString(select));
-            }
-            resSet.close();
-            Set<Workpackage> wpSet = getWorkpackages(ergSet);
-
-            return wpSet;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    /**
      * Sucht nach allen Abhaengigkeiten von first zu second
      * 
-     * @param first
-     *            gibt den Namen der Spalte mit den einmaligen IDs.
-     * @param second
-     *            gibt den Namen der Spalte mit der Abhaengigkeit.
+     * @param followerFirst
+     *            When false returns Predecessor, Successor in Map, when true
+     *            Successor, Predecessor
      * @return Set<Workpackage> mit allen Objekten in der mitgegebenen
      *         Abhaengigkeit.
      */
-    private static Map<String, Set<String>> getConnectionIdMap(String first,
-            String second) {
-        try {
-            String query = "SELECT * FROM Abhaengigkeiten";
-            ResultSet resSet = SQLExecuter.executeQuery(query);
-            Map<String, Set<String>> ergMap =
-                    new TreeMap<String, Set<String>>();
-            while (resSet.next()) {
-                String followerKey = resSet.getString(first);
+    private static Map<Integer, Set<Integer>> getConnectionIdMap(
+            final boolean followerFirst) {
+        List<Dependency> dependencies =
+                DBModelManager.getDependenciesModel().getDependency();
+        Map<Integer, Set<Integer>> ergMap = new TreeMap<Integer, Set<Integer>>();
+        int followerKey;
+        for (Dependency dep : dependencies) {
+            if (!followerFirst) {
+                followerKey = dep.getFid_wp_predecessor();
                 if (!ergMap.containsKey(followerKey)) {
-                    ergMap.put(followerKey, new HashSet<String>());
+                    ergMap.put(followerKey, new HashSet<Integer>());
                 }
-                ergMap.get(followerKey).add(resSet.getString(second));
+                ergMap.get(followerKey).add(dep.getFid_wp_successor());
+            } else {
+                followerKey = dep.getFid_wp_successor();
+                if (!ergMap.containsKey(followerKey)) {
+                    ergMap.put(followerKey, new HashSet<Integer>());
+                }
+                ergMap.get(followerKey).add(dep.getFid_wp_predecessor());
             }
-            resSet.close();
-            return ergMap;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return null;
+
         }
-    }
-
-    /**
-     * ### Vorgaenger duerfen bisher nur einzeln geloescht werden. Loescht alle
-     * Nachfolger-Beziehung eines Arbeitspaketes
-     * 
-     * @param thisAP
-     *            StringID eines Arbeitspaketes was keine Nachfolger mehr haben
-     *            soll.
-     */
-    @Deprecated
-    private static boolean deleteFollowers(String thisAP) {
-        return deleteConnections(thisAP, "FID_Vorgaenger");
-    }
-
-    /**
-     * ### Vorgaenger duerfen bisher nur einzeln geloescht werden. Loescht alle
-     * Vorgaenger-Beziehung eines Arbeitspaketes
-     * 
-     * @param thisAP
-     *            StringID eines Arbeitspaketes was keine Nachfolger mehr haben
-     *            soll.
-     */
-    @Deprecated
-    private static boolean deleteAncestors(String thisAP) {
-        return deleteConnections(thisAP, "FID_Nachfolger");
-    }
-
-    /**
-     * ### Vorgaenger duerfen bisher nur einzeln geloescht werden. Loescht alle
-     * Beziehung eines Arbeitspaketes in der mitgegebenen Abhaengigkeit.
-     * 
-     * @param thisAP
-     *            StringID eines Arbeitspaketes was eine Beziehung verlieren
-     *            soll.
-     * @param where
-     *            Beziehung die geloescht werden soll.
-     */
-    @Deprecated
-    private static boolean deleteConnections(String thisAP, String where) {
-        try {
-            String query =
-                    "DELETE FROM Abhaengigkeiten WHERE " + where + " = "
-                            + thisAP;
-            SQLExecuter.executeUpdate(query);
-            return true;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
+        return ergMap;
     }
 
     /**
@@ -674,15 +396,18 @@ public class WorkpackageService {
     private static Set<Workpackage> fillWps(final Set<Workpackage> workSet,
             final List<dbaccess.data.Workpackage> workpackages)
             throws SQLException {
-        ArrayList<String> maIds = null;
+        ArrayList<Employee> maIds = null;
         for (dbaccess.data.Workpackage wp : workpackages) {
-            maIds = new ArrayList<String>();
+            maIds = new ArrayList<Employee>();
             List<WorkpackageAllocation> wpAllocations =
                     DBModelManager.getWorkpackageAllocationModel()
                             .getWorkpackageAllocation(wp.getId());
+            Employee emp;
             for (WorkpackageAllocation wpAllocation : wpAllocations) {
-                maIds.add(DBModelManager.getEmployeesModel()
-                        .getEmployee(wpAllocation.getFid_emp()).getLogin());
+                emp =
+                        DBModelManager.getEmployeesModel().getEmployee(
+                                wpAllocation.getFid_emp());
+                maIds.add(emp);
             }
             workSet.add(new Workpackage(wp, maIds));
             maIds = null;

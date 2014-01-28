@@ -40,9 +40,10 @@ import dbaccess.models.PlannedValueModel;
 public class MySQLPlannedValueModel implements PlannedValueModel {
 
     @Override
-    public final void addNewPlannedValue(final PlannedValue pValue) {
+    public final boolean addNewPlannedValue(final PlannedValue pValue) {
         final Connection connection = SQLExecuter.getConnection();
         PreparedStatement stm = null;
+        boolean success = false;
 
         String storedProcedure = "CALL planned_value_new(?,?,?)";
 
@@ -50,9 +51,10 @@ public class MySQLPlannedValueModel implements PlannedValueModel {
             stm = connection.prepareStatement(storedProcedure);
             stm.setInt(1, pValue.getFid_wp());
             stm.setTimestamp(2, new Timestamp(pValue.getPv_date().getTime()));
-            stm.setInt(3, pValue.getPv());
+            stm.setDouble(3, pValue.getPv());
 
             stm.execute();
+            success = true;
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
@@ -64,6 +66,7 @@ public class MySQLPlannedValueModel implements PlannedValueModel {
                 e.printStackTrace();
             }
         }
+        return success;
     }
 
     @Override
@@ -144,22 +147,29 @@ public class MySQLPlannedValueModel implements PlannedValueModel {
     }
 
     @Override
-    public final int getPlannedValue(final Date aDate, final int wpID) {
+    public final double getPlannedValue(final Date aDate, final int wpID) {
+        return getPlannedValue(aDate, wpID, false);
+    }
+
+    @Override
+    public final double getPlannedValue(final Date aDate, final int wpID,
+            final boolean nextLowerDate) {
         final Connection connection = SQLExecuter.getConnection();
 
         ResultSet sqlResult = null;
         PreparedStatement stm = null;
 
         final String storedProcedure =
-                "CALL planned_value_select_by_wp_and_date(?,?)";
-        int rslt = Integer.MIN_VALUE;
+                "CALL planned_value_select_by_wp_and_date(?,?,?)";
+        double rslt = Double.NaN;
         try {
             stm = connection.prepareStatement(storedProcedure);
             stm.setTimestamp(1, new Timestamp(aDate.getTime()));
             stm.setInt(2, wpID);
+            stm.setBoolean(3, nextLowerDate);
             sqlResult = stm.executeQuery();
             if (sqlResult.next()) {
-                rslt = sqlResult.getInt("pv");
+                rslt = sqlResult.getDouble("pv");
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -179,11 +189,11 @@ public class MySQLPlannedValueModel implements PlannedValueModel {
     }
 
     @Override
-    public final void updatePlannedValue(final Date aDate, final int wpID,
-            final int newValue) {
+    public final boolean updatePlannedValue(final Date aDate, final int wpID,
+            final double newValue) {
         final Connection connection = SQLExecuter.getConnection();
         PreparedStatement stm = null;
-
+        boolean success = false;
         String storedProcedure =
                 "CALL planned_value_update_by_wp_and_date(?,?,?)";
 
@@ -191,9 +201,10 @@ public class MySQLPlannedValueModel implements PlannedValueModel {
             stm = connection.prepareStatement(storedProcedure);
             stm.setInt(1, wpID);
             stm.setTimestamp(2, new Timestamp(aDate.getTime()));
-            stm.setInt(3, newValue);
+            stm.setDouble(3, newValue);
 
             stm.execute();
+            success = true;
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
@@ -205,12 +216,14 @@ public class MySQLPlannedValueModel implements PlannedValueModel {
                 e.printStackTrace();
             }
         }
+        return success;
     }
 
     @Override
-    public final void deletePlannedValue() {
+    public final boolean deletePlannedValue() {
         final Connection connection = SQLExecuter.getConnection();
         PreparedStatement stm = null;
+        boolean success = false;
 
         String storedProcedure = "CALL planned_value_delete()";
 
@@ -218,6 +231,7 @@ public class MySQLPlannedValueModel implements PlannedValueModel {
             stm = connection.prepareStatement(storedProcedure);
 
             stm.execute();
+            success = true;
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
@@ -229,12 +243,14 @@ public class MySQLPlannedValueModel implements PlannedValueModel {
                 e.printStackTrace();
             }
         }
+        return success;
     }
 
     @Override
-    public final void deletePlannedValue(final int wpID) {
+    public final boolean deletePlannedValue(final int wpID) {
         final Connection connection = SQLExecuter.getConnection();
         PreparedStatement stm = null;
+        boolean success = false;
 
         String storedProcedure = "CALL planned_value_delete_by_wp(?, null)";
 
@@ -243,6 +259,7 @@ public class MySQLPlannedValueModel implements PlannedValueModel {
             stm.setInt(1, wpID);
 
             stm.execute();
+            success = true;
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
@@ -254,12 +271,14 @@ public class MySQLPlannedValueModel implements PlannedValueModel {
                 e.printStackTrace();
             }
         }
+        return success;
     }
 
     @Override
-    public final void deletePlannedValue(final Date aDate, final int wpID) {
+    public final boolean deletePlannedValue(final Date aDate, final int wpID) {
         final Connection connection = SQLExecuter.getConnection();
         PreparedStatement stm = null;
+        boolean success = false;
 
         String storedProcedure = "CALL planned_value_delete_by_wp(?, ?)";
 
@@ -269,6 +288,7 @@ public class MySQLPlannedValueModel implements PlannedValueModel {
             stm.setTimestamp(2, new Timestamp(aDate.getTime()));
 
             stm.execute();
+            success = true;
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
@@ -280,5 +300,6 @@ public class MySQLPlannedValueModel implements PlannedValueModel {
                 e.printStackTrace();
             }
         }
+        return success;
     }
 }

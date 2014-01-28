@@ -8,8 +8,11 @@ import java.util.Set;
 
 import javax.swing.JOptionPane;
 
+import wpWorker.Worker;
 import dbServices.ValuesService;
 import dbServices.WorkpackageService;
+import dbaccess.DBModelManager;
+import dbaccess.data.Employee;
 import functions.WpManager;
 
 /**
@@ -36,7 +39,7 @@ public class Workpackage {
 
     private dbaccess.data.Workpackage thisWp;
 
-    private List<String> respEmployees;
+    private List<Employee> respEmployees;
 
     private final static int HOURS_PER_DAY = 8;
 
@@ -60,7 +63,7 @@ public class Workpackage {
      *            The employees working on this workpackage.
      */
     public Workpackage(final dbaccess.data.Workpackage wp,
-            final ArrayList<String> respEmployees) {
+            final ArrayList<Employee> respEmployees) {
         thisWp = wp;
         this.respEmployees = respEmployees;
     }
@@ -84,7 +87,7 @@ public class Workpackage {
         thisWp.setReleaseDate(null);
         thisWp.setTopLevel(false);
         thisWp.setInactive(false);
-        this.respEmployees = new ArrayList<String>();
+        this.respEmployees = new ArrayList<Employee>();
         thisWp.setAc(0);
         thisWp.setEv(0);
         thisWp.setEtc(0);
@@ -557,7 +560,7 @@ public class Workpackage {
     public final double getSv(final Date date) {
         GregorianCalendar cal = new GregorianCalendar();
         cal.setTime(date);
-        return thisWp.getEv() - ValuesService.getApPv(getStringID(), cal);
+        return thisWp.getEv() - ValuesService.getApPv(getWpId(), cal);
     }
 
     /**
@@ -584,7 +587,7 @@ public class Workpackage {
     public final double getSpi(final Date date) {
         GregorianCalendar cal = new GregorianCalendar();
         cal.setTime(date);
-        double pv = ValuesService.getApPv(getStringID(), cal);
+        double pv = ValuesService.getApPv(getWpId(), cal);
         if ((int) pv <= 0) {
             return 10;
         }
@@ -607,7 +610,7 @@ public class Workpackage {
      * @return gibt die Planed Value zurück
      */
     public final double getPv() {
-        return ValuesService.getApPv(this.getStringID());
+        return ValuesService.getApPv(this.getWpId());
     }
 
     /**
@@ -799,7 +802,6 @@ public class Workpackage {
         while (actualLvlId > 0) {
             i++;
             actualLvlId = getLvlID(i);
-
         }
         return i - 1;
     }
@@ -881,23 +883,31 @@ public class Workpackage {
         return oapID;
     }
 
-    public final boolean addWorker(final String workerID) {
-        if (!respEmployees.contains(workerID)) {
-            respEmployees.add(workerID);
-            WorkpackageService.addWpWorker(this, workerID);
+    public final boolean addWorker(final Employee worker) {
+        if (!respEmployees.contains(worker)) {
+            respEmployees.add(worker);
+            WorkpackageService.addWpWorker(this, worker.getId());
             return true;
         } else {
             return false;
         }
     }
 
-    public final void removeWorker(final String workerID) {
-        respEmployees.remove(workerID);
-        WorkpackageService.removeWpWorker(this, workerID);
+    public final void removeWorker(final Employee worker) {
+        respEmployees.remove(worker);
+        WorkpackageService.removeWpWorker(this, worker.getId());
     }
 
-    public final List<String> getWorkers() {
-        return new ArrayList<String>(respEmployees);
+    public final List<Employee> getWorkers() {
+        return new ArrayList<Employee>(respEmployees);
+    }
+    
+    public final List<String> getWorkerLogins(){
+        List<String> logins = new ArrayList<String>();
+        for ( Employee emp : respEmployees){
+            logins.add(emp.getLogin());
+        }
+        return logins;
     }
 
     public final boolean canCalc() {
@@ -961,8 +971,8 @@ public class Workpackage {
             text += "<br>";
         }
         text += "MA: ";
-        for (String actualUser : getWorkers()) {
-            text += actualUser + "  ";
+        for (Employee actualUser : getWorkers()) {
+            text += actualUser.getLogin() + "  ";
         }
 
         text += "</html>";
@@ -976,5 +986,27 @@ public class Workpackage {
      */
     public final int getWpId() {
         return thisWp.getId();
+    }
+
+    /**
+     * @return The wrapped dbaccess.data.Workpackage
+     */
+    public final dbaccess.data.Workpackage getWp() {
+        return thisWp;
+    }
+
+    /**
+     * Finds out and sets the Parent ID
+     */
+    public void setParentID() {
+        Integer[] id = getLvlIDs();
+        int lastRelevant = getlastRelevantIndex();
+        id[lastRelevant] = 0;
+        String parentStringId = id[0].toString();
+        for (int i = 1; i < id.length; i++) {
+            parentStringId = "." + id[i].toString();
+        }
+        thisWp.setParentID((DBModelManager.getWorkpackageModel()
+                .getWorkpackage(parentStringId).getId()));
     }
 }

@@ -79,10 +79,12 @@ public interface EmployeeCalendarModel {
      *            The start date from the period.
      * @param to
      *            The end date from the period
+     * @param empId
+     *            ID of the employee for which the calendar is selected.
      * @return Returns a list with all calendars in the specific period.
      */
     List<EmployeeCalendar> getEmployeeCalendarInDateRange(Date from, Date to,
-            boolean mode2);
+            int empId);
 
     /**
      * A method to delete e a specific calendar.

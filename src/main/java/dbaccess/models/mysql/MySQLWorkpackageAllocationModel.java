@@ -43,11 +43,11 @@ public class MySQLWorkpackageAllocationModel implements
         WorkpackageAllocationModel {
 
     @Override
-    public final void addNewWorkpackageAllocation(
+    public final boolean addNewWorkpackageAllocation(
             final WorkpackageAllocation wpAllocation) {
         final Connection connection = SQLExecuter.getConnection();
         PreparedStatement stm = null;
-
+        boolean success = false;
         String storedProcedure = "CALL wp_allocation_new(?,?)";
 
         try {
@@ -56,6 +56,7 @@ public class MySQLWorkpackageAllocationModel implements
             stm.setInt(2, wpAllocation.getFid_emp());
 
             stm.execute();
+            success = true;
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
@@ -67,6 +68,7 @@ public class MySQLWorkpackageAllocationModel implements
                 e.printStackTrace();
             }
         }
+        return success;
     }
 
     @Override
@@ -221,11 +223,11 @@ public class MySQLWorkpackageAllocationModel implements
     }
 
     @Override
-    public final void deleteWorkpackageAllocation(final int employeeID,
+    public final boolean deleteWorkpackageAllocation(final int employeeID,
             final int workpackageID) {
         final Connection connection = SQLExecuter.getConnection();
         PreparedStatement stm = null;
-
+        boolean success = false;
         String storedProcedure = "CALL wp_allocation_delete_by_key(?,?)";
 
         try {
@@ -234,6 +236,7 @@ public class MySQLWorkpackageAllocationModel implements
             stm.setInt(2, employeeID);
 
             stm.execute();
+            success = true;
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
@@ -245,7 +248,7 @@ public class MySQLWorkpackageAllocationModel implements
                 e.printStackTrace();
             }
         }
-
+        return success;
     }
 
 }

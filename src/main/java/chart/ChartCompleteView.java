@@ -118,8 +118,8 @@ public class ChartCompleteView extends WBSChart {
             diagonal.add(
                     new Day(cal.get(Calendar.DATE),
                             cal.get(Calendar.MONTH) + 1, cal.get(Calendar.YEAR)),
-                    (ValuesService.getApPv(wp.getStringID(), cal) / ValuesService
-                            .getApPv(wp.getStringID(), maxCal)) * 100);
+                    (ValuesService.getApPv(wp.getWpId(), cal) / ValuesService
+                            .getApPv(wp.getWpId(), maxCal)) * 100);
         }
 
         if (!diagonal.isEmpty()) {

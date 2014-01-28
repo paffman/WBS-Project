@@ -32,7 +32,7 @@ public interface WorkEffortModel {
      * @param effort
      *            The effort which is added.
      */
-    void addNewWorkEffort(WorkEffort effort);
+    boolean addNewWorkEffort(WorkEffort effort);
 
     /**
      * A mehtod to get the work effort.
@@ -49,5 +49,14 @@ public interface WorkEffortModel {
      * @return Returns a list with the work effort from the specific baseline.
      */
     List<WorkEffort> getWorkEffort(int wpId);
+
+    /**
+     * A method to get the work effort from a specific baseline.
+     * 
+     * @param wpId
+     *            The id from the specific workpackage.
+     * @return Returns the sum of efforts on the workpackage.
+     */
+    double getWorkEffortSum(int wpId);
 
 }
