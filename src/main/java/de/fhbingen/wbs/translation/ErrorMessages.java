@@ -39,4 +39,22 @@ public interface ErrorMessages {
     @De("Look and Feel konnte nicht geladen werden.")
     @En("Couldn't load look and feel.")
     String couldNotLoadLookAndFeel();
+
+    String databaseDriverError();
+
+    String databaseLoginError();
+
+    String notANumber();
+
+    @De("Wert im {0}-Feld ist zu groß.")
+    @En("Value in {0}-field too high.")
+    String valueTooHigh(String s);
+
+    @De("Wert im {0}-Feld ist zu niedrig.")
+    @En("Value in {0}-field too low.")
+    String valueTooLow(String s);
+
+    String dateInvalid();
+
+    String databaseNameAlreadyExists();
 }

@@ -89,7 +89,7 @@ public class DatabaseAdminLogin extends JDialog {
         /**
          * Gets called by the ok button.
          */
-        void okButtonPressedDatabaseAdminLogin();
+        void nextButtonPressedDatabaseAdminLogin();
 
         /**
          * Gets called by the cancel button.
@@ -136,7 +136,7 @@ public class DatabaseAdminLogin extends JDialog {
         textFieldUserName = new JTextField();
         textFieldPassword = new JPasswordField();
         //Labels for TextFields
-        labelTextFieldServerAddress = new JLabel(msg.serverAdress() + ":",
+        labelTextFieldServerAddress = new JLabel(msg.serverAddress() + ":",
                 JLabel.RIGHT);
         labelTextFieldUserName = new JLabel(msg.rootLoginName() + ":",
                 JLabel.RIGHT);
@@ -239,7 +239,7 @@ public class DatabaseAdminLogin extends JDialog {
         buttonOk.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
-                actionHandler.okButtonPressedDatabaseAdminLogin();
+                actionHandler.nextButtonPressedDatabaseAdminLogin();
             }
         });
 

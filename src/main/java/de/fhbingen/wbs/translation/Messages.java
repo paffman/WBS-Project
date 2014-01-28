@@ -16,4 +16,7 @@ public interface Messages extends ErrorMessages{
 
     @De("Passwort wurde erfolgreich ge\u00e4ndert.")
     String passwordChangeConfirm();
+
+    @De("Sind diese Werte richtig?")
+    String valuesCorrect();
 }

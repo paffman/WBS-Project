@@ -26,4 +26,6 @@ public interface ProjectSetup extends Button, Database, Project, Login {
     @De("Projektleiteraccount erstellen")
     @En("Create Project Manager Login")
     String projectManagerAccount();
+
+    String summary();
 }
