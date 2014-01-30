@@ -5,7 +5,7 @@
 DELIMITER //
 CREATE PROCEDURE dependencies_select()
 BEGIN
-	SELECT * 
+	SELECT *
 	FROM dependencies;
 END //
 DELIMITER ;
@@ -17,14 +17,14 @@ DELIMITER ;
 -- --------------------------------------------------------
 DELIMITER //
 CREATE PROCEDURE dependencies_delete_by_key(
-	IN in_pre int(11), 
+	IN in_pre int(11),
 	IN in_suc int(11))
 BEGIN
-	DELETE 
-	FROM dependencies 
-	WHERE	
-		fid_wp_predecessor = in_pre 
-		AND 
+	DELETE
+	FROM dependencies
+	WHERE
+		fid_wp_predecessor = in_pre
+		AND
 		fid_wp_successor = in_suc;
 END //
 DELIMITER ;
@@ -36,7 +36,7 @@ DELIMITER ;
 -- --------------------------------------------------------
 DELIMITER //
 CREATE PROCEDURE dependencies_new(
-	IN in_pre int(11), 
+	IN in_pre int(11),
 	IN in_suc int(11))
 BEGIN
 	INSERT INTO dependencies
@@ -51,7 +51,7 @@ DELIMITER ;
 -- --------------------------------------------------------
 DELIMITER //
 CREATE PROCEDURE analyse_data_select_by(
-   IN in_fid_id int(11), 
+   IN in_fid_id int(11),
    IN in_use_fid_baseline boolean)
 BEGIN
    IF in_use_fid_baseline IS NULL OR in_use_fid_baseline = false
@@ -63,7 +63,7 @@ BEGIN
 	  SELECT *
 	  FROM analyse_data
 	  WHERE fid_baseline = in_fid_id;
-   END IF;   
+   END IF;
 END //
 DELIMITER ;
 -- --------------------------------------------------------
@@ -142,7 +142,7 @@ BEGIN
 	  SELECT *
 	  FROM workpackage
 	  WHERE is_toplevel_wp = false;
-   END IF;   
+   END IF;
 END //
 DELIMITER ;
 
@@ -158,20 +158,20 @@ CREATE PROCEDURE workpackage_select_by_id(
 	IN in_project_id int(11),
 	IN in_id int(11))
 BEGIN
-	IF in_id IS NULL 
+	IF in_id IS NULL
 	THEN
 		SELECT *
 		FROM workpackage
-		WHERE 
-			string_id = in_string_id 
-			AND 
+		WHERE
+			string_id = in_string_id
+			AND
 			fid_project = in_project_id;
 	ELSE
 		SELECT *
 		FROM workpackage
-		WHERE 
-			id = in_id 
-			AND 
+		WHERE
+			id = in_id
+			AND
 			fid_project = in_project_id;
 	END IF;
 END //
@@ -189,9 +189,9 @@ CREATE PROCEDURE workpackage_select_by_date(
 BEGIN
 	SELECT *
 	FROM workpackage
-	WHERE 
-		start_date_calc BETWEEN in_date_from AND in_date_to 
-		OR 
+	WHERE
+		start_date_calc BETWEEN in_date_from AND in_date_to
+		OR
 		end_date_calc BETWEEN in_date_from AND in_date_to;
 END //
 DELIMITER ;
@@ -211,22 +211,21 @@ CREATE PROCEDURE workpackage_new(
 	IN in_description varchar(255),
 	IN in_bac double,
 	IN in_ac double,
-	IN in_ev double, 
+	IN in_ev double,
 	IN in_etc double,
 	IN in_eac double,
 	IN in_cpi double,
 	IN in_bac_costs double,
-	IN in_ac_costs double, 
+	IN in_ac_costs double,
 	IN in_etc_costs double,
 	IN in_wp_daily_rate double,
 	IN in_release_date datetime,
-	IN in_is_toplevel_wp boolean, 
+	IN in_is_toplevel_wp boolean,
 	IN in_is_inactive boolean,
-	IN in_start_date_calc datetime, 
-	IN in_start_date_wish datetime, 
+	IN in_start_date_calc datetime,
+	IN in_start_date_wish datetime,
 	IN in_end_date_calc datetime)
 BEGIN
-	-- get parent_order_id
 	DECLARE parent_order int(11);
     SELECT MAX(parent_order_id) INTO parent_order
     FROM workpackage w
@@ -237,8 +236,7 @@ BEGIN
 	ELSE
 		SET parent_order = parent_order + 1;
 	END IF;
-	
-	-- insert
+
 	INSERT INTO workpackage(
 		string_id,
 		fid_project,
@@ -304,40 +302,38 @@ CREATE PROCEDURE workpackage_update_by_id(
 	IN in_description varchar(255),
 	IN in_bac double,
 	IN in_ac double,
-	IN in_ev double, 
+	IN in_ev double,
 	IN in_etc double,
 	IN in_eac double,
 	IN in_cpi double,
 	IN in_bac_costs double,
-	IN in_ac_costs double, 
+	IN in_ac_costs double,
 	IN in_etc_costs double,
 	IN in_wp_daily_rate double,
 	IN in_release_date datetime,
-	IN in_is_toplevel_wp boolean, 
+	IN in_is_toplevel_wp boolean,
 	IN in_is_inactive boolean,
-	IN in_start_date_calc datetime, 
-	IN in_start_date_wish datetime, 
+	IN in_start_date_calc datetime,
+	IN in_start_date_wish datetime,
 	IN in_end_date_calc datetime)
 BEGIN
-	-- check in_string_id
 	DECLARE chk int(11);
 	SELECT COUNT(*) INTO chk
 	FROM workpackage
-	WHERE 
-		string_id = in_string_id 
+	WHERE
+		string_id = in_string_id
 		AND
-		fid_project = in_project_id;	
-	IF chk = 1 
-	THEN 
-	
-		-- Update
+		fid_project = in_project_id;
+	IF chk = 1
+	THEN
+
 		UPDATE workpackage
-		SET		
+		SET
 			fid_resp_emp = in_fid_resp_emp,
 			name = in_name,
 			description = in_description,
 			bac = in_bac,
-			ac = in_ac, 
+			ac = in_ac,
 			ev = in_ev,
 			etc = in_etc,
 			eac = in_eac,
@@ -353,16 +349,16 @@ BEGIN
 			start_date_wish = in_start_date_wish,
 			end_date_calc = in_end_date_calc
 		WHERE
-			string_id = in_string_id 
+			string_id = in_string_id
 			AND
-			fid_project = in_project_id;	
+			fid_project = in_project_id;
 	END IF;
 END //
 DELIMITER ;
 -- --------------------------------------------------------
 
 -- --------------------------------------------------------
--- workpackage_delete_by_id( … )
+-- workpackage_delete_by_id( ï¿½ )
 -- rw
 -- --------------------------------------------------------
 DELIMITER //
@@ -371,21 +367,21 @@ CREATE PROCEDURE workpackage_delete_by_id(
 	IN in_project_id int(11),
 	IN in_id int(11))
 BEGIN
-	IF in_id IS NULL 
+	IF in_id IS NULL
 	THEN
-		DELETE 
+		DELETE
 		FROM workpackage
-		WHERE 
-			string_id = in_string_id 
+		WHERE
+			string_id = in_string_id
 			AND
-			fid_project = in_project_id;	
-	ELSE 
-		DELETE 
+			fid_project = in_project_id;
+	ELSE
+		DELETE
 		FROM workpackage
-		WHERE 
-			id = in_id 
+		WHERE
+			id = in_id
 			AND
-			fid_project = in_project_id;	
+			fid_project = in_project_id;
 	END IF;
 END //
 DELIMITER ;
@@ -404,7 +400,7 @@ BEGIN
 		SELECT *
 		FROM work_effort;
 	ELSE
-		SELECT * 
+		SELECT *
 		FROM work_effort
 		WHERE fid_wp = in_wp_id;
 	END IF;
@@ -422,14 +418,14 @@ CREATE PROCEDURE work_effort_select_sum(
 BEGIN
 	SELECT SUM(effort) as "sum"
 	FROM work_effort
-	WHERE fid_wp = in_wp_id;	
+	WHERE fid_wp = in_wp_id;
 END //
 DELIMITER ;
 -- --------------------------------------------------------
 
 
 -- --------------------------------------------------------
--- work_effort_new( alle Felder außer id )
+-- work_effort_new( alle Felder auï¿½er id )
 -- rw
 -- --------------------------------------------------------
 DELIMITER //
@@ -452,7 +448,7 @@ BEGIN
 		in_fid_emp,
 		in_rec_date,
 		in_effort,
-		in_description);	
+		in_description);
 END //
 DELIMITER ;
 -- --------------------------------------------------------
@@ -471,7 +467,7 @@ BEGIN
 		SELECT *
 		FROM baseline;
 	ELSE
-		SELECT * 
+		SELECT *
 		FROM baseline
 		WHERE id = in_id;
 	END IF;
@@ -480,7 +476,7 @@ DELIMITER ;
 -- --------------------------------------------------------
 
 -- --------------------------------------------------------
--- baseline_new( alle Felder außer id )
+-- baseline_new( alle Felder auï¿½er id )
 -- rw
 -- --------------------------------------------------------
 DELIMITER //
@@ -515,7 +511,7 @@ BEGIN
 		SELECT *
 		FROM holidays_calendar;
 	ELSE
-		SELECT * 
+		SELECT *
 		FROM holidays_calendar
 		WHERE id = in_id;
 	END IF;
@@ -537,18 +533,18 @@ BEGIN
 	THEN
 		SELECT *
 		FROM holidays_calendar
-		WHERE 
-			begin_time BETWEEN in_from AND in_to 
-			OR 
+		WHERE
+			begin_time BETWEEN in_from AND in_to
+			OR
 			end_time BETWEEN in_from AND in_to;
 	ELSE
 		SELECT *
 		FROM holidays_calendar
-		WHERE 
+		WHERE
 			( begin_time < in_from AND end_time > in_to )
-			OR 
+			OR
 			((begin_time BETWEEN in_from AND in_to)
-			OR 
+			OR
 			(end_time BETWEEN in_from AND in_to));
 	END IF;
 END //
@@ -556,13 +552,13 @@ DELIMITER ;
 -- --------------------------------------------------------
 
 -- --------------------------------------------------------
--- holidays_calendar_new( alle Felder außer id )
+-- holidays_calendar_new( alle Felder auï¿½er id )
 -- rw
 -- --------------------------------------------------------
 DELIMITER //
 CREATE PROCEDURE holidays_calendar_new(
 	IN in_title varchar(255),
-	IN in_begin_time datetime, 
+	IN in_begin_time datetime,
 	IN in_end_time datetime,
 	IN in_availability boolean,
 	IN in_full_time boolean)
@@ -570,31 +566,31 @@ BEGIN
 	INSERT
 	INTO holidays_calendar(
 		title,
-	    begin_time, 
+	    begin_time,
 	    end_time,
 	    availability,
-	    full_time	
+	    full_time
 	)
 	VALUES (
 		in_title,
-	    in_begin_time, 
+	    in_begin_time,
 	    in_end_time,
 	    in_availability,
-	    in_full_time	
+	    in_full_time
 	);
 END //
 DELIMITER ;
 -- --------------------------------------------------------
 
 -- --------------------------------------------------------
--- holidays_calendar_update_by_id( int id, alle Felder außer id )
+-- holidays_calendar_update_by_id( int id, alle Felder auï¿½er id )
 -- rw
 -- --------------------------------------------------------
 DELIMITER //
 CREATE PROCEDURE holidays_calendar_update_by_id(
 	IN in_id int(11),
 	IN in_title varchar(255),
-	IN in_begin_time datetime, 
+	IN in_begin_time datetime,
 	IN in_end_time datetime,
 	IN in_availability boolean,
     IN in_full_time boolean)
@@ -602,10 +598,10 @@ BEGIN
 	UPDATE holidays_calendar
 	SET
 		title = in_title,
-	    begin_time = in_begin_time, 
+	    begin_time = in_begin_time,
 	    end_time = in_end_time,
 	    availability = in_availability,
-	    full_time = in_full_time		
+	    full_time = in_full_time
 	WHERE id = in_id;
 END //
 DELIMITER ;
@@ -619,7 +615,7 @@ DELIMITER //
 CREATE PROCEDURE holidays_calendar_delete_by_id(
 	IN in_id int(11))
 BEGIN
-	DELETE 
+	DELETE
 	FROM holidays_calendar
 	WHERE id = in_id;
 END //
@@ -640,7 +636,7 @@ DELIMITER ;
 -- --------------------------------------------------------
 
 -- --------------------------------------------------------
--- conflicts_new( alle Felder außer id )
+-- conflicts_new( alle Felder auï¿½er id )
 -- r
 -- --------------------------------------------------------
 DELIMITER //
@@ -711,7 +707,7 @@ BEGIN
 		fid_emp )
 	VALUES (
 		in_tag,
-		in_emp_id);	
+		in_emp_id);
 END //
 DELIMITER ;
 -- --------------------------------------------------------
@@ -727,7 +723,7 @@ CREATE PROCEDURE semaphore_v(
 BEGIN
 	DELETE
 	FROM semaphore
-	WHERE 
+	WHERE
 		tag = in_tag
 		AND
 		fid_emp = in_emp_id;
@@ -743,9 +739,9 @@ DELIMITER //
 CREATE PROCEDURE semaphore_select(
 	IN in_tag varchar(255))
 BEGIN
-	SELECT * 
+	SELECT *
 	FROM semaphore
-	WHERE tag = in_tag; 
+	WHERE tag = in_tag;
 END //
 DELIMITER ;
 -- --------------------------------------------------------
@@ -763,7 +759,7 @@ BEGIN
 	THEN
 		SELECT *
 		FROM employee_calendar;
-	ELSE 
+	ELSE
 		IF in_is_emp_id IS NULL OR in_is_emp_id = false
 		THEN
 			SELECT *
@@ -773,7 +769,7 @@ BEGIN
 			SELECT *
 			FROM employee_calendar
 			WHERE fid_emp = in_id;
-		END IF;		
+		END IF;
 	END IF;
 END //
 DELIMITER ;
@@ -787,13 +783,13 @@ DELIMITER //
 CREATE PROCEDURE employee_calendar_select_by_date(
 	IN in_from datetime,
 	IN in_to datetime )
-BEGIN	
+BEGIN
 	SELECT *
 	FROM employee_calendar
-	WHERE 
-		begin_time BETWEEN in_from AND in_to 
-		OR 
-		end_time BETWEEN in_from AND in_to;	
+	WHERE
+		begin_time BETWEEN in_from AND in_to
+		OR
+		end_time BETWEEN in_from AND in_to;
 END //
 DELIMITER ;
 -- --------------------------------------------------------
@@ -809,22 +805,22 @@ CREATE PROCEDURE employee_calendar_select_by_date_and_emp(
 	IN in_fid_emp int(11) )
 BEGIN
 	SELECT *
-	FROM( 
-		SELECT * 
+	FROM(
+		SELECT *
 		FROM employee_calendar
-		WHERE fid_emp = in_fid_emp ) as emp_cal		
-	WHERE 
+		WHERE fid_emp = in_fid_emp ) as emp_cal
+	WHERE
 		( begin_time < in_from AND end_time > in_to )
-		OR 
+		OR
 		begin_time BETWEEN in_from AND in_to
-		OR 
+		OR
 		end_time BETWEEN in_from AND in_to;
 END //
 DELIMITER ;
 -- --------------------------------------------------------
 
 -- --------------------------------------------------------
--- employee_calendar_new( alle Felder außer id )
+-- employee_calendar_new( alle Felder auï¿½er id )
 -- rw
 -- --------------------------------------------------------
 DELIMITER //
@@ -856,7 +852,7 @@ DELIMITER ;
 -- --------------------------------------------------------
 
 -- --------------------------------------------------------
--- employee_calendar_update_by_id( int id, alle Felder außer id )
+-- employee_calendar_update_by_id( int id, alle Felder auï¿½er id )
 -- rw
 -- --------------------------------------------------------
 DELIMITER //
@@ -871,12 +867,12 @@ CREATE PROCEDURE employee_calendar_update_by_id(
 BEGIN
 	UPDATE employee_calendar
 	SET
-		fid_emp = in_fid_emp,		
-	    begin_time = in_begin_time, 
+		fid_emp = in_fid_emp,
+	    begin_time = in_begin_time,
 	    end_time = in_end_time,
 		description = in_description,
 	    availability = in_availability,
-	    full_time = in_full_time		
+	    full_time = in_full_time
 	WHERE id = in_id;
 END //
 DELIMITER ;
@@ -905,7 +901,7 @@ DELIMITER //
 CREATE PROCEDURE employees_select(
 	IN in_not_pl boolean)
 BEGIN
-	IF in_not_pl IS NULL OR in_not_pl = false 
+	IF in_not_pl IS NULL OR in_not_pl = false
 	THEN
 		SELECT *
 		FROM employees;
@@ -949,7 +945,7 @@ DELIMITER ;
 -- --------------------------------------------------------
 
 -- --------------------------------------------------------
--- employees_new( alle Felder außer id, string password )
+-- employees_new( alle Felder auï¿½er id, string password )
 -- rw
 -- --------------------------------------------------------
 DELIMITER //
@@ -963,23 +959,23 @@ CREATE PROCEDURE employees_new(
 	IN in_password varchar(255),
 	IN in_dbname varchar(255),
 	IN in_db_id varchar(4),
-	IN in_host varchar(255)) 
+	IN in_host varchar(255))
 BEGIN
 	DECLARE username varchar(255);
 	DECLARE stmt varchar(255);
 
-	SET username = CONCAT_WS('_', in_db_id, LEFT(in_login,11));	
+	SET username = CONCAT_WS('_', in_db_id, LEFT(in_login,11));
 	SET @createUsr = CONCAT('CREATE USER ',username,'@',in_host,' IDENTIFIED BY "',in_password,'"');
 	PREPARE createUsr FROM @createUsr;
 	EXECUTE createUsr;
 	DEALLOCATE PREPARE createUsr;
-	
+
 	SET @grantExec = CONCAT('GRANT EXECUTE ON ',in_dbname,'.* TO ',username,'@',in_host);
 	PREPARE grantExec FROM @grantExec;
 	EXECUTE grantExec;
 	DEALLOCATE PREPARE grantExec;
-	
-	INSERT 
+
+	INSERT
 	INTO employees(
 		login,
 		last_name,
@@ -993,7 +989,7 @@ BEGIN
 	    in_first_name,
 	    in_project_leader,
 	    in_daily_rate,
-	    in_time_preference);	
+	    in_time_preference);
 END //
 DELIMITER ;
 -- --------------------------------------------------------
@@ -1007,13 +1003,13 @@ CREATE PROCEDURE employees_update_password_by_id(
 	IN in_id int(11),
 	IN in_password varchar(255),
 	IN in_db_id varchar(4),
-	IN in_host varchar(255)) 
+	IN in_host varchar(255))
 BEGIN
 	DECLARE username varchar(255);
 	SELECT login INTO username
 	FROM employees
 	WHERE id = in_id;
-	SET username = CONCAT_WS('_', in_db_id, LEFT(username,11));	
+	SET username = CONCAT_WS('_', in_db_id, LEFT(username,11));
 	SET @changePw = CONCAT('SET PASSWORD FOR ',username,'@',in_host,' = PASSWORD("',in_password,'")');
 	PREPARE changePw FROM @changePw;
 	EXECUTE changePw;
@@ -1023,7 +1019,7 @@ DELIMITER ;
 -- --------------------------------------------------------
 
 -- --------------------------------------------------------
--- employees_update_by_id( alle Felder außer id und login, opt string password )
+-- employees_update_by_id( alle Felder auï¿½er id und login, opt string password )
 -- rw
 -- --------------------------------------------------------
 DELIMITER //
@@ -1036,7 +1032,7 @@ CREATE PROCEDURE employees_update_by_id(
 	IN in_time_preference int(11),
 	IN in_password varchar(255),
 	IN in_db_id varchar(4),
-	IN in_host varchar(255)) 
+	IN in_host varchar(255))
 BEGIN
 	UPDATE employees
 	SET
@@ -1046,11 +1042,11 @@ BEGIN
 	    daily_rate = in_daily_rate,
 	    time_preference = in_time_preference
 	WHERE id = in_id;
-	
+
 	IF in_password IS NOT NULL
 	THEN
 		CALL employees_update_password_by_id(in_id, in_password, in_db_id, in_host);
-	END IF;		
+	END IF;
 END //
 DELIMITER ;
 -- --------------------------------------------------------
@@ -1071,7 +1067,7 @@ BEGIN
 	FROM employees
 	WHERE id = in_id;
 
-	SET username = CONCAT_WS('_', in_db_id, LEFT(user_login,11));	
+	SET username = CONCAT_WS('_', in_db_id, LEFT(user_login,11));
 	SET @dropUser = CONCAT('DROP USER ',username,'@',in_host );
 	PREPARE dropUser FROM @dropUser;
 	EXECUTE dropUser;
@@ -1079,7 +1075,7 @@ BEGIN
 
 	DELETE
 	FROM employees
-	WHERE id = in_id;	
+	WHERE id = in_id;
 END //
 DELIMITER ;
 -- --------------------------------------------------------
@@ -1097,7 +1093,7 @@ BEGIN
 		SELECT *
 		FROM wp_allocation;
 	ELSE
-		SELECT * 
+		SELECT *
 		FROM wp_allocation
 		WHERE fid_wp = in_fid_wp;
 	END IF;
@@ -1143,8 +1139,8 @@ CREATE PROCEDURE wp_allocation_delete_by_key(
 BEGIN
 	DELETE
 	FROM wp_allocation
-	WHERE 
-		fid_emp = in_emp 
+	WHERE
+		fid_emp = in_emp
 		AND
 		fid_wp = in_wp;
 END //
@@ -1164,17 +1160,17 @@ CREATE PROCEDURE wp_alloc_workpackage_select(
 BEGIN
 	IF in_by_date IS NULL OR in_by_date = false
 	THEN
-		SELECT * 
+		SELECT *
 		FROM wp_alloc_workpackage
 		WHERE fid_emp = in_fid_emp;
-	ELSE 
-		SELECT * 
-		FROM wp_alloc_workpackage 
-		WHERE 
+	ELSE
+		SELECT *
+		FROM wp_alloc_workpackage
+		WHERE
 			fid_emp = in_fid_emp
 			AND
-			end_date_calc >= in_from 
-			AND 
+			end_date_calc >= in_from
+			AND
 			start_date_calc <= in_to;
 	END IF;
 END //
@@ -1193,18 +1189,18 @@ CREATE PROCEDURE planned_value_select_by_date(
 BEGIN
 	IF in_wp IS NULL
 	THEN
-		SELECT * 
-		FROM planned_value 
-		WHERE 
-			pv_date BETWEEN in_from AND in_to 
+		SELECT *
+		FROM planned_value
+		WHERE
+			pv_date BETWEEN in_from AND in_to
 		ORDER BY pv_date DESC;
 	ELSE
-		SELECT * 
-		FROM planned_value 
-		WHERE 
-			pv_date BETWEEN in_from AND in_to 
-			AND 
-			fid_wp = in_wp 
+		SELECT *
+		FROM planned_value
+		WHERE
+			pv_date BETWEEN in_from AND in_to
+			AND
+			fid_wp = in_wp
 		ORDER BY pv_date DESC;
 	END IF;
 END //
@@ -1223,19 +1219,19 @@ CREATE PROCEDURE planned_value_select_by_wp_and_date(
 BEGIN
 	IF in_desc IS NULL OR in_desc = false
 	THEN
-		SELECT pv 
-		FROM planned_value 
-		WHERE 
-			pv_date = in_date 
-			AND 
+		SELECT pv
+		FROM planned_value
+		WHERE
+			pv_date = in_date
+			AND
 			fid_wp = in_wp;
 	ELSE
-		SELECT pv 
-		FROM planned_value 
-		WHERE 
-			pv_date < in_date 
-			AND 
-			fid_wp = in_wp 
+		SELECT pv
+		FROM planned_value
+		WHERE
+			pv_date < in_date
+			AND
+			fid_wp = in_wp
 		ORDER BY pv_date DESC;
 	END IF;
 END //
@@ -1243,7 +1239,7 @@ DELIMITER ;
 -- ------------------------------------------------------
 
 -- --------------------------------------------------------
--- planned_value_new( alle Felder außer id )
+-- planned_value_new( alle Felder auï¿½er id )
 -- rw
 -- --------------------------------------------------------
 DELIMITER //
@@ -1252,13 +1248,13 @@ CREATE PROCEDURE planned_value_new(
     IN in_pv_date datetime,
     IN in_pv double)
 BEGIN
-	INSERT 
+	INSERT
 	INTO planned_value (
-		fid_wp, 
+		fid_wp,
 	    pv_date,
 	    pv)
 	VALUE (
-		in_fid_wp, 
+		in_fid_wp,
 		in_pv_date,
 		in_pv);
 END //
@@ -1277,7 +1273,7 @@ CREATE PROCEDURE planned_value_update_by_wp_and_date(
 BEGIN
 	UPDATE planned_value
 	SET pv = in_pv
-	WHERE 
+	WHERE
 		fid_wp = in_fid_wp
 		AND
 		pv_date = in_pv_date;
@@ -1315,7 +1311,7 @@ BEGIN
 	ELSE
 		DELETE
 		FROM planned_value
-		WHERE 
+		WHERE
 			fid_wp = in_wp
 			AND
 			pv_date = in_date;
@@ -1339,7 +1335,7 @@ DELIMITER ;
 -- --------------------------------------------------------
 
 -- --------------------------------------------------------
--- project_new( alle Felder außer id )
+-- project_new( alle Felder auï¿½er id )
 -- rw
 -- --------------------------------------------------------
 DELIMITER //
