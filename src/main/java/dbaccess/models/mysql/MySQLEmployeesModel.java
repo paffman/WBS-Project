@@ -20,6 +20,7 @@
 package dbaccess.models.mysql;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -29,6 +30,7 @@ import java.util.List;
 import jdbcConnection.MySqlConnect;
 import jdbcConnection.SQLExecuter;
 import dbaccess.data.Employee;
+import dbaccess.data.Workpackage;
 import dbaccess.models.EmployeesModel;
 
 /**
@@ -109,23 +111,39 @@ public class MySQLEmployeesModel implements EmployeesModel {
     @Override
     public List<Employee> getEmployee(final boolean noLeaders) {
         connection = SQLExecuter.getConnection();
-        List<Employee> empList = new ArrayList<Employee>();
-        try {
-            ResultSet result = null;
-            Employee employee = null;
-            Statement stm = connection.createStatement();
-            result = stm.executeQuery("CALL employees_select(true)");
 
-            while (result.next()) {
-                employee = Employee.fromResultSet(result);
-                empList.add(employee);
+        List<Employee> emp = new ArrayList<Employee>();
+        ResultSet sqlResult = null;
+
+        PreparedStatement stm = null;
+        final String storedProcedure = "CALL employees_select(?)";
+
+        try {
+            stm = connection.prepareStatement(storedProcedure);
+            stm.setBoolean(1, noLeaders);
+
+            sqlResult = stm.executeQuery();
+
+            while (sqlResult.next()) {
+                emp.add(Employee.fromResultSet(sqlResult));
             }
 
-            return empList;
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                if (sqlResult != null) {
+                    sqlResult.close();
+                }
+                if (stm != null) {
+                    stm.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
-        return null;
+
+        return emp;
     }
 
     @Override
@@ -170,7 +188,39 @@ public class MySQLEmployeesModel implements EmployeesModel {
 
     @Override
     public Employee getEmployee(final int id) {
-        // TODO Auto-generated method stub
-        return null;
+        connection = SQLExecuter.getConnection();
+
+        Employee emp = null;
+        ResultSet sqlResult = null;
+
+        PreparedStatement stm = null;
+        final String storedProcedure = "CALL employees_select_by_id(?)";
+
+        try {
+            stm = connection.prepareStatement(storedProcedure);
+            stm.setInt(1, id);
+
+            sqlResult = stm.executeQuery();
+
+            if (sqlResult.next()) {
+                emp = Employee.fromResultSet(sqlResult);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (sqlResult != null) {
+                    sqlResult.close();
+                }
+                if (stm != null) {
+                    stm.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return emp;
     }
 }

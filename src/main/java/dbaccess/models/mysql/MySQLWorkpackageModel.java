@@ -31,9 +31,7 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * The <code>MySQLWorkpackageModel</code> class implements the
@@ -44,6 +42,7 @@ public class MySQLWorkpackageModel implements WorkpackageModel {
 
     @Override
     public final boolean addNewWorkpackage(final Workpackage wp) {
+        System.out.println("x:" + wp.getEmployeeID());//$$
         final Connection connection = SQLExecuter.getConnection();
         final int paramCount = 22;
         PreparedStatement stm = null;
@@ -62,7 +61,7 @@ public class MySQLWorkpackageModel implements WorkpackageModel {
         try {
             stm = connection.prepareStatement(storedProcedure);
             stm.setString(1, wp.getStringID());
-            stm.setInt(2, wp.getProjectID());
+            stm.setInt(2, 1);
             stm.setInt(3, wp.getEmployeeID());
             stm.setInt(4, wp.getParentID());
 
@@ -86,9 +85,13 @@ public class MySQLWorkpackageModel implements WorkpackageModel {
             stm.setTimestamp(17, new Timestamp(wp.getReleaseDate().getTime()));
             stm.setBoolean(18, wp.isTopLevel());
             stm.setBoolean(19, wp.isInactive());
-            stm.setTimestamp(20, new Timestamp(wp.getStartDateCalc().getTime()));
-            stm.setTimestamp(21, new Timestamp(wp.getStartDateWish().getTime()));
-            stm.setTimestamp(22, new Timestamp(wp.getEndDateCalc().getTime()));
+
+            stm.setTimestamp(20, calendar.DateFunctions.getTimesampOrNull(wp
+                    .getStartDateCalc()));
+            stm.setTimestamp(21, calendar.DateFunctions.getTimesampOrNull(wp
+                    .getStartDateWish()));
+            stm.setTimestamp(22, calendar.DateFunctions.getTimesampOrNull(wp
+                    .getEndDateCalc()));
 
             stm.execute();
             success = true;
@@ -271,9 +274,12 @@ public class MySQLWorkpackageModel implements WorkpackageModel {
             stm.setTimestamp(16, new Timestamp(wp.getReleaseDate().getTime()));
             stm.setBoolean(17, wp.isTopLevel());
             stm.setBoolean(18, wp.isInactive());
-            stm.setTimestamp(19, new Timestamp(wp.getStartDateCalc().getTime()));
-            stm.setTimestamp(20, new Timestamp(wp.getStartDateWish().getTime()));
-            stm.setTimestamp(21, new Timestamp(wp.getEndDateCalc().getTime()));
+            stm.setTimestamp(19, calendar.DateFunctions.getTimesampOrNull(wp
+                    .getStartDateCalc()));
+            stm.setTimestamp(20, calendar.DateFunctions.getTimesampOrNull(wp
+                    .getStartDateWish()));
+            stm.setTimestamp(21, calendar.DateFunctions.getTimesampOrNull(wp
+                    .getEndDateCalc()));
 
             stm.execute();
             success = true;

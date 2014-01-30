@@ -161,7 +161,7 @@ public class MySQLPlannedValueModel implements PlannedValueModel {
 
         final String storedProcedure =
                 "CALL planned_value_select_by_wp_and_date(?,?,?)";
-        double rslt = Double.NaN;
+        double rslt = Double.MIN_NORMAL;
         try {
             stm = connection.prepareStatement(storedProcedure);
             stm.setTimestamp(1, new Timestamp(aDate.getTime()));

@@ -48,7 +48,7 @@ public final class MySqlConnect {
      * 
      * @return Connection-Object
      */
-    public static Connection getConnection() {
+    public static Connection getConnection() throws SQLException{
         try {
             // This will load the MySQL driver, each DB has its own driver
             Class.forName(MYSQL_DRIVER);
@@ -59,6 +59,7 @@ public final class MySqlConnect {
             return connect;
         } catch (SQLException e) {
             e.printStackTrace();
+            throw e;
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }

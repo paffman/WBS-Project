@@ -134,8 +134,8 @@ public class Conflict {
                 DBModelManager.getWorkpackageModel().getWorkpackage(triggerAp)
                         .getStringID();
         this.affectedApStringId =
-                DBModelManager.getWorkpackageModel().getWorkpackage(affectedAP)
-                        .getStringID();
+                affectedAP <= 0 ? "" : DBModelManager.getWorkpackageModel()
+                        .getWorkpackage(affectedAP).getStringID();
     }
 
     /**

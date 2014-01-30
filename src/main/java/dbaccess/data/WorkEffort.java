@@ -150,7 +150,7 @@ public class WorkEffort {
         try {
             workEffort.setId(resSet.getInt("id"));
             workEffort.setFid_wp(resSet.getInt("fid_wp"));
-            workEffort.setFid_emp(resSet.getInt("fid_wp"));
+            workEffort.setFid_emp(resSet.getInt("fid_emp"));
             workEffort.setRec_date(resSet.getDate("rec_date"));
             workEffort.setEffort(resSet.getDouble("effort"));
             workEffort.setDescription(resSet.getString("description"));

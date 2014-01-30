@@ -119,10 +119,17 @@ public class DBChooser {
                 return;
             }
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(
-                    gui,
-                    "Verbindung konnte nicht aufgebaut werden! Exception: "
-                            + e.toString());
+            e.printStackTrace();
+            if (e.getMessage().contains("Access denied for user")) {
+                JOptionPane
+                        .showMessageDialog(
+                                gui,
+                                "Verbindung konnte nicht aufgebaut werden! Überprüfen sie Benutzernamen und Passwort.");
+            } else {
+                JOptionPane.showMessageDialog(gui,
+                        "Verbindung konnte nicht aufgebaut werden! Exception: "
+                                + e.toString());
+            }
             return;
         }
 

@@ -20,6 +20,7 @@
 package dbaccess.models.mysql;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -46,18 +47,41 @@ public class MySQLConflictsModel implements ConflictsModel {
     @Override
     public boolean addNewConflict(Conflict conflict) {
         connection = SQLExecuter.getConnection();
+        final int paramCount = 22;
+        PreparedStatement stm = null;
+        boolean success = false;
+
+        String storedProcedure = "CALL conflicts_new(?,?,?,?,?)";
+
+        System.out.println(storedProcedure);
+
         try {
-            Statement stm = connection.createStatement();
-            stm.execute("CALL conflicts_new (" + conflict.getFid_wp() + ","
-                    + conflict.getFid_wp_affected() + ","
-                    + conflict.getFid_emp() + "," + conflict.getReason() + ",'"
-                    + new Timestamp(conflict.getOccurence_date().getTime())
-                    + "')");
-            return true;
+            stm = connection.prepareStatement(storedProcedure);
+            stm.setInt(1, conflict.getFid_wp());
+            if (conflict.getFid_wp_affected() <= 0) {
+                stm.setNull(2, java.sql.Types.INTEGER);
+            } else {
+                stm.setInt(2, conflict.getFid_wp_affected());
+            }
+            stm.setInt(3, conflict.getFid_emp());
+            stm.setInt(4, conflict.getReason());
+            stm.setTimestamp(5, calendar.DateFunctions
+                    .getTimesampOrNull(conflict.getOccurence_date()));
+
+            stm.execute();
+            success = true;
         } catch (SQLException e) {
             e.printStackTrace();
-            return false;
+        } finally {
+            try {
+                if (stm != null) {
+                    stm.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
+        return success;
     }
 
     @Override

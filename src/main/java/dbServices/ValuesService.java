@@ -100,7 +100,7 @@ public class ValuesService {
                 DBModelManager.getPlannedValueModel().getPlannedValue(
                         calendar.getTime(), apID, false);
 
-        if (ergPv == Double.NaN) {
+        if (ergPv == Double.MIN_NORMAL) {
             ergPv =
                     DBModelManager.getPlannedValueModel().getPlannedValue(
                             calendar.getTime(), apID, true);

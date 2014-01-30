@@ -17,10 +17,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 package dbaccess.models.mysql;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -30,6 +30,7 @@ import java.util.List;
 
 import jdbcConnection.SQLExecuter;
 import dbaccess.data.Baseline;
+import dbaccess.data.Workpackage;
 import dbaccess.models.BaselineModel;
 
 /**
@@ -42,16 +43,16 @@ public class MySQLBaselineModel implements BaselineModel {
      * The MySQL connection to use.
      */
     private Connection connection;
-    
+
     @Override
     public boolean addNewBaseline(Baseline line) {
-        connection=SQLExecuter.getConnection();
+        connection = SQLExecuter.getConnection();
         boolean success = false;
         try {
             Statement stm = connection.createStatement();
-            
-            stm.execute("CALL baseline_new ("
-                    + line.getFid_project() + ",'" + new Timestamp(line.getBl_date().getTime()) + "','"
+
+            stm.execute("CALL baseline_new (" + line.getFid_project() + ",'"
+                    + new Timestamp(line.getBl_date().getTime()) + "','"
                     + line.getDescription() + "')");
             success = true;
         } catch (SQLException e) {
@@ -62,19 +63,19 @@ public class MySQLBaselineModel implements BaselineModel {
 
     @Override
     public List<Baseline> getBaseline() {
-        connection=SQLExecuter.getConnection();
+        connection = SQLExecuter.getConnection();
         List<Baseline> blList = new ArrayList<Baseline>();
         try {
             ResultSet result = null;
-            Baseline baseline=new Baseline();
+            Baseline baseline = new Baseline();
             Statement stm = connection.createStatement();
             result = stm.executeQuery("CALL baseline_select(NULL)");
 
-            while (result.next()){
+            while (result.next()) {
                 baseline = Baseline.fromResultSet(result);
                 blList.add(baseline);
             }
-            
+
             return blList;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -84,22 +85,39 @@ public class MySQLBaselineModel implements BaselineModel {
 
     @Override
     public Baseline getBaseline(int baselineID) {
-        connection=SQLExecuter.getConnection();
-        Baseline baseline = new Baseline();
-        try {
-            ResultSet result = null;
-            Statement stm = connection.createStatement();
-            result = stm.executeQuery("CALL baseline_select("
-                    + baselineID + ")");
+        connection = SQLExecuter.getConnection();
 
-            if (result.next()){
-                baseline = Baseline.fromResultSet(result);
+        Baseline bl = null;
+        ResultSet sqlResult = null;
+
+        PreparedStatement stm = null;
+        final String storedProcedure = "CALL baseline_select(?)";
+
+        try {
+            stm = connection.prepareStatement(storedProcedure);
+            stm.setInt(1, baselineID);
+
+            sqlResult = stm.executeQuery();
+
+            if (sqlResult.next()) {
+                bl = Baseline.fromResultSet(sqlResult);
             }
-            
-            return baseline;
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                if (sqlResult != null) {
+                    sqlResult.close();
+                }
+                if (stm != null) {
+                    stm.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
-        return null;
+
+        return bl;
+
     }
 }

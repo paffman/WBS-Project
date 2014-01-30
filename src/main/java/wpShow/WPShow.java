@@ -520,7 +520,9 @@ public class WPShow {
             leiterLogin = "";
         } else {
             leiterLogin = gui.getLeiter().getLogin();
+            System.out.println("0.1: " + gui.getLeiter().getLogin() );//%%
             fid_Leiter = gui.getLeiter().getId();
+            System.out.println("0.2: " + gui.getLeiter().getId() );//%%
 
         }
         if (leiterLogin.equals("")) {
@@ -530,12 +532,16 @@ public class WPShow {
 
         actualWPWorkers.clear();
         for (String actualWorkerID : gui.getWorkers()) {
+            System.out.println("1: " +actualWorkerID ); //%%
             if (!actualWorkerID.equals("")) {
+                System.out.println("2: " +actualWorkerID );//%%
                 actualWPWorkers.add(actualWorkerID);
             }
         }
+        System.out.println("3: " + leiterLogin );//%%
         if (!actualWPWorkers.contains(leiterLogin)) {
             actualWPWorkers.add(leiterLogin);
+            System.out.println("4: " + leiterLogin );//%%
         }
         try {
             startDateHope = gui.getStartHope();
@@ -601,10 +607,6 @@ public class WPShow {
             for (Employee actualWorker : wp.getWorkers()) {
                 wp.removeWorker(actualWorker);
             }
-            for (String actualWorker : actualWPWorkers) {
-                wp.addWorker(DBModelManager.getEmployeesModel().getEmployee(
-                        actualWorker));
-            }
             acKosten = WpManager.calcACKosten(wp);
 
             double cpi = WpManager.calcCPI(acKosten, etcKosten, bacKosten);
@@ -633,6 +635,12 @@ public class WPShow {
                 WpManager.insertAP(wp);
             } else {
                 WpManager.updateAP(wp);
+            }
+            
+            for (String actualWorker : actualWPWorkers) {
+                System.out.println("5: " + actualWorker );//%%
+                wp.addWorker(DBModelManager.getEmployeesModel().getEmployee(
+                        actualWorker));
             }
             return true;
         }

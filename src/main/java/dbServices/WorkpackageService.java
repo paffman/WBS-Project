@@ -102,8 +102,13 @@ public class WorkpackageService {
      */
     public static boolean insertWorkpackage(Workpackage wp) {
         wp.setParentID();
-        return DBModelManager.getWorkpackageModel().addNewWorkpackage(
-                wp.getWp());
+        boolean success =
+                DBModelManager.getWorkpackageModel().addNewWorkpackage(
+                        wp.getWp());
+        if (success) {
+            wp.reloadFromDB();
+        }
+        return success;
     }
 
     /**
@@ -222,6 +227,9 @@ public class WorkpackageService {
         WorkpackageAllocation wpAlloc = new WorkpackageAllocation();
         wpAlloc.setFid_emp(workerID);
         wpAlloc.setFid_wp(wp.getWpId());
+        if (wp.getWorkersIds().contains(workerID)) {
+            return true;
+        }
         return DBModelManager.getWorkpackageAllocationModel()
                 .addNewWorkpackageAllocation(wpAlloc);
     }
@@ -269,7 +277,8 @@ public class WorkpackageService {
             final boolean followerFirst) {
         List<Dependency> dependencies =
                 DBModelManager.getDependenciesModel().getDependency();
-        Map<Integer, Set<Integer>> ergMap = new TreeMap<Integer, Set<Integer>>();
+        Map<Integer, Set<Integer>> ergMap =
+                new TreeMap<Integer, Set<Integer>>();
         int followerKey;
         for (Dependency dep : dependencies) {
             if (!followerFirst) {

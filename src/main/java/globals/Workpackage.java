@@ -114,15 +114,6 @@ public class Workpackage {
     }
 
     /**
-     * GETTER LVL1ID
-     * 
-     * @return LVL1ID
-     */
-    public final int getLvl1ID() {
-        return Integer.parseInt(thisWp.getStringID().substring(0, 1));
-    }
-
-    /**
      * Gibt den BAC in Tagen zurueck
      * 
      * @return BAC
@@ -349,13 +340,22 @@ public class Workpackage {
     }
 
     /**
+     * GETTER LVL1ID
+     * 
+     * @return LVL1ID
+     */
+    public final int getLvl1ID() {
+        return getLvlIDs()[0];
+    }
+
+    /**
      * SETTER LVL1ID - setzt die LVL1ID
      * 
      * @param lvl1id
      *            neue LVL1ID
      */
     public void setLvl1ID(int lvl1id) {
-        thisWp.setStringID(lvl1id + thisWp.getStringID().substring(1));
+        setLvlID(1, lvl1id);
     }
 
     /**
@@ -364,7 +364,7 @@ public class Workpackage {
      * @return LVL2ID
      */
     public final int getLvl2ID() {
-        return Integer.parseInt(thisWp.getStringID().substring(2, 3));
+        return getLvlIDs()[1];
     }
 
     /**
@@ -374,8 +374,7 @@ public class Workpackage {
      *            neue LVL2ID
      */
     public final void setLvl2ID(final int lvl2id) {
-        thisWp.setStringID(thisWp.getStringID().substring(0, 1) + lvl2id
-                + thisWp.getStringID().substring(3));
+        setLvlID(2, lvl2id);
     }
 
     /**
@@ -384,7 +383,7 @@ public class Workpackage {
      * @return LVL32ID
      */
     public int getLvl3ID() {
-        return Integer.parseInt(thisWp.getStringID().substring(4, 5));
+        return getLvlIDs()[2];
     }
 
     /**
@@ -394,8 +393,7 @@ public class Workpackage {
      *            neue LVL3ID
      */
     public final void setLvl3ID(final int lvl3id) {
-        thisWp.setStringID(thisWp.getStringID().substring(0, 3) + lvl3id
-                + thisWp.getStringID().substring(5));
+        setLvlID(3, lvl3id);
     }
 
     /**
@@ -404,7 +402,15 @@ public class Workpackage {
      * @return LVLxID as String
      */
     public final String getLvlxID() {
-        return thisWp.getStringID().substring(6);
+        Integer[] ids = getLvlIDs();
+        String ret = "";
+        for (int i = 3; i < ids.length; i++) {
+            ret = ret + ids[i];
+            if (i <= ids.length - 2) {
+                ret = ret + ".";
+            }
+        }
+        return ret;
     }
 
     /**
@@ -414,7 +420,105 @@ public class Workpackage {
      *            neue LVLxID
      */
     public final void setLvlxID(final String lvlxID) {
-        thisWp.setStringID(thisWp.getStringID().substring(0, 5) + lvlxID);
+        thisWp.setStringID(getLvl1ID() + "." + getLvl2ID() + "." + getLvl3ID()
+                + "." + lvlxID);
+    }
+
+    /**
+     * WBS2.0 gibt alle Level-IDs in einem Array zurueck, Achtung: index 0 =
+     * Level 1!
+     * 
+     * @return Array aller Werte der Levels des AP, beginnend bei Indexwert 0
+     */
+    public final Integer[] getLvlIDs() {
+        ArrayList<Integer> ids = new ArrayList<Integer>();
+        String[] idStrings = thisWp.getStringID().split("\\.");
+        for (int i = 0; i < idStrings.length; i++) {
+            ids.add(Integer.parseInt(idStrings[i]));
+        }
+        return ids.toArray(new Integer[1]);
+    }
+
+    /**
+     * WBS2.0 gibt die ID eines gewuenschten Levels zurueck
+     * 
+     * @param level
+     *            LEvel von dem der Wert benoetigt wird (1 - maximale
+     *            Ebenenzahl)
+     * @return den entsprechenden Wert der lvlID oder -1 wenn Level nicht
+     *         vorhanden
+     */
+    public final String getStringID() {
+        return thisWp.getStringID();
+    }
+
+    public final int getLvlID(final int level) {
+        try {
+            return getLvlIDs()[level - 1];
+        } catch (ArrayIndexOutOfBoundsException e) {
+            return -1;
+        }
+    }
+
+    /**
+     * WBS2.0 setzt die ID eines gewuenschten Levels
+     * 
+     * @param level
+     * @param value
+     */
+    public final void setLvlID(final int level, final int value) {
+        Integer[] ids = getLvlIDs();
+        try {
+            ids[level - 1] = value;
+        } catch (ArrayIndexOutOfBoundsException e) {
+            Integer[] ids2 = new Integer[level];
+            for (int i = 0; i < ids.length; i++) {
+                ids2[i] = ids[i];
+            }
+            ids2[level - 1] = value;
+            ids = ids2;
+        }
+        String newStringId = "";
+        for (int i = 0; i < ids.length; i++) {
+            newStringId = newStringId + ids[i];
+            if (i <= ids.length - 2) {
+                newStringId = newStringId + ".";
+            }
+        }
+        thisWp.setStringID(newStringId);
+    }
+
+    /**
+     * WBS2.0 gibt das Level des letzten Werts != 0 an
+     * 
+     * @return
+     */
+    public final int getlastRelevantIndex() {
+        int i = 1;
+        int actualLvlId = getLvlID(i);
+        while (actualLvlId > 0) {
+            i++;
+            actualLvlId = getLvlID(i);
+        }
+        return i - 1;
+    }
+
+    /**
+     * WBS2.0 fuegt Array von IDs zu String der Form "x.x.x" zusammen
+     * 
+     * @param xIDs
+     * @return
+     */
+    private String mergeLvlx(String[] xIDs) {
+        String merged = "";
+        for (String s : xIDs) {
+            if (merged.equals("")) {
+                merged += s;
+            } else {
+                merged += "." + s;
+            }
+        }
+        return merged;
     }
 
     /**
@@ -718,112 +822,6 @@ public class Workpackage {
         thisWp.setReleaseDate(release);
     }
 
-    /**
-     * WBS2.0 gibt alle Level-IDs in einem Array zurueck, Achtung: index 0 =
-     * Level 1!
-     * 
-     * @return Array aller Werte der Levels des AP, beginnend bei Indexwert 0
-     */
-    public final Integer[] getLvlIDs() {
-        ArrayList<Integer> ids = new ArrayList<Integer>();
-        int position = 1;
-        int actualID = getLvlID(position);
-        while (actualID != -1) {
-            ids.add(position - 1, actualID);
-            position++;
-            actualID = getLvlID(position);
-        }
-        return ids.toArray(new Integer[1]);
-    }
-
-    /**
-     * WBS2.0 gibt die ID eines gewuenschten Levels zurueck
-     * 
-     * @param level
-     *            LEvel von dem der Wert benoetigt wird (1 - maximale
-     *            Ebenenzahl)
-     * @return den entsprechenden Wert der lvlID oder -1 wenn Level nicht
-     *         vorhanden
-     */
-    public final String getStringID() {
-        return thisWp.getStringID();
-    }
-
-    public final int getLvlID(final int level) {
-        int id = 0;
-
-        if (level == 1) {
-            id = getLvl1ID();
-        } else if (level == 2) {
-            id = getLvl2ID();
-        } else if (level == 3) {
-            id = getLvl3ID();
-        } else if (level > 3) {
-            String[] xIDs = getLvlxID().split("\\.");
-            try {
-                id = Integer.parseInt(xIDs[level - 4]);
-            } catch (ArrayIndexOutOfBoundsException e) {
-                id = -1;
-            }
-
-        }
-
-        return id;
-    }
-
-    /**
-     * WBS2.0 setzt die ID eines gewuenschten Levels
-     * 
-     * @param level
-     * @param value
-     */
-    public final void setLvlID(final int level, final int value) {
-        if (level == 1) {
-            setLvl1ID(value);
-        } else if (level == 2) {
-            setLvl2ID(value);
-        } else if (level == 3) {
-            setLvl3ID(value);
-        } else if (level > 3) {
-            String[] xIDs = getLvlxID().split("\\.");
-            xIDs[level - 4] = "" + value;
-            setLvlxID(mergeLvlx(xIDs));
-        }
-    }
-
-    /**
-     * WBS2.0 gibt das Level des letzten Werts != 0 an
-     * 
-     * @return
-     */
-    public final int getlastRelevantIndex() {
-        int i = 1;
-        int actualLvlId = getLvlID(i);
-        while (actualLvlId > 0) {
-            i++;
-            actualLvlId = getLvlID(i);
-        }
-        return i - 1;
-    }
-
-    /**
-     * WBS2.0 fuegt Array von IDs zu String der Form "x.x.x" zusammen
-     * 
-     * @param xIDs
-     * @return
-     */
-    private String mergeLvlx(String[] xIDs) {
-        String merged = "";
-        for (String s : xIDs) {
-            if (merged.equals("")) {
-                merged += s;
-            } else {
-                merged += "." + s;
-            }
-        }
-        return merged;
-    }
-
     // getter/setter
     /**
      * Getter fuer alle Vorgaengern des APListObjects
@@ -901,10 +899,18 @@ public class Workpackage {
     public final List<Employee> getWorkers() {
         return new ArrayList<Employee>(respEmployees);
     }
-    
-    public final List<String> getWorkerLogins(){
+
+    public final List<Integer> getWorkersIds() {
+        List<Integer> ids = new ArrayList<Integer>();
+        for (Employee emp : respEmployees) {
+            ids.add(emp.getId());
+        }
+        return ids;
+    }
+
+    public final List<String> getWorkerLogins() {
         List<String> logins = new ArrayList<String>();
-        for ( Employee emp : respEmployees){
+        for (Employee emp : respEmployees) {
             logins.add(emp.getLogin());
         }
         return logins;
@@ -1001,12 +1007,29 @@ public class Workpackage {
     public void setParentID() {
         Integer[] id = getLvlIDs();
         int lastRelevant = getlastRelevantIndex();
+        System.out.println(lastRelevant);
+        if (lastRelevant > 0) {
+            lastRelevant--;
+        }
         id[lastRelevant] = 0;
+
         String parentStringId = id[0].toString();
         for (int i = 1; i < id.length; i++) {
-            parentStringId = "." + id[i].toString();
+            parentStringId = parentStringId + "." + id[i].toString();
         }
+        System.out.println(parentStringId); // %%
+        System.out.println(DBModelManager.getWorkpackageModel()
+                .getWorkpackage(parentStringId).getId());
         thisWp.setParentID((DBModelManager.getWorkpackageModel()
                 .getWorkpackage(parentStringId).getId()));
+    }
+
+    /**
+     * Reloads thisWp from the Database.
+     */
+    public void reloadFromDB() {
+        thisWp =
+                DBModelManager.getWorkpackageModel().getWorkpackage(
+                        getStringID());
     }
 }
