@@ -59,10 +59,10 @@ public class MySQLPlannedValueModelTest {
         pvModel.addNewPlannedValue(pv);
 
         try {
-            int pvVal =
+            double pvVal =
                     pvModel.getPlannedValue(
                             dateFormat.parse("2014-01-11 00:00:00"), 5);
-            assertThat(pvVal, equalTo(5));
+            assertThat(pvVal, equalTo(5.0));
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -119,17 +119,17 @@ public class MySQLPlannedValueModelTest {
      */
     @Test
     public final void testGetPlannedValueDateInt() {
-        int pvVal;
+        double pvVal;
         try {
             pvVal =
                     pvModel.getPlannedValue(
                             dateFormat.parse("2014-01-07 00:00:00"), 8);
-            assertThat(pvVal, equalTo(4));
+            assertThat(pvVal, equalTo(4.0));
 
             pvVal =
                     pvModel.getPlannedValue(
                             dateFormat.parse("2014-01-07 00:00:00"), 7);
-            assertThat(pvVal, equalTo(Integer.MIN_VALUE));
+            assertThat(pvVal, equalTo(Double.MIN_NORMAL));
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -144,10 +144,10 @@ public class MySQLPlannedValueModelTest {
     @Test
     public final void testUpdatePlannedValue() {
         try {
-            int pvVal =
+            double pvVal =
                     pvModel.getPlannedValue(
                             dateFormat.parse("2014-01-08 00:00:00"), 8);
-            assertThat(pvVal, equalTo(5));
+            assertThat(pvVal, equalTo(5.0));
 
             pvModel.updatePlannedValue(dateFormat.parse("2014-01-08 00:00:00"),
                     8, 10);
@@ -155,7 +155,7 @@ public class MySQLPlannedValueModelTest {
             pvVal =
                     pvModel.getPlannedValue(
                             dateFormat.parse("2014-01-08 00:00:00"), 8);
-            assertThat(pvVal, equalTo(10));
+            assertThat(pvVal, equalTo(10.0));
         } catch (ParseException e) {
             e.printStackTrace();
         }

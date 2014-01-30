@@ -21,23 +21,34 @@ package dbaccess.models.mysql;
 
 import jdbcConnection.MySqlConnect;
 import jdbcConnection.SQLExecuter;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
+
 import sqlutils.TestData;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({ MySQLWorkpackageModelTest.class,
         MySQLSemaphoreModelTest.class,
         MySQLWorkpackageAllocationModelTest.class,
-        MySQLWorkEffortModelTest.class, MySQLPlannedValueModelTest.class,
-        MySQLProjectModelTest.class, MySQLHolidaysCalendarModelTest.class })
+        MySQLWorkEffortModelTest.class,
+        MySQLPlannedValueModelTest.class,
+        MySQLProjectModelTest.class,
+        MySQLHolidaysCalendarModelTest.class,
+        MySQLConflictsModelTest.class,
+        MySQLAnalyseDataModelTest.class,
+        MySQLBaselineModelTest.class,
+        MySQLDependenciesModelTest.class,
+        MySQLEmployeeCalendarModelTest.class,
+        MySQLEmployeesModelTest.class
+})
 public class MySQLModelsTestSuite {
 
     @BeforeClass
     public static final void setUp() throws Exception {
-        MySqlConnect.setDbConncetion("localhost", "wbs_test", "", "wbsTestUsr",
+        MySqlConnect.setDbConncetion("localhost", "wbs_test_3", "0004", "wbsTestUsr",
                 "1234");
         TestData.reloadData(SQLExecuter.getConnection());
     }

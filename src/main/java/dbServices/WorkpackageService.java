@@ -224,12 +224,16 @@ public class WorkpackageService {
      * @return Bestaetigt das erfolgreiche durchlaufen.
      */
     public static boolean addWpWorker(Workpackage wp, int workerID) {
+        System.out.println("addWpWorker: " + workerID);//%%
+        System.out.println("addWpWorker: " + wp.getStringID());//%%
         WorkpackageAllocation wpAlloc = new WorkpackageAllocation();
         wpAlloc.setFid_emp(workerID);
         wpAlloc.setFid_wp(wp.getWpId());
         if (wp.getWorkersIds().contains(workerID)) {
+            System.out.println("addWpWorker: exists");//%%
             return true;
         }
+        System.out.println("addWpWorker: add to DB");//%%
         return DBModelManager.getWorkpackageAllocationModel()
                 .addNewWorkpackageAllocation(wpAlloc);
     }

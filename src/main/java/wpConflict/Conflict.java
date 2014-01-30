@@ -131,8 +131,8 @@ public class Conflict {
         this.triggerAp = triggerAp;
         this.affectedAP = affectedAP;
         this.triggerApStringId =
-                DBModelManager.getWorkpackageModel().getWorkpackage(triggerAp)
-                        .getStringID();
+                triggerAp <= 0 ? "" : DBModelManager.getWorkpackageModel()
+                        .getWorkpackage(triggerAp).getStringID();
         this.affectedApStringId =
                 affectedAP <= 0 ? "" : DBModelManager.getWorkpackageModel()
                         .getWorkpackage(affectedAP).getStringID();

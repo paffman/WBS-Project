@@ -215,19 +215,29 @@ public class DBChooser {
     private String getDatabaseIndex(final String host, final String db,
             final String indexDbPw) {
         MySqlConnect.setDbConncetion(host, "id_wbs", "", "idxUser", indexDbPw);
+        String ret = null;
         try {
             ResultSet rslt =
                     SQLExecuter.executeQuery("call "
                             + "db_identifier_select_by_dbname('" + db + "');");
             rslt.next();
-            return rslt.getString("id");
+            ret = rslt.getString("id");
+
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(gui,
                     "Verbindung konnte nicht aufgebaut werden! "
                             + "Es wurde kein Index-Eintrag für "
                             + "die Datenbank gefunden.");
-            return null;
+        } finally {
+            try {
+                MySqlConnect.getConnection().close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            MySqlConnect.setDbConncetion(null, null, null, null, null);
         }
+        return ret;
+
     }
 
     /**

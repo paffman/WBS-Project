@@ -882,9 +882,10 @@ public class Workpackage {
     }
 
     public final boolean addWorker(final Employee worker) {
-        if (!respEmployees.contains(worker)) {
-            respEmployees.add(worker);
+        System.out.println("addWorker: " + worker.getId());//%%
+        if (!respEmployees.contains(worker)) {            
             WorkpackageService.addWpWorker(this, worker.getId());
+            respEmployees.add(worker);
             return true;
         } else {
             return false;
@@ -892,6 +893,7 @@ public class Workpackage {
     }
 
     public final void removeWorker(final Employee worker) {
+        System.out.println("removeWorker: " + worker.getId());//%%
         respEmployees.remove(worker);
         WorkpackageService.removeWpWorker(this, worker.getId());
     }

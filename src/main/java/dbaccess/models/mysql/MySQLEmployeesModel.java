@@ -178,12 +178,30 @@ public class MySQLEmployeesModel implements EmployeesModel {
     @Override
     public void deleteEmployee(final int id) {
         connection = SQLExecuter.getConnection();
+
+        PreparedStatement stm = null;
+        final String storedProcedure = "CALL employees_delete_by_id(?,?,?)";
+
         try {
-            Statement stm = connection.createStatement();
-            stm.execute("CALL employees_delete_by_id(" + id + ")");
+            stm = connection.prepareStatement(storedProcedure);
+            stm.setInt(1, id);
+            stm.setString(2, MySqlConnect.getId());
+            stm.setString(3, MySqlConnect.getHost());
+
+            stm.executeQuery();
+
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                if (stm != null) {
+                    stm.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
+
     }
 
     @Override
