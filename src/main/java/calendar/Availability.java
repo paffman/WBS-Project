@@ -11,7 +11,7 @@ import java.util.GregorianCalendar;
  * Kunde:		Pentasys AG, Jens von Gersdorff<br/>
  * Projektmitglieder:<br/>
  *			Michael Anstatt,<br/>
- *			Marc-Eric Baumg√§rtner,<br/>
+ *			Marc-Eric Baumg‰rtner,<br/>
  *			Jens Eckes,<br/>
  *			Sven Seckler,<br/>
  *			Lin Yang<br/>
@@ -22,13 +22,13 @@ import java.util.GregorianCalendar;
  * @version 2.0 - 20.08.2012
  */
 public class Availability implements Comparable<Availability> {
-	private String userID;
+	private int userID;
 	private String description;
 	private boolean allDay;
 	private boolean availabe;
 	private Date startDate;
 	private Date endDate;
-	private Integer id;
+	private int id;
 
 	/**
 	 * Konstruktor
@@ -39,8 +39,8 @@ public class Availability implements Comparable<Availability> {
 	 * @param startDate
 	 * @param endDate
 	 */
-	public Availability(String userID, boolean allDay, boolean available, Date startDate, Date endDate) {
-		this(userID, allDay, available, startDate, endDate, "", null);
+	public Availability(int userID, boolean allDay, boolean available, Date startDate, Date endDate) {
+		this(userID, allDay, available, startDate, endDate, "", Integer.MIN_VALUE);
 	}
 
 	/**
@@ -53,8 +53,8 @@ public class Availability implements Comparable<Availability> {
 	 * @param endDate
 	 * @param description
 	 */
-	public Availability(String userID, boolean allDay, boolean availabe, Date startDate, Date endDate, String description) {
-		this(userID, allDay, availabe, startDate, endDate, description, null);
+	public Availability(int userID, boolean allDay, boolean availabe, Date startDate, Date endDate, String description) {
+		this(userID, allDay, availabe, startDate, endDate, description, Integer.MIN_VALUE);
 	}
 
 	/**
@@ -67,7 +67,7 @@ public class Availability implements Comparable<Availability> {
 	 * @param endDate
 	 * @param id
 	 */
-	public Availability(String userID, boolean allDay, boolean available, Date startDate, Date endDate, int id) {
+	public Availability(int userID, boolean allDay, boolean available, Date startDate, Date endDate, int id) {
 		this(userID, allDay, available, startDate, endDate, "", id);
 	}
 
@@ -82,7 +82,7 @@ public class Availability implements Comparable<Availability> {
 	 * @param description
 	 * @param id
 	 */
-	public Availability(String userID, boolean allDay, boolean availabe, Date startDate, Date endDate, String description, Integer id) {
+	public Availability(int userID, boolean allDay, boolean availabe, Date startDate, Date endDate, String description, int id) {
 		this.userID = userID;
 		this.description = description;
 		this.allDay = allDay;
@@ -138,7 +138,7 @@ public class Availability implements Comparable<Availability> {
 	 * Getter fuer die UserID (entspricht dem Login-Name des Besitzers der Availability)
 	 * @return
 	 */
-	public String getUserID() {
+	public int getUserID() {
 		return userID;
 	}
 
@@ -146,7 +146,7 @@ public class Availability implements Comparable<Availability> {
 	 * Setter fuer User-ID (entspricht dem Login-Name des Besitzers der Availability)
 	 * @param userID
 	 */
-	public void setUserID(String userID) {
+	public void setUserID(int userID) {
 		this.userID = userID;
 	}
 
@@ -234,7 +234,7 @@ public class Availability implements Comparable<Availability> {
 	 * 
 	 * @return
 	 */
-	public Integer getId() {
+	public int getId() {
 		return id;
 	}
 

@@ -57,7 +57,11 @@ public class MySQLConflictsModel implements ConflictsModel {
 
         try {
             stm = connection.prepareStatement(storedProcedure);
-            stm.setInt(1, conflict.getFid_wp());
+            if (conflict.getFid_wp() <= 0) {
+                stm.setNull(1, java.sql.Types.INTEGER);
+            } else {
+                stm.setInt(1, conflict.getFid_wp());
+            }
             if (conflict.getFid_wp_affected() <= 0) {
                 stm.setNull(2, java.sql.Types.INTEGER);
             } else {

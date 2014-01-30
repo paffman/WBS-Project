@@ -81,7 +81,7 @@ public class EditAvailability {
             gui.setStart(availability.getStartTime());
             gui.setEnd(availability.getEndTime());
 
-            gui.setName(availability.getDescription());
+            gui.setDescription(availability.getDescription());
         }
 
         gui.addWindowListener(new WindowAdapter() {
@@ -152,26 +152,26 @@ public class EditAvailability {
             if (gui.getWorker().equals(AvailabilityGraph.PROJECT_WORKER)) {
                 CalendarService.setProjectAvailability(new Availability(gui
                         .getWorker().getId(), gui.getAllDay(), gui
-                        .getAvailable(), start, end, gui.getName(),
+                        .getAvailable(), start, end, gui.getDescription(),
                         availability.getId()));
             } else {
                 CalendarService.setWorkerAvailability(
                         gui.getWorker().getLogin(),
                         new Availability(gui.getWorker().getId(), gui
                                 .getAllDay(), gui.getAvailable(), start, end,
-                                gui.getName(), availability.getId()));
+                                gui.getDescription(), availability.getId()));
             }
         } else {
             if (gui.getWorker().equals(AvailabilityGraph.PROJECT_WORKER)) {
                 CalendarService.setProjectAvailability(new Availability(gui
                         .getWorker().getId(), gui.getAllDay(), gui
-                        .getAvailable(), start, end, gui.getName()));
+                        .getAvailable(), start, end, gui.getDescription()));
             } else {
                 CalendarService.setWorkerAvailability(
                         gui.getWorker().getLogin(),
                         new Availability(gui.getWorker().getId(), gui
                                 .getAllDay(), gui.getAvailable(), start, end,
-                                gui.getName()));
+                                gui.getDescription()));
             }
 
         }

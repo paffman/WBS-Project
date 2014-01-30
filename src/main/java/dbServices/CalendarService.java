@@ -28,7 +28,7 @@ import wpOverview.tabs.AvailabilityGraph;
  * Kunde: Pentasys AG, Jens von Gersdorff<br/>
  * Projektmitglieder:<br/>
  * Michael Anstatt,<br/>
- * Marc-Eric BaumgÃ¤rtner,<br/>
+ * Marc-Eric Baumgärtner,<br/>
  * Jens Eckes,<br/>
  * Sven Seckler,<br/>
  * Lin Yang<br/>
@@ -347,8 +347,8 @@ public class CalendarService {
      *            Enddatum des gewuenschten Zeitraums
      * @return TreeSet mit Verfuegbarkeiten
      */
-    public static TreeSet<Availability> getRealWorkerAvailability(
-            int workerID, Date start, Date end) {
+    public static TreeSet<Availability> getRealWorkerAvailability(int workerID,
+            Date start, Date end) {
         Set<Availability> workerAv =
                 getAllWorkerAvailability(workerID, start, end);
 
@@ -400,7 +400,7 @@ public class CalendarService {
     }
 
     /**
-     * Liefert entweder alle VerfÃ¼gbarkeiten oder alle Nicht-Verfuegbarkeiten
+     * Liefert entweder alle Verfügbarkeiten oder alle Nicht-Verfuegbarkeiten
      * eines Mitarbeiters
      * 
      * @param workerID
@@ -559,7 +559,7 @@ public class CalendarService {
     }
 
     /**
-     * Erzeugt ein Set mit Standart VerfÃ¼gbarkeiten (5 Tage a 8 Stunden) fuer
+     * Erzeugt ein Set mit Standart Verfügbarkeiten (5 Tage a 8 Stunden) fuer
      * einen gewuenschten Zeitraum
      * 
      * @param startDate
