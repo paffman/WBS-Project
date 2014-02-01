@@ -344,7 +344,7 @@ public class WpManager {
         List<Workpackage> userWp = new ArrayList<Workpackage>();
         if (!user.getProjLeiter()) {
             for (Workpackage actualWp : WpManager.getAllAp()) {
-                if (actualWp.getWorkers().contains(user.getLogin())) {
+                if (actualWp.getWorkersIds().contains(user.getId())) {
                     userWp.add(actualWp);
                 }
             }
