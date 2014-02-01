@@ -78,7 +78,7 @@ public final class ProjectSetupAssistant implements ProjectProperties.Actions,
      * Regular expression validating the user name.
      */
     private static final Pattern REGEX_USER_NAME =
-            Pattern.compile("[A-Za-z][.\\-A-Za-z0-9]{0,9}");
+            Pattern.compile("[A-Za-z][.\\-A-Za-z0-9]{0,10}");
     /**
      * Regular expression validating the database name.
      */
@@ -765,7 +765,7 @@ public final class ProjectSetupAssistant implements ProjectProperties.Actions,
         String databaseName = projectProperties.getDatabaseName();
         int databaseId = getIdByDatabaseName(connection, databaseName);
         useDatabase(connection, databaseName);
-        String formattedId = String.format("%03d", databaseId); //NON-NLS
+        String formattedId = String.format("%04d", databaseId); //NON-NLS
 
         final int paramCount = 10;
         String storedProcedure = "CALL employees_new("; //NON-NLS
