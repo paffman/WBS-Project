@@ -410,8 +410,6 @@ public class WPOverviewGUI extends JFrame {
      * Laedt den Baum neu
      */
     protected void reloadTrees() {
-        System.out.println(WPOverview.getUser().getLogin()); // %%
-        System.out.println(WpManager.getUserWp(WPOverview.getUser())); // %%
         ArrayList<Workpackage> allUserWp =
                 new ArrayList<Workpackage>(WpManager.getUserWp(WPOverview
                         .getUser()));

@@ -57,8 +57,7 @@ public class MySQLEmployeesModel implements EmployeesModel {
                     + employee.getDaily_rate() + ","
                     + employee.getTime_preference() + ",'"
                     + employee.getPassword() + "','" + MySqlConnect.getDbName()
-                    + "','" + MySqlConnect.getId() + "','"
-                    + MySqlConnect.getHost() + "')");
+                    + "','" + MySqlConnect.getId() + "')");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -166,8 +165,7 @@ public class MySQLEmployeesModel implements EmployeesModel {
                     + employee.getTime_preference()
                     + ",'"
                     + (employee.changePassword() ? employee.getPassword()
-                            : "null") + "','" + MySqlConnect.getId() + "','"
-                    + MySqlConnect.getHost() + "')");
+                            : "null") + "','" + MySqlConnect.getId() + "')");
             success = true;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -180,13 +178,12 @@ public class MySQLEmployeesModel implements EmployeesModel {
         connection = SQLExecuter.getConnection();
 
         PreparedStatement stm = null;
-        final String storedProcedure = "CALL employees_delete_by_id(?,?,?)";
+        final String storedProcedure = "CALL employees_delete_by_id(?,?)";
 
         try {
             stm = connection.prepareStatement(storedProcedure);
             stm.setInt(1, id);
             stm.setString(2, MySqlConnect.getId());
-            stm.setString(3, MySqlConnect.getHost());
 
             stm.executeQuery();
 
