@@ -965,12 +965,12 @@ BEGIN
 	DECLARE stmt varchar(255);
 
 	SET username = CONCAT_WS('_', in_db_id, LEFT(in_login,11));
-	SET @createUsr = CONCAT('CREATE USER ',username,'@',in_host,' IDENTIFIED BY "',in_password,'"');
+	SET @createUsr = CONCAT('CREATE USER \'',username,'\'@\'',in_host,'\' IDENTIFIED BY "',in_password,'"');
 	PREPARE createUsr FROM @createUsr;
 	EXECUTE createUsr;
 	DEALLOCATE PREPARE createUsr;
 
-	SET @grantExec = CONCAT('GRANT EXECUTE ON ',in_dbname,'.* TO ',username,'@',in_host);
+	SET @grantExec = CONCAT('GRANT EXECUTE ON ',in_dbname,'.* TO \'',username,'\'@\'',in_host,'\'');
 	PREPARE grantExec FROM @grantExec;
 	EXECUTE grantExec;
 	DEALLOCATE PREPARE grantExec;
