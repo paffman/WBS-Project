@@ -63,6 +63,7 @@ public class ScriptRunner {
     private PrintWriter errorLogWriter = new PrintWriter(System.err);
     private String delimiter = DEFAULT_DELIMITER;
     private boolean fullLineDelimiter = false;
+    private boolean isLoggingEnabled;
 
     /**
      * Default constructor.
@@ -70,12 +71,15 @@ public class ScriptRunner {
      * @param connection
      * @param autoCommit
      * @param stopOnError
+     * @param shouldLog if true logging will be enabled and the sql
+     *                  statements get written to the set log writer.
      */
     public ScriptRunner(Connection connection, boolean autoCommit,
-                        boolean stopOnError) {
+                        boolean stopOnError, final boolean shouldLog) {
         this.connection = connection;
         this.autoCommit = autoCommit;
         this.stopOnError = stopOnError;
+        isLoggingEnabled = shouldLog;
     }
 
     /**
@@ -97,6 +101,13 @@ public class ScriptRunner {
         this.logWriter = logWriter;
     }
 
+    /**
+     * Enables or disables logging.
+     * @param shouldLog if true enable logging.
+     */
+    public final void setLoggingIsEnabled(final boolean shouldLog) {
+        isLoggingEnabled = shouldLog;
+    }
     /**
      * Setter for errorLogWriter property.
      *
@@ -277,13 +288,13 @@ public class ScriptRunner {
     }
 
     private void print(Object o) {
-        if (logWriter != null) {
+        if (logWriter != null && isLoggingEnabled) {
             logWriter.print(o);
         }
     }
 
     private void println(Object o) {
-        if (logWriter != null) {
+        if (logWriter != null && isLoggingEnabled) {
             logWriter.println(o);
         }
     }
