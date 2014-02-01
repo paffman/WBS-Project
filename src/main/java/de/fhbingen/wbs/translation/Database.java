@@ -25,5 +25,6 @@ public interface Database {
     String rootPassword();
 
     @De("Datenbankname (wird angelegt)")
+    @En("Database name (will be created)")
     String databaseName();
 }

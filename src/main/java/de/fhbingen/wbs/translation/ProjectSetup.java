@@ -27,5 +27,11 @@ public interface ProjectSetup extends Button, Database, Project, Login {
     @En("Create Project Manager Login")
     String projectManagerAccount();
 
+    @De("Zusammenfassung der Eingaben")
+    @En("Summary of your inputs")
     String summary();
+
+     @De("Projekteinrichtung erfolgreich.")
+     @En("Project Setup Successful")
+    String projectSetupSuccessTitle();
 }

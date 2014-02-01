@@ -37,5 +37,6 @@ public interface Login {
     String surname();
 
     @De("Passwort \u00e4ndern")
+    @En("Change password")
     String changePassword();
 }
