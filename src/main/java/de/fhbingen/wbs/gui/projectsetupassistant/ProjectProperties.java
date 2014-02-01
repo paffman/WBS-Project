@@ -4,12 +4,27 @@ import c10n.C10N;
 import de.fhbingen.wbs.gui.StaticUtilityMethods;
 import de.fhbingen.wbs.translation.ProjectSetup;
 
+import java.awt.BorderLayout;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.Insets;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JFormattedTextField;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -143,8 +158,20 @@ public class ProjectProperties extends JDialog {
      */
     private final JPanel centerPanelProjectManagerAccount;
 
+    /**
+     * Gets value of database name field.
+     * @return value of database name field.
+     */
     public final String getDatabaseName() {
         return textFieldDatabaseName.getText();
+    }
+
+    /**
+     * Gets value of daily rate field. NYI
+     * @return value of daily rate field.
+     */
+    public final double getDailyRate() {
+        return 0; //TODO create field and get value of field here.
     }
 
     /**
@@ -235,7 +262,7 @@ public class ProjectProperties extends JDialog {
         //Labels for TextFields
         labelTextFieldProjectName = new JLabel(msg.projectName() + ":",
                 JLabel.RIGHT);
-        labelTextFieldProjectLevels = new JLabel(msg.projectTiers() + ":",
+        labelTextFieldProjectLevels = new JLabel(msg.projectLevels() + ":",
                 JLabel.RIGHT);
         labelTextFieldStartDate = new JLabel(msg.startDate() + ":",
                 JLabel.RIGHT);
