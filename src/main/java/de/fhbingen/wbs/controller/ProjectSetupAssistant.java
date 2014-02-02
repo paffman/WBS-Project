@@ -395,7 +395,7 @@ public final class ProjectSetupAssistant implements ProjectProperties.Actions,
                 showErrorMessage(messages.valueTooHigh(labels.projectLevels()));
                 return false;
             }
-            if (projectLevelsInt < 1) {
+            if (projectLevelsInt < 2) {
                 showErrorMessage(messages.valueTooLow(labels.projectLevels()));
                 return false;
             }
@@ -677,122 +677,6 @@ public final class ProjectSetupAssistant implements ProjectProperties.Actions,
     }
 
     /**
-     * Function that creates neccessary data on the database.
-     * This includes:
-     * <ul>
-     * <li>Employee entry and user creation on database</li>
-     * <li>Project entry</li>
-     * <li>Work package entry</li>
-     * </ul>
-     * @throws java.sql.SQLException if something goes wrong.
-     */
-    private void createProjectData() throws SQLException {
-        createProjectManagerUser();
-        createProjectEntryOnDatabase();
-        connection.commit();
-    }
-
-    /**
-     * Created project entry in project table and work package in work
-     * package table.
-     * @throws SQLException if something goes wrong.
-     */
-    private void createProjectEntryOnDatabase() throws SQLException {
-        final String databaseName = projectProperties.getDatabaseName();
-        useDatabase(connection, databaseName);
-        final SimpleDateFormat dateFormat = new SimpleDateFormat("dd.mm.yyyy");
-        java.sql.Date startDate = null;
-        try {
-         startDate = new java.sql.Date(dateFormat.parse(
-                projectProperties.getStartDate()).getTime());
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        //create project in project table.
-        PreparedStatement projectNewStatement = connection.prepareStatement(
-                SQL_CALL_PROJECT_NEW);
-        projectNewStatement.setInt(1, 1); //safe to assume this will be 1
-        projectNewStatement.setString(2, projectProperties.getProjectName());
-        projectNewStatement.setInt(3, Integer.parseInt(projectProperties
-                .getProjectLevels()));
-        projectNewStatement.execute();
-
-        //create work package in work package table.
-        StringBuilder callWorkPackageNew = new StringBuilder(
-                "CALL workpackage_new ("); //NON-NLS
-        final int parameterCount = 22;
-        for (int i = 1; i < parameterCount; i++) {
-            callWorkPackageNew.append("?,");
-        }
-        callWorkPackageNew.append("?)");
-        PreparedStatement projectWorkPackageStatement = connection
-                .prepareStatement(callWorkPackageNew.toString());
-        projectWorkPackageStatement.setString(1, "0");
-        projectWorkPackageStatement.setInt(2, 1);
-        projectWorkPackageStatement.setInt(3, 1);
-        projectWorkPackageStatement.setNull(4, Types.INTEGER); //parent
-        projectWorkPackageStatement.setString(5,
-                projectProperties.getProjectName());
-        projectWorkPackageStatement.setNull(6, Types.VARCHAR);
-        projectWorkPackageStatement.setDouble(7, 0);
-        projectWorkPackageStatement.setDouble(8, 0);
-        projectWorkPackageStatement.setDouble(9, 0);
-        projectWorkPackageStatement.setDouble(10, 0);
-        projectWorkPackageStatement.setDouble(11, 0);
-        projectWorkPackageStatement.setDouble(12, 1.0);
-        projectWorkPackageStatement.setDouble(13, 0);
-        projectWorkPackageStatement.setDouble(14, 0);
-        projectWorkPackageStatement.setDouble(15, 0);
-        projectWorkPackageStatement.setDouble(16,
-                projectProperties.getDailyRate());
-        projectWorkPackageStatement.setNull(17, Types.DATE);
-        projectWorkPackageStatement.setBoolean(18, true); //isOAP
-        projectWorkPackageStatement.setBoolean(19, false); //isInactive
-        projectWorkPackageStatement.setNull(20, Types.DATE);
-        projectWorkPackageStatement.setDate(21, startDate);
-        //TODO fix start date
-        projectWorkPackageStatement.setNull(22, Types.DATE);
-
-        projectWorkPackageStatement.execute();
-    }
-
-    /**
-     * Creates the project manager user on the project.
-     * @throws SQLException if something goes wrong.
-     */
-    private void createProjectManagerUser() throws SQLException {
-        String databaseName = projectProperties.getDatabaseName();
-        int databaseId = getIdByDatabaseName(connection, databaseName);
-        useDatabase(connection, databaseName);
-        String formattedId = String.format("%04d", databaseId); //NON-NLS
-
-        final int paramCount = 10;
-        String storedProcedure = "CALL employees_new("; //NON-NLS
-        for (int i = 1; i < paramCount; i++) {
-            storedProcedure += "?,";
-        }
-        storedProcedure += "?)";
-
-        PreparedStatement statement = connection.prepareStatement(storedProcedure);
-        statement.setString(1, projectProperties.getUserName());
-        statement.setString(2, projectProperties.getSurname());
-        statement.setString(3, projectProperties.getFirstName());
-        statement.setBoolean(4, true);
-        statement.setDouble(5, projectProperties.getDailyRate());
-        statement.setInt(6, 0); //TODO not yet specified in db-interface
-        char[] password = projectProperties.getPassword();
-        statement.setString(7, new String(password));
-        Arrays.fill(password, '0');
-        statement.setString(8, databaseName);
-        statement.setString(9, formattedId);
-        statement.setString(10, "%");
-
-        statement.execute();
-
-    }
-
-    /**
      * Gets the id from employee table.
      * @param connection the connection to use.
      * @param userName the database name to get id for.
@@ -990,5 +874,130 @@ public final class ProjectSetupAssistant implements ProjectProperties.Actions,
                 storedProcedure);
         statement.setString(1, dbName);
         statement.execute();
+    }
+
+    /**
+     * Function that creates neccessary data on the database.
+     * This includes:
+     * <ul>
+     * <li>Employee entry and user creation on database</li>
+     * <li>Project entry</li>
+     * <li>Work package entry</li>
+     * </ul>
+     * @throws java.sql.SQLException if something goes wrong.
+     */
+    private void createProjectData() throws SQLException {
+        createProjectManagerUser();
+        createProjectEntryOnDatabase();
+        connection.commit();
+    }
+
+    /**
+     * Created project entry in project table and work package in work
+     * package table.
+     * @throws SQLException if something goes wrong.
+     */
+    private void createProjectEntryOnDatabase() throws SQLException {
+
+        final String databaseName = projectProperties.getDatabaseName();
+        useDatabase(connection, databaseName);
+
+        //create values
+        int projectLevels = Integer.parseInt(projectProperties
+                .getProjectLevels());
+        final SimpleDateFormat dateFormat = new SimpleDateFormat("dd.mm.yyyy");
+        java.sql.Date startDate = null;
+        try {
+            startDate = new java.sql.Date(dateFormat.parse(
+                    projectProperties.getStartDate()).getTime());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        //create project in project table.
+        PreparedStatement projectNewStatement = connection.prepareStatement(SQL_CALL_PROJECT_NEW);
+        projectNewStatement.setInt(1, 1); //safe to assume this will be 1
+        projectNewStatement.setString(2, projectProperties.getProjectName());
+        projectNewStatement.setInt(3, projectLevels);
+        projectNewStatement.execute();
+
+        //create work package in work package table.
+        StringBuilder workpackageStringId = new StringBuilder("0");
+
+        for (int i = 1; i < projectLevels; i++) {
+            workpackageStringId.append(".0");
+        }
+
+        StringBuilder callWorkPackageNew = new StringBuilder(
+                "CALL workpackage_new ("); //NON-NLS
+        final int parameterCount = 22;
+        for (int i = 1; i < parameterCount; i++) {
+            callWorkPackageNew.append("?,");
+        }
+        callWorkPackageNew.append("?)");
+        PreparedStatement projectWorkPackageStatement = connection
+                .prepareStatement(callWorkPackageNew.toString());
+        projectWorkPackageStatement.setString(1, workpackageStringId.toString());
+        projectWorkPackageStatement.setInt(2, 1);
+        projectWorkPackageStatement.setInt(3, 1);
+        projectWorkPackageStatement.setNull(4, Types.INTEGER); //parent
+        projectWorkPackageStatement.setString(5,
+                projectProperties.getProjectName());
+        projectWorkPackageStatement.setNull(6, Types.VARCHAR);
+        projectWorkPackageStatement.setDouble(7, 0);
+        projectWorkPackageStatement.setDouble(8, 0);
+        projectWorkPackageStatement.setDouble(9, 0);
+        projectWorkPackageStatement.setDouble(10, 0);
+        projectWorkPackageStatement.setDouble(11, 0);
+        projectWorkPackageStatement.setDouble(12, 1.0);
+        projectWorkPackageStatement.setDouble(13, 0);
+        projectWorkPackageStatement.setDouble(14, 0);
+        projectWorkPackageStatement.setDouble(15, 0);
+        projectWorkPackageStatement.setDouble(16,
+                projectProperties.getDailyRate());
+        projectWorkPackageStatement.setNull(17, Types.DATE);
+        projectWorkPackageStatement.setBoolean(18, true); //isOAP
+        projectWorkPackageStatement.setBoolean(19, false); //isInactive
+        projectWorkPackageStatement.setNull(20, Types.DATE);
+        projectWorkPackageStatement.setDate(21, startDate);
+        //TODO fix start date
+        projectWorkPackageStatement.setNull(22, Types.DATE);
+
+        projectWorkPackageStatement.execute();
+    }
+
+    /**
+     * Creates the project manager user on the project.
+     * @throws SQLException if something goes wrong.
+     */
+    private void createProjectManagerUser() throws SQLException {
+        String databaseName = projectProperties.getDatabaseName();
+        int databaseId = getIdByDatabaseName(connection, databaseName);
+        useDatabase(connection, databaseName);
+        String formattedId = String.format("%04d", databaseId); //NON-NLS
+
+        final int paramCount = 10;
+        String storedProcedure = "CALL employees_new("; //NON-NLS
+        for (int i = 1; i < paramCount; i++) {
+            storedProcedure += "?,";
+        }
+        storedProcedure += "?)";
+
+        PreparedStatement statement = connection.prepareStatement(storedProcedure);
+        statement.setString(1, projectProperties.getUserName());
+        statement.setString(2, projectProperties.getSurname());
+        statement.setString(3, projectProperties.getFirstName());
+        statement.setBoolean(4, true);
+        statement.setDouble(5, projectProperties.getDailyRate());
+        statement.setInt(6, 0); //TODO not yet specified in db-interface
+        char[] password = projectProperties.getPassword();
+        statement.setString(7, new String(password));
+        Arrays.fill(password, '0');
+        statement.setString(8, databaseName);
+        statement.setString(9, formattedId);
+        statement.setString(10, "%");
+
+        statement.execute();
+
     }
 }
