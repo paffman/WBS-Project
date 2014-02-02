@@ -976,7 +976,7 @@ public final class ProjectSetupAssistant implements ProjectProperties.Actions,
         useDatabase(connection, databaseName);
         String formattedId = String.format("%04d", databaseId); //NON-NLS
 
-        final int paramCount = 10;
+        final int paramCount = 9;
         String storedProcedure = "CALL employees_new("; //NON-NLS
         for (int i = 1; i < paramCount; i++) {
             storedProcedure += "?,";
@@ -995,9 +995,9 @@ public final class ProjectSetupAssistant implements ProjectProperties.Actions,
         Arrays.fill(password, '0');
         statement.setString(8, databaseName);
         statement.setString(9, formattedId);
-        statement.setString(10, "%");
 
         statement.execute();
+        statement.close();
 
     }
 }

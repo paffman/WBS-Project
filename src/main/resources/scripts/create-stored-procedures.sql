@@ -901,7 +901,7 @@ DELIMITER //
 CREATE PROCEDURE employees_select(
 	IN in_not_pl boolean)
 BEGIN
-	IF in_not_pl IS NULL OR in_not_pl = false
+	IF in_not_pl IS NULL OR in_not_pl = false 
 	THEN
 		SELECT *
 		FROM employees;
@@ -945,7 +945,7 @@ DELIMITER ;
 -- --------------------------------------------------------
 
 -- --------------------------------------------------------
--- employees_new( alle Felder au�er id, string password )
+-- employees_new( alle Felder außer id, string password )
 -- rw
 -- --------------------------------------------------------
 DELIMITER //
@@ -958,24 +958,34 @@ CREATE PROCEDURE employees_new(
 	IN in_time_preference int(11),
 	IN in_password varchar(255),
 	IN in_dbname varchar(255),
-	IN in_db_id varchar(4),
-	IN in_host varchar(255))
+	IN in_db_id varchar(4)) 
 BEGIN
 	DECLARE username varchar(255);
 	DECLARE stmt varchar(255);
 
-	SET username = CONCAT_WS('_', in_db_id, LEFT(in_login,11));
-	SET @createUsr = CONCAT('CREATE USER \'',username,'\'@\'',in_host,'\' IDENTIFIED BY "',in_password,'"');
+	SET username = CONCAT_WS('_', in_db_id, LEFT(in_login,11));	
+	SET @createUsr = CONCAT('CREATE USER \'',username,'\'@"','localhost','" IDENTIFIED BY "',in_password,'"');
 	PREPARE createUsr FROM @createUsr;
 	EXECUTE createUsr;
 	DEALLOCATE PREPARE createUsr;
 
-	SET @grantExec = CONCAT('GRANT EXECUTE ON ',in_dbname,'.* TO \'',username,'\'@\'',in_host,'\'');
+	SET @grantExec = CONCAT('GRANT EXECUTE ON ',in_dbname,'.* TO \'',username,'\'@"','localhost','"');
 	PREPARE grantExec FROM @grantExec;
 	EXECUTE grantExec;
 	DEALLOCATE PREPARE grantExec;
+	
+	SET username = CONCAT_WS('_', in_db_id, LEFT(in_login,11));	
+	SET @createUsr = CONCAT('CREATE USER \'',username,'\'@"','%','" IDENTIFIED BY "',in_password,'"');
+	PREPARE createUsr FROM @createUsr;
+	EXECUTE createUsr;
+	DEALLOCATE PREPARE createUsr;
 
-	INSERT
+	SET @grantExec = CONCAT('GRANT EXECUTE ON ',in_dbname,'.* TO \'',username,'\'@"','%','"');
+	PREPARE grantExec FROM @grantExec;
+	EXECUTE grantExec;
+	DEALLOCATE PREPARE grantExec;
+	
+	INSERT 
 	INTO employees(
 		login,
 		last_name,
@@ -989,7 +999,7 @@ BEGIN
 	    in_first_name,
 	    in_project_leader,
 	    in_daily_rate,
-	    in_time_preference);
+	    in_time_preference);	
 END //
 DELIMITER ;
 -- --------------------------------------------------------
@@ -1002,15 +1012,19 @@ DELIMITER //
 CREATE PROCEDURE employees_update_password_by_id(
 	IN in_id int(11),
 	IN in_password varchar(255),
-	IN in_db_id varchar(4),
-	IN in_host varchar(255))
+	IN in_db_id varchar(4)) 
 BEGIN
 	DECLARE username varchar(255);
 	SELECT login INTO username
 	FROM employees
 	WHERE id = in_id;
-	SET username = CONCAT_WS('_', in_db_id, LEFT(username,11));
-	SET @changePw = CONCAT('SET PASSWORD FOR ',username,'@',in_host,' = PASSWORD("',in_password,'")');
+	SET username = CONCAT_WS('_', in_db_id, LEFT(username,11));	
+	SET @changePw = CONCAT('SET PASSWORD FOR ',username,'@"','localhost','" = PASSWORD("',in_password,'")');
+	PREPARE changePw FROM @changePw;
+	EXECUTE changePw;
+	DEALLOCATE PREPARE changePw;
+	
+	SET @changePw = CONCAT('SET PASSWORD FOR ',username,'@"','%','" = PASSWORD("',in_password,'")');
 	PREPARE changePw FROM @changePw;
 	EXECUTE changePw;
 	DEALLOCATE PREPARE changePw;
@@ -1019,7 +1033,7 @@ DELIMITER ;
 -- --------------------------------------------------------
 
 -- --------------------------------------------------------
--- employees_update_by_id( alle Felder au�er id und login, opt string password )
+-- employees_update_by_id( alle Felder außer id und login, opt string password )
 -- rw
 -- --------------------------------------------------------
 DELIMITER //
@@ -1031,8 +1045,7 @@ CREATE PROCEDURE employees_update_by_id(
 	IN in_daily_rate double,
 	IN in_time_preference int(11),
 	IN in_password varchar(255),
-	IN in_db_id varchar(4),
-	IN in_host varchar(255))
+	IN in_db_id varchar(4)) 
 BEGIN
 	UPDATE employees
 	SET
@@ -1042,11 +1055,11 @@ BEGIN
 	    daily_rate = in_daily_rate,
 	    time_preference = in_time_preference
 	WHERE id = in_id;
-
+	
 	IF in_password IS NOT NULL
 	THEN
-		CALL employees_update_password_by_id(in_id, in_password, in_db_id, in_host);
-	END IF;
+		CALL employees_update_password_by_id(in_id, in_password, in_db_id);
+	END IF;		
 END //
 DELIMITER ;
 -- --------------------------------------------------------
@@ -1058,8 +1071,7 @@ DELIMITER ;
 DELIMITER //
 CREATE PROCEDURE employees_delete_by_id(
 	IN in_id int(11),
-	IN in_db_id varchar(4),
-	IN in_host varchar(255))
+	IN in_db_id varchar(4))
 BEGIN
 	DECLARE user_login varchar(255);
 	DECLARE username varchar(255);
@@ -1067,15 +1079,20 @@ BEGIN
 	FROM employees
 	WHERE id = in_id;
 
-	SET username = CONCAT_WS('_', in_db_id, LEFT(user_login,11));
-	SET @dropUser = CONCAT('DROP USER ',username,'@',in_host );
+	SET username = CONCAT_WS('_', in_db_id, LEFT(user_login,11));	
+	SET @dropUser = CONCAT('DROP USER ',username,'@"','%', '"' );
+	PREPARE dropUser FROM @dropUser;
+	EXECUTE dropUser;
+	DEALLOCATE PREPARE dropUser;
+	
+	SET @dropUser = CONCAT('DROP USER ',username,'@"','localhost', '"' );
 	PREPARE dropUser FROM @dropUser;
 	EXECUTE dropUser;
 	DEALLOCATE PREPARE dropUser;
 
 	DELETE
 	FROM employees
-	WHERE id = in_id;
+	WHERE id = in_id;	
 END //
 DELIMITER ;
 -- --------------------------------------------------------
