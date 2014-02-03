@@ -49,7 +49,7 @@ public class MySQLEmployeesModel implements EmployeesModel {
         connection = SQLExecuter.getConnection();
         try {
             PreparedStatement stm = null;
-            final int paramCount = 10;
+            final int paramCount = 9;
             
             String storedProcedure = "CALL employees_new(";
 
@@ -69,7 +69,6 @@ public class MySQLEmployeesModel implements EmployeesModel {
             stm.setString(7, employee.getPassword());
             stm.setString(8, MySqlConnect.getDbName());
             stm.setString(9, MySqlConnect.getId());
-            stm.setString(10, MySqlConnect.getHost());
             
             stm.execute();
             
@@ -161,7 +160,7 @@ public class MySQLEmployeesModel implements EmployeesModel {
         connection = SQLExecuter.getConnection();
         try {
             PreparedStatement stm = null;
-            final int paramCount=9;
+            final int paramCount=8;
             
             String storedProcedure = "CALL employees_update_by_id(";
 
@@ -180,7 +179,6 @@ public class MySQLEmployeesModel implements EmployeesModel {
             stm.setInt(6, employee.getTime_preference());
             stm.setString(7, employee.getPassword());
             stm.setString(8, MySqlConnect.getId());
-            stm.setString(9, MySqlConnect.getHost());
             
             stm.execute();
             
@@ -195,12 +193,11 @@ public class MySQLEmployeesModel implements EmployeesModel {
         try {
             PreparedStatement stm = null;
 
-            String storedProcedure = "CALL employees_delete_by_id(?, ?, ?)";
+            String storedProcedure = "CALL employees_delete_by_id(?, ?)";
 
             stm = connection.prepareStatement(storedProcedure);
             stm.setInt(1, id);
             stm.setString(2, MySqlConnect.getId());
-            stm.setString(3, MySqlConnect.getHost());
             
             stm.execute();
             

@@ -4,12 +4,23 @@ import c10n.C10N;
 import de.fhbingen.wbs.gui.StaticUtilityMethods;
 import de.fhbingen.wbs.translation.ProjectSetup;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
 
 /**
  * Dialog asking for the database admin login.
@@ -89,7 +100,7 @@ public class DatabaseAdminLogin extends JDialog {
         /**
          * Gets called by the ok button.
          */
-        void okButtonPressedDatabaseAdminLogin();
+        void nextButtonPressedDatabaseAdminLogin();
 
         /**
          * Gets called by the cancel button.
@@ -136,7 +147,7 @@ public class DatabaseAdminLogin extends JDialog {
         textFieldUserName = new JTextField();
         textFieldPassword = new JPasswordField();
         //Labels for TextFields
-        labelTextFieldServerAddress = new JLabel(msg.serverAdress() + ":",
+        labelTextFieldServerAddress = new JLabel(msg.serverAddress() + ":",
                 JLabel.RIGHT);
         labelTextFieldUserName = new JLabel(msg.rootLoginName() + ":",
                 JLabel.RIGHT);
@@ -239,7 +250,7 @@ public class DatabaseAdminLogin extends JDialog {
         buttonOk.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
-                actionHandler.okButtonPressedDatabaseAdminLogin();
+                actionHandler.nextButtonPressedDatabaseAdminLogin();
             }
         });
 

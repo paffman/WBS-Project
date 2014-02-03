@@ -4,13 +4,32 @@ import c10n.C10N;
 import de.fhbingen.wbs.gui.StaticUtilityMethods;
 import de.fhbingen.wbs.translation.ProjectSetup;
 
-import javax.swing.*;
+import java.awt.BorderLayout;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.Insets;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JFormattedTextField;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import javax.swing.text.MaskFormatter;
 
 /**
  * Dialog asking for the project properties.
@@ -59,6 +78,10 @@ public class ProjectProperties extends JDialog {
      */
     private final JTextField textFieldStartDate;
     /**
+     * Text field for database name.
+     */
+    private final JTextField textFieldDatabaseName;
+    /**
      * Text field for first name of project manager.
      */
     private final JTextField textFieldFirstName;
@@ -96,6 +119,11 @@ public class ProjectProperties extends JDialog {
     private final JLabel labelTextFieldStartDate;
     /**
      * Label of the text field {@link de.fhbingen.wbs.gui
+     * .projectsetupassistant.ProjectProperties#textFieldDatabaseName}.
+     */
+    private final JLabel labelTextfieldDatabaseName;
+    /**
+     * Label of the text field {@link de.fhbingen.wbs.gui
      * .projectsetupassistant.ProjectProperties#textFieldFirstName}.
      */
     private final JLabel labelTextFieldFirstName;
@@ -129,6 +157,22 @@ public class ProjectProperties extends JDialog {
      * project manager account.
      */
     private final JPanel centerPanelProjectManagerAccount;
+
+    /**
+     * Gets value of database name field.
+     * @return value of database name field.
+     */
+    public final String getDatabaseName() {
+        return textFieldDatabaseName.getText();
+    }
+
+    /**
+     * Gets value of daily rate field. NYI
+     * @return value of daily rate field.
+     */
+    public final double getDailyRate() {
+        return 0; //TODO create field and get value of field here.
+    }
 
     /**
      * Interface for GUI actions.
@@ -195,7 +239,17 @@ public class ProjectProperties extends JDialog {
         //Text Fields Properties - left panel
         textFieldProjectName = new JTextField();
         textFieldProjectLevels = new JTextField();
-        textFieldStartDate = new JTextField();
+        textFieldDatabaseName = new JTextField();
+        //Date text field initialization
+        MaskFormatter dateFormatter = null;
+        try {
+            dateFormatter = new MaskFormatter("##.##.####");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        textFieldStartDate = new JFormattedTextField(dateFormatter);
+        String str = new SimpleDateFormat("dd.MM.yyyy").format(new Date());
+        textFieldStartDate.setText(str);
 
 
         //TextFields Admin Account- right panel
@@ -208,9 +262,11 @@ public class ProjectProperties extends JDialog {
         //Labels for TextFields
         labelTextFieldProjectName = new JLabel(msg.projectName() + ":",
                 JLabel.RIGHT);
-        labelTextFieldProjectLevels = new JLabel(msg.projectTiers() + ":",
+        labelTextFieldProjectLevels = new JLabel(msg.projectLevels() + ":",
                 JLabel.RIGHT);
         labelTextFieldStartDate = new JLabel(msg.startDate() + ":",
+                JLabel.RIGHT);
+        labelTextfieldDatabaseName = new JLabel(msg.databaseName() + ":",
                 JLabel.RIGHT);
 
         labelTextFieldFirstName = new JLabel(msg.firstName() + ":",
@@ -342,6 +398,11 @@ public class ProjectProperties extends JDialog {
                 addWithGridBagConstraints(centerPanelProjectProperties,
                 labelTextFieldStartDate, 0, 2, 0, 0, GridBagConstraints.BOTH,
                 insetsLabelLeft);
+        StaticUtilityMethods.
+                addWithGridBagConstraints(centerPanelProjectProperties,
+                labelTextfieldDatabaseName, 0, 3, 0, 0,
+                        GridBagConstraints.BOTH,
+                insetsLabelLeft);
 
         StaticUtilityMethods.
                 addWithGridBagConstraints(centerPanelProjectProperties,
@@ -357,11 +418,15 @@ public class ProjectProperties extends JDialog {
                 addWithGridBagConstraints(centerPanelProjectProperties,
                 textFieldStartDate, 1, 2, textFieldWeightx, 0,
                 GridBagConstraints.HORIZONTAL, insetsTextFieldLeft);
+        StaticUtilityMethods.
+                addWithGridBagConstraints(centerPanelProjectProperties,
+                textFieldDatabaseName, 1, 3, textFieldWeightx, 0,
+                GridBagConstraints.HORIZONTAL, insetsTextFieldLeft);
 
         //Spacer
         StaticUtilityMethods.
                 addWithAllGridBagConstraints(centerPanelProjectProperties,
-                new JPanel(), 0, 3, 2, 1, 1, 1, GridBagConstraints.CENTER,
+                new JPanel(), 0, 4, 2, 1, 1, 1, GridBagConstraints.CENTER,
                 GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0);
 
         //right center panel

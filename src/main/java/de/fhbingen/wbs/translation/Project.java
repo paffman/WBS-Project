@@ -21,7 +21,7 @@ public interface Project {
 
     @En("Project depth")
     @De("Projektebenen")
-    String projectTiers();
+    String projectLevels();
 
     @En("Maximum project tiers")
     @De("Maximale Projektebenen")
