@@ -174,8 +174,8 @@ public class MySQLEmployeesModel implements EmployeesModel {
             
             String storedProcedure = "CALL employees_update_by_id(";
 
-            for(int i=1;i<paramCount;i++){
-                storedProcedure+="?,";
+            for(int i = 1; i < paramCount; i++) {
+                storedProcedure += "?,";
             }
             
             storedProcedure+="?)";
@@ -191,6 +191,7 @@ public class MySQLEmployeesModel implements EmployeesModel {
             stm.setString(8, MySqlConnect.getId());
             
             stm.execute();
+            success = true;
             
         } catch (SQLException e) {
             e.printStackTrace();

@@ -33,7 +33,7 @@ public class ChangePWButtonAction {
 		changepw.gui.btnOk.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				//Prüfung ob alle Felder ausgefüllt
-				if(changepw.checkFieldsFilled()){
+				/*if(changepw.checkFieldsFilled()){
 					//ResultSet mit aktuellem User
 					ResultSet user = SQLExecuter.executeQuery("SELECT * FROM Mitarbeiter " +
 															"WHERE Login= '" + changepw.usr.getLogin() +"';" );
@@ -60,7 +60,7 @@ public class ChangePWButtonAction {
 					JOptionPane.showMessageDialog(changepw.gui, messages.fillAllFieldsError(),
                             null,
 							JOptionPane.INFORMATION_MESSAGE);
-				}
+				}*/
 
 			}
 		});

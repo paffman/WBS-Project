@@ -58,7 +58,7 @@ public class MySQLBaselineModel implements BaselineModel {
             stm.setString(3, line.getDescription());
             
             stm.execute();
-            
+            success = true;
             
         } catch (SQLException e) {
             e.printStackTrace();

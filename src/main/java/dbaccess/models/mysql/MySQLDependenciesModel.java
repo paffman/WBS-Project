@@ -48,13 +48,6 @@ public class MySQLDependenciesModel implements DependenciesModel {
         connection = SQLExecuter.getConnection();
         boolean success = false;
         try {
-<<<<<<< HEAD
-            Statement stm = connection.createStatement();
-            stm.execute("CALL dependencies_new ("
-                    + dependency.getFid_wp_predecessor() + ","
-                    + dependency.getFid_wp_successor() + ")");
-            success = true;
-=======
             PreparedStatement stm = null;
 
             String storedProcedure = "CALL dependencies_new (?,?)";
@@ -64,8 +57,8 @@ public class MySQLDependenciesModel implements DependenciesModel {
             stm.setInt(2, dependency.getFid_wp_successor());
             
             stm.execute();
+            success = true;
             
->>>>>>> PROJ-WS1314-WBS-DEV
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -99,12 +92,6 @@ public class MySQLDependenciesModel implements DependenciesModel {
         connection = SQLExecuter.getConnection();
         boolean success = false;
         try {
-<<<<<<< HEAD
-            Statement stm = connection.createStatement();
-            stm.execute("CALL dependencies_delete_by_key(" + predecessorWpID
-                    + "," + successorWpID + ")");
-            success = true;
-=======
             PreparedStatement stm = null;
 
             String storedProcedure = "CALL dependencies_delete_by_key (?,?)";
@@ -114,8 +101,8 @@ public class MySQLDependenciesModel implements DependenciesModel {
             stm.setInt(2, successorWpID);
             
             stm.execute();
+            success = true;
             
->>>>>>> PROJ-WS1314-WBS-DEV
         } catch (SQLException e) {
             e.printStackTrace();
         }

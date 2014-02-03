@@ -17,19 +17,9 @@ package wpWorker;
  * @version 0.5 - 28.12.2010
  */
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
-import javax.swing.JOptionPane;
-
-<<<<<<< HEAD
 import dbaccess.data.Employee;
-=======
 import c10n.C10N;
 import de.fhbingen.wbs.translation.Messages;
->>>>>>> PROJ-WS1314-WBS-DEV
-import wpOverview.WPOverviewGUI;
-import jdbcConnection.SQLExecuter;
 
 
 public class ChangePW {

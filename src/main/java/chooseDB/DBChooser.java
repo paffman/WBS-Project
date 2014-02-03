@@ -126,7 +126,7 @@ public class DBChooser {
                 JOptionPane
                         .showMessageDialog(
                                 gui,
-                                "Verbindung konnte nicht aufgebaut werden! Überprüfen sie Benutzernamen und Passwort.");
+                                "Verbindung konnte nicht aufgebaut werden! ï¿½berprï¿½fen sie Benutzernamen und Passwort.");
             } else {
                 JOptionPane.showMessageDialog(gui,
                         "Verbindung konnte nicht aufgebaut werden! Exception: "
@@ -164,7 +164,7 @@ public class DBChooser {
                                                 + "eingeloggt. Wollen sie sich "
                                                 + "trotzdem einloggen? "
                                                 + "Warnung: "
-                                                + "Die Daten können "
+                                                + "Die Daten kï¿½nnen "
                                                 + "inkonsistent werden, "
                                                 + "wenn mehrere "
                                                 + "Projektleiter daran "
@@ -312,14 +312,6 @@ public class DBChooser {
                 e.printStackTrace();
             }
         }
-    }
-
-    /**
-     * Start of the application. Creates a DBChooser objects and therefore
-     * starts the login gui.
-     */
-    public static void main(String[] args) {
-        new DBChooser();
     }
 
     /**
