@@ -48,8 +48,8 @@ public class MySQLModelsTestSuite {
 
     @BeforeClass
     public static final void setUp() throws Exception {
-        MySqlConnect.setDbConncetion("localhost", "wbs_test_3", "0004", "wbsTestUsr",
-                "1234");
+        MySqlConnect.setDbConncetion("localhost", "mbtest", "9999", "unittest",
+                "junit411");
         TestData.reloadData(SQLExecuter.getConnection());
     }
 

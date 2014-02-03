@@ -30,7 +30,6 @@ import java.util.List;
 
 import jdbcConnection.SQLExecuter;
 import dbaccess.data.Baseline;
-import dbaccess.data.Workpackage;
 import dbaccess.models.BaselineModel;
 
 /**
@@ -49,12 +48,18 @@ public class MySQLBaselineModel implements BaselineModel {
         connection = SQLExecuter.getConnection();
         boolean success = false;
         try {
-            Statement stm = connection.createStatement();
+            PreparedStatement stm = null;
 
-            stm.execute("CALL baseline_new (" + line.getFid_project() + ",'"
-                    + new Timestamp(line.getBl_date().getTime()) + "','"
-                    + line.getDescription() + "')");
-            success = true;
+            String storedProcedure = "CALL baseline_new (?,?,?)";
+
+            stm = connection.prepareStatement(storedProcedure);
+            stm.setInt(1, line.getFid_project());
+            stm.setTimestamp(2, new Timestamp(line.getBl_date().getTime()));
+            stm.setString(3, line.getDescription());
+            
+            stm.execute();
+            
+            
         } catch (SQLException e) {
             e.printStackTrace();
         }

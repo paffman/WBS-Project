@@ -125,8 +125,15 @@ public class MySQLConflictsModel implements ConflictsModel {
     public void deleteConflict(int id) {
         connection = SQLExecuter.getConnection();
         try {
-            Statement stm = connection.createStatement();
-            stm.execute("CALL conflicts_delete_by_id(" + id + ")");
+            PreparedStatement stm = null;
+
+            String storedProcedure = "CALL conflicts_delete_by_id (?)";
+
+            stm = connection.prepareStatement(storedProcedure);
+            stm.setInt(1, id);
+         
+            stm.execute();
+            
         } catch (SQLException e) {
             e.printStackTrace();
         }

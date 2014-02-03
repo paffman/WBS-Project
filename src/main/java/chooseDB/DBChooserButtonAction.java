@@ -1,5 +1,6 @@
 package chooseDB;
 
+import de.fhbingen.wbs.controller.ProjectSetupAssistant;
 import globals.InfoBox;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -10,7 +11,7 @@ import javax.swing.JOptionPane;
  * Studienprojekt: WBS Kunde: Pentasys AG, Jens von Gersdorff Projektmitglieder:
  * Andre Paffenholz, Peter Lange, Daniel Metzler, Samson von Graevenitz fügt
  * Funktionalitäten zur DBChooserGUI hinzu
- * 
+ *
  * @author Samson von Graevenitz und Daniel Metzler
  * @version 0.3 - 09.12.2010
  */
@@ -23,7 +24,7 @@ public class DBChooserButtonAction {
 
     /**
      * Constructor
-     * 
+     *
      * @param aDBChooser
      *            calling DBChooser
      */
@@ -87,5 +88,15 @@ public class DBChooserButtonAction {
                         new InfoBox();
                     }
                 });
+
+        dbChooser.getGui().getNewDbMenuItem().addActionListener(
+                new ActionListener() {
+
+
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                ProjectSetupAssistant.newProject(dbChooser.getGui());
+            }
+        });
     }
 }

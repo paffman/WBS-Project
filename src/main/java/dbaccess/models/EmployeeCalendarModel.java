@@ -24,7 +24,7 @@ import java.util.List;
 
 import dbaccess.data.EmployeeCalendar;
 
-/** The interface for the employee calendar model */
+/** The interface for the employee calendar model. */
 public interface EmployeeCalendarModel {
 
     /**
@@ -52,7 +52,7 @@ public interface EmployeeCalendarModel {
     EmployeeCalendar getEmployeeCalendar(int id);
 
     /**
-     * TODO: ist das richtig? A method to get the calendar from an employee.
+     * A method to get the calendar from an employee.
      * 
      * @param fid
      *            The id of the referenced employee.

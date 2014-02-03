@@ -2,17 +2,17 @@ package wpWorker;
 
 /**
  * Studienprojekt:	WBS
- * 
+ *
  * Kunde:				Pentasys AG, Jens von Gersdorff
- * Projektmitglieder:	Andre Paffenholz, 
- * 						Peter Lange, 
+ * Projektmitglieder:	Andre Paffenholz,
+ * 						Peter Lange,
  * 						Daniel Metzler,
  * 						Samson von Graevenitz
- * 
+ *
  *  Funktionalität zur GUI ChangePW
  *  prüfung aller notwendigen Bedingungen zum Passwortwechsel
  *  und Änderung des Passwortes in der DB
- * 
+ *
  * @author Samson von Graevenitz
  * @version 0.5 - 28.12.2010
  */
@@ -22,7 +22,12 @@ import java.sql.SQLException;
 
 import javax.swing.JOptionPane;
 
+<<<<<<< HEAD
 import dbaccess.data.Employee;
+=======
+import c10n.C10N;
+import de.fhbingen.wbs.translation.Messages;
+>>>>>>> PROJ-WS1314-WBS-DEV
 import wpOverview.WPOverviewGUI;
 import jdbcConnection.SQLExecuter;
 
@@ -37,20 +42,22 @@ public class ChangePW {
 	protected ChangePWGUI gui;
 	private ChangePW dies;
 	protected Worker usr;
-	
+
+    private final Messages messages;
 	/**
 	 * Konstruktoraufruf zum ändern des Passworts des aktuellen Users
 	 * @param usr - aktuell eingeloggter User
 	 */
 	public ChangePW(Worker usr){
-		dies = this;
+        messages = C10N.get(Messages.class);
+        dies = this;
 		this.usr = usr;
 		gui = new ChangePWGUI();
 		new ChangePWButtonAction(dies);
 	}
-	
-	
-	
+
+
+
 	/**
 	 * prüft ob alle Passwortfelder ausgefüllt sind
 	 * @return true/false, je nachdem ob Felder gefüllt oder nicht
@@ -63,7 +70,7 @@ public class ChangePW {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * prüft, ob das "alte Passwort" des Users mit dem übereinstimmt was
 	 * in der Datenbank hinterlegt ist.
@@ -83,7 +90,7 @@ public class ChangePW {
 		}*/
 		return false;
 	}
-	
+
 	/**
 	 * prüft, ob das "Neue Passwort" und "Passwort Confirm" übereinstimmen
 	 * @return true/false je nachdem, ob prüfung positiv oder negativ
@@ -96,7 +103,7 @@ public class ChangePW {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Speichert das geänderte Passwort in der Datenbank ab
 	 * @param user - ResultSet welches den aktuellen User Hält
@@ -108,10 +115,10 @@ public class ChangePW {
 			user.updateString("Passwort", pw);
 			user.updateRow();
 			user.close();
-			WPOverviewGUI.setStatusText("Passwort wurde geändert");
+			WPOverviewGUI.setStatusText(messages.passwordChangeConfirm());
 			//JOptionPane.showMessageDialog(gui, "Passwort wurde geändert",null, JOptionPane.INFORMATION_MESSAGE);
 		} catch (SQLException e) {
-			JOptionPane.showMessageDialog(gui, "Fehler beim Passwort ändern",null,
+			JOptionPane.showMessageDialog(gui, messages.passwordChangeError(),null,
 					JOptionPane.INFORMATION_MESSAGE);			e.printStackTrace();
 		}*/
 	}

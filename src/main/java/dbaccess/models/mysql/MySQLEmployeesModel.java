@@ -30,7 +30,6 @@ import java.util.List;
 import jdbcConnection.MySqlConnect;
 import jdbcConnection.SQLExecuter;
 import dbaccess.data.Employee;
-import dbaccess.data.Workpackage;
 import dbaccess.models.EmployeesModel;
 
 /**
@@ -49,15 +48,30 @@ public class MySQLEmployeesModel implements EmployeesModel {
     public void addNewEmployee(final Employee employee) {
         connection = SQLExecuter.getConnection();
         try {
-            Statement stm = connection.createStatement();
-            stm.execute("CALL employees_new('" + employee.getLogin() + "','"
-                    + employee.getLast_name() + "','"
-                    + employee.getFirst_name() + "',"
-                    + employee.isProject_leader() + ","
-                    + employee.getDaily_rate() + ","
-                    + employee.getTime_preference() + ",'"
-                    + employee.getPassword() + "','" + MySqlConnect.getDbName()
-                    + "','" + MySqlConnect.getId() + "')");
+            PreparedStatement stm = null;
+            final int paramCount = 9;
+            
+            String storedProcedure = "CALL employees_new(";
+
+            for(int i=1;i<paramCount;i++){
+                storedProcedure += "?,";
+            }
+            
+            storedProcedure += "?)";
+            
+            stm = connection.prepareStatement(storedProcedure);
+            stm.setString(1, employee.getLogin());
+            stm.setString(2, employee.getLast_name());
+            stm.setString(3, employee.getFirst_name());
+            stm.setBoolean(4, employee.isProject_leader());
+            stm.setDouble(5, employee.getDaily_rate());
+            stm.setInt(6, employee.getTime_preference());
+            stm.setString(7, employee.getPassword());
+            stm.setString(8, MySqlConnect.getDbName());
+            stm.setString(9, MySqlConnect.getId());
+            
+            stm.execute();
+            
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -91,10 +105,15 @@ public class MySQLEmployeesModel implements EmployeesModel {
         Employee employee = null;
         try {
             ResultSet result = null;
-            Statement stm = connection.createStatement();
-            result =
-                    stm.executeQuery("CALL employees_select_by_login ('"
-                            + login + "')");
+            
+            PreparedStatement stm = null;
+
+            String storedProcedure = "CALL employees_select_by_login (?)";
+
+            stm = connection.prepareStatement(storedProcedure);
+            stm.setString(1, login);
+            
+            result=stm.executeQuery();
 
             if (result.next()) {
                 employee = Employee.fromResultSet(result);
@@ -150,23 +169,29 @@ public class MySQLEmployeesModel implements EmployeesModel {
         connection = SQLExecuter.getConnection();
         boolean success = false;
         try {
-            Statement stm = connection.createStatement();
-            stm.execute("CALL employees_update_by_id("
-                    + employee.getId()
-                    + ",'"
-                    + employee.getLast_name()
-                    + "','"
-                    + employee.getFirst_name()
-                    + "',"
-                    + employee.isProject_leader()
-                    + ","
-                    + employee.getDaily_rate()
-                    + ","
-                    + employee.getTime_preference()
-                    + ",'"
-                    + (employee.changePassword() ? employee.getPassword()
-                            : "null") + "','" + MySqlConnect.getId() + "')");
-            success = true;
+            PreparedStatement stm = null;
+            final int paramCount=8;
+            
+            String storedProcedure = "CALL employees_update_by_id(";
+
+            for(int i=1;i<paramCount;i++){
+                storedProcedure+="?,";
+            }
+            
+            storedProcedure+="?)";
+            
+            stm = connection.prepareStatement(storedProcedure);
+            stm.setInt(1, employee.getId());
+            stm.setString(2, employee.getLast_name());
+            stm.setString(3, employee.getFirst_name());
+            stm.setBoolean(4, employee.isProject_leader());
+            stm.setDouble(5, employee.getDaily_rate());
+            stm.setInt(6, employee.getTime_preference());
+            stm.setString(7, employee.getPassword());
+            stm.setString(8, MySqlConnect.getId());
+            
+            stm.execute();
+            
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -198,7 +223,6 @@ public class MySQLEmployeesModel implements EmployeesModel {
                 e.printStackTrace();
             }
         }
-
     }
 
     @Override

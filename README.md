@@ -26,6 +26,3 @@ most often.
 When building the project gradle will generate a `build` folder and put all the
 build related output into that folder. If you want to get rid of the build
 folder just run `gradle clean`.
-
-**Note:** The tests are not working properly right now, so use `gradle build -x test` to
-build the project without running the tests.

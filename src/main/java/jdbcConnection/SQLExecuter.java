@@ -44,8 +44,8 @@ public final class SQLExecuter {
             if (openConnection != null) {
                 int reconnectTries = 0;
 
-                while (!openConnection.isValid(VALIDITY_CHECK_TIMEOUT)
-                        && reconnectTries < RECONNECT_TRIES) {
+                while (!openConnection.isValid(VALIDITY_CHECK_TIMEOUT) &&
+                        reconnectTries < RECONNECT_TRIES) {
                     openConnection = null;
                     openConnection = MySqlConnect.getConnection();
                     reconnectTries++;
@@ -122,10 +122,9 @@ public final class SQLExecuter {
         Statement stmt;
         ResultSet rs;
         try {
-            stmt =
-                    openConnection.createStatement(
-                            ResultSet.TYPE_SCROLL_INSENSITIVE,
-                            ResultSet.CONCUR_READ_ONLY);
+            stmt = openConnection.createStatement(
+                    ResultSet.TYPE_SCROLL_INSENSITIVE,
+                    ResultSet.CONCUR_READ_ONLY);
             rs = stmt.executeQuery(sql);
             return rs;
         } catch (SQLException e) {
@@ -133,15 +132,15 @@ public final class SQLExecuter {
         }
         return null;
     }
-
+    
     /**
      * @return Connection to the database
      */
-    public static Connection getConnection() {
+    public static Connection getConnection(){
         if (!openConnection()) {
             return null;
         }
-        return openConnection;
+        return openConnection;      
     }
-
+    
 }
