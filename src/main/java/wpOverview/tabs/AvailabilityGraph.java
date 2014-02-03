@@ -30,6 +30,7 @@ import dbServices.WorkerService;
 
 import wpOverview.WPOverview;
 import wpWorker.Worker;
+
 /**
  * Studienprojekt:	PSYS WBS 2.0<br/>
  * 
@@ -47,16 +48,14 @@ import wpWorker.Worker;
  * @version 2.0
  */
 /**
- * Studienprojekt:	PSYS WBS 2.0<br/>
- * 
- * Kunde:		Pentasys AG, Jens von Gersdorff<br/>
+ * Studienprojekt: PSYS WBS 2.0<br/>
+ * Kunde: Pentasys AG, Jens von Gersdorff<br/>
  * Projektmitglieder:<br/>
- *			Michael Anstatt,<br/>
- *			Marc-Eric Baumgärtner,<br/>
- *			Jens Eckes,<br/>
- *			Sven Seckler,<br/>
- *			Lin Yang<br/>
- * 
+ * Michael Anstatt,<br/>
+ * Marc-Eric Baumgärtner,<br/>
+ * Jens Eckes,<br/>
+ * Sven Seckler,<br/>
+ * Lin Yang<br/>
  * Zeigt die Verfuegbarkeiten fuer Mitarbeiter an<br/>
  * 
  * @author Michael Anstatt
@@ -64,351 +63,395 @@ import wpWorker.Worker;
  */
 public class AvailabilityGraph {
 
-	private AvailabilityGraphGUI gui;
+    private AvailabilityGraphGUI gui;
 
-	public static final int DAY = 0;
-	public static final int WEEK = 1;
-	public static final int MONTH = 2;
-	public static final int YEAR = 3;
+    public static final int DAY = 0;
+    public static final int WEEK = 1;
+    public static final int MONTH = 2;
+    public static final int YEAR = 3;
 
-	public static final Worker PROJECT_WORKER = new Worker("Projektverfügbarkeit");
+    public static final Worker PROJECT_WORKER = new Worker(
+            "Projektverfügbarkeit");
 
-	private GregorianCalendar actualDay;
-	private GregorianCalendar actualStart;
-	private GregorianCalendar actualEnd;
+    private GregorianCalendar actualDay;
+    private GregorianCalendar actualStart;
+    private GregorianCalendar actualEnd;
 
-	private int actualView;
+    private int actualView;
 
-	private boolean showManualAv;
+    private boolean showManualAv;
 
-	private List<Worker> workers;
+    private List<Worker> workers;
 
-	private WPOverview over;
-	
-	/**
-	 * Konstruktor
-	 * @param gui GUI Klasse des AvailabilityGraph
-	 * @param over WPOverview Funktionalitaet
-	 */
-	public AvailabilityGraph(AvailabilityGraphGUI gui, WPOverview over) {
-		this.over = over;
-		this.gui = gui;
-		actualDay = new GregorianCalendar();
-		actualDay.setTimeInMillis(System.currentTimeMillis());
+    private WPOverview over;
 
-		actualStart = new GregorianCalendar();
-		actualEnd = new GregorianCalendar();
+    /**
+     * Konstruktor
+     * 
+     * @param gui
+     *            GUI Klasse des AvailabilityGraph
+     * @param over
+     *            WPOverview Funktionalitaet
+     */
+    public AvailabilityGraph(AvailabilityGraphGUI gui, WPOverview over) {
+        this.over = over;
+        this.gui = gui;
+        actualDay = new GregorianCalendar();
+        actualDay.setTimeInMillis(System.currentTimeMillis());
 
-	}
-	
-	/**
-	 * Zaehlt, je nachdem welche Ansicht gewaehlt ist ( DAY / MONTH / WEEK / YEAR)
-	 * einen Tag, Monat, Woche oder Jahr in der Ansicht hoch
-	 */
-	protected void increment() {
-		switch (actualView) {
-		case DAY:
-			actualDay.add(Calendar.DAY_OF_YEAR, 1);
-			break;
-		case WEEK:
-			actualDay.add(Calendar.WEEK_OF_YEAR, 1);
-			break;
-		case MONTH:
-			actualDay.add(Calendar.MONTH, 1);
-			break;
-		case YEAR:
-			actualDay.add(Calendar.YEAR, 1);
-			break;
-		}
-		changeView(actualView);
-	}
+        actualStart = new GregorianCalendar();
+        actualEnd = new GregorianCalendar();
 
-	/**
-	 * Zaehlt, je nachdem welche Ansicht gewaehlt ist ( DAY / MONTH / WEEK / YEAR)
-	 * einen Tag, Monat, Woche oder Jahr in der Ansicht runter
-	 */
-	protected void decrement() {
-		switch (actualView) {
-		case DAY:
-			actualDay.add(Calendar.DAY_OF_YEAR, -1);
-			break;
-		case WEEK:
-			actualDay.add(Calendar.WEEK_OF_YEAR, -1);
-			break;
-		case MONTH:
-			actualDay.add(Calendar.MONTH, -1);
-			break;
-		case YEAR:
-			actualDay.add(Calendar.YEAR, -1);
-			break;
-		}
-		changeView(actualView);
-	}
+    }
 
-	/**
-	 * Setzt die Ansicht auf Tag, Woche, Monat oder Jahr
-	 * 
-	 * @param newView DAY / MONTH / WEEK oder YEAR
-	 */
-	protected void changeView(int newView) {
-		switch (newView) {
-		case DAY:
-			setDayView();
-			break;
-		case WEEK:
-			setWeekView();
-			break;
-		case MONTH:
-			setMonthView();
-			break;
-		case YEAR:
-			setYearView();
-			break;
-		}
-	}
+    /**
+     * Zaehlt, je nachdem welche Ansicht gewaehlt ist ( DAY / MONTH / WEEK /
+     * YEAR) einen Tag, Monat, Woche oder Jahr in der Ansicht hoch
+     */
+    protected void increment() {
+        switch (actualView) {
+        case DAY:
+            actualDay.add(Calendar.DAY_OF_YEAR, 1);
+            break;
+        case WEEK:
+            actualDay.add(Calendar.WEEK_OF_YEAR, 1);
+            break;
+        case MONTH:
+            actualDay.add(Calendar.MONTH, 1);
+            break;
+        case YEAR:
+            actualDay.add(Calendar.YEAR, 1);
+            break;
+        }
+        changeView(actualView);
+    }
 
-	/**
-	 * setzt die Ansicht auf "Tag"
-	 */
-	private void setDayView() {
+    /**
+     * Zaehlt, je nachdem welche Ansicht gewaehlt ist ( DAY / MONTH / WEEK /
+     * YEAR) einen Tag, Monat, Woche oder Jahr in der Ansicht runter
+     */
+    protected void decrement() {
+        switch (actualView) {
+        case DAY:
+            actualDay.add(Calendar.DAY_OF_YEAR, -1);
+            break;
+        case WEEK:
+            actualDay.add(Calendar.WEEK_OF_YEAR, -1);
+            break;
+        case MONTH:
+            actualDay.add(Calendar.MONTH, -1);
+            break;
+        case YEAR:
+            actualDay.add(Calendar.YEAR, -1);
+            break;
+        }
+        changeView(actualView);
+    }
 
-		actualStart = (GregorianCalendar) actualDay.clone();
-		actualStart.set(Calendar.HOUR_OF_DAY, 0);
-		actualStart.set(Calendar.MINUTE, 0);
-		actualStart.add(Calendar.HOUR, -1);
+    /**
+     * Setzt die Ansicht auf Tag, Woche, Monat oder Jahr
+     * 
+     * @param newView
+     *            DAY / MONTH / WEEK oder YEAR
+     */
+    protected void changeView(int newView) {
+        switch (newView) {
+        case DAY:
+            setDayView();
+            break;
+        case WEEK:
+            setWeekView();
+            break;
+        case MONTH:
+            setMonthView();
+            break;
+        case YEAR:
+            setYearView();
+            break;
+        }
+    }
 
-		actualEnd = (GregorianCalendar) actualDay.clone();
-		actualEnd.set(Calendar.HOUR_OF_DAY, 23);
-		actualEnd.set(Calendar.MINUTE, 59);
-		actualEnd.add(Calendar.HOUR, 1);
+    /**
+     * setzt die Ansicht auf "Tag"
+     */
+    private void setDayView() {
 
-		actualView = DAY;
+        actualStart = (GregorianCalendar) actualDay.clone();
+        actualStart.set(Calendar.HOUR_OF_DAY, 0);
+        actualStart.set(Calendar.MINUTE, 0);
+        actualStart.add(Calendar.HOUR, -1);
 
-		GregorianCalendar helper = (GregorianCalendar) actualEnd.clone();
-		helper.add(Calendar.DATE, -1);
+        actualEnd = (GregorianCalendar) actualDay.clone();
+        actualEnd.set(Calendar.HOUR_OF_DAY, 23);
+        actualEnd.set(Calendar.MINUTE, 59);
+        actualEnd.add(Calendar.HOUR, 1);
 
-		makeChart(new SimpleDateFormat("EEEE, dd.MM.yyyy").format(helper.getTime()));
-	}
-	
-	/**
-	 * setzt die Ansicht auf "Woche"
-	 */
-	private void setWeekView() {
+        actualView = DAY;
 
-		actualStart = (GregorianCalendar) actualDay.clone();
-		actualStart.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
-		actualStart.set(Calendar.HOUR_OF_DAY, 0);
-		actualStart.set(Calendar.MINUTE, 0);
+        GregorianCalendar helper = (GregorianCalendar) actualEnd.clone();
+        helper.add(Calendar.DATE, -1);
 
-		actualEnd = (GregorianCalendar) actualDay.clone();
-		actualEnd.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
-		actualEnd.set(Calendar.HOUR_OF_DAY, 23);
-		actualEnd.set(Calendar.MINUTE, 59);
+        makeChart(new SimpleDateFormat("EEEE, dd.MM.yyyy").format(helper
+                .getTime()));
+    }
 
-		actualStart.add(Calendar.HOUR_OF_DAY, -1);
-		actualEnd.add(Calendar.HOUR_OF_DAY, 1);
+    /**
+     * setzt die Ansicht auf "Woche"
+     */
+    private void setWeekView() {
 
-		actualView = WEEK;
+        actualStart = (GregorianCalendar) actualDay.clone();
+        actualStart.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+        actualStart.set(Calendar.HOUR_OF_DAY, 0);
+        actualStart.set(Calendar.MINUTE, 0);
 
-		GregorianCalendar helper = (GregorianCalendar) actualEnd.clone();
-		helper.add(Calendar.DATE, -1);
+        actualEnd = (GregorianCalendar) actualDay.clone();
+        actualEnd.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+        actualEnd.set(Calendar.HOUR_OF_DAY, 23);
+        actualEnd.set(Calendar.MINUTE, 59);
 
-		makeChart("KW " + new SimpleDateFormat("ww yyyy").format(helper.getTime()));
-	}
+        actualStart.add(Calendar.HOUR_OF_DAY, -1);
+        actualEnd.add(Calendar.HOUR_OF_DAY, 1);
 
-	/**
-	 * setzt die Ansicht auf "Monat"
-	 */
-	private void setMonthView() {
+        actualView = WEEK;
 
-		actualStart = (GregorianCalendar) actualDay.clone();
-		actualStart.set(Calendar.DAY_OF_MONTH, 1);
-		actualStart.set(Calendar.HOUR, 0);
-		actualStart.set(Calendar.MINUTE, 0);
+        GregorianCalendar helper = (GregorianCalendar) actualEnd.clone();
+        helper.add(Calendar.DATE, -1);
 
-		actualEnd = (GregorianCalendar) actualDay.clone();
-		actualEnd.set(Calendar.DAY_OF_MONTH, actualEnd.getActualMaximum(Calendar.DAY_OF_MONTH));
-		actualEnd.set(Calendar.HOUR, 23);
-		actualEnd.set(Calendar.MINUTE, 59);
+        makeChart("KW "
+                + new SimpleDateFormat("ww yyyy").format(helper.getTime()));
+    }
 
-		actualStart.add(Calendar.HOUR, -1);
-		actualEnd.add(Calendar.HOUR, 1);
+    /**
+     * setzt die Ansicht auf "Monat"
+     */
+    private void setMonthView() {
 
-		actualView = MONTH;
+        actualStart = (GregorianCalendar) actualDay.clone();
+        actualStart.set(Calendar.DAY_OF_MONTH, 1);
+        actualStart.set(Calendar.HOUR, 0);
+        actualStart.set(Calendar.MINUTE, 0);
 
-		GregorianCalendar helper = (GregorianCalendar) actualEnd.clone();
-		helper.add(Calendar.DATE, -1);
+        actualEnd = (GregorianCalendar) actualDay.clone();
+        actualEnd.set(Calendar.DAY_OF_MONTH,
+                actualEnd.getActualMaximum(Calendar.DAY_OF_MONTH));
+        actualEnd.set(Calendar.HOUR, 23);
+        actualEnd.set(Calendar.MINUTE, 59);
 
-		makeChart(new SimpleDateFormat("MMMM yyyy").format(helper.getTime()));
-	}
-	
-	/**
-	 * setzt die Ansicht auf "Jahr"
-	 */
-	private void setYearView() {
+        actualStart.add(Calendar.HOUR, -1);
+        actualEnd.add(Calendar.HOUR, 1);
 
-		actualStart = (GregorianCalendar) actualDay.clone();
-		actualStart.set(Calendar.DAY_OF_YEAR, actualDay.getActualMinimum(Calendar.DAY_OF_YEAR));
-		actualStart.set(Calendar.HOUR, 0);
-		actualStart.set(Calendar.MINUTE, 0);
-		actualStart.add(Calendar.DAY_OF_YEAR, -1);
+        actualView = MONTH;
 
-		actualEnd = (GregorianCalendar) actualDay.clone();
-		actualEnd.set(Calendar.DAY_OF_YEAR, actualDay.getActualMaximum(Calendar.DAY_OF_YEAR));
-		actualEnd.set(Calendar.HOUR, 23);
-		actualEnd.set(Calendar.MINUTE, 59);
+        GregorianCalendar helper = (GregorianCalendar) actualEnd.clone();
+        helper.add(Calendar.DATE, -1);
 
-		actualView = YEAR;
+        makeChart(new SimpleDateFormat("MMMM yyyy").format(helper.getTime()));
+    }
 
-		GregorianCalendar helper = (GregorianCalendar) actualEnd.clone();
-		helper.add(Calendar.DATE, -1);
+    /**
+     * setzt die Ansicht auf "Jahr"
+     */
+    private void setYearView() {
 
-		makeChart(new SimpleDateFormat("yyyy").format(helper.getTime()));
-	}
+        actualStart = (GregorianCalendar) actualDay.clone();
+        actualStart.set(Calendar.DAY_OF_YEAR,
+                actualDay.getActualMinimum(Calendar.DAY_OF_YEAR));
+        actualStart.set(Calendar.HOUR, 0);
+        actualStart.set(Calendar.MINUTE, 0);
+        actualStart.add(Calendar.DAY_OF_YEAR, -1);
 
-	/**
-	 * Erzeugt einen Chart in der ANsicht mit bestimmtem Titel
-	 * 
-	 * @param title
-	 */
-	protected void makeChart(String title) {
-		DateTickUnit tick = null;
-		switch (actualView) {
-		case DAY:
-			tick = new DateTickUnit(DateTickUnitType.HOUR, 1, new SimpleDateFormat("HH"));
-			break;
-		case WEEK:
-			tick = new DateTickUnit(DateTickUnitType.DAY, 1, new SimpleDateFormat("E, dd.MM."));
-			break;
-		case MONTH:
-			tick = new DateTickUnit(DateTickUnitType.DAY, 1, new SimpleDateFormat("d."));
-			break;
-		case YEAR:
-			tick = new DateTickUnit(DateTickUnitType.MONTH, 1, new SimpleDateFormat("M"));
-			break;
-		}
-		gui.pnlGraph.setChart(ChartFactory.createGanttChart(title, "", "", createDataset(), true, true, false));
-		gui.pnlGraph.getChart().getTitle().setHorizontalAlignment(HorizontalAlignment.LEFT);
-		gui.pnlGraph.getChart().getTitle().setMargin(5, 10, 5, 5);
-		gui.pnlGraph.getChart().getCategoryPlot().getDomainAxis().setCategoryMargin(0.4);
-		gui.pnlGraph.getChart().getCategoryPlot().getDomainAxis().setLowerMargin(0);
-		gui.pnlGraph.getChart().getCategoryPlot().getDomainAxis().setUpperMargin(0);
+        actualEnd = (GregorianCalendar) actualDay.clone();
+        actualEnd.set(Calendar.DAY_OF_YEAR,
+                actualDay.getActualMaximum(Calendar.DAY_OF_YEAR));
+        actualEnd.set(Calendar.HOUR, 23);
+        actualEnd.set(Calendar.MINUTE, 59);
 
-		// chart.getCategoryPlot().getDomainAxis().getL
+        actualView = YEAR;
 
-		gui.pnlGraph.getChart().getCategoryPlot().getDomainAxis().setTickLabelFont(new Font(Font.SANS_SERIF, Font.PLAIN, 10));
+        GregorianCalendar helper = (GregorianCalendar) actualEnd.clone();
+        helper.add(Calendar.DATE, -1);
 
-		CategoryPlot plot = gui.pnlGraph.getChart().getCategoryPlot();
-		DateAxis axis = (DateAxis) plot.getRangeAxis();
-		axis.setMinimumDate(actualStart.getTime());
-		axis.setMaximumDate(actualEnd.getTime());
-		axis.setTickUnit(tick);
+        makeChart(new SimpleDateFormat("yyyy").format(helper.getTime()));
+    }
 
-		CategoryItemRenderer renderer = plot.getRenderer();
-		renderer.setSeriesPaint(0, Color.blue);
-		renderer.setSeriesPaint(1, Color.green);
-		renderer.setSeriesPaint(2, Color.red);
-	}
+    /**
+     * Erzeugt einen Chart in der ANsicht mit bestimmtem Titel
+     * 
+     * @param title
+     */
+    protected void makeChart(String title) {
+        DateTickUnit tick = null;
+        switch (actualView) {
+        case DAY:
+            tick =
+                    new DateTickUnit(DateTickUnitType.HOUR, 1,
+                            new SimpleDateFormat("HH"));
+            break;
+        case WEEK:
+            tick =
+                    new DateTickUnit(DateTickUnitType.DAY, 1,
+                            new SimpleDateFormat("E, dd.MM."));
+            break;
+        case MONTH:
+            tick =
+                    new DateTickUnit(DateTickUnitType.DAY, 1,
+                            new SimpleDateFormat("d."));
+            break;
+        case YEAR:
+            tick =
+                    new DateTickUnit(DateTickUnitType.MONTH, 1,
+                            new SimpleDateFormat("M"));
+            break;
+        }
+        gui.pnlGraph.setChart(ChartFactory.createGanttChart(title, "", "",
+                createDataset(), true, true, false));
+        gui.pnlGraph.getChart().getTitle()
+                .setHorizontalAlignment(HorizontalAlignment.LEFT);
+        gui.pnlGraph.getChart().getTitle().setMargin(5, 10, 5, 5);
+        gui.pnlGraph.getChart().getCategoryPlot().getDomainAxis()
+                .setCategoryMargin(0.4);
+        gui.pnlGraph.getChart().getCategoryPlot().getDomainAxis()
+                .setLowerMargin(0);
+        gui.pnlGraph.getChart().getCategoryPlot().getDomainAxis()
+                .setUpperMargin(0);
 
-	/**
-	 * Erzeugt den Balken fuer die Projektverfuegbarkeit
-	 * 
-	 * @param set Set von Project-Availabilities
-	 * 
-	 * @return den Task, anzeigefertig fuer JFreeChart
-	 */
-	private Task createProjectTask(Set<Availability> set) {
-		if (set.size() > 0) {
-			final Task mainTask = new Task(AvailabilityGraph.PROJECT_WORKER.getLogin(), actualStart.getTime(), actualEnd.getTime());
-			for (Availability projectAvailability : set) {
-				mainTask.addSubtask(new Task(AvailabilityGraph.PROJECT_WORKER.getLogin(), projectAvailability.getStartTime(), projectAvailability.getEndTime()));
-			}
-			return mainTask;
-		} else {
-			return new Task(AvailabilityGraph.PROJECT_WORKER.getLogin(), new Date(0), new Date(0));
-		}
+        // chart.getCategoryPlot().getDomainAxis().getL
 
-	}
+        gui.pnlGraph.getChart().getCategoryPlot().getDomainAxis()
+                .setTickLabelFont(new Font(Font.SANS_SERIF, Font.PLAIN, 10));
 
-	
-	private Task createWorkerTask(Worker worker, Set<Availability> workerAvailabilaties) {
-		if (workerAvailabilaties.size() > 0) {
-			final Task mainTask = new Task(worker.getVorname() + " " + worker.getName(), actualStart.getTime(), actualEnd.getTime());
-			for (Availability workerAvailability : workerAvailabilaties) {
-				mainTask.addSubtask(new Task(worker.getVorname() + " " + worker.getName(), workerAvailability.getStartTime(), workerAvailability.getEndTime()));
-			}
-			return mainTask;
-		} else {
-			return new Task(worker.getVorname() + " " + worker.getName(), new Date(0), new Date(0));
-		}
+        CategoryPlot plot = gui.pnlGraph.getChart().getCategoryPlot();
+        DateAxis axis = (DateAxis) plot.getRangeAxis();
+        axis.setMinimumDate(actualStart.getTime());
+        axis.setMaximumDate(actualEnd.getTime());
+        axis.setTickUnit(tick);
 
-	}
+        CategoryItemRenderer renderer = plot.getRenderer();
+        renderer.setSeriesPaint(0, Color.blue);
+        renderer.setSeriesPaint(1, Color.green);
+        renderer.setSeriesPaint(2, Color.red);
+    }
 
-	public IntervalCategoryDataset createDataset() {
+    /**
+     * Erzeugt den Balken fuer die Projektverfuegbarkeit
+     * 
+     * @param set
+     *            Set von Project-Availabilities
+     * @return den Task, anzeigefertig fuer JFreeChart
+     */
+    private Task createProjectTask(Set<Availability> set) {
+        if (set.size() > 0) {
+            final Task mainTask =
+                    new Task(AvailabilityGraph.PROJECT_WORKER.getLogin(),
+                            actualStart.getTime(), actualEnd.getTime());
+            for (Availability projectAvailability : set) {
+                mainTask.addSubtask(new Task(AvailabilityGraph.PROJECT_WORKER
+                        .getLogin(), projectAvailability.getStartTime(),
+                        projectAvailability.getEndTime()));
+            }
+            return mainTask;
+        } else {
+            return new Task(AvailabilityGraph.PROJECT_WORKER.getLogin(),
+                    new Date(0), new Date(0));
+        }
 
-		if(WPOverview.getUser().getProjLeiter()) {
-			workers = WorkerService.getRealWorkers();
-		} else {
-			workers = new ArrayList<Worker>();
-			Worker user = WPOverview.getUser();
-			workers.add(new Worker(user.getLogin(), user.getVorname(), user.getName(), 1, 100));
-		}
-		
+    }
 
-		gui.pnlGraph.setMinimumDrawHeight(100 + 50 * workers.size() + 1);
-		gui.pnlGraph.setMaximumDrawHeight(100 + 50 * workers.size() + 1);
-		gui.pnlGraph.setPreferredSize(new Dimension((int) gui.pnlGraph.getPreferredSize().getWidth(), 100 + 50 * workers.size() + 1));
+    private Task createWorkerTask(Worker worker,
+            Set<Availability> workerAvailabilaties) {
+        if (workerAvailabilaties.size() > 0) {
+            final Task mainTask =
+                    new Task(worker.getVorname() + " " + worker.getName(),
+                            actualStart.getTime(), actualEnd.getTime());
+            for (Availability workerAvailability : workerAvailabilaties) {
+                mainTask.addSubtask(new Task(worker.getVorname() + " "
+                        + worker.getName(), workerAvailability.getStartTime(),
+                        workerAvailability.getEndTime()));
+            }
+            return mainTask;
+        } else {
+            return new Task(worker.getVorname() + " " + worker.getName(),
+                    new Date(0), new Date(0));
+        }
 
-		final TaskSeries stdTasks = new TaskSeries("Verfügbarkeit");
-		final TaskSeries manualTasks = new TaskSeries("Verfügbar");
-		final TaskSeries notTasks = new TaskSeries("nicht Verfügbar");
+    }
 
-		TreeSet<Availability> projectAvailability = CalendarService.getRealProjectAvailability(actualStart.getTime(), actualEnd.getTime());
+    public IntervalCategoryDataset createDataset() {
 
-		stdTasks.add(createProjectTask(projectAvailability));
+        if (WPOverview.getUser().getProjLeiter()) {
+            workers = WorkerService.getRealWorkers();
+        } else {
+            workers = new ArrayList<Worker>();
+            Worker user = WPOverview.getUser();
+            workers.add(new Worker(user.getLogin(), user.getVorname(), user
+                    .getName(), 1, 100));
+        }
 
-		if (showManualAv) {
-			notTasks.add(createProjectTask(CalendarService.getProjectAvailability(false)));
-			manualTasks.add(createProjectTask(CalendarService.getProjectAvailability(true)));
-		}
-		for (Worker worker : workers) {
+        gui.pnlGraph.setMinimumDrawHeight(100 + 50 * workers.size() + 1);
+        gui.pnlGraph.setMaximumDrawHeight(100 + 50 * workers.size() + 1);
+        gui.pnlGraph.setPreferredSize(new Dimension((int) gui.pnlGraph
+                .getPreferredSize().getWidth(), 100 + 50 * workers.size() + 1));
 
-			stdTasks.add(createWorkerTask(worker, CalendarService.getRealWorkerAvailability(worker.getLogin(), actualStart.getTime(), actualEnd.getTime())));
-			if (showManualAv) {
-				notTasks.add(createWorkerTask(worker, CalendarService.getAllWorkerAvailability(worker.getLogin(), false)));
-				manualTasks.add(createWorkerTask(worker, CalendarService.getAllWorkerAvailability(worker.getLogin(), true)));
-			}
+        final TaskSeries stdTasks = new TaskSeries("Verfügbarkeit");
+        final TaskSeries manualTasks = new TaskSeries("Verfügbar");
+        final TaskSeries notTasks = new TaskSeries("nicht Verfügbar");
 
-		}
+        TreeSet<Availability> projectAvailability =
+                CalendarService.getRealProjectAvailability(
+                        actualStart.getTime(), actualEnd.getTime());
 
-		workers.add(0, AvailabilityGraph.PROJECT_WORKER); // 0. Mitarbeiter ist Projektverfuegbarkeit
+        stdTasks.add(createProjectTask(projectAvailability));
 
-		final TaskSeriesCollection collection = new TaskSeriesCollection();
-		collection.add(stdTasks);
+        if (showManualAv) {
+            notTasks.add(createProjectTask(CalendarService
+                    .getProjectAvailability(false)));
+            manualTasks.add(createProjectTask(CalendarService
+                    .getProjectAvailability(true)));
+        }
+        for (Worker worker : workers) {
 
-		if (showManualAv) {
-			collection.add(manualTasks);
-			collection.add(notTasks);
-		}
-		return collection;
-	}
+            stdTasks.add(createWorkerTask(worker, CalendarService
+                    .getRealWorkerAvailability(worker.getId(),
+                            actualStart.getTime(), actualEnd.getTime())));
+            if (showManualAv) {
+                notTasks.add(createWorkerTask(worker, CalendarService
+                        .getAllWorkerAvailability(worker.getId(), false)));
+                manualTasks.add(createWorkerTask(worker, CalendarService
+                        .getAllWorkerAvailability(worker.getId(), true)));
+            }
 
-	public void setManualAv(boolean b) {
-		showManualAv = b;
-		remake();
-	}
+        }
 
-	public List<Worker> getWorkers() {
-		return workers;
+        workers.add(0, AvailabilityGraph.PROJECT_WORKER); // 0. Mitarbeiter ist
+                                                          // Projektverfuegbarkeit
 
-	}
-	
-	public void remake() {
-		makeChart(gui.pnlGraph.getChart().getTitle().getText());
-	}
+        final TaskSeriesCollection collection = new TaskSeriesCollection();
+        collection.add(stdTasks);
 
-	public void reloadMain() {
-		over.reload();
-	}
+        if (showManualAv) {
+            collection.add(manualTasks);
+            collection.add(notTasks);
+        }
+        return collection;
+    }
+
+    public void setManualAv(boolean b) {
+        showManualAv = b;
+        remake();
+    }
+
+    public List<Worker> getWorkers() {
+        return workers;
+
+    }
+
+    public void remake() {
+        makeChart(gui.pnlGraph.getChart().getTitle().getText());
+    }
+
+    public void reloadMain() {
+        over.reload();
+    }
 
 }

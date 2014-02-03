@@ -54,7 +54,6 @@ public class MySQLAnalyseDataModelTest {
         adModel.addNewAnalyseData(ad);
         AnalyseData aData = adModel.getAnalyseData(2);
         assertThat(aData, notNullValue());
-        assertThat(aData.getId(), equalTo(3));
         assertThat(aData.getFid_wp(), equalTo(2));
         assertThat(aData.getFid_baseline(), equalTo(1));
         assertThat(aData.getName(), equalTo("TestData"));
@@ -67,9 +66,9 @@ public class MySQLAnalyseDataModelTest {
         assertThat(aData.getBac_costs(), equalTo(3.7));
         assertThat(aData.getAc_costs(), equalTo(3.8));
         assertThat(aData.getEtc_costs(), equalTo(3.9));
-        assertThat(aData.getSv(), equalTo(3));
-        assertThat(aData.getSpi(), equalTo(4));
-        assertThat(aData.getPv(), equalTo(5));
+        assertThat(aData.getSv(), equalTo(3.0));
+        assertThat(aData.getSpi(), equalTo(4.0));
+        assertThat(aData.getPv(), equalTo(5.0));
 
         TestData.reloadData(SQLExecuter.getConnection());
     }
@@ -81,7 +80,6 @@ public class MySQLAnalyseDataModelTest {
         
         assertThat(aData, notNullValue());
         assertThat(aData, notNullValue());
-        assertThat(aData.getId(), equalTo(1));
         assertThat(aData.getFid_wp(), equalTo(1));
         assertThat(aData.getFid_baseline(), equalTo(1));
         assertThat(aData.getName(), equalTo("TestanalyseData"));
@@ -94,9 +92,9 @@ public class MySQLAnalyseDataModelTest {
         assertThat(aData.getBac_costs(), equalTo(2.7));
         assertThat(aData.getAc_costs(), equalTo(2.8));
         assertThat(aData.getEtc_costs(), equalTo(2.9));
-        assertThat(aData.getSv(), equalTo(3));
-        assertThat(aData.getSpi(), equalTo(4));
-        assertThat(aData.getPv(), equalTo(5));
+        assertThat(aData.getSv(), equalTo(3.0));
+        assertThat(aData.getSpi(), equalTo(4.0));
+        assertThat(aData.getPv(), equalTo(5.0));
 
     }
     

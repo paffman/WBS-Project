@@ -13,13 +13,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+
 import javax.swing.JOptionPane;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import chooseDB.DBChooser;
 import dbServices.SemaphoreService;
-
-import login.Login;
+import dbaccess.DBModelManager;
 import wpWorker.ChangePW;
 
 /**
@@ -124,7 +125,7 @@ public class WPOverviewButtonAction {
 
 		gui.miAbmelden.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				new Login();
+				new DBChooser();
 				gui.dispose();
 				Controller.leaveDB();
 			}
@@ -153,8 +154,10 @@ public class WPOverviewButtonAction {
 		// Fenster Schließen
 		gui.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
-				gui.dispose();
-				SemaphoreService.releaseLeaderSemaphore(WPOverview.getUser().getLogin());
+				gui.dispose();				
+				if ( WPOverview.getUser().getProjLeiter()){
+				    DBModelManager.getSemaphoreModel().leaveSemaphore("pl", WPOverview.getUser().getId());
+				}
 //				System.out.println("Benutzer wurde abgemeldet");
 			}
 		});

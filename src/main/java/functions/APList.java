@@ -32,7 +32,7 @@ import dbServices.WorkpackageService;
  */
 public class APList {
 
-	private Set<Workpackage> allAP;
+	private Set<Workpackage> allAP;	
 	
 	/**
 	 * Enthaelt Zuordnung Arbeitspaket -> alle Vorgaenger
@@ -45,15 +45,18 @@ public class APList {
 	private Map<Workpackage, Set<Workpackage>> followers;
 
 	private HashMap<String, Workpackage> allApMap;
+	private HashMap<Integer, String> allApIdToStringIdMap;
 
 	/**
 	 * Konstruktor, liest Arbeitspakete und Beziehungsstruktur aus Datenbank aus
 	 */
 	protected APList() {
 		allApMap = new HashMap<String, Workpackage>();
+		allApIdToStringIdMap = new HashMap<Integer, String>(); 
 		allAP = WorkpackageService.getAllAp();
 		for (Workpackage actualWp : allAP) {
 			allApMap.put(actualWp.getStringID(), actualWp);
+			allApIdToStringIdMap.put(actualWp.getWpId(), actualWp.getStringID());
 		}
 	}
 
@@ -86,11 +89,11 @@ public class APList {
 	 * @param workpackage Arbeitspaket dessen Vorganeger gewuenscht werden
 	 * @return Set mit Vorgaengern
 	 */
-	private static Set<Workpackage> getDBAncestors(Workpackage actualWp, Map<String, Set<String>> ancestorIDMap) {
-		Set<String> actualStringAncestors = ancestorIDMap.get(actualWp.getStringID());
+	private static Set<Workpackage> getDBAncestors(Workpackage actualWp, Map<Integer, Set<Integer>> ancestorIDMap) {
+		Set<Integer> actualStringAncestors = ancestorIDMap.get(actualWp.getWpId());
 		Set<Workpackage> actualWPAncestors = new HashSet<Workpackage>();
 		if (actualStringAncestors != null) {
-			for (String actualAncestorID : actualStringAncestors) {
+			for (Integer actualAncestorID : actualStringAncestors) {
 				actualWPAncestors.add(WpManager.getWorkpackage(actualAncestorID));
 			}
 		}
@@ -107,11 +110,11 @@ public class APList {
 	 * @param workpackage Arbeitspaket dessen Nachfolger gewuenscht werden
 	 * @return Set mit Nachfolgern
 	 */
-	private static Set<Workpackage> getDBFollowers(Workpackage actualWp, Map<String, Set<String>> followerIDMap) {
-		Set<String> actualStringFollowers = followerIDMap.get(actualWp.getStringID());
+	private static Set<Workpackage> getDBFollowers(Workpackage actualWp, Map<Integer, Set<Integer>> followerIDMap) {
+		Set<Integer> actualStringFollowers = followerIDMap.get(actualWp.getWpId());
 		Set<Workpackage> actualWPFollowers = new HashSet<Workpackage>();
 		if (actualStringFollowers != null) {
-			for (String actualFollowerID : actualStringFollowers) {
+			for (Integer actualFollowerID : actualStringFollowers) {
 				actualWPFollowers.add(WpManager.getWorkpackage(actualFollowerID));
 			}
 		}
@@ -128,6 +131,7 @@ public class APList {
 		ancestors.put(wp, new HashSet<Workpackage>());
 		followers.put(wp, new HashSet<Workpackage>());
 		allApMap.put(wp.getStringID(), wp);
+		allApIdToStringIdMap.put(wp.getWpId(), wp.getStringID());
 	}
 	/**
 	 * Prueft ob das OAP von wp Vorgaenger hat
@@ -372,6 +376,7 @@ public class APList {
 		ancestors.remove(removeWp);
 		followers.remove(removeWp);
 		allApMap.remove(removeWp.getStringID());
+		allApIdToStringIdMap.remove(removeWp.getWpId());
 	}
 	
 	/**
@@ -397,6 +402,16 @@ public class APList {
 	protected Workpackage getWorkpackage(String id) {
 		return allApMap.get(id);
 	}
+	
+	/**
+     * 
+     * @param ID des benoetigten Workpackage
+     * @return Workpackage mit der ID id
+     */
+    protected Workpackage getWorkpackage(int id) {
+        return allApMap.get(allApIdToStringIdMap.get(id));
+    }
+	
 	/**
 	 * Liest Vorgaenger und Nachfolger aus der Datenbank
 	 * Einmalig beim init aufgerufen
@@ -405,9 +420,9 @@ public class APList {
 		ancestors = new HashMap<Workpackage, Set<Workpackage>>();
 		followers = new HashMap<Workpackage, Set<Workpackage>>();
 
-		Map<String, Set<String>> ancestorToFollowersIDMap = WorkpackageService.getAncestorToFollowersIdMap();
-		Map<String, Set<String>> followerToAncestorsIDMap = WorkpackageService.getFollowerToAncestorsIdMap();
-
+		Map<Integer, Set<Integer>> ancestorToFollowersIDMap = WorkpackageService.getAncestorToFollowersIdMap();
+		Map<Integer, Set<Integer>> followerToAncestorsIDMap = WorkpackageService.getFollowerToAncestorsIdMap();
+		
 		for (Workpackage actualWp : allAP) {
 			ancestors.put(actualWp, getDBAncestors(actualWp, followerToAncestorsIDMap));
 			followers.put(actualWp, getDBFollowers(actualWp, ancestorToFollowersIDMap));

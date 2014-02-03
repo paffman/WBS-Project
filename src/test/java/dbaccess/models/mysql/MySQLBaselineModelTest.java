@@ -69,7 +69,7 @@ public class MySQLBaselineModelTest {
             assertThat(blList.get(0).getDescription(),
                     equalTo("Projekt Beginn"));
             assertThat(dateFormat.parse(blList.get(0).getBl_date().toString()),
-                    equalTo(dateFormat.parse("2013-12-23")));
+                    equalTo(dateFormat.parse("2013-12-23 00:00:00")));
         } catch (ParseException e) {
             e.printStackTrace();
         }

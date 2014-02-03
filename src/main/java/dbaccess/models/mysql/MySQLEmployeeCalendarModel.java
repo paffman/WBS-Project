@@ -183,54 +183,90 @@ public class MySQLEmployeeCalendarModel implements EmployeeCalendarModel {
     }
 
     @Override
-    public final void deleteEmployeeCalendar(final int id) {
+    public List<EmployeeCalendar> getEmployeeCalendarInDateRange(Date from,
+            Date to, int empId ) {
         connection = SQLExecuter.getConnection();
+        List<EmployeeCalendar> ecList = new ArrayList<EmployeeCalendar>();
+
+        ResultSet sqlResult = null;
+        PreparedStatement stm = null;
+
+        final String storedProcedure =
+                "CALL employee_calendar_select_by_date_and_emp(?,?,?)";
+
         try {
-            PreparedStatement stm = null;
-
-            String storedProcedure = "CALL employee_calendar_delete_by_id(?)";
-
             stm = connection.prepareStatement(storedProcedure);
-            stm.setInt(1, id);
+            stm.setTimestamp(1, new Timestamp(from.getTime()));
+            stm.setTimestamp(2, new Timestamp(to.getTime()));
+            stm.setInt(3, empId);
+
+            sqlResult = stm.executeQuery();
+
+            while (sqlResult.next()) {
+                ecList.add(EmployeeCalendar.fromResultSet(sqlResult));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (sqlResult != null) {
+                    sqlResult.close();
+                }
+                if (stm != null) {
+                    stm.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return ecList;        
+    }
+
+    @Override
+    public boolean deleteEmployeeCalendar(int id) {
+        connection = SQLExecuter.getConnection();
+        boolean success = false;
+        try {
+            Statement stm = connection.createStatement();
+            stm.execute("CALL employee_calendar_delete_by_id( " + id + ")");
+            success = true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return success;
+    }
+
+    @Override
+    public void updateEmployeeCalendar(EmployeeCalendar empCal) {
+        final Connection connection = SQLExecuter.getConnection();
+
+        PreparedStatement stm = null;
+
+        String storedProcedure =
+                "CALL employee_calendar_update_by_id(?,?,?,?,?,?,?)";
+
+        try {
+            stm = connection.prepareStatement(storedProcedure);
+            stm.setInt(1, empCal.getId());
+            stm.setInt(2, empCal.getFid_emp());
+            stm.setTimestamp(3, new Timestamp(empCal.getBegin_time().getTime()));
+            stm.setTimestamp(4, new Timestamp(empCal.getEnd_time().getTime()));
+            stm.setString(5, empCal.getDescription());
+            stm.setBoolean(6, empCal.isAvailability());
+            stm.setBoolean(7, empCal.isFull_time());
 
             stm.execute();
 
         } catch (SQLException e) {
             e.printStackTrace();
-        }
-    }
-
-    @Override
-    public final List<EmployeeCalendar> getEmployeeCalendarForFIDInDateRange(
-            final int fid, final Date from, final Date to) {
-        connection = SQLExecuter.getConnection();
-        List<EmployeeCalendar> empCalList = new ArrayList<EmployeeCalendar>();
-        try {
-
-            ResultSet result = null;
-            EmployeeCalendar employeeCalendar = null;
-
-            PreparedStatement stm = null;
-
-            String storedProcedure =
-                    "CALL employee_calendar_select_by_date_and_emp(?,?,?)";
-
-            stm = connection.prepareStatement(storedProcedure);
-            stm.setTimestamp(1, new Timestamp(from.getTime()));
-            stm.setTimestamp(2, new Timestamp(to.getTime()));
-            stm.setInt(3, fid);
-
-            result = stm.executeQuery();
-
-            while (result.next()) {
-                employeeCalendar = EmployeeCalendar.fromResultSet(result);
-                empCalList.add(employeeCalendar);
+        } finally {
+            try {
+                if (stm != null) {
+                    stm.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
-
-            return empCalList;
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
-        return null;
     }
 }

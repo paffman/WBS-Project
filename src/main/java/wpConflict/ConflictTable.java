@@ -17,25 +17,22 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
 import dbServices.ConflictService;
-
+import dbaccess.DBModelManager;
 import functions.WpManager;
 import globals.Workpackage;
-
 import wpOverview.WPOverview;
 import wpOverview.WPOverviewGUI;
 import wpShow.WPShow;
 
 /**
- * Studienprojekt:	PSYS WBS 2.0<br/>
- * 
- * Kunde:		Pentasys AG, Jens von Gersdorff<br/>
+ * Studienprojekt: PSYS WBS 2.0<br/>
+ * Kunde: Pentasys AG, Jens von Gersdorff<br/>
  * Projektmitglieder:<br/>
- *			Michael Anstatt,<br/>
- *			Marc-Eric Baumgärtner,<br/>
- *			Jens Eckes,<br/>
- *			Sven Seckler,<br/>
- *			Lin Yang<br/>
- * 
+ * Michael Anstatt,<br/>
+ * Marc-Eric Baumgärtner,<br/>
+ * Jens Eckes,<br/>
+ * Sven Seckler,<br/>
+ * Lin Yang<br/>
  * GUI-Klasse, die die Konflikte anzeigt<br />
  * und Methoden bereitstellt neue hinzuzufuegen und alle zu loeschen<br/>
  * 
@@ -43,151 +40,186 @@ import wpShow.WPShow;
  * @version 2.0 - 20.08.2012
  */
 public class ConflictTable extends JTable {
-	private static final long serialVersionUID = -6055310228750206338L;
-	private final static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy HH:mm");
-	private DefaultTableModel model;
+    private static final long serialVersionUID = -6055310228750206338L;
+    private final static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(
+            "dd.MM.yyyy HH:mm");
+    private DefaultTableModel model;
 
-	private ArrayList<Conflict> conflicts;
-	private JPopupMenu contextMenu;
-	private int lastClickedRow;
-	private WPOverview over;
-	/**
-	 * Konstruktor
-	 * @param over WPOverview GUI
-	 * @param parent ParentFrame
-	 */
-	public ConflictTable(final WPOverview over, final JFrame parent) {
-		reload();
-		this.over = over;
-		contextMenu = new JPopupMenu();
-		JMenuItem miRemove = new JMenuItem("Konflikt löschen");
-		miRemove.setIcon(WPOverviewGUI.delAP);
-		miRemove.addActionListener(new ActionListener() {
+    private ArrayList<Conflict> conflicts;
+    private JPopupMenu contextMenu;
+    private int lastClickedRow;
+    private WPOverview over;
 
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				removeConflict(lastClickedRow);
-			}
+    /**
+     * Konstruktor
+     * 
+     * @param over
+     *            WPOverview GUI
+     * @param parent
+     *            ParentFrame
+     */
+    public ConflictTable(final WPOverview over, final JFrame parent) {
+        reload();
+        this.over = over;
+        contextMenu = new JPopupMenu();
+        JMenuItem miRemove = new JMenuItem("Konflikt löschen");
+        miRemove.setIcon(WPOverviewGUI.delAP);
+        miRemove.addActionListener(new ActionListener() {
 
-		});
-		contextMenu.add(miRemove);
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                removeConflict(lastClickedRow);
+            }
 
-		final JTable thisTable = this;
-		this.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				lastClickedRow = thisTable.rowAtPoint(e.getPoint());
-				if (e.getButton() == MouseEvent.BUTTON3) {
-					contextMenu.show(e.getComponent(), e.getX(), e.getY());
+        });
+        contextMenu.add(miRemove);
 
-					thisTable.setEditingRow(lastClickedRow);
-				} else if (e.getClickCount() == 2) {
-					if (conflicts.get(thisTable.rowAtPoint(e.getPoint())).getTriggerAp() != null) {
-						Workpackage selected = WpManager.getWorkpackage(conflicts.get(thisTable.rowAtPoint(e.getPoint())).getTriggerAp());
-						new WPShow(over, selected, false, parent);
-					}
+        final JTable thisTable = this;
+        this.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                lastClickedRow = thisTable.rowAtPoint(e.getPoint());
+                if (e.getButton() == MouseEvent.BUTTON3) {
+                    contextMenu.show(e.getComponent(), e.getX(), e.getY());
 
-				}
-			}
-		});
-	}
-	/**
-	 * Loescht einen Konflikt aus der DB und von der GUI
-	 * @param row Reihe in der der Konflikt steht
-	 */
-	private void removeConflict(int row) {
-		try {
-			ConflictService.deleteConflict(conflicts.remove(row));
-			model.removeRow(row);
-			over.reload();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
-	/**
-	 * Fuegt einen Konflikt der DB und der GUI hinzu
-	 * @param conflict Konflikt der hinzugefuegt werden soll
-	 */
-	public void addConflict(Conflict conflict) {
-		Set<Conflict> conflicts = new HashSet<Conflict>();
-		conflicts.add(conflict);
-		addConflicts(conflicts);
-	}
-	/**
-	 * Fuegt einen Set mit Konflikt der DB und der GUI hinzu
-	 * @param newConflicts Set von CKnflikten die hinzugefuegt werden sollen
-	 */
-	public void addConflicts(Set<Conflict> newConflicts) {
-		for (int i = 0; i < this.getRowCount(); i++) {
-			model.removeRow(i);
-		}
-		HashSet<Conflict> singleConflicts = new HashSet<Conflict>(conflicts);
-		for (Conflict actualConflict : newConflicts) {
-			if (!singleConflicts.contains(actualConflict)) {
-				conflicts.add(actualConflict);
-				model.addRow(createStringArray(actualConflict));
-				ConflictService.setConflict(actualConflict);
-			}
-		}
-		this.repaint();
-	}
-	/**
-	 * Liefert einen String Array mit allen Daten des uebergebenen Konflikts
-	 * @param c
-	 * @return
-	 */
-	private String[] createStringArray(Conflict c) {
-		return new String[] { DATE_FORMAT.format(c.getDate()), createReasonString(c), c.getUserId(), createAffectedString(c) };
-	}
-	/**
-	 * Liefert eine Beschreibung des Konflikts
-	 * @param conflict deren Beschreibung man will
-	 * @return
-	 */
-	private String createReasonString(Conflict conflict) {
-		return conflict.getReasonString();
-	}
-	/**
-	 * Liefert einen String mit der ID des betroffenen APs
-	 * @param conflict deren betroffene APs man will
-	 * @return
-	 */
-	private String createAffectedString(Conflict conflict) {
-		String affectedAPs = "";
-		if (conflict.getAffectedAP() == null) {
-			affectedAPs = conflict.getTriggerAp();
-		} else {
-			affectedAPs = conflict.getTriggerAp() + "; " + conflict.getAffectedAP();
-		}
+                    thisTable.setEditingRow(lastClickedRow);
+                } else if (e.getClickCount() == 2) {
+                    if (conflicts.get(thisTable.rowAtPoint(e.getPoint()))
+                            .getTriggerApStringId() != null) {
+                        Workpackage selected =
+                                WpManager.getWorkpackage(conflicts.get(
+                                        thisTable.rowAtPoint(e.getPoint()))
+                                        .getTriggerApStringId());
+                        new WPShow(over, selected, false, parent);
+                    }
 
-		if (affectedAPs != null && affectedAPs.length() != 0) return affectedAPs;
-		else return "";
+                }
+            }
+        });
+    }
 
-	}
-	/**
-	 * Laedt die Konflikttabelle neu
-	 */
-	public void reload() {
-		model = new DefaultTableModel();
+    /**
+     * Loescht einen Konflikt aus der DB und von der GUI
+     * 
+     * @param row
+     *            Reihe in der der Konflikt steht
+     */
+    private void removeConflict(int row) {
+        try {
+            ConflictService.deleteConflict(conflicts.remove(row));
+            model.removeRow(row);
+            over.reload();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
-		model.addColumn("Zeitpunkt");
-		model.addColumn("Grund");
-		model.addColumn("Verursacher");
-		model.addColumn("Betroffene Arbeitspakete");
+    /**
+     * Fuegt einen Konflikt der DB und der GUI hinzu
+     * 
+     * @param conflict
+     *            Konflikt der hinzugefuegt werden soll
+     */
+    public void addConflict(Conflict conflict) {
+        Set<Conflict> conflicts = new HashSet<Conflict>();
+        conflicts.add(conflict);
+        addConflicts(conflicts);
+    }
 
-		conflicts = new ArrayList<Conflict>(ConflictService.getAllConflicts());
+    /**
+     * Fuegt einen Set mit Konflikt der DB und der GUI hinzu
+     * 
+     * @param newConflicts
+     *            Set von CKnflikten die hinzugefuegt werden sollen
+     */
+    public void addConflicts(Set<Conflict> newConflicts) {
+        for (int i = 0; i < this.getRowCount(); i++) {
+            model.removeRow(i);
+        }
+        HashSet<Conflict> singleConflicts = new HashSet<Conflict>(conflicts);
+        for (Conflict actualConflict : newConflicts) {
+            if (!singleConflicts.contains(actualConflict)) {
+                conflicts.add(actualConflict);
+                model.addRow(createStringArray(actualConflict));
+                ConflictService.setConflict(actualConflict);
+            }
+        }
+        this.repaint();
+    }
 
-		for (Conflict actualConflict : conflicts) {
-			model.addRow(createStringArray(actualConflict));
-		}
+    /**
+     * Liefert einen String Array mit allen Daten des uebergebenen Konflikts
+     * 
+     * @param c
+     * @return
+     */
+    private String[] createStringArray(Conflict c) {
+        return new String[] {
+                DATE_FORMAT.format(c.getDate()),
+                createReasonString(c),
+                DBModelManager.getEmployeesModel().getEmployee(c.getUserId())
+                        .getLogin(), createAffectedString(c) };
+    }
 
-		this.setModel(model);
-	}
-	/**
-	 * Sperrt alle Felder der Tabelle fuer Aenderungen
-	 */
-	@Override
-	public boolean isCellEditable(int x, int y) {
-		return false;
-	}
+    /**
+     * Liefert eine Beschreibung des Konflikts
+     * 
+     * @param conflict
+     *            deren Beschreibung man will
+     * @return
+     */
+    private String createReasonString(Conflict conflict) {
+        return conflict.getReasonString();
+    }
+
+    /**
+     * Liefert einen String mit der ID des betroffenen APs
+     * 
+     * @param conflict
+     *            deren betroffene APs man will
+     * @return
+     */
+    private String createAffectedString(Conflict conflict) {
+        String affectedAPs = "";
+        if (conflict.getAffectedApStringId() == null) {
+            affectedAPs = conflict.getTriggerApStringId();
+        } else {
+            affectedAPs =
+                    conflict.getTriggerApStringId() + "; " + conflict.getAffectedApStringId();
+        }
+
+        if (affectedAPs != null && affectedAPs.length() != 0)
+            return affectedAPs;
+        else
+            return "";
+
+    }
+
+    /**
+     * Laedt die Konflikttabelle neu
+     */
+    public void reload() {
+        model = new DefaultTableModel();
+
+        model.addColumn("Zeitpunkt");
+        model.addColumn("Grund");
+        model.addColumn("Verursacher");
+        model.addColumn("Betroffene Arbeitspakete");
+
+        conflicts = new ArrayList<Conflict>(ConflictService.getAllConflicts());
+
+        for (Conflict actualConflict : conflicts) {
+            model.addRow(createStringArray(actualConflict));
+        }
+
+        this.setModel(model);
+    }
+
+    /**
+     * Sperrt alle Felder der Tabelle fuer Aenderungen
+     */
+    @Override
+    public boolean isCellEditable(int x, int y) {
+        return false;
+    }
 }

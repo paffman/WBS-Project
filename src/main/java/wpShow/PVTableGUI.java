@@ -83,7 +83,7 @@ public class PVTableGUI extends JFrame {
 		for (Date actualDate : orderedDates) {
 			Calendar cal = new GregorianCalendar();
 			cal.setTime(actualDate);
-			double actualPV = ValuesService.getApPv(wp.getStringID(), cal);
+			double actualPV = ValuesService.getApPv(wp.getWpId(), cal);
 			if(actualPV < 0) {
 				actualPV = 0;
 			}

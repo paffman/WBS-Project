@@ -121,10 +121,17 @@ public class DBChooser {
                 return;
             }
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(
-                    gui,
-                    "Verbindung konnte nicht aufgebaut werden! Exception: "
-                            + e.toString());
+            e.printStackTrace();
+            if (e.getMessage().contains("Access denied for user")) {
+                JOptionPane
+                        .showMessageDialog(
+                                gui,
+                                "Verbindung konnte nicht aufgebaut werden! �berpr�fen sie Benutzernamen und Passwort.");
+            } else {
+                JOptionPane.showMessageDialog(gui,
+                        "Verbindung konnte nicht aufgebaut werden! Exception: "
+                                + e.toString());
+            }
             return;
         }
 
@@ -140,15 +147,47 @@ public class DBChooser {
             return;
         }
 
-        // %% Check project-leader
+        // check Project Leader authority and semaphore
         if (pl) {
-
-            // %% Check Semaphore if project-leader
-
+            if (!employee.isProject_leader()) {
+                JOptionPane.showMessageDialog(gui,
+                        "Der Benutzer hat keine Projekleiter Berechtigungen!");
+                return;
+            }
+            if (!DBModelManager.getSemaphoreModel().enterSemaphore("pl",
+                    employee.getId())) {
+                int answer =
+                        JOptionPane
+                                .showConfirmDialog(
+                                        gui,
+                                        "Es ist bereits ein Projektleiter "
+                                                + "eingeloggt. Wollen sie sich "
+                                                + "trotzdem einloggen? "
+                                                + "Warnung: "
+                                                + "Die Daten k�nnen "
+                                                + "inkonsistent werden, "
+                                                + "wenn mehrere "
+                                                + "Projektleiter daran "
+                                                + "arbeiten.",
+                                        "Projektleiterlogin",
+                                        JOptionPane.YES_NO_OPTION);
+                if (answer == JOptionPane.YES_OPTION) {
+                    if (!DBModelManager.getSemaphoreModel().enterSemaphore(
+                            "pl", employee.getId(), true)) {
+                        JOptionPane.showMessageDialog(gui,
+                                "Der Projektleiterlogin ist fehlgeschlagen!");
+                        return;
+                    }
+                } else {
+                    return;
+                }
+            }
         }
 
         // create user data
-        User userData = null;
+        User userData =
+                new User(employee.getLogin(), employee.getId(),
+                        employee.getLast_name(), employee.getFirst_name(), pl);
 
         // start WBS-Tool
         final User threadUser = userData;
@@ -178,19 +217,29 @@ public class DBChooser {
     private String getDatabaseIndex(final String host, final String db,
             final String indexDbPw) {
         MySqlConnect.setDbConncetion(host, "id_wbs", "", "idxUser", indexDbPw);
+        String ret = null;
         try {
             ResultSet rslt =
                     SQLExecuter.executeQuery("call "
                             + "db_identifier_select_by_dbname('" + db + "');");
             rslt.next();
-            return rslt.getString("id");
+            ret = rslt.getString("id");
+
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(gui,
                     "Verbindung konnte nicht aufgebaut werden! "
                             + "Es wurde kein Index-Eintrag f�r "
                             + "die Datenbank gefunden.");
-            return null;
+        } finally {
+            try {
+                MySqlConnect.getConnection().close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            MySqlConnect.setDbConncetion(null, null, null, null, null);
         }
+        return ret;
+
     }
 
     /**
@@ -263,14 +312,6 @@ public class DBChooser {
                 e.printStackTrace();
             }
         }
-    }
-
-    /**
-     * Start of the application. Creates a DBChooser objects and therefore
-     * starts the login gui.
-     */
-    public static void main() {
-        new DBChooser();
     }
 
     /**

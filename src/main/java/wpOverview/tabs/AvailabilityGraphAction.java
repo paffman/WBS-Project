@@ -114,7 +114,7 @@ public class AvailabilityGraphAction {
 					int workerIndex = categories.getColumnIndex(item.getColumnKey());
 					Worker worker = gui.function.getWorkers().get(workerIndex);
 
-					Set<Availability> found = CalendarService.getAllWorkerAvailability(worker.getLogin(), startDate, endDate);
+					Set<Availability> found = CalendarService.getAllWorkerAvailability(worker.getId(), startDate, endDate);
 					Availability foundAv = found.toArray(new Availability[1])[0];
 
 					if (foundAv != null) {

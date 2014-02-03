@@ -37,7 +37,6 @@ public class MySQLConflictsModelTest {
         try {
             //Setup conflict
             Conflict cf=new Conflict();
-            cf.setId(4);
             cf.setFid_wp(1);
             cf.setFid_wp_affected(2);
             cf.setFid_emp(2);

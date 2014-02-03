@@ -17,7 +17,6 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 package dbaccess.models.mysql;
 
 import java.sql.Connection;
@@ -45,8 +44,9 @@ public class MySQLDependenciesModel implements DependenciesModel {
     private Connection connection;
 
     @Override
-    public void addNewDependency(Dependency dependency) {
-        connection=SQLExecuter.getConnection();
+    public boolean addNewDependency(Dependency dependency) {
+        connection = SQLExecuter.getConnection();
+        boolean success = false;
         try {
             PreparedStatement stm = null;
 
@@ -57,27 +57,29 @@ public class MySQLDependenciesModel implements DependenciesModel {
             stm.setInt(2, dependency.getFid_wp_successor());
             
             stm.execute();
+            success = true;
             
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return success;
     }
 
     @Override
     public List<Dependency> getDependency() {
-        connection=SQLExecuter.getConnection();
+        connection = SQLExecuter.getConnection();
         List<Dependency> depList = new ArrayList<Dependency>();
         try {
             ResultSet result = null;
             Dependency dependency = null;
             Statement stm = connection.createStatement();
             result = stm.executeQuery("CALL dependencies_select()");
-           
+
             while (result.next()) {
                 dependency = Dependency.fromResultSet(result);
                 depList.add(dependency);
             }
-           
+
             return depList;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -86,8 +88,9 @@ public class MySQLDependenciesModel implements DependenciesModel {
     }
 
     @Override
-    public void deleteDependency(int predecessorWpID, int successorWpID) {
-        connection=SQLExecuter.getConnection();
+    public boolean deleteDependency(int predecessorWpID, int successorWpID) {
+        connection = SQLExecuter.getConnection();
+        boolean success = false;
         try {
             PreparedStatement stm = null;
 
@@ -98,10 +101,12 @@ public class MySQLDependenciesModel implements DependenciesModel {
             stm.setInt(2, successorWpID);
             
             stm.execute();
+            success = true;
             
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return success;
     }
 
 }

@@ -17,16 +17,9 @@ package wpWorker;
  * @version 0.5 - 28.12.2010
  */
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
-import javax.swing.JOptionPane;
-
+import dbaccess.data.Employee;
 import c10n.C10N;
 import de.fhbingen.wbs.translation.Messages;
-import wpOverview.WPOverviewGUI;
-
-import jdbcConnection.SQLExecuter;
 
 
 public class ChangePW {
@@ -74,8 +67,8 @@ public class ChangePW {
 	 * @param user - ResultSet welches aktuellen User Hält
 	 * @return true/false, je nach dem ob "altes Passwort" korrekt eingegeben wurde
 	 */
-	protected boolean checkOldPW(ResultSet user){
-		String old = String.valueOf(gui.txfOldPW.getPassword());
+	protected boolean checkOldPW(final Employee user){
+	/*	String old = String.valueOf(gui.txfOldPW.getPassword());
 		try {
 			user.first();
 			String dbOld = user.getString("Passwort");
@@ -84,7 +77,7 @@ public class ChangePW {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-		}
+		}*/
 		return false;
 	}
 
@@ -105,8 +98,8 @@ public class ChangePW {
 	 * Speichert das geänderte Passwort in der Datenbank ab
 	 * @param user - ResultSet welches den aktuellen User Hält
 	 */
-	protected void setNewPassword(ResultSet user){
-		String pw = String.valueOf(gui.txfNewPW.getPassword());
+	protected void setNewPassword(Employee emp){
+		String pw = String.valueOf(gui.txfNewPW.getPassword());/*
 		try {
 			user.first();
 			user.updateString("Passwort", pw);
@@ -117,6 +110,6 @@ public class ChangePW {
 		} catch (SQLException e) {
 			JOptionPane.showMessageDialog(gui, messages.passwordChangeError(),null,
 					JOptionPane.INFORMATION_MESSAGE);			e.printStackTrace();
-		}
+		}*/
 	}
 }

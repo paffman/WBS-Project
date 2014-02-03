@@ -69,9 +69,9 @@ public class MySQLAnalyseDataModel implements AnalyseDataModel {
             stm.setDouble(10, data.getBac_costs());
             stm.setDouble(11, data.getAc_costs());
             stm.setDouble(12, data.getEtc_costs());
-            stm.setInt(13, data.getSv());
-            stm.setInt(14, data.getSpi());
-            stm.setInt(15, data.getPv());
+            stm.setDouble(13, data.getSv());
+            stm.setDouble(14, data.getSpi());
+            stm.setDouble(15, data.getPv());
 
             stm.execute();
 

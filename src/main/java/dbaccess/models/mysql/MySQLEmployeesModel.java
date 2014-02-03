@@ -45,7 +45,7 @@ public class MySQLEmployeesModel implements EmployeesModel {
     private Connection connection;
 
     @Override
-    public void addNewEmployee(Employee employee) {
+    public void addNewEmployee(final Employee employee) {
         connection = SQLExecuter.getConnection();
         try {
             PreparedStatement stm = null;
@@ -100,7 +100,7 @@ public class MySQLEmployeesModel implements EmployeesModel {
     }
 
     @Override
-    public Employee getEmployee(String login) {
+    public Employee getEmployee(final String login) {
         connection = SQLExecuter.getConnection();
         Employee employee = null;
         try {
@@ -127,45 +127,55 @@ public class MySQLEmployeesModel implements EmployeesModel {
     }
 
     @Override
-    public List<Employee> getEmployee(boolean isLeader) {
+    public List<Employee> getEmployee(final boolean noLeaders) {
         connection = SQLExecuter.getConnection();
-        List<Employee> empList = new ArrayList<Employee>();
+
+        List<Employee> emp = new ArrayList<Employee>();
+        ResultSet sqlResult = null;
+
+        PreparedStatement stm = null;
+        final String storedProcedure = "CALL employees_select(?)";
+
         try {
-            ResultSet result = null;
-            Employee employee = null;
-            
-            PreparedStatement stm = null;
-
-            String storedProcedure = "CALL employees_select (?)";
-
             stm = connection.prepareStatement(storedProcedure);
-            stm.setBoolean(1, isLeader);
+            stm.setBoolean(1, noLeaders);
 
-            result = stm.executeQuery();
+            sqlResult = stm.executeQuery();
 
-            while (result.next()) {
-                employee = Employee.fromResultSet(result);
-                empList.add(employee);
+            while (sqlResult.next()) {
+                emp.add(Employee.fromResultSet(sqlResult));
             }
 
-            return empList;
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                if (sqlResult != null) {
+                    sqlResult.close();
+                }
+                if (stm != null) {
+                    stm.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
-        return null;
+
+        return emp;
     }
 
     @Override
-    public void updateEmployee(Employee employee) {
+    public boolean updateEmployee(final Employee employee) {
         connection = SQLExecuter.getConnection();
+        boolean success = false;
         try {
             PreparedStatement stm = null;
             final int paramCount=8;
             
             String storedProcedure = "CALL employees_update_by_id(";
 
-            for(int i=1;i<paramCount;i++){
-                storedProcedure+="?,";
+            for(int i = 1; i < paramCount; i++) {
+                storedProcedure += "?,";
             }
             
             storedProcedure+="?)";
@@ -181,28 +191,76 @@ public class MySQLEmployeesModel implements EmployeesModel {
             stm.setString(8, MySqlConnect.getId());
             
             stm.execute();
+            success = true;
             
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+        return success;
+    }
+
+    @Override
+    public void deleteEmployee(final int id) {
+        connection = SQLExecuter.getConnection();
+
+        PreparedStatement stm = null;
+        final String storedProcedure = "CALL employees_delete_by_id(?,?)";
+
+        try {
+            stm = connection.prepareStatement(storedProcedure);
+            stm.setInt(1, id);
+            stm.setString(2, MySqlConnect.getId());
+
+            stm.executeQuery();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (stm != null) {
+                    stm.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
     @Override
-    public void deleteEmployee(int id) {
+    public Employee getEmployee(final int id) {
         connection = SQLExecuter.getConnection();
+
+        Employee emp = null;
+        ResultSet sqlResult = null;
+
+        PreparedStatement stm = null;
+        final String storedProcedure = "CALL employees_select_by_id(?)";
+
         try {
-            PreparedStatement stm = null;
-
-            String storedProcedure = "CALL employees_delete_by_id(?, ?)";
-
             stm = connection.prepareStatement(storedProcedure);
             stm.setInt(1, id);
-            stm.setString(2, MySqlConnect.getId());
-            
-            stm.execute();
-            
+
+            sqlResult = stm.executeQuery();
+
+            if (sqlResult.next()) {
+                emp = Employee.fromResultSet(sqlResult);
+            }
+
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                if (sqlResult != null) {
+                    sqlResult.close();
+                }
+                if (stm != null) {
+                    stm.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
+
+        return emp;
     }
 }

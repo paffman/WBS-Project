@@ -68,13 +68,13 @@ public class AnalyseData {
     private double etc_costs;
     
     /** Value of the earned value analysis: Schedule Variance */
-    private int sv;
+    private double sv;
     
     /** Value of the earned value analysis: Schedule Performance Index */
-    private int spi;
+    private double spi;
     
     /** Value of the earned value analysis: Planned Value */
-    private int pv;
+    private double pv;
     
  
     /**
@@ -100,9 +100,9 @@ public class AnalyseData {
             ad.setBac_costs(resSet.getDouble("bac_costs"));
             ad.setAc_costs(resSet.getDouble("ac_costs"));
             ad.setEtc_costs(resSet.getDouble("etc_costs"));
-            ad.setSv(resSet.getInt("sv"));
-            ad.setSpi(resSet.getInt("spi"));
-            ad.setPv(resSet.getInt("pv"));
+            ad.setSv(resSet.getDouble("sv"));
+            ad.setSpi(resSet.getDouble("spi"));
+            ad.setPv(resSet.getDouble("pv"));
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -124,7 +124,7 @@ public class AnalyseData {
      *
      * @param id The new ID
      */
-    public void setId(int id) {
+    private void setId(int id) {
         this.id = id;
     }
     
@@ -349,7 +349,7 @@ public class AnalyseData {
      *
      * @return The schedule variance
      */
-    public int getSv() {
+    public double getSv() {
         return sv;
     }
 
@@ -358,7 +358,7 @@ public class AnalyseData {
      *
      * @param sv The schedule variance
      */
-    public void setSv(int sv) {
+    public void setSv(double sv) {
         this.sv = sv;
     }
 
@@ -367,7 +367,7 @@ public class AnalyseData {
      *
      * @return The schedule performance index
      */
-    public int getSpi() {
+    public double getSpi() {
         return spi;
     }
 
@@ -376,7 +376,7 @@ public class AnalyseData {
      *
      * @param spi The schedule performance index
      */
-    public void setSpi(int spi) {
+    public void setSpi(double spi) {
         this.spi = spi;
     }
 
@@ -385,7 +385,7 @@ public class AnalyseData {
      *
      * @return The planned value
      */
-    public int getPv() {
+    public double getPv() {
         return pv;
     }
 
@@ -394,7 +394,7 @@ public class AnalyseData {
      *
      * @param pv The planned value
      */
-    public void setPv(int pv) {
+    public void setPv(double pv) {
         this.pv = pv;
     }
 

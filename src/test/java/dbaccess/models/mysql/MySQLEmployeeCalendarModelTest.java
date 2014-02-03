@@ -190,9 +190,9 @@ public class MySQLEmployeeCalendarModelTest {
                             .getTime());
 
             empCalList =
-                    empCalModel.getEmployeeCalendarForFIDInDateRange(2,
+                    empCalModel.getEmployeeCalendarInDateRange(
                             dateFormat.parse("2014-01-15 00:00:00"),
-                            dateFormat.parse("2014-01-20 00:00:00"));
+                            dateFormat.parse("2014-01-20 00:00:00"), 2);
 
             String statement =
                     "SELECT * FROM " + "(SELECT * FROM employees_calendar "
