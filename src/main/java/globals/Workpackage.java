@@ -13,6 +13,7 @@ import dbServices.ValuesService;
 import dbServices.WorkpackageService;
 import dbaccess.DBModelManager;
 import dbaccess.data.Employee;
+import de.fhbingen.wbs.translation.LocalizedStrings;
 import functions.WpManager;
 
 /**
@@ -933,8 +934,8 @@ public class Workpackage {
                 actualLevel++;
             }
         } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(null,
-                    "Bitte geben Sie eine korrekte ID an");
+            JOptionPane.showMessageDialog(null, LocalizedStrings
+                    .getErrorMessages().idIncorrect());
         }
     }
 
@@ -956,7 +957,9 @@ public class Workpackage {
         String text = "<html>";
 
         if (!ancestors.isEmpty()) {
-            text += "VG: ";
+            text +=
+                    LocalizedStrings.getGeneralStrings().predecessoreShort()
+                            + ": ";
         }
         for (Workpackage actualAncestor : ancestors) {
             text += actualAncestor.getStringID() + "  ";
@@ -967,7 +970,9 @@ public class Workpackage {
         }
 
         if (!followers.isEmpty()) {
-            text += "NF: ";
+            text +=
+                    LocalizedStrings.getGeneralStrings().successorShort()
+                            + ": ";
         }
         for (Workpackage actualFollower : followers) {
             text += actualFollower.getStringID() + "  ";
@@ -976,7 +981,7 @@ public class Workpackage {
         if (!text.equals("<html>")) {
             text += "<br>";
         }
-        text += "MA: ";
+        text += LocalizedStrings.getGeneralStrings().employeeShort() + ": ";
         for (Employee actualUser : getWorkers()) {
             text += actualUser.getLogin() + "  ";
         }

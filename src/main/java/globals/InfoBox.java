@@ -12,6 +12,8 @@ import java.awt.Toolkit;
 
 import javax.swing.*;
 
+import de.fhbingen.wbs.translation.LocalizedStrings;
+
 /**
  * Studienprojekt:	WBS<br/>
  * 
@@ -65,7 +67,7 @@ public class InfoBox extends JDialog{
 		Dimension screenSize=tk.getScreenSize();
 		setLocation((int)(screenSize.getWidth()/2)-width/2,(int)(screenSize.getHeight()/2)-height/2);
 		setSize(new Dimension(width, height));
-		close=new JButton("Schliessen");
+		close=new JButton(LocalizedStrings.getButton().exit());
 		
 		add(createInfoBox());
 		new InfoBoxButtonAction(this);

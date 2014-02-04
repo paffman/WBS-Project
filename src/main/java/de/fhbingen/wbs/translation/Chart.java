@@ -11,5 +11,8 @@ public interface Chart {
     @De("Fortschritt (PV)")
     @En("Progress (PV)")
     String progressPv();
-    
+
+    @De("Diagrammansicht")
+    @En("Diagram view")
+    String diagramView();
 }

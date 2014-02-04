@@ -34,7 +34,6 @@ public class ConflictService {
      */
     public static Set<Conflict> getAllConflicts() {
         try {
-            String query = "SELECT * FROM Konflikte";
             return fillConflicts(new HashSet<Conflict>(), DBModelManager
                     .getConflictsModel().getConflicts());
         } catch (SQLException e) {

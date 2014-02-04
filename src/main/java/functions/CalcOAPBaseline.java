@@ -19,6 +19,7 @@ import dbaccess.DBModelManager;
 import dbaccess.data.AnalyseData;
 import dbaccess.data.Baseline;
 import dbaccess.data.Employee;
+import de.fhbingen.wbs.translation.LocalizedStrings;
 import wpOverview.WPOverview;
 import globals.Loader;
 import globals.Workpackage;
@@ -55,8 +56,8 @@ public class CalcOAPBaseline {
     public CalcOAPBaseline(Workpackage changedWp, WPOverview wpOverview) {
         Workpackage actualOAP = changedWp;
         do {
-            Loader.setLoadingText("berechne "
-                    + actualOAP.getlastRelevantIndex() + ". Ebene");
+            Loader.setLoadingText(LocalizedStrings.getStatus().calculateLevel(
+                    actualOAP.getlastRelevantIndex()));
             actualOAP = WpManager.getWorkpackage(actualOAP.getOAPID());
             calculate(actualOAP);
         } while (!actualOAP.equals(WpManager.getRootAp()));
@@ -99,7 +100,8 @@ public class CalcOAPBaseline {
         }
         for (int i = WpManager.getRootAp().getLvlIDs().length; i >= 0; i--) {
             for (Workpackage actualWp : oapLevels.get(i)) {
-                Loader.setLoadingText("berechne " + i + ". Ebene");
+                Loader.setLoadingText(LocalizedStrings.getStatus()
+                        .calculateLevel(i));
                 calculate(actualWp);
             }
         }
@@ -129,7 +131,8 @@ public class CalcOAPBaseline {
         }
         for (int i = WpManager.getRootAp().getLvlIDs().length; i >= 0; i--) {
             for (Workpackage actualWp : oapLevels.get(i)) {
-                Loader.setLoadingText("berechne " + i + ". Ebene");
+                Loader.setLoadingText(LocalizedStrings.getStatus()
+                        .calculateLevel(i));
                 calculate(actualWp);
                 this.writeAnalysis(actualWp, baselineID);
             }
@@ -307,7 +310,8 @@ public class CalcOAPBaseline {
         newBaseline.setDescription(description);
         newBaseline.setFid_project(1);
         if (!DBModelManager.getBaselineModel().addNewBaseline(newBaseline)) {
-            System.out.println("Fehler beim anlegen der Baseline");
+            System.out.println(LocalizedStrings.getErrorMessages()
+                    .baselineCreatingError());
             return baseID;
         }
         List<Baseline> baselines =

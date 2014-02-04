@@ -18,6 +18,7 @@ import dbServices.WorkpackageService;
 import dbaccess.DBModelManager;
 import dbaccess.data.Employee;
 import dbaccess.data.WorkEffort;
+import de.fhbingen.wbs.translation.LocalizedStrings;
 import wpComparators.APLevelComparator;
 import wpConflict.Conflict;
 import wpOverview.WPOverview;
@@ -66,9 +67,9 @@ public class WpManager {
      */
     public static void loadDB() {
         Loader.reset();
-        Loader.setLoadingText("lade Arbeitspakete...");
+        Loader.setLoadingText(LocalizedStrings.getStatus().loadWps());
         list = new APList();
-        Loader.setLoadingText("lade Beziehungen...");
+        Loader.setLoadingText(LocalizedStrings.getStatus().loadDependencies());
         list.setAncestorsAndFollowers();
     }
 
@@ -87,8 +88,6 @@ public class WpManager {
     public static boolean
             insertAncestor(Workpackage anchestor, Workpackage main) {
         if (list.setAncestor(anchestor, main)) {
-            // System.out.println("System: Setze " + anchestor.getStringID() +
-            // " als Vorgänger von " + main);
             WorkpackageService.setAncestor(main.getWpId(), anchestor.getWpId());
             WPOverview.throwConflict(new Conflict(new Date(System
                     .currentTimeMillis()), Conflict.CHANGED_DEPENDECIES,
@@ -114,8 +113,6 @@ public class WpManager {
     public static boolean
             insertFollower(Workpackage follower, Workpackage main) {
         if (list.setFollower(follower, main)) {
-            // System.out.println("System: Setze " + follower.getStringID() +
-            // " als Nachfolger von " + main);
             WorkpackageService.setFollower(main.getWpId(), follower.getWpId());
             WPOverview.throwConflict(new Conflict(new Date(System
                     .currentTimeMillis()), Conflict.CHANGED_DEPENDECIES,
@@ -146,7 +143,8 @@ public class WpManager {
                     WPOverview.getUser().getId(), main));
             return true;
         } else {
-            System.out.println("Fehler beim loeschen aus der Datenbank");
+            System.out.println(LocalizedStrings.getErrorMessages()
+                    .deleteFromDbError());
             list.setAncestor(ancestor, main);
             return false;
         }
@@ -172,7 +170,8 @@ public class WpManager {
                     WPOverview.getUser().getId(), main));
             return true;
         } else {
-            System.out.println("Fehler beim loeschen aus der Datenbank");
+            System.out.println(LocalizedStrings.getErrorMessages()
+                    .deleteFromDbError());
             list.setFollower(follower, main);
             return false;
         }
@@ -206,36 +205,33 @@ public class WpManager {
                                             .getId(), WpManager.getRootAp()));
                             list.removeWp(removeWp);
                         } else {
-                            JOptionPane
-                                    .showMessageDialog(null,
-                                            "Paket kann nicht aus der Datenbank gelöscht werden!");
+                            JOptionPane.showMessageDialog(null,
+                                    LocalizedStrings.getErrorMessages()
+                                            .deletePackageFromDbError());
                             return false;
                         }
                     } else {
-                        JOptionPane
-                                .showMessageDialog(null,
-                                        "Es sind bereits Aufwände eingegeben worden, AP kann nicht gelöscht werden");
+                        JOptionPane.showMessageDialog(null, LocalizedStrings
+                                .getErrorMessages().deletePackageEffortError());
                         return false;
                     }
                 } else {
-                    JOptionPane
-                            .showMessageDialog(
-                                    null,
-                                    "Es sind noch Unterarbeitspakete vorhanden, diese müssen zuerst gelöscht werden");
+                    JOptionPane.showMessageDialog(null, LocalizedStrings
+                            .getErrorMessages().deletePackageSubwpError());
                     return false;
                 }
             } else {
-                JOptionPane
-                        .showMessageDialog(null,
-                                "Bitte erst alle Vorgänger / Nachfolger-Beziehungen löschen!");
+                JOptionPane.showMessageDialog(null, LocalizedStrings
+                        .getErrorMessages().deletePackageDependencyError());
                 return false;
             }
         } else {
             if (removeWp == null) {
-                JOptionPane.showMessageDialog(null, "Bitte AP auswählen");
+                JOptionPane.showMessageDialog(null, LocalizedStrings
+                        .getMessages().selectWp());
             } else {
-                JOptionPane.showMessageDialog(null,
-                        "Hauptpaket darf nicht gelöscht werden");
+                JOptionPane.showMessageDialog(null, LocalizedStrings
+                        .getErrorMessages().deletePackageMainError());
             }
 
             return false;

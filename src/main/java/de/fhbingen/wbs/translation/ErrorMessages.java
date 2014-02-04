@@ -159,4 +159,47 @@ public interface ErrorMessages {
 
     @De("Das gewünschte Enddatum kann nicht eingehalten werden.")
     String endDateCantBeAchieved();
+    
+    @De("Der gew\u00FCnschte Nachfolger {0} verursacht eine Schleife\nund wird nicht eingef\u00FCgt.")
+    @En("The selected successor {0} causes a loop and will not be inserted.")
+    String successorLoop(String wp);
+    @De("Schleife erkannt")
+    @En("Loop detected")
+    String successorLoopTitle();
+    
+    @De("Fehler beim anlegen der Baseline.")
+    @En("Error while creating the baseline.")
+    String baselineCreatingError();
+    
+    @De("Fehler beim l\u00F6schen aus der Datenbank.")
+    @En("Error while deleting from the database.")
+    String deleteFromDbError();
+    
+    @De("Paket kann nicht aus der Datenbank gel\u00F6scht werden!")
+    @En("Pakage cannot be deleted from the database!")
+    String deletePackageFromDbError();
+    
+    @De("Es sind bereits Aufw\u00E4nde eingegeben worden, AP kann nicht gel\u00F6scht werden.")
+    @En("There are already efforts for this workpackage, therefore it cannot be deleted.")
+    String deletePackageEffortError();
+    
+    @De("Es sind noch Unterarbeitspakete vorhanden, diese m\u00FCssen zuerst gel\u00F6scht werden")
+    @En("There are still subworkpackages existent. These must be deleted first.")
+    String deletePackageSubwpError();
+    
+    @De("Bitte erst alle Vorg\u00E4nger / Nachfolger-Beziehungen l\u00F6schen!")
+    @En("There are still predecessors and/or successors. Thes must be deleted first.")
+    String deletePackageDependencyError();
+            
+    @De("Hauptpaket kann nicht gel\u00F6scht werden!")
+    @En("Main workpackage cannot be deleted!")
+    String deletePackageMainError();
+    
+    @De("Fehler!")
+    @En("Error!")
+    String error();
+    
+    @De("Bitte geben Sie eine korrekte ID an.")
+    @En("Plese input a coorect ID.")
+    String idIncorrect();
 }

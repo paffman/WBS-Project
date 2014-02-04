@@ -100,4 +100,11 @@ public interface Messages extends ErrorMessages{
     @En("There is already a projekt manager logged in.\nDo you want to log in regardless?\nWarning: Data may become inconsistent, if multiple project managers are working on it.")
     String loginPMSemaphoreOccupied();
     
+    @De("Bitte AP ausw\u00E4hlen.")
+    @En("Please select a workpackage.")
+    String selectWp();
+    
+    @De("Benutzer wurde an der Datenbank abgemeldet.")
+    @En("User has logged of.")
+    String logOf();
 }

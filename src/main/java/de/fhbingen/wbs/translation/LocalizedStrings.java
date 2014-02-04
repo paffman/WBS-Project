@@ -95,13 +95,13 @@ public final class LocalizedStrings {
         }
         return chart;
     }
-/*
+
     public static General getGeneralStrings() {
         if (general == null) {
             general = C10N.get(General.class);
         }
         return general;
-    }*/
+    }
 
     private LocalizedStrings() {
         // forbid usage

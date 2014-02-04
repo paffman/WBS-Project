@@ -17,6 +17,8 @@ import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.time.TimeSeriesCollection;
 import org.jfree.ui.RectangleInsets;
 
+import de.fhbingen.wbs.translation.LocalizedStrings;
+
 /**
  * Studienprojekt:	PSYS WBS 2.0<br/>
  * 
@@ -53,7 +55,7 @@ public abstract class WBSChart {
 
 		} else {
 			JFreeChart chart = createChart(dataSet);
-			frame = new ChartFrame("Diagrammansicht", chart);
+			frame = new ChartFrame(LocalizedStrings.getChart().diagramView(), chart);
 			frame.setSize(new Dimension(1024, 700));
 			frame.setResizable(true);
 			frame.getChartPanel().setPopupMenu(null);
