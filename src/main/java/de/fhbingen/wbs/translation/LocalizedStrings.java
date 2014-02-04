@@ -14,6 +14,7 @@ public final class LocalizedStrings {
     private static Project project = null;
     private static ProjectSetup projectSetup = null;
     private static Wbs wbs = null;
+    private static General general = null;
 
     public static Button getButton() {
         if (button == null) {
@@ -69,6 +70,13 @@ public final class LocalizedStrings {
             wbs = C10N.get(Wbs.class);
         }
         return wbs;
+    }
+
+    public static General getGeneralStrings() {
+        if (general == null) {
+            general = C10N.get(General.class);
+        }
+        return general;
     }
 
     private LocalizedStrings() {

@@ -30,4 +30,20 @@ public interface Button {
     @De("Schlie\u00dfen")
     @En("Exit")
     String exit();
+    @De("Schließen")
+    @En("Close")
+    String close();
+
+    @De("L\u00f6schen")
+    @En("Delete")
+    String delete();
+
+    @De("{0} löschen")
+    String delete(String s);
+
+    @De("Passwort zur\u00fccksetzen")
+    @En("Reset password")
+    String passwordReset();
+
+
 }

@@ -9,7 +9,7 @@ import c10n.annotations.En;
  */
 public interface Login {
     @En("Login")
-    @De("Benutzername")
+    @De("Benutzer")
     String login();
 
     @En("Password")
@@ -39,4 +39,16 @@ public interface Login {
     @De("Passwort \u00e4ndern")
     @En("Change password")
     String changePassword();
+
+    @De("Benutzer")
+    @En("User")
+    String user();
+
+    @De("Neuen Benutzer anlegen")
+    @En("Add new user")
+    String newUserWindowTitle();
+
+    @De("Projektleiterberechtigung")
+    @En("Project managing permission")
+    String projectManagerPermission();
 }

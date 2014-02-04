@@ -20,7 +20,7 @@ public interface ErrorMessages {
     String loginWrongError();
 
     @De("Die beiden Passw\u00f6rter stimmen nicht \u00fcberein.")
-    @En("The supplies passwords must match.")
+    @En("The supplied passwords must match.")
     String passwordsNotMatchingError();
 
     @De("Ein Fehler ist beim \u00e4ndern des Passworts aufgetreten. Bitte " +
@@ -98,4 +98,26 @@ public interface ErrorMessages {
     @De("Weiterf\u00fchrende Information")
     @En("More information")
     String moreInformation();
+
+    @De("Bitte prüfen Sie Ihre Eingaben.")
+    @En("Please validate your inputs.")
+    String checkInputs();
+
+    @De("Problem beim lesen der Baseline.")
+    @En("Error while loading the baseline.")
+    String baselineLoadingError();
+
+    @De("Bitte {0}-Feld ausf\u00fcllen.")
+    @En("Please fill out {0}-field.")
+    String fillFieldError(String s);
+
+    @De("{0} ist keine g\u00fcltige Zahl.")
+    @En("{0} is not a valid number")
+    String valueInFieldIsNotANumber(String s);
+
+    @De("Das gewünschte Startdatum kann nicht eingehalten werden.")
+    String startDateCantBeAchieved();
+
+    @De("Das gewünschte Enddatum kann nicht eingehalten werden.")
+    String endDateCantBeAchieved();
 }
