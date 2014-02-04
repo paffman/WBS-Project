@@ -1,7 +1,17 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.github.jengelman.gradle.plugins:shadow:0.8'
+    }
+}
+
 apply plugin: 'application'
 apply plugin: 'eclipse'
 apply plugin: 'checkstyle'
 apply plugin: 'idea'
+apply plugin: 'shadow'
 
 sourceCompatibility = 1.7
 version = '3.0'
@@ -33,6 +43,16 @@ mainClassName = 'chooseDB.DBChooser'
 test {
     // tests in this package are executed via the test suite
     exclude 'dbaccess/models/mysql/*Test.class'
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'chooseDB.DBChooser'
+    }
+}
+
+shadow {
+    classifier 'dist'
 }
 
 // checkstyle configurations
