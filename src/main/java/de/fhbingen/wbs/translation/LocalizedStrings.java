@@ -17,6 +17,7 @@ public final class LocalizedStrings {
     private static DbChooser dbChooser = null;
     private static Status status = null;
     private static Chart chart = null;
+    private static General general = null;
 
     public static Button getButton() {
         if (button == null) {
@@ -94,6 +95,13 @@ public final class LocalizedStrings {
         }
         return chart;
     }
+/*
+    public static General getGeneralStrings() {
+        if (general == null) {
+            general = C10N.get(General.class);
+        }
+        return general;
+    }*/
 
     private LocalizedStrings() {
         // forbid usage

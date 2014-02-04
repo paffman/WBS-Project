@@ -54,7 +54,43 @@ public interface Messages extends ErrorMessages{
 
     @De("Die Einrichtung Ihres Projekts war erfolgreich.")
     @En("Your project has been setup successfully.")
-    Object projectSetupSuccess();
+    String projectSetupSuccess();
+
+    @De("Benutzer ge\u00e4ndert.")
+    @En("User changed.")
+    String userChanged();
+
+    @De("Benutzer hinzugef\u00fcgt.")
+    @En("User added.")
+    String userAdded();
+
+    @De("Das Passwort wurde auf \"1234\" zur\u00fcckgesetzt.")
+    @En("The password has been reset to \"1234\".")
+    String passwordHasBeenReset();
+
+    @De("Die Ressourcen wurden ge\u00e4ndert.")
+    String resourcesChanged();
+
+    @De("Neuberechnung starten.")
+    String recalculate();
+
+    @De("Ein Wunschdatum wurde ge\u00e4ndert.")
+    String wishDateChanged();
+
+    @De("Neue APs wurden erstellt.")
+    String newApsWereCreated();
+
+    @De("Abh\u00e4ngigkeiten wurden ge\u00e4ndert.")
+    String dependenciesHaveChanged();
+
+    @De("Der BAC eines APs wurde ge\u00e4ndert.")
+    String bacHasChanged();
+
+    @De("Es wurde ein AP gel\u00f6scht.")
+    String apWasDeleted();
+
+    @De("Es wurde ein AP aktiv/inaktiv gesetzt.")
+    String apActiveStateChanged();
     
     @De("Geben sie die Zugangsdaten zur Datenbank und ihren Benutzernamen an. Mit einem Klick auf 'OK' gelangen sie dann in das WBS-Tool.")
     @En("Input the access data to the database and your login. The WBS-Tool then starts with a click on 'OK'")
