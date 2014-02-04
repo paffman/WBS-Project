@@ -34,6 +34,7 @@ import dbaccess.DBModelManager;
 import dbaccess.data.AnalyseData;
 import dbaccess.data.Baseline;
 import de.fhbingen.wbs.translation.Chart;
+import de.fhbingen.wbs.translation.LocalizedStrings;
 import wpComparators.APLevelComparator;
 
 /**
@@ -101,7 +102,8 @@ public class ChartCompleteView extends WBSChart {
         TimeSeriesCollection dataset = new TimeSeriesCollection();
 
         boolean dataFound = false;
-        TimeSeries diagonal = new TimeSeries(C10N.get(Chart.class).target());
+        TimeSeries diagonal =
+                new TimeSeries(LocalizedStrings.getChart().target());
         Calendar minCal = new GregorianCalendar();
         minCal.setTime(new calendar.Day(ValuesService.getPreviousFriday(
                 wp.getStartDateCalc()).getTime()));
@@ -220,6 +222,6 @@ public class ChartCompleteView extends WBSChart {
         }
 
         frame.getChartPanel().getChart()
-                .setTitle(C10N.get(Chart.class).progressPv());
+                .setTitle(LocalizedStrings.getChart().progressPv());
     }
 }

@@ -18,7 +18,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import c10n.C10N;
 import wpComparators.APBacComparator;
 import wpComparators.APEndDateComparator;
 import wpComparators.APFollowerComparator;
@@ -28,7 +27,7 @@ import wpOverview.tabs.AvailabilityGraph;
 import dbServices.ConflictService;
 import dbServices.ValuesService;
 import dbaccess.data.Employee;
-import de.fhbingen.wbs.translation.Status;
+import de.fhbingen.wbs.translation.LocalizedStrings;
 
 /**
  * Studienprojekt: PSYS WBS 2.0<br/>
@@ -64,16 +63,10 @@ public class TimeCalc {
 
     private AVManager avManager;
     
-    /**
-     * Translation interface that contains relevant values.
-     */
-    private final Status status;
-
     // private Map<String, Double> dailyRates;
 
     public TimeCalc() {
-        status = C10N.get(Status.class);
-        Loader.setLoadingText(status.initialize());
+        Loader.setLoadingText(LocalizedStrings.getStatus().initialize());
         ConflictService.deleteAll(); // Alle bisherigen Konflikte verwerfen, sie
                                      // werden waehrend der Berechnung neu
                                      // angelegt, falls noch aktuell
@@ -102,7 +95,7 @@ public class TimeCalc {
 
         // Dauer jedes UAPs ohne Vorgaenger berechnen und Startdatum fuer
         // eventuell vorhandene Nachfolgerpakete setzen
-        Loader.setLoadingText(status.calculateSubWpWihoutPredecessors());
+        Loader.setLoadingText(LocalizedStrings.getStatus().calculateSubWpWihoutPredecessors());
         while (!uapWithoutAncestors.isEmpty()) {
             calcUAP(uapWithoutAncestors.remove(0));
         }
@@ -110,7 +103,7 @@ public class TimeCalc {
         Workpackage root = WpManager.getRootAp();
 
         // Level - OAP Zuordnung erstellen
-        Loader.setLoadingText(status.checkTopLevelWorkpackageLevels());
+        Loader.setLoadingText(LocalizedStrings.getStatus().checkTopLevelWorkpackageLevels());
         for (Workpackage actualWp : allAp) {
 
             if (actualWp.isIstOAP() && !actualWp.isIstInaktiv()) {
@@ -131,7 +124,7 @@ public class TimeCalc {
         boolean finish = false;
         while (!finish) {
             for (int actualLevel = maxLevels; actualLevel >= 0; actualLevel--) {
-                Loader.setLoadingText(status
+                Loader.setLoadingText(LocalizedStrings.getStatus()
                         .checkTopLevelWorkpackageOnLevel(actualLevel + 1));
                 if (levelOAP.containsKey(actualLevel)) {
                     List<Workpackage> actualLevelOAPs =
@@ -157,7 +150,7 @@ public class TimeCalc {
                 }
             }
         }
-        Loader.setLoadingText(status.saveValues());
+        Loader.setLoadingText(LocalizedStrings.getStatus().saveValues());
         for (Workpackage actualWp : allAp) {
             actualWp.setTempStartHope(null);
             if (!actualWp.isIstInaktiv()) {
@@ -341,10 +334,10 @@ public class TimeCalc {
 
         Controller.showConsoleMessage("", Controller.TIME_CALCULATION_DEBUG);
         Controller.showConsoleMessage(
-                status.tryCalcualteTopLevelWp(actualOAP.getStringID()),
+                LocalizedStrings.getStatus().tryCalcualteTopLevelWp(actualOAP.getStringID()),
                 Controller.TIME_CALCULATION_DEBUG);
         Controller.showConsoleMessage(
-                status.checkSubWps(actualOAP.getStringID()),
+                LocalizedStrings.getStatus().checkSubWps(actualOAP.getStringID()),
                 Controller.TIME_CALCULATION_DEBUG);
         for (Workpackage actualUAP : WpManager.getUAPs(actualOAP)) { // Fuer
                                                                      // alle UAP
@@ -378,11 +371,11 @@ public class TimeCalc {
                         && actualUAP.getEndDateCalc() == null) {
                     if (!actualUAP.isIstOAP()) {
                         Controller.showConsoleMessage(
-                                status.calculateWp(actualUAP.getStringID()),
+                                LocalizedStrings.getStatus().calculateWp(actualUAP.getStringID()),
                                 Controller.TIME_CALCULATION_DEBUG);
                         calcUAP(actualUAP);
                         Controller
-                                .showConsoleMessage(status
+                                .showConsoleMessage(LocalizedStrings.getStatus()
                                         .wpWasCalculated(actualUAP
                                                 .getStringID()),
                                         Controller.TIME_CALCULATION_DEBUG);
@@ -392,7 +385,7 @@ public class TimeCalc {
                         || levelOAP.get(actualUAP.getlastRelevantIndex())
                                 .contains(actualUAP)) {
                     done = false;
-                    Controller.showConsoleMessage(status
+                    Controller.showConsoleMessage(LocalizedStrings.getStatus()
                             .wpCouldNotBeCalculated(actualUAP.getStringID()),
                             Controller.TIME_CALCULATION_DEBUG);
                 }
@@ -403,7 +396,7 @@ public class TimeCalc {
 
                     if (actualUAP.getEndDateCalc() != null) {
                         actualOAP.setEndDateCalc(actualUAP.getEndDateCalc());
-                        Controller.showConsoleMessage(status.endDateAssumed(
+                        Controller.showConsoleMessage(LocalizedStrings.getStatus().endDateAssumed(
                                 actualOAP.getStringID(), actualUAP
                                         .getStringID(),
                                 Controller.DATE_DAY_TIME.format(actualUAP
@@ -419,14 +412,14 @@ public class TimeCalc {
             actualOAP.setEndDateCalc(actualOAP.getStartDateCalc());
             actualLevelOAPs.remove(actualOAP);
             Controller.showConsoleMessage(
-                    status.endDateDoesNotExist(actualOAP.getStringID()), true,
+                    LocalizedStrings.getStatus().endDateDoesNotExist(actualOAP.getStringID()), true,
                     Controller.TIME_CALCULATION_DEBUG);
         } else {
             if (done && actualOAP.getEndDateCalc() != null) {
                 actualLevelOAPs.remove(actualOAP);
 
                 Controller
-                        .showConsoleMessage(status.durationFinallyCalculated(
+                        .showConsoleMessage(LocalizedStrings.getStatus().durationFinallyCalculated(
                                 actualOAP.getStringID(), actualOAP
                                         .getEndDateCalc().toString()),
                                 Controller.TIME_CALCULATION_DEBUG);
@@ -437,7 +430,7 @@ public class TimeCalc {
                         avManager.getNextWorkDate(actualOAP.getEndDateCalc());
 
                 // 6 SD Neu setzen
-                Controller.showConsoleMessage(status.setEnddateOfSuccessors(
+                Controller.showConsoleMessage(LocalizedStrings.getStatus().setEnddateOfSuccessors(
                         actualOAP.getStringID(),
                         Controller.DATE_DAY_TIME.format(ancestorStartNew)),
                         Controller.TIME_CALCULATION_DEBUG);
@@ -457,7 +450,7 @@ public class TimeCalc {
 
                         if (actualFollower.getEndDateCalc() == null
                                 && actualFollower.canCalc()) {
-                            Controller.showConsoleMessage(status
+                            Controller.showConsoleMessage(LocalizedStrings.getStatus()
                                     .successorFound(actualOAP.getStringID()),
                                     Controller.TIME_CALCULATION_DEBUG);
                             if (actualFollower.isIstOAP()) {
@@ -484,7 +477,7 @@ public class TimeCalc {
      */
     private void calcUAP(Workpackage uap) {
         Controller.showConsoleMessage("", Controller.TIME_CALCULATION_DEBUG);
-        Controller.showConsoleMessage(status.calculateSubWp(uap.getStringID()),
+        Controller.showConsoleMessage(LocalizedStrings.getStatus().calculateSubWp(uap.getStringID()),
                 Controller.TIME_CALCULATION_DEBUG);
 
         // 3 Enddatum von UAP berechnen
@@ -532,7 +525,7 @@ public class TimeCalc {
                 allWorkedToday = 0;
                 Controller.showConsoleMessage(
                         "  "
-                                + status.worksHoursOnDay(
+                                + LocalizedStrings.getStatus().worksHoursOnDay(
                                         Controller.DATE_DAY.format(actualDay),
                                         possibleWorkToday, bac),
                         Controller.TIME_CALCULATION_DEBUG);
@@ -556,7 +549,7 @@ public class TimeCalc {
                         Controller
                                 .showConsoleMessage(
                                         "     "
-                                                + status.workerWorkhoursToday(
+                                                + LocalizedStrings.getStatus().workerWorkhoursToday(
                                                         actualWorker,
                                                         workerWorkedToday),
                                         Controller.TIME_CALCULATION_DEBUG);
@@ -586,7 +579,7 @@ public class TimeCalc {
                                     Controller
                                             .showConsoleMessage(
                                                     "     "
-                                                            + status.workerWorkhoursToday(
+                                                            + LocalizedStrings.getStatus().workerWorkhoursToday(
                                                                     actualWorker,
                                                                     optimalWork),
                                                     Controller.TIME_CALCULATION_DEBUG);
@@ -619,7 +612,7 @@ public class TimeCalc {
                                     Controller
                                             .showConsoleMessage(
                                                     "     "
-                                                            + status.workerAdditionalWork(
+                                                            + LocalizedStrings.getStatus().workerAdditionalWork(
                                                                     actualWorker,
                                                                     workerRemaining),
                                                     Controller.TIME_CALCULATION_DEBUG);
@@ -650,7 +643,7 @@ public class TimeCalc {
 
                     savePV(pvs, uap);
 
-                    Controller.showConsoleMessage(status.finishedHoursOfWp(
+                    Controller.showConsoleMessage(LocalizedStrings.getStatus().finishedHoursOfWp(
                             uap.getStringID(),
                             Controller.DATE_DAY.format(actualDay),
                             (int) hoursConsumed, possibleWorkToday),
@@ -685,13 +678,13 @@ public class TimeCalc {
                     actualDayTime = actualDayCal;
                     actualDay = new Day(actualDayCal.getTime());
                     Controller.showConsoleMessage(
-                            status.lastDayWithPV(Controller.DATE_DAY
+                            LocalizedStrings.getStatus().lastDayWithPV(Controller.DATE_DAY
                                     .format(actualDay), ValuesService.getApPv(
                                     uap.getWpId(), nextFridayCal)),
                             Controller.TIME_CALCULATION_DEBUG);
                 } else {
                     Controller.showConsoleMessage(
-                            status.currentDayInPast(Controller.DATE_DAY
+                            LocalizedStrings.getStatus().currentDayInPast(Controller.DATE_DAY
                                     .format(actualDay), (ValuesService.getApPv(
                                     uap.getWpId(), actualDayCal) / uap
                                     .getWpStundensatz()), bac),
@@ -713,7 +706,7 @@ public class TimeCalc {
 
         uap.setEndDateCalc(actualDayTime.getTime());
 
-        Controller.showConsoleMessage(status.calculationFinished(
+        Controller.showConsoleMessage(LocalizedStrings.getStatus().calculationFinished(
                 uap.getStringID(),
                 Controller.DATE_DAY_TIME.format(uap.getEndDateCalc())),
                 Controller.TIME_CALCULATION_DEBUG);
@@ -722,7 +715,7 @@ public class TimeCalc {
         // SD neu in Nachfolger
         Date ancestorStartNew = avManager.getNextWorkDate(uap.getEndDateCalc());
 
-        Controller.showConsoleMessage(status.setStartdateOfSuccessors(
+        Controller.showConsoleMessage(LocalizedStrings.getStatus().setStartdateOfSuccessors(
                 uap.getStringID(),
                 Controller.DATE_DAY_TIME.format(ancestorStartNew)),
                 Controller.TIME_CALCULATION_DEBUG);
@@ -741,7 +734,7 @@ public class TimeCalc {
                 }
                 if (actualFollower.canCalc() && !actualFollower.isIstOAP()) {
                     Controller.showConsoleMessage(
-                            status.successorFound(uap.getStringID()),
+                            LocalizedStrings.getStatus().successorFound(uap.getStringID()),
                             Controller.TIME_CALCULATION_DEBUG);
                     calcUAP(actualFollower);
                 }
@@ -777,7 +770,7 @@ public class TimeCalc {
                 actualPV += singlePVs.get(actualDay);
                 if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY) {
                     ValuesService.savePv(wpKey, actualDay, actualPV);
-                    Controller.showConsoleMessage(status.pvValueOnDate(wpID,
+                    Controller.showConsoleMessage(LocalizedStrings.getStatus().pvValueOnDate(wpID,
                             Controller.DATE_DAY.format(actualDay), actualPV),
                             Controller.TIME_CALCULATION_DEBUG);
                 }
@@ -789,7 +782,7 @@ public class TimeCalc {
                 cal.add(Calendar.DATE, 1);
             }
             if (cal.getTime().after(new Date(System.currentTimeMillis()))) {
-                Controller.showConsoleMessage(status.pvValueOnDate(wpID,
+                Controller.showConsoleMessage(LocalizedStrings.getStatus().pvValueOnDate(wpID,
                         Controller.DATE_DAY.format(cal.getTime()), actualPV),
                         Controller.TIME_CALCULATION_DEBUG);
                 ValuesService.savePv(wpKey, cal.getTime(), actualPV);

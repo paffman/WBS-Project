@@ -20,8 +20,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
-import c10n.C10N;
-import de.fhbingen.wbs.translation.DbChooser;
+import de.fhbingen.wbs.translation.LocalizedStrings;
 
 /**
  * Studienprojekt: WBS<br/>
@@ -65,10 +64,6 @@ public class DBChooserGUI extends JFrame {
      * Width of the window.
      */
     private static final int WINDOW_WIDTH = 400;
-    /**
-     * Translation interface that contains relevant values.
-     */
-    private final DbChooser labels;
     /**
      * Button to confirm db connection entries and start the wbs-tool.
      */
@@ -144,7 +139,6 @@ public class DBChooserGUI extends JFrame {
      */
     public DBChooserGUI(final DBChooser dbChooser) {
         super("Login");
-        labels = C10N.get(DbChooser.class);
         try {
             UIManager.setLookAndFeel("com.sun.java.swing."
                     + "plaf.windows.WindowsLookAndFeel");
@@ -158,17 +152,19 @@ public class DBChooserGUI extends JFrame {
 
         // menus
         mainMenuBar = new JMenuBar();
-        fileMenu = new JMenu(labels.file());
-        helpMenu = new JMenu(labels.help());
-        okMenuItem = new JMenuItem(labels.next());
+        fileMenu = new JMenu(LocalizedStrings.getDbChooser().file());
+        helpMenu = new JMenu(LocalizedStrings.getDbChooser().help());
+        okMenuItem = new JMenuItem(LocalizedStrings.getDbChooser().next());
         okMenuItem.setIcon(okIcon);
-        closeMenuItem = new JMenuItem(labels.cancel());
+        closeMenuItem = new JMenuItem(LocalizedStrings.getDbChooser().cancel());
         closeMenuItem.setIcon(closeIcon);
-        helpMenuItem = new JMenuItem(labels.help());
+        helpMenuItem = new JMenuItem(LocalizedStrings.getDbChooser().help());
         helpMenuItem.setIcon(helpIcon);
-        infoMenuItem = new JMenuItem(labels.info());
+        infoMenuItem = new JMenuItem(LocalizedStrings.getDbChooser().info());
         infoMenuItem.setIcon(infoIcon);
-        newDbMenuItem = new JMenuItem(labels.projectSetupAssistant());
+        newDbMenuItem =
+                new JMenuItem(LocalizedStrings.getDbChooser()
+                        .projectSetupAssistant());
 
         mainMenuBar.add(fileMenu);
         fileMenu.add(newDbMenuItem);
@@ -180,22 +176,32 @@ public class DBChooserGUI extends JFrame {
         helpMenu.addSeparator();
         helpMenu.add(infoMenuItem);
 
-        // labels and input elements
-        JLabel titleLabel = new JLabel(labels.database() + ":");
-        JLabel hostLabel = new JLabel(labels.serverAddress() + ":");
-        JLabel dbNameLabel = new JLabel(labels.databaseName() + ":");
-        JLabel dbPwLabel = new JLabel(labels.indexPassword() + ":");
-        JLabel titleUserLabel = new JLabel(labels.user() + ":");
-        JLabel userLabel = new JLabel(labels.login() + ":");
-        JLabel pwLabel = new JLabel(labels.password() + ":");
-        plCheckBox = new JCheckBox(labels.projectManager());
+        // LocalizedStrings.getDbChooser() and input elements
+        JLabel titleLabel =
+                new JLabel(LocalizedStrings.getDbChooser().database() + ":");
+        JLabel hostLabel =
+                new JLabel(LocalizedStrings.getDbChooser().serverAddress()
+                        + ":");
+        JLabel dbNameLabel =
+                new JLabel(LocalizedStrings.getDbChooser().databaseName() + ":");
+        JLabel dbPwLabel =
+                new JLabel(LocalizedStrings.getDbChooser().indexPassword()
+                        + ":");
+        JLabel titleUserLabel =
+                new JLabel(LocalizedStrings.getDbChooser().user() + ":");
+        JLabel userLabel =
+                new JLabel(LocalizedStrings.getDbChooser().login() + ":");
+        JLabel pwLabel =
+                new JLabel(LocalizedStrings.getDbChooser().password() + ":");
+        plCheckBox =
+                new JCheckBox(LocalizedStrings.getDbChooser().projectManager());
         hostField = new JTextField();
         dbNameField = new JTextField();
         userField = new JTextField();
         dbPwPasswordField = new JPasswordField();
         pwPasswordField = new JPasswordField();
-        closeButton = new JButton(labels.cancel());
-        okButton = new JButton(labels.ok());
+        closeButton = new JButton(LocalizedStrings.getDbChooser().cancel());
+        okButton = new JButton(LocalizedStrings.getDbChooser().ok());
 
         // load saved database into fields
         if (dbChooser.getLastDbHost() != null) {

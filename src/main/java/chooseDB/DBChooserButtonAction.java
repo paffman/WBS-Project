@@ -1,6 +1,7 @@
 package chooseDB;
 
 import de.fhbingen.wbs.controller.ProjectSetupAssistant;
+import de.fhbingen.wbs.translation.LocalizedStrings;
 import de.fhbingen.wbs.translation.Menu;
 import de.fhbingen.wbs.translation.Messages;
 import globals.InfoBox;
@@ -28,18 +29,12 @@ public class DBChooserButtonAction {
     private DBChooser dbChooser;
 
     /**
-     * The translations for messages.
-     */
-    private Messages messages;
-
-    /**
      * Constructor
      * 
      * @param aDBChooser
      *            calling DBChooser
      */
     public DBChooserButtonAction(final DBChooser aDBChooser) {
-        messages = C10N.get(Messages.class);
         this.dbChooser = aDBChooser;
         addButtonAction();
     }
@@ -86,7 +81,7 @@ public class DBChooserButtonAction {
                 .addActionListener(new ActionListener() {
                     public void actionPerformed(final ActionEvent arg0) {
                         JOptionPane.showMessageDialog(dbChooser.getGui(),
-                                messages.loginHelpMsg());
+                                LocalizedStrings.getMessages().loginHelpMsg());
                     }
                 });
 
