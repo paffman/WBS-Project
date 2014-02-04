@@ -7,7 +7,7 @@ import c10n.annotations.En;
  * Error Messages.
  */
 public interface ErrorMessages {
-    @De("Das gewÃ¤hlte Passwort entspricht nicht den Passwortregeln.")
+    @De("Das gew\u00E4hlte Passwort entspricht nicht den Passwortregeln.")
     @En("The supplied password does not match the rules.")
     String passwordInvalidError();
 
@@ -23,8 +23,8 @@ public interface ErrorMessages {
     @En("The supplies passwords must match.")
     String passwordsNotMatchingError();
 
-    @De("Ein Fehler ist beim \u00e4ndern des Passworts aufgetreten. Bitte " +
-            "versuchen Sie es erneut.")
+    @De("Ein Fehler ist beim \u00e4ndern des Passworts aufgetreten. Bitte "
+            + "versuchen Sie es erneut.")
     @En("An error occured while changing your password. Please try again.")
     String passwordChangeError();
 
@@ -48,21 +48,21 @@ public interface ErrorMessages {
     @En("Couldn't load look and feel.")
     String couldNotLoadLookAndFeel();
 
-    @De("Ein Fehler ist beim Laden des Datenbanktreibers aufgetreten. " +
-            "Bitte vergewissern Sie sich, dass ihre Software richtig " +
-            "installiert ist.")
-    @En("An error did occur while loading the database driver. Please verify " +
-            "the setup of this software.")
+    @De("Ein Fehler ist beim Laden des Datenbanktreibers aufgetreten. "
+            + "Bitte vergewissern Sie sich, dass ihre Software richtig "
+            + "installiert ist.")
+    @En("An error did occur while loading the database driver. Please verify "
+            + "the setup of this software.")
     String databaseDriverError();
 
-    @De("Die eingegebene Serveradresse, der Benutzer oder das Passwort ist " +
-            "falsch" +
-            ".\nSollte ihre Datenbankinstallation auf einem anderen Port " +
-            "liegen, geben sie die Adresse wie folgt ein:\nbeispiel.de:port")
-    @En("The supplied server address, user or password is wrong.\nIf your " +
-            "database runs on a different port, please write your address like" +
-            " this:\nexample.com:port")
-    String databaseLoginError();
+    @De("Die eingegebene Serveradresse, der Benutzer oder das Passwort ist "
+            + "falsch"
+            + ".\nSollte ihre Datenbankinstallation auf einem anderen Port "
+            + "liegen, geben sie die Adresse wie folgt ein:\nbeispiel.de:port")
+    @En("The supplied server address, user or password is wrong.\nIf your "
+            + "database runs on a different port, please write your address like"
+            + " this:\nexample.com:port")
+            String databaseLoginError();
 
     @De("Der Wert im Projektebenenfeld ist keine g\u00fcltige Zahl.")
     @En("The Value in project level field is not a number.")
@@ -88,14 +88,53 @@ public interface ErrorMessages {
     @En("The supplied database name is invalid.")
     String databaseNameInvalid();
 
-    @De("Projekteinrichtungsassistent ist aufgrund eines " +
-            "Fehlers fehlgeschlagen. Bitte versuchen sie" +
-            " es erneut.")
-    @En("Project setup assistant failed due to an error. Please try " +
-            "again.")
+    @De("Projekteinrichtungsassistent ist aufgrund eines "
+            + "Fehlers fehlgeschlagen. Bitte versuchen sie" + " es erneut.")
+    @En("Project setup assistant failed due to an error. Please try "
+            + "again.")
     String projectSetupAssistantFailedToCreateProject();
 
     @De("Weiterf\u00fchrende Information")
     @En("More information")
     String moreInformation();
+
+    @De("Bitte eine Serveradresse eintragen.")
+    @En("Please input the server address.")
+    String loginMissingHost();
+
+    @De("Bitte einen Datenbanknamen eintragen.")
+    @En("Please input the database name.")
+    String loginMissingDbName();
+
+    @De("Tragen sie bitte ihren Benutzernamen ein.")
+    @En("Please input your username.")
+    String loginMissingUser();
+
+    @De("Verbindung konnte nicht aufgebaut werden!")
+    @En("Connection could not be established!")
+    String loginConnectionFailure();
+
+    @De("\u00DCberpr\u00fcfen sie Benutzernamen und Passwort.")
+    @En("Check your login and password.")
+    String loginCheckUsername();
+
+    @De("Der Benutzer konnte nicht in der Datenbank gefunden werden.")
+    @En("User couldn't be found in the database.")
+    String loginUserNotFound();
+    
+    @De("Der Benutzer ist kein Projektleiter.")
+    @En("The user is not a project manager.")
+    String loginMissingPMAtuhority();    
+    
+    @De("Das Einloggen als Projektleiter ist fehlgeschlagen!")
+    @En("The login as project manager has failed!")
+    String loginPMLoginFailed();
+    
+    @De("Es konnte kein Index-Eintrag für die Datanbank gefunden werden.")
+    @En("There was no index-entry found within the database.")
+    String loginMissingIndex();
+    
+    @De("\u00DCberpr\u00fcfen sie das Index-DB Passwort.")
+    @En("Check your index-db password.")
+    String loginMissingIndexPw();
 }

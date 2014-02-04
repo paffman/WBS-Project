@@ -21,7 +21,6 @@ import javax.swing.JOptionPane;
 
 import dbaccess.DBModelManager;
 import dbaccess.data.Employee;
-import sun.security.pkcs11.Secmod.DbMode;
 import wpOverview.WPOverview;
 import wpOverview.WPOverviewGUI;
 

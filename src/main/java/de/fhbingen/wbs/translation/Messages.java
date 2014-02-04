@@ -12,7 +12,7 @@ public interface Messages extends ErrorMessages{
     @En("Are you sure you want to {0}?")
     String confirmText(String actionName);
 
-    @De("Ein gültiges Passwort besteht aus:\n" +
+    @De("Ein g\u00fcltiges Passwort besteht aus:\n" +
             "- mindestens 6 Zeichen\n" +
             "- mindestens ein Kleinbuchstabe\n" +
             "- mindestens eine Zahl\n" +
@@ -55,4 +55,13 @@ public interface Messages extends ErrorMessages{
     @De("Die Einrichtung Ihres Projekts war erfolgreich.")
     @En("Your project has been setup successfully.")
     Object projectSetupSuccess();
+    
+    @De("Geben sie die Zugangsdaten zur Datenbank und ihren Benutzernamen an. Mit einem Klick auf 'OK' gelangen sie dann in das WBS-Tool.")
+    @En("Input the access data to the database and your login. The WBS-Tool then starts with a click on 'OK'")
+    String loginHelpMsg();
+    
+    @De("Es ist bereits ein Projektleiter eingeloggt.\nWollen sie sich trotzdem einloggen?\nWarnung: Die Daten k\u00F6nnen inkonsistent werden, wenn mehrere Projektleiter daran arbeiten.")
+    @En("There is already a projekt manager logged in.\nDo you want to log in regardless?\nWarning: Data may become inconsistent, if multiple project managers are working on it.")
+    String loginPMSemaphoreOccupied();
+    
 }
