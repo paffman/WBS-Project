@@ -20,6 +20,9 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
+import c10n.C10N;
+import de.fhbingen.wbs.translation.DbChooser;
+
 /**
  * Studienprojekt: WBS<br/>
  * Kunde: Pentasys AG, Jens von Gersdorff<br/>
@@ -62,6 +65,10 @@ public class DBChooserGUI extends JFrame {
      * Width of the window.
      */
     private static final int WINDOW_WIDTH = 400;
+    /**
+     * Translation interface that contains relevant values.
+     */
+    private final DbChooser labels;
     /**
      * Button to confirm db connection entries and start the wbs-tool.
      */
@@ -137,6 +144,7 @@ public class DBChooserGUI extends JFrame {
      */
     public DBChooserGUI(final DBChooser dbChooser) {
         super("Login");
+        labels = C10N.get(DbChooser.class);
         try {
             UIManager.setLookAndFeel("com.sun.java.swing."
                     + "plaf.windows.WindowsLookAndFeel");
@@ -150,17 +158,17 @@ public class DBChooserGUI extends JFrame {
 
         // menus
         mainMenuBar = new JMenuBar();
-        fileMenu = new JMenu("Datei");
-        helpMenu = new JMenu("Hilfe");
-        okMenuItem = new JMenuItem("Weiter");
+        fileMenu = new JMenu(labels.file());
+        helpMenu = new JMenu(labels.help());
+        okMenuItem = new JMenuItem(labels.next());
         okMenuItem.setIcon(okIcon);
-        closeMenuItem = new JMenuItem("Schlieﬂen");
+        closeMenuItem = new JMenuItem(labels.cancel());
         closeMenuItem.setIcon(closeIcon);
-        helpMenuItem = new JMenuItem("Hilfe");
+        helpMenuItem = new JMenuItem(labels.help());
         helpMenuItem.setIcon(helpIcon);
-        infoMenuItem = new JMenuItem("Info");
+        infoMenuItem = new JMenuItem(labels.info());
         infoMenuItem.setIcon(infoIcon);
-        newDbMenuItem = new JMenuItem("DB Einrichtungsassistent");
+        newDbMenuItem = new JMenuItem(labels.projectSetupAssistant());
 
         mainMenuBar.add(fileMenu);
         fileMenu.add(newDbMenuItem);
@@ -173,21 +181,21 @@ public class DBChooserGUI extends JFrame {
         helpMenu.add(infoMenuItem);
 
         // labels and input elements
-        JLabel titleLabel = new JLabel("Datenbank:");
-        JLabel hostLabel = new JLabel("Host:");
-        JLabel dbNameLabel = new JLabel("DB-Name:");
-        JLabel dbPwLabel = new JLabel("Index Password:");
-        JLabel titleUserLabel = new JLabel("Benutzer:");
-        JLabel userLabel = new JLabel("Benutzername:");
-        JLabel pwLabel = new JLabel("Password:");
-        plCheckBox = new JCheckBox("Projektleiter");
+        JLabel titleLabel = new JLabel(labels.database() + ":");
+        JLabel hostLabel = new JLabel(labels.serverAddress() + ":");
+        JLabel dbNameLabel = new JLabel(labels.databaseName() + ":");
+        JLabel dbPwLabel = new JLabel(labels.indexPassword() + ":");
+        JLabel titleUserLabel = new JLabel(labels.user() + ":");
+        JLabel userLabel = new JLabel(labels.login() + ":");
+        JLabel pwLabel = new JLabel(labels.password() + ":");
+        plCheckBox = new JCheckBox(labels.projectManager());
         hostField = new JTextField();
         dbNameField = new JTextField();
         userField = new JTextField();
         dbPwPasswordField = new JPasswordField();
         pwPasswordField = new JPasswordField();
-        closeButton = new JButton("Schlieﬂen");
-        okButton = new JButton("Ok");
+        closeButton = new JButton(labels.cancel());
+        okButton = new JButton(labels.ok());
 
         // load saved database into fields
         if (dbChooser.getLastDbHost() != null) {

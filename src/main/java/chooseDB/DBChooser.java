@@ -2,6 +2,7 @@ package chooseDB;
 
 import c10n.C10N;
 import c10n.annotations.DefaultC10NAnnotations;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -16,6 +17,9 @@ import javax.swing.JOptionPane;
 
 import dbaccess.DBModelManager;
 import dbaccess.data.Employee;
+import de.fhbingen.wbs.translation.DbChooser;
+import de.fhbingen.wbs.translation.Messages;
+import de.fhbingen.wbs.translation.ProjectSetup;
 import wpOverview.WPOverview;
 import wpWorker.User;
 import functions.WpManager;
@@ -36,7 +40,7 @@ import jdbcConnection.SQLExecuter;
  * Lin Yang<br/>
  * Ruft die DBChooserGUI auf<br/>
  * setzt nach der Pfadeingabe den Pfad in der MDBConnect Klasse<br/>
- *
+ * 
  * @author Samson von Graevenitz, Daniel Metzler, Michael Anstatt
  * @version 2.0 - 2012-08-20
  */
@@ -46,7 +50,14 @@ public class DBChooser {
      * Holds the gui-object.
      */
     private DBChooserGUI gui;
-
+    /**
+     * Translation interface that contains relevant values.
+     */
+    private final DbChooser labels;
+    /**
+     * Translation interface for general ui messages.
+     */
+    private final Messages messages;
     /**
      * last Host the client was connected to.
      */
@@ -71,6 +82,8 @@ public class DBChooser {
     public DBChooser() {
         loadLastDB();
         gui = new DBChooserGUI(this);
+        labels = C10N.get(DbChooser.class);
+        messages = C10N.get(Messages.class);
         new DBChooserButtonAction(this);
     }
 
@@ -91,17 +104,15 @@ public class DBChooser {
 
         // check input
         if (host.equals("")) {
-            JOptionPane.showMessageDialog(gui, "Bitte einen Host eintragen!");
+            JOptionPane.showMessageDialog(gui, messages.loginMissingHost());
             return;
         }
         if (db.equals("")) {
-            JOptionPane.showMessageDialog(gui,
-                    "Bitte einen Datenbanknamen eintragen!");
+            JOptionPane.showMessageDialog(gui, messages.loginMissingDbName());
             return;
         }
         if (user.equals("")) {
-            JOptionPane.showMessageDialog(gui,
-                    "Bitte einen Benutzer eintragen!");
+            JOptionPane.showMessageDialog(gui, messages.loginMissingUser());
             return;
         }
 
@@ -117,19 +128,20 @@ public class DBChooser {
         try {
             if (!tryConnection()) {
                 JOptionPane.showMessageDialog(gui,
-                        "Verbindung konnte nicht aufgebaut werden!");
+                        messages.loginConnectionFailure());
                 return;
             }
         } catch (Exception e) {
             e.printStackTrace();
             if (e.getMessage().contains("Access denied for user")) {
-                JOptionPane
-                        .showMessageDialog(
-                                gui,
-                                "Verbindung konnte nicht aufgebaut werden! �berpr�fen sie Benutzernamen und Passwort.");
+                JOptionPane.showMessageDialog(
+                        gui,
+                        messages.loginConnectionFailure() + "\n"
+                                + messages.loginCheckUsername());
             } else {
-                JOptionPane.showMessageDialog(gui,
-                        "Verbindung konnte nicht aufgebaut werden! Exception: "
+                JOptionPane.showMessageDialog(
+                        gui,
+                        messages.loginConnectionFailure() + "\nException: "
                                 + e.toString());
             }
             return;
@@ -142,8 +154,7 @@ public class DBChooser {
         Employee employee =
                 DBModelManager.getEmployeesModel().getEmployee(user);
         if (employee == null) {
-            JOptionPane.showMessageDialog(gui, "Der Benutzer konnte nicht "
-                    + "in der Datenbank gefunden werden!");
+            JOptionPane.showMessageDialog(gui, messages.loginUserNotFound());
             return;
         }
 
@@ -151,31 +162,21 @@ public class DBChooser {
         if (pl) {
             if (!employee.isProject_leader()) {
                 JOptionPane.showMessageDialog(gui,
-                        "Der Benutzer hat keine Projekleiter Berechtigungen!");
+                        messages.loginMissingPMAtuhority());
                 return;
             }
             if (!DBModelManager.getSemaphoreModel().enterSemaphore("pl",
                     employee.getId())) {
                 int answer =
-                        JOptionPane
-                                .showConfirmDialog(
-                                        gui,
-                                        "Es ist bereits ein Projektleiter "
-                                                + "eingeloggt. Wollen sie sich "
-                                                + "trotzdem einloggen? "
-                                                + "Warnung: "
-                                                + "Die Daten k�nnen "
-                                                + "inkonsistent werden, "
-                                                + "wenn mehrere "
-                                                + "Projektleiter daran "
-                                                + "arbeiten.",
-                                        "Projektleiterlogin",
-                                        JOptionPane.YES_NO_OPTION);
+                        JOptionPane.showConfirmDialog(gui,
+                                messages.loginPMSemaphoreOccupied(),
+                                labels.projectManagerLogin(),
+                                JOptionPane.YES_NO_OPTION);
                 if (answer == JOptionPane.YES_OPTION) {
                     if (!DBModelManager.getSemaphoreModel().enterSemaphore(
                             "pl", employee.getId(), true)) {
                         JOptionPane.showMessageDialog(gui,
-                                "Der Projektleiterlogin ist fehlgeschlagen!");
+                                messages.loginPMLoginFailed());
                         return;
                     }
                 } else {
@@ -205,7 +206,7 @@ public class DBChooser {
 
     /**
      * This method queries the unique id in the id_wbs db for a given dbName
-     *
+     * 
      * @param host
      *            Host where db is located.
      * @param db
@@ -222,14 +223,25 @@ public class DBChooser {
             ResultSet rslt =
                     SQLExecuter.executeQuery("call "
                             + "db_identifier_select_by_dbname('" + db + "');");
-            rslt.next();
-            ret = rslt.getString("id");
+            if (rslt == null) {
+                JOptionPane.showMessageDialog(
+                        gui,
+                        messages.loginConnectionFailure() + "\n"
+                                + messages.loginMissingIndexPw());
+            } else if (rslt.next()) {
+                ret = rslt.getString("id");
+            } else {
+                JOptionPane.showMessageDialog(
+                        gui,
+                        messages.loginConnectionFailure() + "\n"
+                                + messages.loginMissingIndex());
+            }
 
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(gui,
-                    "Verbindung konnte nicht aufgebaut werden! "
-                            + "Es wurde kein Index-Eintrag f�r "
-                            + "die Datenbank gefunden.");
+            JOptionPane.showMessageDialog(
+                    gui,
+                    messages.loginConnectionFailure() + "\n"
+                            + messages.loginMissingIndex());
         } finally {
             try {
                 MySqlConnect.getConnection().close();
@@ -244,7 +256,7 @@ public class DBChooser {
 
     /**
      * Tries out the currently used database connection.
-     *
+     * 
      * @return Returns true if the connection works. False if otherwise.
      * @throws Exception
      *             throws any occurring exception
@@ -267,7 +279,7 @@ public class DBChooser {
     /**
      * saveLastDB: writes the login data, except the user password, into a file,
      * which is loaded on the next startup.
-     *
+     * 
      * @param host
      *            host of the database.
      * @param db
@@ -348,13 +360,15 @@ public class DBChooser {
     public final DBChooserGUI getGui() {
         return gui;
     }
-	/**
-	 * erstellt ein Objekt von DBChooser() und beginnt somit das Programm durch Konstruktoraufruf von DBChooser()
-	 *
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		new DBChooser();
+
+    /**
+     * erstellt ein Objekt von DBChooser() und beginnt somit das Programm durch
+     * Konstruktoraufruf von DBChooser()
+     * 
+     * @param args
+     */
+    public static void main(String[] args) {
         C10N.configure(new DefaultC10NAnnotations());
-	}
+        new DBChooser();
+    }
 }

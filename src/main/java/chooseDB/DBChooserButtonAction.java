@@ -1,17 +1,22 @@
 package chooseDB;
 
 import de.fhbingen.wbs.controller.ProjectSetupAssistant;
+import de.fhbingen.wbs.translation.Menu;
+import de.fhbingen.wbs.translation.Messages;
 import globals.InfoBox;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JOptionPane;
 
+import c10n.C10N;
+
 /**
  * Studienprojekt: WBS Kunde: Pentasys AG, Jens von Gersdorff Projektmitglieder:
  * Andre Paffenholz, Peter Lange, Daniel Metzler, Samson von Graevenitz fügt
  * Funktionalitäten zur DBChooserGUI hinzu
- *
+ * 
  * @author Samson von Graevenitz und Daniel Metzler
  * @version 0.3 - 09.12.2010
  */
@@ -23,12 +28,18 @@ public class DBChooserButtonAction {
     private DBChooser dbChooser;
 
     /**
+     * The translations for messages.
+     */
+    private Messages messages;
+
+    /**
      * Constructor
-     *
+     * 
      * @param aDBChooser
      *            calling DBChooser
      */
     public DBChooserButtonAction(final DBChooser aDBChooser) {
+        messages = C10N.get(Messages.class);
         this.dbChooser = aDBChooser;
         addButtonAction();
     }
@@ -75,10 +86,7 @@ public class DBChooserButtonAction {
                 .addActionListener(new ActionListener() {
                     public void actionPerformed(final ActionEvent arg0) {
                         JOptionPane.showMessageDialog(dbChooser.getGui(),
-                                "Geben sie die Zugangsdaten zur Datenbank und "
-                                        + "ihren Benutzernamen an. Mit einem "
-                                        + "Klick auf Ok gelangen sie dann "
-                                        + "in das WBS-Tool.");
+                                messages.loginHelpMsg());
                     }
                 });
 
@@ -89,14 +97,13 @@ public class DBChooserButtonAction {
                     }
                 });
 
-        dbChooser.getGui().getNewDbMenuItem().addActionListener(
-                new ActionListener() {
+        dbChooser.getGui().getNewDbMenuItem()
+                .addActionListener(new ActionListener() {
 
-
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                ProjectSetupAssistant.newProject(dbChooser.getGui());
-            }
-        });
+                    @Override
+                    public void actionPerformed(final ActionEvent e) {
+                        ProjectSetupAssistant.newProject(dbChooser.getGui());
+                    }
+                });
     }
 }

@@ -29,5 +29,5 @@ public interface Button {
 
     @De("Schlie\u00dfen")
     @En("Exit")
-    String exit();
+    String exit();   
 }
