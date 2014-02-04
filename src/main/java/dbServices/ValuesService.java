@@ -105,6 +105,9 @@ public class ValuesService {
                     DBModelManager.getPlannedValueModel().getPlannedValue(
                             calendar.getTime(), apID, true);
         }
+        if ( ergPv == Double.MIN_NORMAL){
+            ergPv = 0.0;
+        }
         return ergPv;
     }
 
@@ -124,12 +127,12 @@ public class ValuesService {
                 DBModelManager.getPlannedValueModel().getPlannedValue(
                         day.getTime(), apID, false);
 
-        if (ergPv == Double.NaN) {
+        if (ergPv == Double.MIN_NORMAL) {
             ergPv =
                     DBModelManager.getPlannedValueModel().getPlannedValue(
                             day.getTime(), apID, true);
-            if (ergPv == Double.NaN) {
-                ergPv = -1;
+            if (ergPv == Double.MIN_NORMAL) {
+                ergPv = 0.0;
             }
         }
 

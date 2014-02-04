@@ -156,6 +156,8 @@ public class APList {
 	 * @param wp zu aktualisierendes Arbeitspaket
 	 */
 	protected void updateWp(Workpackage newValues) {
+	    System.out.println(newValues); //%%
+	    System.out.println(newValues.getStringID()); //%%
 		allApMap.get(newValues.getStringID()).update(newValues);
 	}
 
