@@ -63,7 +63,10 @@ public class TimeCalc {
     private static Map<Day, Map<String, Integer>> consumedWork;
 
     private AVManager avManager;
-
+    
+    /**
+     * Translation interface that contains relevant values.
+     */
     private final Status status;
 
     // private Map<String, Double> dailyRates;
