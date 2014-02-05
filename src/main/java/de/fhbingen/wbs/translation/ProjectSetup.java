@@ -5,6 +5,9 @@ import c10n.annotations.En;
 
 /**
  * Interface for project setup assistant specific translations.
+ * <p/>
+ * Be sure to encode this file ISO-8859-1, else you will need to use unicode
+ * escape characters to prevent encoding issues.
  */
 public interface ProjectSetup extends Button, Database, Project, Login {
     @De("Projekteinrichtungsassistent")
@@ -31,7 +34,7 @@ public interface ProjectSetup extends Button, Database, Project, Login {
     @En("Summary of your inputs")
     String summary();
 
-     @De("Projekteinrichtung erfolgreich.")
-     @En("Project Setup Successful")
+    @De("Projekteinrichtung erfolgreich.")
+    @En("Project Setup Successful")
     String projectSetupSuccessTitle();
 }

@@ -25,9 +25,19 @@ package wpShow;
  * @version 2.0 - 28.06.2012
  */
 
+import chart.ChartCPIView;
+import chart.ChartCompleteView;
+import dbServices.WorkerService;
+import dbaccess.DBModelManager;
+import dbaccess.data.Employee;
+import dbaccess.data.WorkEffort;
 import de.fhbingen.wbs.translation.LocalizedStrings;
 import de.fhbingen.wbs.translation.Messages;
 import de.fhbingen.wbs.translation.Wbs;
+import functions.CalcOAPBaseline;
+import functions.WpManager;
+import globals.Controller;
+import globals.Workpackage;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -46,26 +56,14 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
-
-import chart.ChartCPIView;
-import chart.ChartCompleteView;
-import dbServices.WorkerService;
-import dbaccess.DBModelManager;
-import dbaccess.data.Employee;
-import dbaccess.data.WorkEffort;
 import wpAddAufwand.AddAufwand;
 import wpConflict.Conflict;
 import wpOverview.WPOverview;
 import wpWorker.Worker;
-import functions.CalcOAPBaseline;
-import functions.WpManager;
-import globals.Controller;
-import globals.Workpackage;
 
 public class WPShow {
     private final Wbs wbsStrings;
@@ -180,7 +178,7 @@ public class WPShow {
 
         if (ids.length != levels) {
             JOptionPane.showMessageDialog(null,
-                    messageStrings.workpackageWrongLevel(levels));
+                    messageStrings.workPackageWrongLevel(levels));
             return false;
         }
 

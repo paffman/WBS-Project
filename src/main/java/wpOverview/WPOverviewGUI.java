@@ -1,24 +1,39 @@
 package wpOverview;
 
-import de.fhbingen.wbs.translation.*;
+import dbServices.ConflictService;
 import de.fhbingen.wbs.translation.Button;
+import de.fhbingen.wbs.translation.General;
+import de.fhbingen.wbs.translation.LocalizedStrings;
+import de.fhbingen.wbs.translation.Wbs;
 import functions.WpManager;
 import globals.Controller;
 import globals.Workpackage;
-
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.GridLayout;
+import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
-
-import javax.swing.*;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.WindowConstants;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.EmptyBorder;
-
-import dbServices.ConflictService;
-
 import wpConflict.Conflict;
 import wpConflict.ConflictTable;
 import wpOverview.tabs.APCalendarPanel;
@@ -234,7 +249,7 @@ public class WPOverviewGUI extends JFrame {
 
         // Menüeinträge für Projektleiter
         if (WPOverview.getUser().getProjLeiter()) {
-            miAP = new JMenuItem(buttonStrings.register(wbsStrings.workPackage()));
+            miAP = new JMenuItem(buttonStrings.enter(wbsStrings.workPackage()));
             miAP.setIcon(newAp);
             miDelAp = new JMenuItem(buttonStrings.delete(wbsStrings.workPackage()));
             miDelAp.setIcon(newAp);
@@ -303,7 +318,7 @@ public class WPOverviewGUI extends JFrame {
         }
         tabs.addTab(generalStrings.availabilities(),
                 createScrollPane(availability));
-        tabs.addTab(wbsStrings.timeline(), createScrollPane(timeline));
+        tabs.addTab(wbsStrings.timeLine(), createScrollPane(timeline));
         if (WPOverview.getUser().getProjLeiter()) {
             tabs.addTab(generalStrings.dependencies(),
                     createScrollPane(follower));

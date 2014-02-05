@@ -6,6 +6,9 @@ import c10n.annotations.En;
 /**
  * Interface for translations that don't fit any specific category e.g.
  * dictionary words.
+ * <p/>
+ * Be sure to encode this file ISO-8859-1, else you will need to use unicode
+ * escape characters to prevent encoding issues.
  */
 public interface General {
     @De("Datum")
@@ -28,11 +31,11 @@ public interface General {
     @En("End")
     String end();
 
-    @De("GanztÃ¤gig")
+    @De("Ganztägig")
     @En("Full-time")
     String fullTime();
 
-    @De("VerfÃ¼gbar")
+    @De("Verfügbar")
     @En("Available")
     String available();
 
@@ -53,102 +56,135 @@ public interface General {
     String status();
 
     @De("Konflikt")
+    @En("Conflict")
     String conflict();
 
+    @De("Konflikte")
+    @En("Conflicts")
+    String conflicts();
+
     @De("Zeitpunkt")
+    @En("Point of time")
     String pointOfTime();
 
     @De("Grund")
+    @En("Reason")
     String reason();
 
     @De("Verursacher")
+    @En("Causer")
     String causer();
 
-    @De("Ãœbersicht")
+    @De("Übersicht")
+    @En("Overview")
     String overview();
 
-    @De("ProjektverfÃ¼gbarkeit")
+    @De("Projektverfügbarkeit")
+    @En("Project availability")
     String projectAvailability();
 
     @De("KW")
+    @En("WW")
     String calendarWeekAbbreviation();
 
-    @De("VerfÃ¼gbarkeit")
-    String availablility();
+    @De("Verfügbarkeit")
+    @En("Availability")
+    String availability();
 
-    @De("Nicht verfÃ¼gbar")
+    @De("Verfügbarkeiten")
+    @En("Availabilities")
+    String availabilities();
+
+    @De("Nicht verfügbar")
+    @En("Not available")
     String notAvailable();
 
     @De("Warnung")
+    @En("Warning")
     String warning();
 
     @De("Tag")
+    @En("Day")
     String day();
 
     @De("Woche")
+    @En("Week")
     String week();
 
     @De("Monat")
+    @En("Month")
     String month();
 
     @De("Jahr")
+    @En("Year")
     String year();
 
-    @De("{0} auswÃ¤hlen")
+    @De("{0} auswählen")
+    @En("Choose {0}")
     String choose(String s);
 
     @De("Berechtigung")
+    @En("Permission")
     String permission();
 
-    @De("Ansichten")
-    String views();
-
     @De("Ansicht")
+    @En("View")
     String view();
 
+    @De("Ansichten")
+    @En("Views")
+    String views();
+
     @De("Dauer")
+    @En("Duration")
     String duration();
 
-    @De("AbhÃ¤ngigkeiten")
+    @De("Abhängigkeit")
+    @En("Dependency")
+    String dependency();
+
+    @De("Abhängigkeiten")
+    @En("Dependencies")
     String dependencies();
 
-    @De("Konflikte")
-    String conflicts();
-
-    @De("VerfÃ¼gbarkeiten")
-    String availabilities();
-
     @De("Alle")
+    @En("All")
     String all();
 
     @De("Offene")
+    @En("Open")
     String open();
 
     @De("Fertige")
+    @En("Finished")
     String finished();
 
-    @De("VorgÃ¤nger")
+    @De("Vorgänger")
+    @En("Predecessor")
     String predecessor();
 
     @De("Nachfolger")
+    @En("Successor")
     String successor();
 
-    @De("AbhÃ¤ngigkeit")
-    String dependency();
-
     @De("\u20ac")
+    @En("\u20ac")
     String currencySymbol();
 
     @De("Inaktiv")
+    @En("Inactive")
     String inactive();
 
     @De("Verantwortlicher")
+    @En("Responsible User")
     String responsiblePerson();
 
     @De("Verlauf")
+    @En("History")
     String history();
 
     @De("verwalten")
+    @En("manage")
     String toManage();
 
     @De("Initialisierung einer importierten DB")

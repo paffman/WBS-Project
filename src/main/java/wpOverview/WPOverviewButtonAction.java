@@ -1,7 +1,8 @@
 package wpOverview;
 
 
-
+import chooseDB.DBChooser;
+import dbaccess.DBModelManager;
 import de.fhbingen.wbs.translation.LocalizedStrings;
 import functions.CalcOAPBaseline;
 import functions.WpManager;
@@ -9,18 +10,13 @@ import globals.Controller;
 import globals.InfoBox;
 import globals.Loader;
 import importPrepare.PrepareImport;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-
 import javax.swing.JOptionPane;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-
-import chooseDB.DBChooser;
-import dbaccess.DBModelManager;
 import wpWorker.ChangePW;
 
 /**
@@ -78,7 +74,7 @@ public class WPOverviewButtonAction {
 						over.reload();
 					} else {
 						JOptionPane.showMessageDialog(gui,
-                                LocalizedStrings.getErrorMessages().markWorkpackageToDelete());
+                                LocalizedStrings.getErrorMessages().markWorkPackageToDelete());
 					}
 				}
 			});
