@@ -1,11 +1,14 @@
 package wpShow;
 
 import de.fhbingen.wbs.translation.LocalizedStrings;
+import functions.WpManager;
+import globals.Controller;
+import globals.ToolTipTree;
+import globals.Workpackage;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-
 import javax.swing.JFrame;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
@@ -14,13 +17,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTree;
 import javax.swing.SwingUtilities;
 import javax.swing.tree.DefaultMutableTreeNode;
-
-
-import functions.WpManager;
-import globals.Controller;
-import globals.ToolTipTree;
-import globals.Workpackage;
-
 import wpOverview.TreeCellRenderer;
 import wpOverview.WPOverview;
 import wpOverview.WPOverviewGUI;
@@ -156,9 +152,10 @@ public class SequencerGUI extends JFrame {
 		case MODE_ADD_ANCHESTOR:
 			if (WpManager.insertAncestor(selected, wp)) {
 				JOptionPane.showMessageDialog(null, LocalizedStrings
-                        .getMessages().workpackageXwasCreatedAsY(selected
+                        .getMessages().workPackageXwasCreatedAsY(selected
                                 .toString(),
-                                LocalizedStrings.getGeneralStrings().predecessor()));
+                                LocalizedStrings.getGeneralStrings()
+                                        .predecessor()));
 				parent.updateDependencyCount(wp);
 				dispose();
 			}
@@ -166,9 +163,10 @@ public class SequencerGUI extends JFrame {
 		case MODE_ADD_FOLLOWER:
 			if (WpManager.insertFollower(selected, wp)) {
 				JOptionPane.showMessageDialog(null, LocalizedStrings
-                        .getMessages().workpackageXwasCreatedAsY(selected
+                        .getMessages().workPackageXwasCreatedAsY(selected
                                 .toString(),
-                                LocalizedStrings.getGeneralStrings().successor()));
+                                LocalizedStrings.getGeneralStrings()
+                                        .successor()));
 				parent.updateDependencyCount(wp);
 				dispose();
 			}

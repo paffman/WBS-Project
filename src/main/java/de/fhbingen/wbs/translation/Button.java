@@ -11,7 +11,7 @@ public interface Button {
     @En("Next")
     String next();
 
-    @De("Zur\u00fcck")
+    @De("Zurück")
     @En("Back")
     String back();
 
@@ -23,90 +23,110 @@ public interface Button {
     @En("Cancel")
     String cancel();
 
-    @De("Best\u00e4tigen")
+    @De("Bestätigen")
     @En("Confirm")
     String confirm();
 
-    @De("Schlie\u00dfen")
+    @De("Beenden")
     @En("Exit")
     String exit();
 
-    @De("SchlieÃŸen")
+    @De("Schließen")
     @En("Close")
     String close();
 
-    @De("L\u00f6schen")
+    @De("Löschen")
     @En("Delete")
     String delete();
 
-    @De("{0} lÃ¶schen")
+    @De("{0} löschen")
+    @En("Delete {0}")
     String delete(String s);
 
-    @De("Passwort zur\u00fccksetzen")
+    @De("Passwort zurücksetzen")
     @En("Reset password")
     String passwordReset();
 
     @De("{0} speichern")
+    @En("Save {0}")
     String save(String s);
 
     @De("{0} anzeigen")
+    @En("Show {0}")
     String show(String s);
 
     @De("Neues {0} anlegen")
+    @En("Add new {0}")
     String addNewNeutral(String s);
 
 
     @De("Neuen {0} anlegen")
+    @En("Add new {0}")
     String addNewMale(String s);
 
 
     @De("Neue {0} anlegen")
+    @En("Add new {0}")
     String addNewFemale(String s);
 
 
-
     @De("{0} anlegen")
+    @En("Add {0}")
     String add(String s);
 
-    @De("HinzufÃ¼gen")
+    @De("Hinzufügen")
+    @En("Add")
     String add();
 
     @De("{0} eintragen")
-    String register(String s);
+    @En("Enter {0}")
+    String enter(String s);
 
     @De("Ausklappen")
+    @En("Expand")
     String expand();
 
     @De("Einklappen")
+    @En("Collapse")
     String collapse();
 
+    @De("Aktualisieren")
+    @En("Refresh")
+    String refresh();
+
     @De("{0} aktualisieren")
+    @En("Refresh {0}")
     String refresh(String s);
 
     @De("{0} berechnen")
+    @En("Calculate {0}")
     String calculate(String s);
 
     @De("Datei")
+    @En("File")
     String file();
 
     @De("Hilfe")
+    @En("Help")
     String help();
 
-    @De("Aktualisieren")
-    String refresh();
+    @De("Info")
+    @En("Info")
+    String info();
 
-    @De("{0} Ã¤ndern")
+    @De("{0} ändern")
+    @En("Change {0}")
     String change(String password);
 
     @De("Abmelden")
+    @En("Logout")
     String logout();
 
-    @De("Info")
-    String info();
-
     @De("Verwalten")
+    @En("Manage")
     String manage();
 
-    @De("Ãœbernehmen")
+    @De("Übernehmen")
+    @En("Apply")
     String apply();
 }

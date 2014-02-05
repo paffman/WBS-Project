@@ -7,7 +7,7 @@ public interface Chart {
     @De("Soll")
     @En("Target")
     String target();
-    
+
     @De("Fortschritt (PV)")
     @En("Progress (PV)")
     String progressPv();

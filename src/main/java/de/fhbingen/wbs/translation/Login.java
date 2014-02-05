@@ -6,6 +6,9 @@ import c10n.annotations.En;
 
 /**
  * Interface for login form related translations.
+ * <p/>
+ * Be sure to encode this file ISO-8859-1, else you will need to use unicode
+ * escape characters to prevent encoding issues.
  */
 public interface Login {
     @En("Login")
@@ -17,9 +20,13 @@ public interface Login {
     String password();
 
     @De("Altes Passwort")
+    @En("Old password")
     String oldPassword();
+
     @De("Neues Passwort")
+    @En("New password")
     String newPassword();
+
     @En("Repeat password")
     @De("Passwort wiederholen")
     String repeatPassword();
@@ -36,7 +43,7 @@ public interface Login {
     @De("Nachname")
     String surname();
 
-    @De("Passwort \u00e4ndern")
+    @De("Passwort ändern")
     @En("Change password")
     String changePassword();
 

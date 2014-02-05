@@ -1,5 +1,8 @@
 package wpOverview.tabs;
 
+import calendar.Availability;
+import dbServices.CalendarService;
+import dbServices.WorkerService;
 import de.fhbingen.wbs.translation.LocalizedStrings;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -12,7 +15,6 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
-
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.axis.DateAxis;
 import org.jfree.chart.axis.DateTickUnit;
@@ -24,11 +26,6 @@ import org.jfree.data.gantt.Task;
 import org.jfree.data.gantt.TaskSeries;
 import org.jfree.data.gantt.TaskSeriesCollection;
 import org.jfree.ui.HorizontalAlignment;
-
-import calendar.Availability;
-import dbServices.CalendarService;
-import dbServices.WorkerService;
-
 import wpOverview.WPOverview;
 import wpWorker.Worker;
 
@@ -397,7 +394,7 @@ public class AvailabilityGraph {
                 .getPreferredSize().getWidth(), 100 + 50 * workers.size() + 1));
 
         final TaskSeries stdTasks = new TaskSeries(LocalizedStrings
-                .getGeneralStrings().availablility());
+                .getGeneralStrings().availability());
         final TaskSeries manualTasks = new TaskSeries(LocalizedStrings
                 .getGeneralStrings().available());
         final TaskSeries notTasks = new TaskSeries(LocalizedStrings

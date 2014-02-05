@@ -1,9 +1,9 @@
 package chooseDB;
 
 import c10n.C10N;
-import c10n.annotations.DefaultC10NAnnotations;
 import dbaccess.DBModelManager;
 import dbaccess.data.Employee;
+import de.fhbingen.wbs.translation.C10NUseEnglishDefaultConfiguration;
 import de.fhbingen.wbs.translation.LocalizedStrings;
 import functions.WpManager;
 import globals.Loader;
@@ -16,6 +16,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Locale;
 import javax.swing.JOptionPane;
 import jdbcConnection.MySqlConnect;
 import jdbcConnection.SQLExecuter;
@@ -352,7 +353,10 @@ public class DBChooser {
      * @param args
      */
     public static void main(String[] args) {
-        C10N.configure(new DefaultC10NAnnotations());
+        Locale.setDefault(Locale.JAPAN);
+        System.out.println(Locale.getDefault().getLanguage().equals(Locale
+                .GERMAN));
+        C10N.configure(new C10NUseEnglishDefaultConfiguration());
         new DBChooser();
     }
 }

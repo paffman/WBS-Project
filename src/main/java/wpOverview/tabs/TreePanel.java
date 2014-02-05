@@ -3,26 +3,20 @@ package wpOverview.tabs;
 import de.fhbingen.wbs.translation.Button;
 import de.fhbingen.wbs.translation.LocalizedStrings;
 import de.fhbingen.wbs.translation.Wbs;
+import functions.WpManager;
+import globals.ToolTipTree;
+import globals.Workpackage;
 import java.awt.BorderLayout;
 import java.util.ArrayList;
 import java.util.Enumeration;
-
 import javax.swing.JFrame;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JTree;
-
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
-
-
-import functions.WpManager;
-import globals.ToolTipTree;
-import globals.Workpackage;
-
-
 import wpOverview.TreeCellRenderer;
 import wpOverview.WPOverview;
 import wpOverview.WPOverviewGUI;
@@ -95,7 +89,7 @@ public class TreePanel extends JPanel {
         Wbs wbsStrings = LocalizedStrings.getWbs();
 
 		treeContextMenu = new JPopupMenu();
-		miContAufw = new JMenuItem(buttonStrings.register(wbsStrings.workEffort()));
+		miContAufw = new JMenuItem(buttonStrings.enter(wbsStrings.workEffort()));
 		miContAufw.setIcon(WPOverviewGUI.aufw);
 		treeContextMenu.add(miContAufw);
 		treeContextMenu.addSeparator();

@@ -1,27 +1,26 @@
 package wpOverview;
 
+import dbaccess.DBModelManager;
+import dbaccess.data.Project;
 import de.fhbingen.wbs.translation.LocalizedStrings;
 import de.fhbingen.wbs.translation.Messages;
+import functions.WpManager;
+import globals.Controller;
+import globals.Workpackage;
 import java.awt.Color;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import javax.swing.*;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.tree.DefaultMutableTreeNode;
-
-import dbaccess.DBModelManager;
-import dbaccess.data.Project;
 import wpAddAufwand.AddAufwand;
 import wpComparators.APLevelComparator;
 import wpConflict.Conflict;
 import wpShow.WPShow;
 import wpWorker.User;
-import functions.WpManager;
-import globals.Controller;
-import globals.Workpackage;
 
 /**
  * Studienprojekt: WBS Kunde: Pentasys AG, Jens von Gersdorff Projektmitglieder:
@@ -164,7 +163,7 @@ public class WPOverview {
 
                 } else {
                     JOptionPane.showMessageDialog(WPOverview.gui,
-                            messageStrings.selectTopLevelWorkpackage());
+                            messageStrings.selectTopLevelWorkPackage());
                 }
             }
             // oder ein bestehendes?
@@ -177,7 +176,7 @@ public class WPOverview {
                     JOptionPane
                             .showMessageDialog(WPOverview.gui,
                                     messageStrings
-                                            .noWorkEffortsOnTopLevelWorkpackages());
+                                            .noWorkEffortsOnTopLevelWorkPackages());
                 }
             }
 
