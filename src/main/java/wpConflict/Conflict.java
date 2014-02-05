@@ -1,13 +1,11 @@
 package wpConflict;
 
+import calendar.DateFunctions;
+import dbaccess.DBModelManager;
 import de.fhbingen.wbs.translation.LocalizedStrings;
 import de.fhbingen.wbs.translation.Messages;
 import globals.Workpackage;
-
 import java.util.Date;
-
-import calendar.DateFunctions;
-import dbaccess.DBModelManager;
 
 /**
  * Studienprojekt: PSYS WBS 2.0<br/>
@@ -153,14 +151,14 @@ public class Conflict {
     public String getReasonString() {
         switch (reason) {
         case STARTWISH_FAIL:
-            return messageStrings.startDateCantBeAchieved();
+            return messageStrings.startDateCanNotBeAchieved();
         case ENDWISH_FAIL:
-            return messageStrings.endDateCantBeAchieved();
+            return messageStrings.endDateCanNotBeAchieved();
         case CHANGED_RESOURCES:
             return messageStrings.resourcesChanged() + " " + messageStrings
                     .recalculate();
         case CHANGED_WISHDATES:
-            return messageStrings.wishDateChanged() + " " + messageStrings
+            return messageStrings.targetDateChanged() + " " + messageStrings
                     .recalculate();
         case NEW_WP:
             return messageStrings.newApsWereCreated() + " " + messageStrings

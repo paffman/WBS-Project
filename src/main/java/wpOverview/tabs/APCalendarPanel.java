@@ -1,6 +1,9 @@
 package wpOverview.tabs;
 
 import de.fhbingen.wbs.translation.LocalizedStrings;
+import functions.WpManager;
+import globals.Controller;
+import globals.Workpackage;
 import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -21,13 +24,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
-
 import jdbcConnection.MDBConnect;
-
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.ChartUtilities;
@@ -40,6 +40,7 @@ import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.renderer.category.BarPainter;
 import org.jfree.chart.renderer.category.BarRenderer;
+import org.jfree.chart.renderer.category.CategoryItemRendererState;
 import org.jfree.chart.renderer.category.GanttRenderer;
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.category.IntervalCategoryDataset;
@@ -51,12 +52,6 @@ import org.jfree.text.TextBlockAnchor;
 import org.jfree.ui.RectangleAnchor;
 import org.jfree.ui.RectangleEdge;
 import org.jfree.ui.RectangleInsets;
-import org.jfree.chart.renderer.category.CategoryItemRendererState;
-
-import functions.WpManager;
-import globals.Controller;
-import globals.Workpackage;
-
 import wpComparators.APLevelComparator;
 import wpOverview.WPOverview;
 /**
@@ -103,7 +98,7 @@ public class APCalendarPanel extends JPanel {
 
 		final JPopupMenu popup = new JPopupMenu();
 		JMenuItem miSave = new JMenuItem(LocalizedStrings.getButton().save
-                (LocalizedStrings.getWbs().timeline()));
+                (LocalizedStrings.getWbs().timeLine()));
 		miSave.addActionListener(new ActionListener() {
 
 			@Override
@@ -113,10 +108,10 @@ public class APCalendarPanel extends JPanel {
 				try {
 					ChartUtilities.saveChartAsJPEG(new File(outfile), chart, chartPanel.getWidth(), chartPanel.getWidth());
 					Controller.showMessage(LocalizedStrings.getMessages()
-                            .timelineSaved(outfile));
+                            .timeLineSaved(outfile));
 				} catch (IOException e) {
 					Controller.showError(LocalizedStrings.getErrorMessages()
-                            .timelineExportError());
+                            .timeLineExportError());
 				}
 			}
 

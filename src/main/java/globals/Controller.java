@@ -188,7 +188,7 @@ public class Controller {
                     WPOverview.getUser().getId());
         }
         SQLExecuter.closeConnection();
-        System.out.println(LocalizedStrings.getMessages().logOf());
+        System.out.println(LocalizedStrings.getMessages().logOut());
     }
 
     /**

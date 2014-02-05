@@ -1,5 +1,8 @@
 package wpOverview.tabs;
 
+import calendar.Availability;
+import calendar.Day;
+import dbServices.CalendarService;
 import de.fhbingen.wbs.translation.LocalizedStrings;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -9,10 +12,8 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.Date;
 import java.util.Set;
-
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-
 import org.jfree.chart.ChartMouseEvent;
 import org.jfree.chart.ChartMouseListener;
 import org.jfree.chart.axis.CategoryAxis;
@@ -22,11 +23,6 @@ import org.jfree.chart.entity.PlotEntity;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.ui.RectangleEdge;
-
-import calendar.Availability;
-import calendar.Day;
-import dbServices.CalendarService;
-
 import wpAvailability.EditAvailability;
 import wpWorker.Worker;
 /**
@@ -130,7 +126,7 @@ public class AvailabilityGraphAction {
                                     (LocalizedStrings.getGeneralStrings()
                                             .warning()),
                                     LocalizedStrings.getErrorMessages()
-                                            .availablilityCanNotBeChanged()
+                                            .availabilityCanNotBeChanged()
 									);
 						}
 					}

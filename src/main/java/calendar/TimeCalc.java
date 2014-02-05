@@ -428,9 +428,7 @@ public class TimeCalc {
                         avManager.getNextWorkDate(actualOAP.getEndDateCalc());
 
                 // 6 SD Neu setzen
-                Controller.showConsoleMessage(LocalizedStrings.getStatus().setEnddateOfSuccessors(
-                        actualOAP.getStringID(),
-                        Controller.DATE_DAY_TIME.format(ancestorStartNew)),
+                Controller.showConsoleMessage(LocalizedStrings.getStatus().setEndDateOfSuccessors(actualOAP.getStringID(), Controller.DATE_DAY_TIME.format(ancestorStartNew)),
                         Controller.TIME_CALCULATION_DEBUG);
 
                 List<Workpackage> actualFollowers =
@@ -547,7 +545,7 @@ public class TimeCalc {
                         Controller
                                 .showConsoleMessage("     " +
                                         LocalizedStrings.getStatus()
-                                                .workerWorkhoursToday(actualWorker, workerWorkedToday), Controller.TIME_CALCULATION_DEBUG);
+                                                .workerWorkHoursToday(actualWorker, workerWorkedToday), Controller.TIME_CALCULATION_DEBUG);
                     }
                     allWorkedToday = possibleWorkToday;
                 } else {
@@ -575,7 +573,7 @@ public class TimeCalc {
                                             .showConsoleMessage("     " +
                                                     LocalizedStrings
                                                             .getStatus()
-                                                            .workerWorkhoursToday(actualWorker, optimalWork), Controller.TIME_CALCULATION_DEBUG);
+                                                            .workerWorkHoursToday(actualWorker, optimalWork), Controller.TIME_CALCULATION_DEBUG);
                                 } else {
                                     int workerRemaining =
                                             actualDayRemaining
@@ -700,9 +698,7 @@ public class TimeCalc {
         // SD neu in Nachfolger
         Date ancestorStartNew = avManager.getNextWorkDate(uap.getEndDateCalc());
 
-        Controller.showConsoleMessage(LocalizedStrings.getStatus().setStartdateOfSuccessors(
-                uap.getStringID(),
-                Controller.DATE_DAY_TIME.format(ancestorStartNew)),
+        Controller.showConsoleMessage(LocalizedStrings.getStatus().setStartDateOfSuccessors(uap.getStringID(), Controller.DATE_DAY_TIME.format(ancestorStartNew)),
                 Controller.TIME_CALCULATION_DEBUG);
 
         List<Workpackage> actualFollowers =
