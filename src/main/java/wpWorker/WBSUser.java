@@ -2,31 +2,32 @@ package wpWorker;
 
 /**
  * Studienprojekt:	WBS
- * 
+ *
  * Kunde:				Pentasys AG, Jens von Gersdorff
- * Projektmitglieder:	Andre Paffenholz, 
- * 						Peter Lange, 
+ * Projektmitglieder:	Andre Paffenholz,
+ * 						Peter Lange,
  * 						Daniel Metzler,
  * 						Samson von Graevenitz
- * 
+ *
  * GUI zum Hinzufügen eines Aufwandes zum Arbeitspaket
- * 
+ *
  * @author Daniel Metzler
  * @version 1.9 - 17.02.2011
  */
 
-import java.sql.*;
+import de.fhbingen.wbs.translation.LocalizedStrings;
+import de.fhbingen.wbs.translation.Messages;
 
 import javax.swing.JOptionPane;
 
 import dbaccess.DBModelManager;
 import dbaccess.data.Employee;
-import sun.security.pkcs11.Secmod.DbMode;
 import wpOverview.WPOverview;
 import wpOverview.WPOverviewGUI;
 
 public class WBSUser {
 
+    private final Messages messageStrings;
     /**
      * Variablen für die WBSMitarbeiterGUI und den SQLExecuter Variable für
      * den Mitarbeiter und die WPOverview
@@ -39,7 +40,7 @@ public class WBSUser {
 
     /**
      * Konstruktoraufruf wenn vorhander Mitarbeiter geändert werden soll
-     * 
+     *
      * @param mit
      *            Mitarbeiter aus der WPOverview wird übergeben
      * @param over
@@ -47,6 +48,7 @@ public class WBSUser {
      *            den Daten des ausgewählten Benutzers
      */
     public WBSUser(Worker mit, WPOverview over) {
+        this.messageStrings = LocalizedStrings.getMessages();
         dies = this;
         mitarbeiter = mit;
         this.over = over;
@@ -60,16 +62,17 @@ public class WBSUser {
 
     /**
      * Konstruktoraufruf wenn neuer Mitarbeiter angelegt wird
-     * 
+     *
      * @param over
      *            WPOverview wird übergeben
      */
     public WBSUser(WPOverview over) {
+        this.messageStrings = LocalizedStrings.getMessages();
         this.over = over;
         gui.btnedit.setVisible(false);
         gui.btnPwReset.setVisible(false);
         new WBSUserButtonAction(this);
-        gui.setTitle("Neuer Mitarbeiter anlegen");
+        gui.setTitle(LocalizedStrings.getLogin().newUserWindowTitle());
     }
 
     /**
@@ -89,7 +92,7 @@ public class WBSUser {
      * wird von der Methode addMitarbeiter() und changeMitarbeiter() aufgerufen
      * Führt die PlausibilitätsPrüfung der einzelnen Felder in der
      * WBSMitarbeiterGUI durch
-     * 
+     *
      * @return true = alles OK, false = es sind Unstimmigkeiten aufgetreten
      */
     public boolean check() {
@@ -109,12 +112,15 @@ public class WBSUser {
             if (gui.txfTagessatz.getText().equals("")
                     || Double.parseDouble(gui.txfTagessatz.getText()) <= 0) {
                 JOptionPane
-                        .showMessageDialog(gui, "Bitte Tagessatz ausfüllen");
+                        .showMessageDialog(gui, messageStrings.fillFieldError(
+                                LocalizedStrings.getWbs().dailyRate()));
                 return false;
             }
-        } catch (NumberFormatException ex) {
             JOptionPane
-                    .showMessageDialog(gui, "Tagessatz ist kein Double-Wert");
+                    .showMessageDialog(gui,
+                            messageStrings.valueInFieldIsNotANumber(
+                                    LocalizedStrings.getWbs().dailyRate()));
+        } catch (NumberFormatException ex) {
             return false;
         }
         return true;
@@ -124,7 +130,7 @@ public class WBSUser {
     /**
      * wird beim Betätigen des Buttons "btnedit" aufgerufen Mitarbeiter-Daten
      * werden aktualisiert
-     * 
+     *
      * @return true = erfolgreiche übernahme der Änderungen, false =
      *         übernahme fehlgeschlagen
      */
@@ -142,7 +148,7 @@ public class WBSUser {
                     DBModelManager.getEmployeesModel().updateEmployee(emp);
             if (success) {
                 over.reload();
-                WPOverviewGUI.setStatusText("Mitarbeiter geändert");
+                WPOverviewGUI.setStatusText(messageStrings.userChanged());
             }
             return success;
         } else {
@@ -153,7 +159,7 @@ public class WBSUser {
     /**
      * wird beim Betätigen des Buttons "btnHinzufügen" aufgerufen fügt einen
      * neuen Mitarbeiter in die Datenbank ein
-     * 
+     *
      * @return true = erfolgreich, false = fehlgeschlagen
      */
     public boolean addMitarbeiter(Worker worker) {
@@ -180,7 +186,7 @@ public class WBSUser {
             return false;
         else {
             over.reload();
-            WPOverviewGUI.setStatusText("Mitarbeiter hinzugefügt");
+            WPOverviewGUI.setStatusText(messageStrings.userAdded());
             return true;
         }
     }
@@ -197,10 +203,10 @@ public class WBSUser {
             employee.setPassword("1234");
             if (DBModelManager.getEmployeesModel().updateEmployee(employee)) {
                 JOptionPane.showMessageDialog(null,
-                        "Das Passwort wurde auf \"1234\" zurückgesetzt!");
+                        messageStrings.passwordHasBeenReset());
             } else {
                 JOptionPane.showMessageDialog(null,
-                        "Das Passwort konnte nicht zur�ck gesetzt werden!");
+                        messageStrings.passwordChangeError());
             }
         }
     }

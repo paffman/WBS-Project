@@ -1,5 +1,6 @@
 package wpBaseline;
 
+import de.fhbingen.wbs.translation.LocalizedStrings;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -24,14 +25,14 @@ import jdbcConnection.SQLExecuter;
  * Sven Seckler,<br/>
  * Lin Yang<br/>
  * Funktionalitaet der BaselineViewGUI<br/>
- * 
+ *
  * @author Michael Anstatt, Lin Yang
  * @version 2.0 - 20.08.2012
  */
 public class BaselineView {
     /**
      * Konstruktor
-     * 
+     *
      * @param baselineID
      *            ID der gewuenschten Baseline
      * @param parent
@@ -47,14 +48,15 @@ public class BaselineView {
             ;
 
         } catch (SQLException e) {
-            Controller.showError("Problem beim lesen der Baseline");
+            Controller.showError(LocalizedStrings.getErrorMessages()
+                    .baselineLoadingError());
             e.printStackTrace();
         }
     }
 
     /**
      * Fuellt die BaselineViewGUI mit Daten aus der DB
-     * 
+     *
      * @param baselineID
      *            ID der gewuenschten Baseline
      * @return Liste mit StringArrays der Daten

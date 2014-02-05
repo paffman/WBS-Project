@@ -1,5 +1,6 @@
 package wpWorker;
 
+import de.fhbingen.wbs.translation.LocalizedStrings;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.ResultSet;
@@ -18,7 +19,7 @@ public class ChangePWButtonAction {
     private final Messages messages;
 
     public ChangePWButtonAction(ChangePW changepw) {
-        messages = C10N.get(Messages.class);
+        messages = LocalizedStrings.getMessages();
         this.changepw = changepw;
 		addButtonAction();
 	}

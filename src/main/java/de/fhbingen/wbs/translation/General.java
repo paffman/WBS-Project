@@ -40,6 +40,10 @@ public interface General {
     @En("Costs")
     String costs();
 
+    @De("{0} Kosten")
+    @En("{0} costs")
+    String costs(String s);
+
     @De("Trend")
     @En("Trend")
     String trend();
@@ -59,4 +63,91 @@ public interface General {
 
     @De("Verursacher")
     String causer();
+
+    @De("Übersicht")
+    String overview();
+
+    @De("Projektverfügbarkeit")
+    String projectAvailability();
+
+    @De("KW")
+    String calendarWeekAbbreviation();
+
+    @De("Verfügbarkeit")
+    String availablility();
+
+    @De("Nicht verfügbar")
+    String notAvailable();
+
+    @De("Warnung")
+    String warning();
+
+    @De("Tag")
+    String day();
+
+    @De("Woche")
+    String week();
+
+    @De("Monat")
+    String month();
+
+    @De("Jahr")
+    String year();
+
+    @De("{0} auswählen")
+    String choose(String s);
+
+    @De("Berechtigung")
+    String permission();
+
+    @De("Ansichten")
+    String views();
+
+    @De("Ansicht")
+    String view();
+
+    @De("Dauer")
+    String duration();
+
+    @De("Abhängigkeiten")
+    String dependencies();
+
+    @De("Konflikte")
+    String conflicts();
+
+    @De("Verfügbarkeiten")
+    String availabilities();
+
+    @De("Alle")
+    String all();
+
+    @De("Offene")
+    String open();
+
+    @De("Fertige")
+    String finished();
+
+    @De("Vorgänger")
+    String predecessor();
+
+    @De("Nachfolger")
+    String successor();
+
+    @De("Abhängigkeit")
+    String dependency();
+
+    @De("\u20ac")
+    String currencySymbol();
+
+    @De("Inaktiv")
+    String inactive();
+
+    @De("Verantwortlicher")
+    String responsiblePerson();
+
+    @De("Verlauf")
+    String history();
+
+    @De("verwalten")
+    String toManage();
 }

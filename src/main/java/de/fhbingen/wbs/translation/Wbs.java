@@ -11,7 +11,7 @@ public interface Wbs {
     @En("Work effort on ")
     String addAufwandWindowTitle();
 
-    @De("ArbeitspaketID")
+    @De("Arbeitspaket ID")
     @En("Work package ID")
     String workPackageId();
 
@@ -35,30 +35,35 @@ public interface Wbs {
     @En("Work package")
     String workPackage();
 
-    @De("EAC")
+    @De("{0} Arbeitspakete")
+    @En("{0} Work packages")
+    String workPackages(String adjective);
+
+    @En("EAC")
     String eac();
 
-    @De("BAC")
+    @En("BAC")
     String bac();
 
-    @De("AC")
+    @En("AC")
     String ac();
 
-    @De("ETC")
+    @En("ETC")
     String etc();
 
-    @De("CPI")
+    @En("CPI")
     String cpi();
 
-    @De("EV")
+    @En("EV")
     String ev();
 
-    @De("PV")
+    @En("PV")
     String pv();
 
-    @De("SV")
+    @En("SV")
     String sv();
-    @De("SPI")
+
+    @En("SPI")
     String spi();
 
     @De("Tagessatz")
@@ -67,4 +72,66 @@ public interface Wbs {
 
     @De("Betroffene Arbeitspakete")
     String affectedWorkpackages();
+
+    @De("Timeline")
+    @En("Timeline")
+    String timeline();
+
+    @De("Manuelle Verfügbarkeiten")
+    String manualAvailabilities();
+
+    @En("Baseline")
+    String baseline();
+
+    @De("CPI-Diagramm")
+    @En("CPI-Graph")
+    String cpiGraph();
+
+    @De("{0}-Diagramm")
+    @En("{0}-Graph")
+    String graph(String s);
+
+
+
+    @De("Fertigstellung")
+    String completion();
+
+    @De("Baseline-Berechnung")
+    String baselineCalculation();
+
+    @De("Aufwand eintragen")
+    String insertWorkEffort();
+
+    @De("Mitarbeiter")
+    String staff();
+
+    @De("CPI-Farben")
+    String cpiColors();
+
+    @De("Vorgänger / Nachfolger")
+    String addDependencyWindowTitle();
+
+    @De("Start (errechnet)")
+    String calculatedStart();
+
+    @De("Release (errechnet)")
+    String calculatedRelease();
+
+    @De("CPI / SPI")
+    String cpiAndSpi();
+
+    @De("in Tagen")
+    String inDays();
+
+    @De("{0} in Tagen")
+    String inDays(String s);
+
+    @De("{0} erfassen")
+    String enter(String s);
+
+    @De("Neues Arbeitspaket anlegen")
+    String addNewWorkPackageWindowTitle();
+
+    @De("Geändertes Datum")
+    String dateChangedWindowTitle();
 }

@@ -1,5 +1,6 @@
 package wpOverview.tabs;
 
+import de.fhbingen.wbs.translation.LocalizedStrings;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -30,7 +31,7 @@ import wpAvailability.EditAvailability;
 import wpWorker.Worker;
 /**
  * Studienprojekt:	PSYS WBS 2.0<br/>
- * 
+ *
  * Kunde:		Pentasys AG, Jens von Gersdorff<br/>
  * Projektmitglieder:<br/>
  *			Michael Anstatt,<br/>
@@ -38,9 +39,9 @@ import wpWorker.Worker;
  *			Jens Eckes,<br/>
  *			Sven Seckler,<br/>
  *			Lin Yang<br/>
- * 
+ *
  * ActionListener der AvailabilityGraphGUI Klasse<br/>
- * 
+ *
  * @author Michael Anstatt
  * @version 2.0
  */
@@ -50,7 +51,7 @@ public class AvailabilityGraphAction {
 	private AvailabilityGraphGUI gui;
 	private JFrame parent;
 	/**
-	 * 
+	 *
 	 * @param gui GUI Klasse des AvailabilityGraph
 	 * @param parent ParentFrame
 	 */
@@ -125,8 +126,12 @@ public class AvailabilityGraphAction {
 						if (foundAv != null) {
 							new EditAvailability(gui.function, foundAv, parent);
 						} else {
-							JOptionPane.showMessageDialog(new JFrame("Warnung"),
-									"Diese Verfügbarkeit kann nicht bearbeitet werden, da automatisch gesetzt. Bitte verwenden Sie manuelle Verfügbarkeiten!");
+							JOptionPane.showMessageDialog(new JFrame
+                                    (LocalizedStrings.getGeneralStrings()
+                                            .warning()),
+                                    LocalizedStrings.getErrorMessages()
+                                            .availablilityCanNotBeChanged()
+									);
 						}
 					}
 				}
@@ -135,7 +140,7 @@ public class AvailabilityGraphAction {
 
 			@Override
 			public void chartMouseMoved(ChartMouseEvent arg0) {
-				
+
 			}
 
 		});

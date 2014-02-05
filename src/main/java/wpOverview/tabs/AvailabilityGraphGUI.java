@@ -1,5 +1,7 @@
 package wpOverview.tabs;
 
+import de.fhbingen.wbs.translation.General;
+import de.fhbingen.wbs.translation.LocalizedStrings;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
@@ -16,7 +18,7 @@ import org.jfree.chart.ChartPanel;
 import wpOverview.WPOverview;
 /**
  * Studienprojekt:	PSYS WBS 2.0<br/>
- * 
+ *
  * Kunde:		Pentasys AG, Jens von Gersdorff<br/>
  * Projektmitglieder:<br/>
  *			Michael Anstatt,<br/>
@@ -24,15 +26,15 @@ import wpOverview.WPOverview;
  *			Jens Eckes,<br/>
  *			Sven Seckler,<br/>
  *			Lin Yang<br/>
- * 
+ *
  * WindowBuilder autogeneriert<br/>
- * 
+ *
  * @author WBS1.0 Team
  * @version 2.0
  */
 /**
  * Studienprojekt:	PSYS WBS 2.0<br/>
- * 
+ *
  * Kunde:		Pentasys AG, Jens von Gersdorff<br/>
  * Projektmitglieder:<br/>
  *			Michael Anstatt,<br/>
@@ -40,9 +42,9 @@ import wpOverview.WPOverview;
  *			Jens Eckes,<br/>
  *			Sven Seckler,<br/>
  *			Lin Yang<br/>
- * 
+ *
  * GUI des Verguegbarkeitsgraphen<br/>
- * 
+ *
  * @author Michael Anstatt
  * @version 2.0 - 2012-08-21
  */
@@ -58,7 +60,7 @@ public class AvailabilityGraphGUI extends javax.swing.JPanel {
 	protected JButton btnPrev;
 	protected JToggleButton btnManualAv;
 	/**
-	 * 
+	 *
 	 * @param over WPOverview Funktionalität
 	 * @param parent ParentFrame
 	 */
@@ -75,8 +77,8 @@ public class AvailabilityGraphGUI extends javax.swing.JPanel {
 	protected void initGUI() {
 		this.setLayout(new BorderLayout());
 		this.add(createOptionPanel(), BorderLayout.NORTH);
-		
-		pnlGraph = new ChartPanel(null);	
+
+		pnlGraph = new ChartPanel(null);
 		JPanel panel = new JPanel();
 		panel.setLayout(new GridBagLayout());
 		GridBagConstraints constraints = new GridBagConstraints();
@@ -88,34 +90,38 @@ public class AvailabilityGraphGUI extends javax.swing.JPanel {
 		panel.setBackground(Color.white);
 		this.add(panel, BorderLayout.CENTER);
 	}
-	
+
 	/**
 	 * Erstellt das JPanel fuer due GUI
 	 * @return JPanel der GUI
 	 */
 	protected JPanel createOptionPanel() {
-		
+		General generalStrings = LocalizedStrings.getGeneralStrings();
+
 		JPanel optionPanel = new JPanel();
-		
+
 		buttons = new JToggleButton[4];
-		buttons[AvailabilityGraph.DAY] = new JToggleButton("Tag");
-		buttons[AvailabilityGraph.WEEK] = new JToggleButton("Woche");
-		buttons[AvailabilityGraph.MONTH] = new JToggleButton("Monat");
-		buttons[AvailabilityGraph.YEAR] = new JToggleButton("Jahr");
+		buttons[AvailabilityGraph.DAY] = new JToggleButton(generalStrings.day());
+		buttons[AvailabilityGraph.WEEK] = new JToggleButton(generalStrings
+                .week());
+		buttons[AvailabilityGraph.MONTH] = new JToggleButton(generalStrings
+                .month());
+		buttons[AvailabilityGraph.YEAR] = new JToggleButton(generalStrings
+                .year());
 		for (int i = 0; i < buttons.length; i++) {
 			optionPanel.add(buttons[i]);
 		}
 		optionPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-		
+
 		btnPrev = new JButton("<");
 		optionPanel.add(btnPrev);
-		
+
 		btnNext = new JButton(">");
 		optionPanel.add(btnNext);
-		
-		btnManualAv = new JToggleButton("manuelle Verfügbarkeiten einblenden");
+
+		btnManualAv = new JToggleButton(LocalizedStrings.getButton().show(LocalizedStrings.getWbs().manualAvailabilities()));
 		optionPanel.add(btnManualAv);
-		
+
 		return optionPanel;
 	}
 	/**

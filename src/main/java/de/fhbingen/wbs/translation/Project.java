@@ -30,4 +30,11 @@ public interface Project {
     @En("Start date")
     @De("Startdatum")
     String startDate();
+
+    @En("End date")
+    @De("Enddatum")
+    String endDate();
+
+    @De("Übersicht Projekt")
+    String projectOverviewWindowTitle();
 }

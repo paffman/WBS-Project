@@ -1,5 +1,6 @@
 package wpAvailability;
 
+import de.fhbingen.wbs.translation.LocalizedStrings;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -37,7 +38,7 @@ import wpWorker.Worker;
  * Lin Yang<br/>
  * Diese Klasse wird zum editieren der Verfuegbarkeiten benutzt.<br/>
  * Sie bietet die Funktionalitaet fuer die Klasse EditAvailabilityGUI.<br/>
- * 
+ *
  * @author Michael Anstatt
  * @version 2.0 - 2012-08-21
  */
@@ -47,7 +48,7 @@ public class EditAvailability {
 
     /**
      * Vorhandene Availability bearbeiten
-     * 
+     *
      * @param avGraph
      *            Verfuegbarkeiten Graph
      * @param availability
@@ -59,7 +60,8 @@ public class EditAvailability {
             Availability availability, JFrame parent) {
         this.availability = availability;
         gui =
-                new EditAvailabilityGUI(this, "Verfügbarkeit bearbeiten",
+                new EditAvailabilityGUI(this, LocalizedStrings.getWbs()
+                        .editAvailability(),
                         parent);
         gui.setNewView(false);
 
@@ -96,7 +98,7 @@ public class EditAvailability {
 
     /**
      * Legt neue Availability an
-     * 
+     *
      * @param avGraph
      *            Verfuegbarkeits Graph
      * @param worker
@@ -108,7 +110,8 @@ public class EditAvailability {
      */
     public EditAvailability(final AvailabilityGraph avGraph, Worker worker,
             Day day, JFrame parent) {
-        gui = new EditAvailabilityGUI(this, "Neue Verfügbarkeit", parent);
+        gui = new EditAvailabilityGUI(this, LocalizedStrings.getWbs()
+                .newAvailability(), parent);
         gui.setNewView(true);
 
         List<Worker> workers = WorkerService.getRealWorkers();

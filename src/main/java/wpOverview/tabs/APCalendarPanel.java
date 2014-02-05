@@ -1,5 +1,6 @@
 package wpOverview.tabs;
 
+import de.fhbingen.wbs.translation.LocalizedStrings;
 import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -60,7 +61,7 @@ import wpComparators.APLevelComparator;
 import wpOverview.WPOverview;
 /**
  * Studienprojekt:	PSYS WBS 2.0<br/>
- * 
+ *
  * Kunde:		Pentasys AG, Jens von Gersdorff<br/>
  * Projektmitglieder:<br/>
  *			Michael Anstatt,<br/>
@@ -68,9 +69,9 @@ import wpOverview.WPOverview;
  *			Jens Eckes,<br/>
  *			Sven Seckler,<br/>
  *			Lin Yang<br/>
- * 
+ *
  * <br/>
- * 
+ *
  * @author WBS1.0 Team
  * @version 2.0
  */
@@ -101,18 +102,21 @@ public class APCalendarPanel extends JPanel {
 		final ChartPanel chartPanel = new ChartPanel(chart);
 
 		final JPopupMenu popup = new JPopupMenu();
-		JMenuItem miSave = new JMenuItem("Timeline speichern");
+		JMenuItem miSave = new JMenuItem(LocalizedStrings.getButton().save
+                (LocalizedStrings.getWbs().timeline()));
 		miSave.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				String dbPath = MDBConnect.pathDB;
+				String dbPath = MDBConnect.pathDB;//TODO warum mdb?
 				String outfile = dbPath.subSequence(4, dbPath.lastIndexOf("/") + 1) + "chart-" + System.currentTimeMillis() + ".jpg";
 				try {
 					ChartUtilities.saveChartAsJPEG(new File(outfile), chart, chartPanel.getWidth(), chartPanel.getWidth());
-					Controller.showMessage("Timeline wurde unter " + outfile + " gespeichert");
+					Controller.showMessage(LocalizedStrings.getMessages()
+                            .timelineSaved(outfile));
 				} catch (IOException e) {
-					Controller.showError("Timeline konnte nicht exportiert werden");
+					Controller.showError(LocalizedStrings.getErrorMessages()
+                            .timelineExportError());
 				}
 			}
 
@@ -157,28 +161,28 @@ public class APCalendarPanel extends JPanel {
 
 			@Override
 			public void paintBar(Graphics2D g, BarRenderer arg1, int row, int col, RectangularShape rect, RectangleEdge arg5) {
-				
-				String wpName = (String)dataset.getColumnKey(col); 
+
+				String wpName = (String)dataset.getColumnKey(col);
 				int i = 0;
 				int spaceCount = 0;
 				while(wpName.charAt(i++) == ' ' && spaceCount < 17) {
 					spaceCount++;
-				}				
+				}
 
 					g.setColor(new Color(spaceCount*15, spaceCount*15, spaceCount*15));
 					g.fill(rect);
 					g.setColor(Color.black);
 					g.setStroke(new BasicStroke());
-					g.draw(rect);			
+					g.draw(rect);
 			}
 
 			@Override
 			public void paintBarShadow(Graphics2D arg0, BarRenderer arg1, int arg2, int arg3, RectangularShape arg4, RectangleEdge arg5, boolean arg6) {
-				
+
 			}
-			
+
 		});
-		
+
 		((CategoryPlot) chart.getPlot()).setRenderer(new GanttRenderer() {
 			private static final long serialVersionUID = -6078915091070733812L;
 
@@ -190,13 +194,14 @@ public class APCalendarPanel extends JPanel {
 
 	}
 	/**
-	 * Wandelt Workpackages in Tasks um 
+	 * Wandelt Workpackages in Tasks um
 	 * @param userWp Liste mit Arbeitspaketen
 	 * @return IntervalCategoryDataset Tasks der Workpackages
 	 */
 	public IntervalCategoryDataset createDataset(List<Workpackage> userWp) {
 
-		final TaskSeries s1 = new TaskSeries("Übersicht");
+		final TaskSeries s1 = new TaskSeries(LocalizedStrings
+                .getGeneralStrings().overview());
 		colorList = new ArrayList<Integer>();
 		for (Workpackage actualPackage : userWp) {
 			if (actualPackage.getEndDateCalc() != null && actualPackage.getStartDateCalc() != null) {
@@ -236,11 +241,11 @@ public class APCalendarPanel extends JPanel {
 	 */
 	private JFreeChart createChart(final IntervalCategoryDataset dataset) {
 		final JFreeChart chart = ChartFactory.createGanttChart("",
-				"", 
-				"", 
-				dataset, 
+				"",
+				"",
+				dataset,
 				true,
-				false, 
+				false,
 				false
 				);
 		chart.getCategoryPlot().getDomainAxis().setCategoryMargin(0.4);

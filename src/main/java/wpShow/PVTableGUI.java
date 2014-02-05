@@ -1,5 +1,7 @@
 package wpShow;
 
+import de.fhbingen.wbs.translation.LocalizedStrings;
+import de.fhbingen.wbs.translation.Wbs;
 import java.awt.BorderLayout;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -22,7 +24,7 @@ import globals.Controller;
 import globals.Workpackage;
 /**
  * Studienprojekt:	PSYS WBS 2.0<br/>
- * 
+ *
  * Kunde:		Pentasys AG, Jens von Gersdorff<br/>
  * Projektmitglieder:<br/>
  *			Michael Anstatt,<br/>
@@ -30,9 +32,9 @@ import globals.Workpackage;
  *			Jens Eckes,<br/>
  *			Sven Seckler,<br/>
  *			Lin Yang<br/>
- * 
+ *
  * WindowBuilder autogeneriert<br/>
- * 
+ *
  * @author WindowBuilder(Michael Anstatt)
  * @version 2.0 - 18.08.2012
  */
@@ -46,28 +48,30 @@ public class PVTableGUI extends JFrame {
 	 * @param wp Ausgewaehltes AP
 	 */
 	public PVTableGUI(Workpackage wp) {
+        Wbs wbsStrings = LocalizedStrings.getWbs();
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(contentPane);
-		
+
 		JScrollPane scrollPane = new JScrollPane();
 		contentPane.add(scrollPane, BorderLayout.CENTER);
-		
+
 		table = new JTable();
 		table.setModel(new DefaultTableModel(
 			new Object[][] {
 				{null, null, null, null},
 			},
 			new String[] {
-				"Datum", "PV", "SV", "SPI"
+				LocalizedStrings.getGeneralStrings().date(), wbsStrings.pv(),
+                    wbsStrings.sv(), wbsStrings.spi()
 			}
 		));
-	
-		
-		
+
+
+
 		Calendar minCal = new GregorianCalendar();
 		minCal.setTime(new calendar.Day(ValuesService.getPreviousFriday(wp.getStartDateCalc()).getTime()));
 
@@ -77,7 +81,7 @@ public class PVTableGUI extends JFrame {
 
 		List<Date> orderedDates = new ArrayList<Date>(pvs.keySet());
 		Collections.sort(orderedDates);
-		
+
 		DefaultTableModel model = (DefaultTableModel) table.getModel();
 		model.removeRow(0);
 		for (Date actualDate : orderedDates) {
@@ -89,9 +93,9 @@ public class PVTableGUI extends JFrame {
 			}
 			model.addRow(new Object[] {Controller.DATE_DAY.format(actualDate), Controller.DECFORM.format(actualPV)+" EUR", Controller.DECFORM.format(wp.getSv(actualDate))+" EUR", Controller.DECFORM.format(wp.getSpi(actualDate))});
 		}
-		
+
 		scrollPane.setViewportView(table);
-		
+
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		this.setVisible(true);
 	}

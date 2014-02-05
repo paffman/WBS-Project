@@ -19,6 +19,8 @@ package wpWorker;
 
 import dbaccess.data.Employee;
 import c10n.C10N;
+import de.fhbingen.wbs.translation.LocalizedStrings;
+import de.fhbingen.wbs.translation.Login;
 import de.fhbingen.wbs.translation.Messages;
 
 
@@ -39,7 +41,7 @@ public class ChangePW {
 	 * @param usr - aktuell eingeloggter User
 	 */
 	public ChangePW(Worker usr){
-        messages = C10N.get(Messages.class);
+        messages = LocalizedStrings.getMessages();
         dies = this;
 		this.usr = usr;
 		gui = new ChangePWGUI();

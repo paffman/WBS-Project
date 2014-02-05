@@ -51,4 +51,5 @@ public interface Login {
     @De("Projektleiterberechtigung")
     @En("Project managing permission")
     String projectManagerPermission();
+
 }

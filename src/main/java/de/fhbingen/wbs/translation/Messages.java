@@ -93,4 +93,32 @@ public interface Messages extends ErrorMessages{
 
     @De("Es wurde ein AP aktiv/inaktiv gesetzt.")
     String apActiveStateChanged();
+
+    @De("Timeline wurde unter {0} gespeichert")
+    String timelineSaved(String outfile);
+
+    @De("Die Dauerberechnung ist eventuell nicht aktuell. Trotzdem Baseline " +
+            "berechnen?")
+    String durationCalculationNotUpToDate();
+
+    @De("Die Importierte DB wurde berechnet.")
+    String importedDbWasCalculated();
+
+    @De("Die Ansicht wurde aktualisiert.")
+    String viewWasRefreshed();
+
+    @De("Bitte klicken Sie auf das gewünschte Arbeitspaket, um die Details anzuzeigen.")
+    String clickOnWorkpackageToShowDetails();
+
+    @De("Arbeitspaket {0} wurde als {1} angelegt.")
+    String workpackageXwasCreatedAsY(String x, String y);
+
+    @De("Arbeitspaket {0} wurde als {1} gelöscht.")
+    String workpackageXwasDeletedAsY(String x, String y);
+
+    @De("Wollen Sie das geänderte {0} in die UAP übernehmen?")
+    String workPackageApplyDateOnSubWorkPackages(String endOrStartDate);
+
+    @De("Bitte BAC eingeben:")
+    String insertBac();
 }

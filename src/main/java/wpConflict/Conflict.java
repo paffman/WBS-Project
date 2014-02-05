@@ -1,5 +1,7 @@
 package wpConflict;
 
+import de.fhbingen.wbs.translation.LocalizedStrings;
+import de.fhbingen.wbs.translation.Messages;
 import globals.Workpackage;
 
 import java.util.Date;
@@ -17,7 +19,7 @@ import dbaccess.DBModelManager;
  * Sven Seckler,<br/>
  * Lin Yang<br/>
  * Diese Klasse wir benutzt um Konflikt-Daten zu handhaben.<br/>
- * 
+ *
  * @author Michael Anstatt, Marc-Eric Baumgaertner, Jens Eckes, Sven Seckler
  * @version 2.0 - 2012-08-19
  */
@@ -34,6 +36,7 @@ public class Conflict {
 
     public static final int TRIGGER = 0;
     public static final int AFFECTED = 1;
+    private final Messages messageStrings;
 
     private Date date;
     private int reason;
@@ -48,7 +51,7 @@ public class Conflict {
 
     /**
      * Konstruktor
-     * 
+     *
      * @param date
      *            Datum an dem der Konflikt ausgeloest wurde
      * @param reason
@@ -69,11 +72,12 @@ public class Conflict {
         this.affectedAP = affectedAP.getWpId();
         this.triggerApStringId = triggerAP.getStringID();
         this.affectedApStringId = affectedAP.getStringID();
+        this.messageStrings = LocalizedStrings.getMessages();
     }
 
     /**
      * Konstruktor
-     * 
+     *
      * @param date
      *            Datum an dem der Konflikt ausgeloest wurde
      * @param reason
@@ -89,11 +93,12 @@ public class Conflict {
         this.userId = userId;
         this.triggerAp = triggerAP.getWpId();
         this.triggerApStringId = triggerAP.getStringID();
+        this.messageStrings = LocalizedStrings.getMessages();
     }
 
     /**
      * Konstruktor
-     * 
+     *
      * @param date
      *            Datum an dem der Konflikt ausgeloest wurde
      * @param reason
@@ -105,11 +110,12 @@ public class Conflict {
         this.date = date;
         this.reason = reason;
         this.userId = userId;
+        this.messageStrings = LocalizedStrings.getMessages();
     }
 
     /**
      * Konstruktor
-     * 
+     *
      * @param date
      *            Datum an dem der Konflikt ausgeloest wurde
      * @param reason
@@ -136,43 +142,51 @@ public class Conflict {
         this.affectedApStringId =
                 affectedAP <= 0 ? "" : DBModelManager.getWorkpackageModel()
                         .getWorkpackage(affectedAP).getStringID();
+        this.messageStrings = LocalizedStrings.getMessages();
     }
 
     /**
      * Liefert eine Beschreibung des Konflikts
-     * 
+     *
      * @return String mit Beschreibung
      */
     public String getReasonString() {
         switch (reason) {
         case STARTWISH_FAIL:
-            return "Das gewünschte Startdatum kann nicht eingehalten werden";
+            return messageStrings.startDateCantBeAchieved();
         case ENDWISH_FAIL:
-            return "Das gewünschte Enddatum kann nicht eingehalten werden";
+            return messageStrings.endDateCantBeAchieved();
         case CHANGED_RESOURCES:
-            return "Die Ressourcen wurden geändert, Neuberechnung starten";
+            return messageStrings.resourcesChanged() + " " + messageStrings
+                    .recalculate();
         case CHANGED_WISHDATES:
-            return "Ein Wunschdatum wurde geändert, Neuberechnung starten";
+            return messageStrings.wishDateChanged() + " " + messageStrings
+                    .recalculate();
         case NEW_WP:
-            return "Neue APs wurden erstellt, Neuberechnung starten";
+            return messageStrings.newApsWereCreated() + " " + messageStrings
+                    .recalculate();
         case CHANGED_DEPENDECIES:
-            return "Abhängigkeiten wurden geändert, Neuberechnung starten";
+            return messageStrings.dependenciesHaveChanged() + " "
+                    + messageStrings.recalculate();
         case CHANGED_BAC:
-            return "Der BAC eines APs wurde geändert, Neuberechnung starten";
+            return messageStrings.bacHasChanged() + " " + messageStrings
+                    .recalculate();
         case DELETED_WP:
-            return "Es wurde ein AP gelöscht, Neuberechnung starten";
+            return messageStrings.apWasDeleted() + " " + messageStrings
+                    .recalculate();
         case CHANGED_ACTIVESTATE:
-            return "Es wurde ein AP aktiv/inaktiv gesetzt, Neuberechnung starten";
+            return messageStrings.apActiveStateChanged() + " "
+                    + messageStrings.recalculate();
+        default:
+            return null;
         }
-        return null;
-
     }
 
     // getter/setter
 
     /**
      * Gibt Datum des Konflikts
-     * 
+     *
      * @return Datum des Konflikts
      */
     public Date getDate() {
@@ -181,7 +195,7 @@ public class Conflict {
 
     /**
      * Setzt das Datum des Konflikts
-     * 
+     *
      * @param Datum
      *            des Konflikts
      */
@@ -191,7 +205,7 @@ public class Conflict {
 
     /**
      * Gibt den Fehlercode zurueck
-     * 
+     *
      * @return int des Fehlercodes
      */
     public int getReason() {
@@ -200,7 +214,7 @@ public class Conflict {
 
     /**
      * Setzt den Fehlercode
-     * 
+     *
      * @param reason
      *            int des Fehlercodes
      */
@@ -210,7 +224,7 @@ public class Conflict {
 
     /**
      * Liefert die UserID zurueck
-     * 
+     *
      * @return String der UserID
      */
     public int getUserId() {
@@ -219,7 +233,7 @@ public class Conflict {
 
     /**
      * Setzt den ausloesenden User
-     * 
+     *
      * @param userId
      *            String ID des User
      */
@@ -229,7 +243,7 @@ public class Conflict {
 
     /**
      * Vergleicht ein Conflictobjekt mit sich selbst
-     * 
+     *
      * @return
      */
     @Override
@@ -261,7 +275,7 @@ public class Conflict {
 
     /**
      * Liefert einen String des Conflict Objekts
-     * 
+     *
      * @return String mit Informationen des Objekts
      */
     @Override
@@ -276,7 +290,7 @@ public class Conflict {
     /**
      * Liefert einen HashCode des Objekts Wenn Reason 1 oder 2 wird ein
      * richtiger HashCode erstellt sonst einfach die Reason ID zurueckgegeben
-     * 
+     *
      * @return
      */
     @Override

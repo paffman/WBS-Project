@@ -2,6 +2,7 @@ package wpOverview;
 
 
 
+import de.fhbingen.wbs.translation.LocalizedStrings;
 import functions.CalcOAPBaseline;
 import functions.WpManager;
 import globals.Controller;
@@ -19,22 +20,21 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import chooseDB.DBChooser;
-import dbServices.SemaphoreService;
 import dbaccess.DBModelManager;
 import wpWorker.ChangePW;
 
 /**
  * Studienprojekt:	WBS
- * 
+ *
  * Kunde:				Pentasys AG, Jens von Gersdorff
- * Projektmitglieder:	Andre Paffenholz, 
- * 						Peter Lange, 
+ * Projektmitglieder:	Andre Paffenholz,
+ * 						Peter Lange,
  * 						Daniel Metzler,
  * 						Samson von Graevenitz
- * 
- * 
+ *
+ *
  * ButtonActions der WPOverview GUI werden hier verwaltet
- * 
+ *
  * @author Samson von Graevenitz und Daniel Metzler
  * @version 0.1 - 30.11.2010
  */
@@ -77,7 +77,8 @@ public class WPOverviewButtonAction {
 						WpManager.removeAP(over.getSelectedWorkpackage());
 						over.reload();
 					} else {
-						JOptionPane.showMessageDialog(gui, "Bitte markieren Sie das Arbeitspaket das gelöscht werden soll");
+						JOptionPane.showMessageDialog(gui,
+                                LocalizedStrings.getErrorMessages().markWorkpackageToDelete());
 					}
 				}
 			});
@@ -86,7 +87,8 @@ public class WPOverviewButtonAction {
 				public void actionPerformed(ActionEvent e) {
 					new PrepareImport(over);
 					over.reload();
-					WPOverviewGUI.setStatusText("Die Importierte DB wurde berechnet");
+					WPOverviewGUI.setStatusText(LocalizedStrings.getMessages
+                            ().importedDbWasCalculated());
 					// JOptionPane.showMessageDialog(gui, "Berechnung abgeschlossen");
 				}
 			});
@@ -95,7 +97,8 @@ public class WPOverviewButtonAction {
 		gui.miAktualisieren.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				over.reload();
-				WPOverviewGUI.setStatusText("Die Ansicht wurde aktualisiert");
+				WPOverviewGUI.setStatusText(LocalizedStrings.getMessages()
+                        .viewWasRefreshed());
 			}
 		});
 
@@ -112,7 +115,7 @@ public class WPOverviewButtonAction {
 						gui.requestFocus();
 					}
 				}.start();
-				
+
 				over.reload();
 			}
 		});
@@ -135,13 +138,14 @@ public class WPOverviewButtonAction {
 			public void actionPerformed(ActionEvent e) {
 				Controller.leaveDB();
 				System.exit(0);
-				
+
 			}
 		});
 
 		gui.miHilfe.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				JOptionPane.showMessageDialog(gui, "Bitte klicken Sie auf das gewünschte Arbeitspaket, um die Details anzuzeigen.");
+				JOptionPane.showMessageDialog(gui, LocalizedStrings
+                        .getMessages().clickOnWorkpackageToShowDetails());
 			}
 		});
 
@@ -154,7 +158,7 @@ public class WPOverviewButtonAction {
 		// Fenster Schließen
 		gui.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
-				gui.dispose();				
+				gui.dispose();
 				if ( WPOverview.getUser().getProjLeiter()){
 				    DBModelManager.getSemaphoreModel().leaveSemaphore("pl", WPOverview.getUser().getId());
 				}

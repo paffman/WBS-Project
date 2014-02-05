@@ -1,5 +1,6 @@
 package wpShow;
 
+import de.fhbingen.wbs.translation.LocalizedStrings;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -26,7 +27,7 @@ import wpOverview.WPOverviewGUI;
 
 /**
  * Studienprojekt:	PSYS WBS 2.0<br/>
- * 
+ *
  * Kunde:		Pentasys AG, Jens von Gersdorff<br/>
  * Projektmitglieder:<br/>
  *			Michael Anstatt,<br/>
@@ -36,9 +37,9 @@ import wpOverview.WPOverviewGUI;
  *			Lin Yang<br/>
  *
  * Auswahlmoeglichkeit fuer Vorgaenger/Nachfolger-Arbeitspakete mit Baumansicht
- * 
+ *
  * WindowBuilder autogeneriert<br/>
- * 
+ *
  * @author WindowBuilder(Michael Anstatt)
  * @version 2.0 - 18.08.2012
  */
@@ -65,7 +66,7 @@ public class SequencerGUI extends JFrame {
 	 * @param parent Workpackage GUI
 	 */
 	public SequencerGUI(final Workpackage wp, final int mode, WPShowGUI parent) {
-		super("Vorgänger / Nachfolger");
+		super(LocalizedStrings.getWbs().addDependencyWindowTitle());
 		this.wp = wp;
 		this.mode = mode;
 		this.parent = parent;
@@ -87,7 +88,8 @@ public class SequencerGUI extends JFrame {
 
 		final JPopupMenu popUp = new JPopupMenu();
 
-		final JMenuItem delete = new JMenuItem("Beziehung löschen");
+		final JMenuItem delete = new JMenuItem(LocalizedStrings.getButton()
+                .delete(LocalizedStrings.getGeneralStrings().dependency()));
 		delete.setIcon(WPOverviewGUI.delAP);
 		delete.addActionListener(new ActionListener() {
 
@@ -97,7 +99,8 @@ public class SequencerGUI extends JFrame {
 			}
 		});
 
-		final JMenuItem add = new JMenuItem("Beziehung setzen");
+		final JMenuItem add = new JMenuItem(LocalizedStrings.getButton()
+                .add(LocalizedStrings.getGeneralStrings().dependency()));
 		add.setIcon(WPOverviewGUI.newAp);
 		add.addActionListener(new ActionListener() {
 
@@ -152,14 +155,20 @@ public class SequencerGUI extends JFrame {
 		switch (mode) {
 		case MODE_ADD_ANCHESTOR:
 			if (WpManager.insertAncestor(selected, wp)) {
-				JOptionPane.showMessageDialog(null, "Arbeitspaket " + selected + " wurde als Vorgänger angelegt");
+				JOptionPane.showMessageDialog(null, LocalizedStrings
+                        .getMessages().workpackageXwasCreatedAsY(selected
+                                .toString(),
+                                LocalizedStrings.getGeneralStrings().predecessor()));
 				parent.updateDependencyCount(wp);
 				dispose();
 			}
 			break;
 		case MODE_ADD_FOLLOWER:
 			if (WpManager.insertFollower(selected, wp)) {
-				JOptionPane.showMessageDialog(null, "Arbeitspaket " + selected + " wurde als Nachfolger angelegt");
+				JOptionPane.showMessageDialog(null, LocalizedStrings
+                        .getMessages().workpackageXwasCreatedAsY(selected
+                                .toString(),
+                                LocalizedStrings.getGeneralStrings().successor()));
 				parent.updateDependencyCount(wp);
 				dispose();
 			}
@@ -173,14 +182,21 @@ public class SequencerGUI extends JFrame {
 		switch (mode) {
 		case MODE_DELETE_ANCHESTOR:
 			WpManager.removeAncestor(selected, wp);
-			JOptionPane.showMessageDialog(null, "Arbeitspaket " + selected + " wurde als Vorgänger gelöscht");
-			parent.updateDependencyCount(wp);
+            JOptionPane.showMessageDialog(null, LocalizedStrings
+                    .getMessages().workpackageXwasDeletedAsY(selected
+                            .toString(),
+                            LocalizedStrings.getGeneralStrings().predecessor
+                                    ()));
+            parent.updateDependencyCount(wp);
 			dispose();
 			break;
 		case MODE_DELETE_FOLLOWER:
 			WpManager.removeFollower(selected, wp);
-			JOptionPane.showMessageDialog(null, "Arbeitspaket " + selected + " wurde als Nachfolger gelöscht");
-			parent.updateDependencyCount(wp);
+            JOptionPane.showMessageDialog(null, LocalizedStrings
+                    .getMessages().workpackageXwasDeletedAsY(selected
+                            .toString(), LocalizedStrings.getGeneralStrings()
+                            .successor()));
+            parent.updateDependencyCount(wp);
 			dispose();
 			break;
 

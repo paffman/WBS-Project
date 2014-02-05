@@ -1,9 +1,10 @@
 package wpOverview;
 
+import de.fhbingen.wbs.translation.LocalizedStrings;
+import de.fhbingen.wbs.translation.Messages;
 import java.awt.Color;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -34,7 +35,7 @@ import globals.Workpackage;
  * Sven Seckler,<br/>
  * Lin Yang<br/>
  * GUI zum auswählen und Anzeigen der Arbeitspakete der User
- * 
+ *
  * @author Samson von Graevenitz und Daniel Metzler
  * @version 2.0 - 30.11.2010
  */
@@ -44,6 +45,7 @@ public class WPOverview {
 
     private static WPOverviewGUI gui;
     private static User usr;
+    private final Messages messageStrings;
 
     private Workpackage selectedWorkpackage;
 
@@ -52,11 +54,13 @@ public class WPOverview {
      * die Listener der WPOverviewGUI durch die Methode addButtonAction()
      */
     public WPOverview(User usr, JFrame parent) {
+        messageStrings = LocalizedStrings.getMessages();
 
         WPOverview.usr = usr;
 
         gui = new WPOverviewGUI(this, parent);
-        gui.setTitle("Übersicht Projekt " + getProjektName());
+        gui.setTitle(LocalizedStrings.getProject().projectOverviewWindowTitle()
+                + ": " + getProjektName());
         gui.addWindowListener(new WindowAdapter() {
 
             @Override
@@ -78,7 +82,7 @@ public class WPOverview {
 
     /**
      * Gibt den Namen des Projekts zurück
-     * 
+     *
      * @return Projektname
      */
     private String getProjektName() {
@@ -95,7 +99,7 @@ public class WPOverview {
      * Liefert einen String zurück mit der Anzahl der passenden Stellen für
      * LVLxID anhand der definierten Ebenen im Projekt Wird von
      * generateAnalyse() in der Baseline aufgerufen
-     * 
+     *
      * @return String der LVLxID
      */
     public static String generateXEbene() {
@@ -118,7 +122,7 @@ public class WPOverview {
     /**
      * Liefert die Anzahl der Festgelegten Ebenen im Projekt zurück Wird vom
      * statischen Datenelement ebenen aufgerufen, um dies zu instanziieren
-     * 
+     *
      * @return Anzahl der Ebenen in einem Projekt
      */
     public static int getEbenen() {
@@ -134,7 +138,7 @@ public class WPOverview {
         if (usr != null) {
             return usr;
         } else {
-            return new User("Leiter", true);
+            return new User("Leiter", true); //TODO was tut das?
         }
 
     }
@@ -160,7 +164,7 @@ public class WPOverview {
 
                 } else {
                     JOptionPane.showMessageDialog(WPOverview.gui,
-                            "Bitte markieren Sie ein Oberarbeitspaket!");
+                            messageStrings.selectTopLevelWorkpackage());
                 }
             }
             // oder ein bestehendes?
@@ -172,7 +176,8 @@ public class WPOverview {
                 } else {
                     JOptionPane
                             .showMessageDialog(WPOverview.gui,
-                                    "Sie können nur Aufwände zu Arbeitspaketen erfassen, nicht zu OAPs!");
+                                    messageStrings
+                                            .noWorkEffortsOnTopLevelWorkpackages());
                 }
             }
 
@@ -180,7 +185,7 @@ public class WPOverview {
             JOptionPane
                     .showMessageDialog(
                             WPOverview.gui,
-                            "Bitte markieren Sie erst ein Arbeitspaket, um dann dort ein neues einzufügen!");
+                            messageStrings.selectWorkPackageToAddNew());
         }
     }
 
@@ -195,12 +200,13 @@ public class WPOverview {
         gui.reloadConflicts();
         gui.reloadBaseline();
         gui.repaint();
-        WPOverviewGUI.setStatusText("Ansicht aktualisiert");
+        WPOverviewGUI.setStatusText(LocalizedStrings.getButton().refresh
+                (LocalizedStrings.getGeneralStrings().view()));
     }
 
     /**
      * Erstellt den WP-Baum
-     * 
+     *
      * @return RootNode des Baums
      */
     public static DefaultMutableTreeNode createTree() {
@@ -234,12 +240,9 @@ public class WPOverview {
                                 new DefaultMutableTreeNode(actualWP);
                         parents[lastRelevantIndex - 1].add(parents[actualWP
                                 .getlastRelevantIndex()]);
-                    } catch (ArrayIndexOutOfBoundsException e) {
-                        System.err.println("Problem mit der Baumstruktur bei "
-                                + actualWP);
-                    } catch (NullPointerException e) {
-                        System.err.println("Problem mit der Baumstruktur bei "
-                                + actualWP);
+                    } catch (ArrayIndexOutOfBoundsException |NullPointerException e) {
+                        System.err.println(LocalizedStrings.getMessages()
+                                .treeStructureProblemAt(actualWP.toString()));
                     }
                 }
 
@@ -252,7 +255,7 @@ public class WPOverview {
     /**
      * Fuegt einen Conflict zur Conflicttable und setzt das Icon des
      * Konflikt-Tabs auf Warning
-     * 
+     *
      * @param conflict
      *            Konflikt der geworfen werden soll
      */
@@ -274,7 +277,7 @@ public class WPOverview {
 
     /**
      * Liefert ein Color Objekt mit der dem cpi/ac Entsprechenden Farbwert
-     * 
+     *
      * @param cpi
      *            Wert deren Color-Objekt gebraucht wirt
      * @param ac
@@ -316,7 +319,7 @@ public class WPOverview {
 
     /**
      * Liefert ein Color Objekt mit der dem spi/ac Entsprechenden Farbwert
-     * 
+     *
      * @param spi
      *            Wert deren Color-Objekt gebraucht wirt
      * @param ac

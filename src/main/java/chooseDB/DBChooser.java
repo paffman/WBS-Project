@@ -1,6 +1,8 @@
 package chooseDB;
 
 import c10n.C10N;
+import c10n.C10NConfigBase;
+import c10n.LocaleProvider;
 import c10n.annotations.DefaultC10NAnnotations;
 import java.io.BufferedReader;
 import java.io.File;
@@ -12,6 +14,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import java.util.Locale;
 import javax.swing.JOptionPane;
 
 import dbaccess.DBModelManager;
@@ -354,7 +357,20 @@ public class DBChooser {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		new DBChooser();
         C10N.configure(new DefaultC10NAnnotations());
+        C10N.configure(new C10NConfigBase() {
+            @Override
+            public void configure() {
+                install(new DefaultC10NAnnotations());
+
+                setLocaleProvider(new LocaleProvider() {
+                    @Override
+                    public Locale getLocale() {
+                        return Locale.ENGLISH;
+                    }
+                });
+            }
+        });
+        new DBChooser();
 	}
 }

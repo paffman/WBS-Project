@@ -1,5 +1,8 @@
 package wpOverview.tabs;
 
+import de.fhbingen.wbs.translation.Button;
+import de.fhbingen.wbs.translation.LocalizedStrings;
+import de.fhbingen.wbs.translation.Wbs;
 import java.awt.BorderLayout;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -25,7 +28,7 @@ import wpOverview.WPOverview;
 import wpOverview.WPOverviewGUI;
 /**
  * Studienprojekt:	PSYS WBS 2.0<br/>
- * 
+ *
  * Kunde:		Pentasys AG, Jens von Gersdorff<br/>
  * Projektmitglieder:<br/>
  *			Michael Anstatt,<br/>
@@ -33,9 +36,9 @@ import wpOverview.WPOverviewGUI;
  *			Jens Eckes,<br/>
  *			Sven Seckler,<br/>
  *			Lin Yang<br/>
- * 
+ *
  * Panel der Baumansicht<br/>
- * 
+ *
  * @author WBS1.0 Team
  * @version 2.0
  */
@@ -53,7 +56,7 @@ public class TreePanel extends JPanel {
 	private JTree treeAll;
 	private WPOverview over;
 	JPopupMenu treeContextMenu;
-	
+
 	private ArrayList<Workpackage> nodes;
 
 	private JFrame parent;
@@ -88,14 +91,16 @@ public class TreePanel extends JPanel {
 	 * Tree KontextMenue anlegen
 	 */
 	private void init() {
+        Button buttonStrings = LocalizedStrings.getButton();
+        Wbs wbsStrings = LocalizedStrings.getWbs();
 
 		treeContextMenu = new JPopupMenu();
-		miContAufw = new JMenuItem("Aufwand eintragen");
+		miContAufw = new JMenuItem(buttonStrings.register(wbsStrings.workEffort()));
 		miContAufw.setIcon(WPOverviewGUI.aufw);
 		treeContextMenu.add(miContAufw);
 		treeContextMenu.addSeparator();
-		miChildrenOut = new JMenuItem("ausklappen");
-		miChildrenIn = new JMenuItem("einklappen");
+		miChildrenOut = new JMenuItem(buttonStrings.expand());
+		miChildrenIn = new JMenuItem(buttonStrings.collapse());
 
 		miChildrenOut.setIcon(WPOverviewGUI.childrenOut);
 		miChildrenIn.setIcon(WPOverviewGUI.childrenIn);
@@ -105,11 +110,13 @@ public class TreePanel extends JPanel {
 
 		if (WPOverview.getUser().getProjLeiter()) {
 			treeContextMenu.addSeparator();
-			miContAPadd = new JMenuItem("neues Arbeitspaket einfügen");
+			miContAPadd = new JMenuItem(buttonStrings.
+                    addNewNeutral(wbsStrings.workPackage()));
 			miContAPadd.setIcon(WPOverviewGUI.newAp);
 			treeContextMenu.add(miContAPadd);
 			treeContextMenu.addSeparator();
-			miContAPdel = new JMenuItem("Arbeitspaket löschen");
+			miContAPdel = new JMenuItem(buttonStrings.delete(
+                    wbsStrings.workPackage()));
 			miContAPdel.setIcon(WPOverviewGUI.delAP);
 			treeContextMenu.add(miContAPdel);
 			treeContextMenu.addSeparator();
@@ -172,7 +179,7 @@ public class TreePanel extends JPanel {
 			if(node.getUserObject() != null) {
 				if (((Workpackage) node.getUserObject()).equals(wp)) { return new TreePath(node.getPath()); }
 			}
-			
+
 		}
 		return null;
 	}

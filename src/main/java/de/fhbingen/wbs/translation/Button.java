@@ -30,6 +30,7 @@ public interface Button {
     @De("Schlie\u00dfen")
     @En("Exit")
     String exit();
+
     @De("Schließen")
     @En("Close")
     String close();
@@ -45,5 +46,67 @@ public interface Button {
     @En("Reset password")
     String passwordReset();
 
+    @De("{0} speichern")
+    String save(String s);
 
+    @De("{0} anzeigen")
+    String show(String s);
+
+    @De("Neues {0} anlegen")
+    String addNewNeutral(String s);
+
+
+    @De("Neuen {0} anlegen")
+    String addNewMale(String s);
+
+
+    @De("Neue {0} anlegen")
+    String addNewFemale(String s);
+
+
+
+    @De("{0} anlegen")
+    String add(String s);
+
+    @De("Hinzufügen")
+    String add();
+
+    @De("{0} eintragen")
+    String register(String s);
+
+    @De("Ausklappen")
+    String expand();
+
+    @De("Einklappen")
+    String collapse();
+
+    @De("{0} aktualisieren")
+    String refresh(String s);
+
+    @De("{0} berechnen")
+    String calculate(String s);
+
+    @De("Datei")
+    String file();
+
+    @De("Hilfe")
+    String help();
+
+    @De("Aktualisieren")
+    String refresh();
+
+    @De("{0} ändern")
+    String change(String password);
+
+    @De("Abmelden")
+    String logout();
+
+    @De("Info")
+    String info();
+
+    @De("Verwalten")
+    String manage();
+
+    @De("Übernehmen")
+    String apply();
 }

@@ -27,4 +27,7 @@ public interface Database {
     @De("Datenbankname (wird angelegt)")
     @En("Database name (will be created)")
     String databaseName();
+
+    @De("Importierte DB")
+    String importedDatabase();
 }

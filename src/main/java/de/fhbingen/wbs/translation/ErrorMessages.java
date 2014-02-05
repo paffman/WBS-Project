@@ -76,7 +76,7 @@ public interface ErrorMessages {
     @En("The value in {0}-field too low.")
     String valueTooLow(String s);
 
-    @De("Das gew\u00e4hlte Datum ist ung\u00fcltig.")
+    @De("Das gew\u00e4hlte Datum ist nicht im korrekten Format dd.mm.yyyy")
     @En("The supplied date is invalid.")
     String dateInvalid();
 
@@ -120,4 +120,74 @@ public interface ErrorMessages {
 
     @De("Das gewünschte Enddatum kann nicht eingehalten werden.")
     String endDateCantBeAchieved();
+
+    @De("Timeline konnte nicht exportiert werden")
+    String timelineExportError();
+
+    @De("Diese Verfügbarkeit kann nicht bearbeitet werden, da automatisch gesetzt. Bitte verwenden Sie manuelle Verfügbarkeiten!")
+    String availablilityCanNotBeChanged();
+
+    @De("Bitte markieren Sie ein Oberarbeitspaket!")
+    String selectTopLevelWorkpackage();
+
+    @De("Sie können nur Aufwände zu Arbeitspaketen erfassen, nicht zu OAPs!")
+    String noWorkEffortsOnTopLevelWorkpackages();
+
+    @De("Bitte markieren Sie erst ein Arbeitspaket, um dann dort ein neues einzufügen!")
+    String selectWorkPackageToAddNew();
+
+    @De("Problem mit der Baumstruktur bei {0}.")
+    String treeStructureProblemAt(String s);
+
+    @De("Bitte markieren Sie das Arbeitspaket das gelöscht werden soll.")
+    String markWorkpackageToDelete();
+
+    @De("Es existiert bereits ein Arbeitspaket mit dieser ID. Bitte geben Sie" +
+            " eine neue ID ein.")
+    String workPackageIdAlreadyExists();
+
+    @De("Bitte geben Sie die richtige Anzahl an Ebenen ein \n"
+            + " Ebenenanzahl ist {0}")
+    String workpackageWrongLevel(int levels);
+
+    @De("Es sind keine Oberarbeitspakete zu dieser ID vorhanden.")
+    String workPackageNoTopLevelWorkPackagesForThisId();
+
+    @De("Bitte erst das Arbeitspaket speichern.")
+    String workPackagePleaseSaveToContinue();
+
+    @De("Das Arbeitspaket muss UAP bleiben, da bereits Aufwände eingetragen " +
+            "wurden.")
+    String workPackageCanNotBeTopLevelBecauseOfWorkEfforts();
+
+    @De("Das Arbeitspaket muss OAP bleiben, da UAPs existieren")
+    String workPackageCanNotBeSubWorkPackageBecauseItHasChildren();
+
+    @De("Falsche ID eingegeben.")
+    String workPackageWrongId();
+
+    @De("Name darf nicht leer sein.")
+    String workPackageNeedsName();
+
+    @De("Projekt muss OAP sein.")
+    String workPackageRootHasToBeTopLevel();
+
+    @De("Projekt muss aktiv sein")
+    String workPackageRootHasToBeActive();
+
+    @De("Das Projekt braucht ein Startdatum.")
+    String workPackageRootNeedsDate();
+
+    @De("Gewünschtes Enddatum liegt vor dem gewünschten Startdatum.")
+    String endDateCanNotBeBeforeStartDate();
+
+    @De("Bitte Leiter auswählen.")
+    String workPackageSelectManager();
+
+    @De("Auf unterster Ebene koennen keine OAP angelegt werden.")
+    String workPackageOutOfLevels();
+
+    @De("{0} muss eine Zahl > 0 sein")
+    String numberMustBePositive(String s);
+
 }
