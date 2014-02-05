@@ -1,9 +1,12 @@
 package functions;
 
+import dbServices.WorkpackageService;
+import dbaccess.DBModelManager;
+import dbaccess.data.Employee;
+import dbaccess.data.WorkEffort;
+import de.fhbingen.wbs.translation.LocalizedStrings;
 import globals.Loader;
 import globals.Workpackage;
-
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -11,19 +14,12 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import javax.swing.JOptionPane;
-
-import dbServices.WorkpackageService;
-import dbaccess.DBModelManager;
-import dbaccess.data.Employee;
-import dbaccess.data.WorkEffort;
-import de.fhbingen.wbs.translation.LocalizedStrings;
 import wpComparators.APLevelComparator;
 import wpConflict.Conflict;
 import wpOverview.WPOverview;
-import wpWorker.Worker;
 import wpWorker.User;
+import wpWorker.Worker;
 
 /**
  * Studienprojekt: PSYS WBS 2.0<br/>
@@ -37,7 +33,7 @@ import wpWorker.User;
  * Schnittstelle zur Verwaltung wie loeschen/anlegen/aktualisieren von
  * Arbeitspaketen und Vorgaengern/Nachfolgern<br/>
  * synchron auf Datenbank und Java-Ebene<br/>
- * 
+ *
  * @author Michael Anstatt, Marc-Eric Baumgärtner, Jens Eckes
  * @version 2.0 - 2012-08-20
  */
@@ -48,7 +44,7 @@ public class WpManager {
 
     /**
      * Gibt das Objekt zum Arbeitspaket mit der uebergebenen ID zurueck
-     * 
+     *
      * @param id
      *            ID der Form x.x.x...
      * @return Workpackage-Objekt mit Werten aus der Datenbank
@@ -78,7 +74,7 @@ public class WpManager {
      * Vorgaenger nicht gesetzt. Treten keine Schleifen auf wird die Beziehung
      * gesetzt und in die Datenbank eingetragen. Wenn eine Schleife auftritt
      * wird ein Dialogfenster angezeigt
-     * 
+     *
      * @param anchestor
      *            zu setzender Vorgaenger
      * @param main
@@ -103,7 +99,7 @@ public class WpManager {
      * Nachfolger nicht gesetzt. Treten keine Schleifen auf wird die Beziehung
      * gesetzt und in die Datenbank eingetragen. Wenn eine Schleife auftritt
      * wird ein Dialogfenster angezeigt
-     * 
+     *
      * @param follower
      *            zu setzender Nachfolger
      * @param main
@@ -125,7 +121,7 @@ public class WpManager {
 
     /**
      * Loescht einen Vorgaenger
-     * 
+     *
      * @param ancestor
      *            zu loeschender Vorgaenger
      * @param main
@@ -152,7 +148,7 @@ public class WpManager {
 
     /**
      * Loescht einen Nachfolger
-     * 
+     *
      * @param follower
      *            zu loeschender Nachfolger
      * @param main
@@ -183,7 +179,7 @@ public class WpManager {
      * Unterarbeitspakete vorhanden sind und keine Beziehungen mehr bestehen. Es
      * wird ein Dialogfenster mit Fehlerbeschreibung angezeigt wenn nicht
      * geloescht werden kann
-     * 
+     *
      * @param removeWp
      *            zu loeschendes Arbeitspaket
      * @return false wenn loeschen nicht moeglich
@@ -243,7 +239,7 @@ public class WpManager {
     /**
      * Fuegt ein Arbeitspaket in die Datenbank ein und legt Datenstruktur zum
      * spaeteren EIntragen von Beziehungen an.
-     * 
+     *
      * @param newWp
      *            das einzufuegende Arbeitspaket
      * @return false wenn es Probleme mit dem EInfuegen in die DB gab
@@ -259,7 +255,7 @@ public class WpManager {
 
     /**
      * Gibt alle Vorgaenger zurueck
-     * 
+     *
      * @param workpackage
      *            Arbeitspaket zu dem die Vorgaenger gewuenscht werden
      * @return Set mit Vorgaengern
@@ -270,7 +266,7 @@ public class WpManager {
 
     /**
      * Gibt alle Nachfolger zurueck
-     * 
+     *
      * @param workpackage
      *            Arbeitspaket zu dem die Nachfolger gewuenscht werden
      * @return Set mit Nachfolgern
@@ -281,7 +277,7 @@ public class WpManager {
 
     /**
      * Aktualisiert Werte eines vorhandenen Arbeitspakets
-     * 
+     *
      * @param wp
      *            zu aktualisierendes Arbeitspaket
      */
@@ -292,7 +288,7 @@ public class WpManager {
 
     /**
      * Gibt alle Arbeitspakete als Set zurueck
-     * 
+     *
      * @return Set mit allen Arbeitspaketen
      */
     public static Set<Workpackage> getAllAp() {
@@ -331,7 +327,7 @@ public class WpManager {
     /**
      * Gibt die Arbeitspakete zurueck, denen ein bestimmter Mitarbeiter als
      * Leiter oder Zustaendiger eingetragen ist
-     * 
+     *
      * @param user
      * @return Arbeitspakete in denen ein bestimmter Mitarbeiter als Leiter oder
      *         Zustaendiger eingetragen ist
@@ -354,7 +350,7 @@ public class WpManager {
     /**
      * Gibt alle Arbeitspakete ohne Vorganger zurueck, wichtig fuer die
      * Dauer-/PV-Berechnung
-     * 
+     *
      * @return alle AP ohne Vorgaenger
      */
     public static Set<Workpackage> getNoAncestorWps() {
@@ -363,7 +359,7 @@ public class WpManager {
 
     /**
      * Liefert alle UAP fuer ein gegebenes OAP
-     * 
+     *
      * @param oap
      *            Oberarbeitspaket
      * @return alle Unterarbeitspakete
@@ -405,7 +401,7 @@ public class WpManager {
     /**
      * Gibt alle offenen (also noch nicht abgeschlossenen) Arbeitspakete eines
      * Benutzer und deren OAP (fuer Baumansicht) zurueck.
-     * 
+     *
      * @param user
      * @return offene Arbeitspkaete mit OAPs fuer den angegebenen Mitarbeiter
      */
@@ -424,7 +420,7 @@ public class WpManager {
     /**
      * Gibt alle abgeschlossenen Arbeitspakete eines Benutzer und deren OAP
      * (fuer Baumansicht) zurueck.
-     * 
+     *
      * @param user
      * @return abgeschlossene Arbeitspkaete mit OAPs fuer den angegebenen
      *         Mitarbeiter
@@ -444,7 +440,7 @@ public class WpManager {
 
     /**
      * Fuegt ein Arbeitspaket und alle OAPs rekursiv zu einer Liste hinzu
-     * 
+     *
      * @param wp
      *            Arbeitspaket
      * @param wps
@@ -461,7 +457,7 @@ public class WpManager {
     /**
      * Berechnet den Aufwand pro Arbeitspaket Wird aufgerufen durch: - addWp() -
      * getAndShowValues() - setChanges()
-     * 
+     *
      * @return Aufwand des Arbeitspakets als Double
      * @throws SQLException
      *             Falls die Abfrage fehlschägt
@@ -473,7 +469,7 @@ public class WpManager {
 
     /**
      * Errechnet den CPI aus gegebenen Werten
-     * 
+     *
      * @param acCost
      * @param etcCost
      * @param bacCost
@@ -496,7 +492,7 @@ public class WpManager {
     /**
      * Berechnet die AC Kosten fuer ein Arbeitspaket mithilfe der in der
      * Datenbank zugewiesenen Mitarbeitern
-     * 
+     *
      * @param wp
      *            Arbeitspaket, dessen AC-Kosten berechnet weerden sollen
      * @return AC Kosten
@@ -520,7 +516,7 @@ public class WpManager {
     /**
      * Berechnet den Fertigstellungsgrad eines Arbeitspakets mithilfe der
      * uebergebenen Werte
-     * 
+     *
      * @param bac
      * @param etc
      * @param ac
@@ -542,7 +538,7 @@ public class WpManager {
 
     /**
      * Errechnet den EV aus gegebenen Werten
-     * 
+     *
      * @param bacCost
      *            BAC-Kosten in Euro
      * @param percentComplete
@@ -554,7 +550,7 @@ public class WpManager {
 
     /**
      * Berechnet den EAC aus gegebenen Werten
-     * 
+     *
      * @param bacCost
      *            BAC Kosten in Euro
      * @param acCost
@@ -574,7 +570,7 @@ public class WpManager {
     /**
      * Errechnet den durschnittlichen Tagessatz der Mitarbeiter in der
      * uebergebenen Liste
-     * 
+     *
      * @param workers
      * @return durschnisttlicher Tagesssatz in EUR
      */
@@ -599,7 +595,7 @@ public class WpManager {
 
     /**
      * Errechn et den Trend (Alternative zu CPI)
-     * 
+     *
      * @param ev
      *            EV in EUR
      * @param acCost

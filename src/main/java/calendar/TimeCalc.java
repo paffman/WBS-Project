@@ -1,11 +1,13 @@
 package calendar;
 
+import dbServices.ConflictService;
+import dbServices.ValuesService;
+import dbaccess.data.Employee;
+import de.fhbingen.wbs.translation.LocalizedStrings;
 import functions.WpManager;
 import globals.Controller;
 import globals.Loader;
 import globals.Workpackage;
-
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -17,17 +19,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
-
 import wpComparators.APBacComparator;
 import wpComparators.APEndDateComparator;
 import wpComparators.APFollowerComparator;
 import wpConflict.Conflict;
 import wpOverview.WPOverview;
 import wpOverview.tabs.AvailabilityGraph;
-import dbServices.ConflictService;
-import dbServices.ValuesService;
-import dbaccess.data.Employee;
-import de.fhbingen.wbs.translation.LocalizedStrings;
 
 /**
  * Studienprojekt: PSYS WBS 2.0<br/>
@@ -39,7 +36,7 @@ import de.fhbingen.wbs.translation.LocalizedStrings;
  * Sven Seckler,<br/>
  * Lin Yang<br/>
  * Diese Klasse errechnet aus allen Arbeitspaketen Ihre Dauer<br/>
- * 
+ *
  * @author Michael Anstatt, Jens Eckes
  * @version 2.0 - 2012-08-20
  */
@@ -62,7 +59,7 @@ public class TimeCalc {
     private static Map<Day, Map<String, Integer>> consumedWork;
 
     private AVManager avManager;
-    
+
     // private Map<String, Double> dailyRates;
 
     public TimeCalc() {
@@ -172,7 +169,7 @@ public class TimeCalc {
 
     /**
      * Liefert das fruehstmoegliche Startdatum zu einem Arbeitspaket
-     * 
+     *
      * @param wp
      *            Arbeitspaket zu dem fruehestmoegliches Startdatum benoetigt
      *            wird
@@ -217,7 +214,7 @@ public class TimeCalc {
 
     /**
      * Fuellt die uapWithoutAncestors und levelOAP
-     * 
+     *
      * @param levelOAP
      * @param uapWithoutAncestors
      */
@@ -297,7 +294,7 @@ public class TimeCalc {
      * Fuellt alle UAPs rekursiv mit dem temporaeren gewuenschten Startdatum,
      * d.h. dieses Datum wird nicht gespeichert, sondern nur fuer die
      * Dauerberechnung verwendet und dann verworfen
-     * 
+     *
      * @param wp
      *            aktuelles Arbeitspaket
      * @param startHope
@@ -320,7 +317,7 @@ public class TimeCalc {
     /**
      * Berechnet rekursiv die Dauer des aktuellen OAPs und entfernt es bei
      * Erfolg aus der Liste
-     * 
+     *
      * @param actualOAP
      *            aktuelles OAP
      * @param actualLevelOAPs
@@ -333,8 +330,8 @@ public class TimeCalc {
         boolean done = true;
 
         Controller.showConsoleMessage("", Controller.TIME_CALCULATION_DEBUG);
-        Controller.showConsoleMessage(
-                LocalizedStrings.getStatus().tryCalcualteTopLevelWp(actualOAP.getStringID()),
+        Controller.showConsoleMessage(LocalizedStrings.getStatus()
+                .tryCalcualteTopLevelWp(actualOAP.getStringID()),
                 Controller.TIME_CALCULATION_DEBUG);
         Controller.showConsoleMessage(
                 LocalizedStrings.getStatus().checkSubWps(actualOAP.getStringID()),
@@ -375,9 +372,9 @@ public class TimeCalc {
                                 Controller.TIME_CALCULATION_DEBUG);
                         calcUAP(actualUAP);
                         Controller
-                                .showConsoleMessage(LocalizedStrings.getStatus()
-                                        .wpWasCalculated(actualUAP
-                                                .getStringID()),
+                                .showConsoleMessage(LocalizedStrings
+                                        .getStatus().wpWasCalculated
+                                                (actualUAP.getStringID()),
                                         Controller.TIME_CALCULATION_DEBUG);
                     }
                 }
@@ -385,9 +382,9 @@ public class TimeCalc {
                         || levelOAP.get(actualUAP.getlastRelevantIndex())
                                 .contains(actualUAP)) {
                     done = false;
-                    Controller.showConsoleMessage(LocalizedStrings.getStatus()
-                            .wpCouldNotBeCalculated(actualUAP.getStringID()),
-                            Controller.TIME_CALCULATION_DEBUG);
+                    Controller.showConsoleMessage(LocalizedStrings.getStatus
+                            ().wpCouldNotBeCalculated(actualUAP.getStringID()
+                    ), Controller.TIME_CALCULATION_DEBUG);
                 }
                 if (actualOAP.getEndDateCalc() == null
                         || (actualUAP.getEndDateCalc() != null && actualOAP
@@ -419,10 +416,11 @@ public class TimeCalc {
                 actualLevelOAPs.remove(actualOAP);
 
                 Controller
-                        .showConsoleMessage(LocalizedStrings.getStatus().durationFinallyCalculated(
-                                actualOAP.getStringID(), actualOAP
-                                        .getEndDateCalc().toString()),
-                                Controller.TIME_CALCULATION_DEBUG);
+                        .showConsoleMessage(LocalizedStrings.getStatus()
+                                .durationFinallyCalculated(actualOAP
+                                        .getStringID(),
+                                        actualOAP.getEndDateCalc().toString()
+                                ), Controller.TIME_CALCULATION_DEBUG);
                 Controller.showConsoleMessage("",
                         Controller.TIME_CALCULATION_DEBUG);
 
@@ -450,8 +448,9 @@ public class TimeCalc {
 
                         if (actualFollower.getEndDateCalc() == null
                                 && actualFollower.canCalc()) {
-                            Controller.showConsoleMessage(LocalizedStrings.getStatus()
-                                    .successorFound(actualOAP.getStringID()),
+                            Controller.showConsoleMessage(LocalizedStrings
+                                    .getStatus().successorFound(actualOAP
+                                            .getStringID()),
                                     Controller.TIME_CALCULATION_DEBUG);
                             if (actualFollower.isIstOAP()) {
                                 calcOAP(actualFollower);
@@ -471,14 +470,13 @@ public class TimeCalc {
     /**
      * Berechnet rekursiv fuer das aktuelle AP und dessen Nachfolger soweit
      * moeglich die Dauer. Erst aufgerufen wenn UAP startDatum hat
-     * 
+     *
      * @param uap
      *            zu berechnendes Arbeitspaket
      */
     private void calcUAP(Workpackage uap) {
         Controller.showConsoleMessage("", Controller.TIME_CALCULATION_DEBUG);
-        Controller.showConsoleMessage(LocalizedStrings.getStatus().calculateSubWp(uap.getStringID()),
-                Controller.TIME_CALCULATION_DEBUG);
+        Controller.showConsoleMessage(LocalizedStrings.getStatus().calculateSubWp(uap.getStringID()), Controller.TIME_CALCULATION_DEBUG);
 
         // 3 Enddatum von UAP berechnen
         Date startDate = uap.getStartDateCalc();
@@ -547,12 +545,9 @@ public class TimeCalc {
                                     * uap.getWpStundensatz());
                         }
                         Controller
-                                .showConsoleMessage(
-                                        "     "
-                                                + LocalizedStrings.getStatus().workerWorkhoursToday(
-                                                        actualWorker,
-                                                        workerWorkedToday),
-                                        Controller.TIME_CALCULATION_DEBUG);
+                                .showConsoleMessage("     " +
+                                        LocalizedStrings.getStatus()
+                                                .workerWorkhoursToday(actualWorker, workerWorkedToday), Controller.TIME_CALCULATION_DEBUG);
                     }
                     allWorkedToday = possibleWorkToday;
                 } else {
@@ -577,12 +572,10 @@ public class TimeCalc {
                                     }
                                     allWorkedToday += optimalWork;
                                     Controller
-                                            .showConsoleMessage(
-                                                    "     "
-                                                            + LocalizedStrings.getStatus().workerWorkhoursToday(
-                                                                    actualWorker,
-                                                                    optimalWork),
-                                                    Controller.TIME_CALCULATION_DEBUG);
+                                            .showConsoleMessage("     " +
+                                                    LocalizedStrings
+                                                            .getStatus()
+                                                            .workerWorkhoursToday(actualWorker, optimalWork), Controller.TIME_CALCULATION_DEBUG);
                                 } else {
                                     int workerRemaining =
                                             actualDayRemaining
@@ -643,11 +636,7 @@ public class TimeCalc {
 
                     savePV(pvs, uap);
 
-                    Controller.showConsoleMessage(LocalizedStrings.getStatus().finishedHoursOfWp(
-                            uap.getStringID(),
-                            Controller.DATE_DAY.format(actualDay),
-                            (int) hoursConsumed, possibleWorkToday),
-                            Controller.TIME_CALCULATION_DEBUG);
+                    Controller.showConsoleMessage(LocalizedStrings.getStatus().finishedHoursOfWp(uap.getStringID(), Controller.DATE_DAY.format(actualDay), (int) hoursConsumed, possibleWorkToday), Controller.TIME_CALCULATION_DEBUG);
                 } else {
                     actualDayTime.add(Calendar.DATE, 1);
                     actualDay = new Day(actualDayTime.getTime());
@@ -683,12 +672,7 @@ public class TimeCalc {
                                     uap.getWpId(), nextFridayCal)),
                             Controller.TIME_CALCULATION_DEBUG);
                 } else {
-                    Controller.showConsoleMessage(
-                            LocalizedStrings.getStatus().currentDayInPast(Controller.DATE_DAY
-                                    .format(actualDay), (ValuesService.getApPv(
-                                    uap.getWpId(), actualDayCal) / uap
-                                    .getWpStundensatz()), bac),
-                            Controller.TIME_CALCULATION_DEBUG);
+                    Controller.showConsoleMessage(LocalizedStrings.getStatus().currentDayInPast(Controller.DATE_DAY.format(actualDay), (ValuesService.getApPv(uap.getWpId(), actualDayCal) / uap.getWpStundensatz()), bac), Controller.TIME_CALCULATION_DEBUG);
                     actualDayTime.add(Calendar.DATE, 1);
                     actualDay = new Day(actualDayTime.getTime());
 
@@ -698,7 +682,8 @@ public class TimeCalc {
                 }
             }
 
-            // Controller.showConsoleMessage("     Arbeit ist geleistet, es sind fuer die naechsten Tage noch "
+            // Controller.showConsoleMessage("     Arbeit ist geleistet,
+            // es sind fuer die naechsten Tage noch "
             // + bac + " Stunden uebrig",
             // Controller.TIME_CALCULATION_DEBUG);
 
@@ -733,9 +718,7 @@ public class TimeCalc {
                     actualFollower.setStartDateCalc(ancestorStartNew);
                 }
                 if (actualFollower.canCalc() && !actualFollower.isIstOAP()) {
-                    Controller.showConsoleMessage(
-                            LocalizedStrings.getStatus().successorFound(uap.getStringID()),
-                            Controller.TIME_CALCULATION_DEBUG);
+                    Controller.showConsoleMessage(LocalizedStrings.getStatus().successorFound(uap.getStringID()), Controller.TIME_CALCULATION_DEBUG);
                     calcUAP(actualFollower);
                 }
             }
@@ -746,7 +729,7 @@ public class TimeCalc {
 
     /**
      * Speichert alle PVs fuer ein bestimmtes Arbeitspaket in die Datenbank
-     * 
+     *
      * @param singlePVs
      *            Map mit Zuordnung Tag -> PV
      * @param wp

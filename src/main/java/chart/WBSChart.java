@@ -1,12 +1,10 @@
 package chart;
 
+import de.fhbingen.wbs.translation.LocalizedStrings;
 import globals.Controller;
-
 import java.awt.Color;
 import java.awt.Dimension;
-
 import javax.swing.JFrame;
-
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartFrame;
 import org.jfree.chart.JFreeChart;
@@ -17,11 +15,9 @@ import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.time.TimeSeriesCollection;
 import org.jfree.ui.RectangleInsets;
 
-import de.fhbingen.wbs.translation.LocalizedStrings;
-
 /**
  * Studienprojekt:	PSYS WBS 2.0<br/>
- * 
+ *
  * Kunde:		Pentasys AG, Jens von Gersdorff<br/>
  * Projektmitglieder:<br/>
  *			Michael Anstatt,<br/>
@@ -29,9 +25,9 @@ import de.fhbingen.wbs.translation.LocalizedStrings;
  *			Jens Eckes,<br/>
  *			Sven Seckler,<br/>
  *			Lin Yang<br/>
- * 
+ *
  * Diese Klasse wird als Superklasse zum Anzeigen der Graphen benutzt.<br/>
- * 
+ *
  * @author Michael Anstatt, Lin Yang
  * @version 2.0 - 2012-08-21
  */
@@ -43,9 +39,9 @@ public abstract class WBSChart {
 	protected XYPlot plot;
 
 	/**
-	 * Konstruktor 
-	 * 
-	 * 
+	 * Konstruktor
+	 *
+	 *
 	 * @param dataSet vorbereitete Daten
 	 * @param parent zur mittigen Positinierung auf dem Bildschirm
 	 */

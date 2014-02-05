@@ -1,13 +1,11 @@
 package dbServices;
 
+import dbaccess.DBModelManager;
+import functions.WpManager;
 import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import calendar.DateFunctions;
-import dbaccess.DBModelManager;
-import functions.WpManager;
 import wpConflict.Conflict;
 
 /**
@@ -21,7 +19,7 @@ import wpConflict.Conflict;
  * Lin Yang<br/>
  * Diese Klasse dient als Verbindung zur Datenbank fuer das Speicher und
  * Loeschen von Konflikten.<br/>
- * 
+ *
  * @author Jens Eckes, Sven Seckler
  * @version 2.0 - 2012-08-20
  */
@@ -29,7 +27,7 @@ public class ConflictService {
 
     /**
      * s Liefert ein Set mit allen Konflikten des Projekts
-     * 
+     *
      * @return Set<Conflict> alle Konflikte
      */
     public static Set<Conflict> getAllConflicts() {
@@ -44,7 +42,7 @@ public class ConflictService {
 
     /**
      * Speichert einen aufgetreten Konflikt
-     * 
+     *
      * @param conflict
      *            Conflict der zu speichernde Konflikt
      * @throws SQLException
@@ -66,7 +64,7 @@ public class ConflictService {
 
     /**
      * Loescht einen behobenen Konflikt
-     * 
+     *
      * @param conflict
      *            Conflict der zu loeschende Konflikt
      * @throws SQLException
@@ -77,7 +75,7 @@ public class ConflictService {
 
     /**
      * Loescht alle Konflikte
-     * 
+     *
      * @throws SQLException
      */
     public static void deleteAll() {
@@ -87,7 +85,7 @@ public class ConflictService {
     /**
      * Private Methode zum fuellen eines Sets von Conflicts mit den Daten eines
      * ResultSets
-     * 
+     *
      * @param conSet
      *            das zu fuellende Set vom Typ Conflict
      * @param resSet

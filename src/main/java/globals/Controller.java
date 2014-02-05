@@ -1,5 +1,7 @@
 package globals;
 
+import dbaccess.DBModelManager;
+import de.fhbingen.wbs.translation.LocalizedStrings;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -7,13 +9,9 @@ import java.io.PrintStream;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-
 import jdbcConnection.SQLExecuter;
-import dbaccess.DBModelManager;
-import de.fhbingen.wbs.translation.LocalizedStrings;
 import wpOverview.WPOverview;
 
 /**
@@ -28,7 +26,7 @@ import wpOverview.WPOverview;
  * Verwaltung von Info-Messages, Fehlermeldungen und Debugging <br/>
  * Enthaelt ausserdem ausserdem Globale Statische Wert wie freie Tage
  * (Samstag/Sonntag), Arbetiszeiten und Formatierungen fuer Datum und Uhrzeit
- * 
+ *
  * @author Michael Anstatt
  * @version 2.0 - 2012-08-20
  */
@@ -85,7 +83,7 @@ public class Controller {
 
     /**
      * Zeigt Popup mit uebergebener Nachricht an
-     * 
+     *
      * @param message
      */
     public static void showMessage(String message) {
@@ -94,7 +92,7 @@ public class Controller {
 
     /**
      * Zeigt Feheler-Popuo mit uebergebener Nachricht an
-     * 
+     *
      * @param message
      */
     public static void showError(String message) {
@@ -104,7 +102,7 @@ public class Controller {
 
     /**
      * Gibt eine Nachricht auf der Konsole oder in die Debugging-Datei aus
-     * 
+     *
      * @param message
      * @param type
      *            siehe static final _DEBUG Datenelemente
@@ -115,7 +113,7 @@ public class Controller {
 
     /**
      * Gibt eine Nachricht auf der Konsole oder in die Debugging-Datei aus
-     * 
+     *
      * @param message
      * @param type
      *            siehe static final _DEBUG Datenelemente
@@ -126,7 +124,7 @@ public class Controller {
 
     /**
      * Gibt eine Nachricht auf der Konsole oder in die Debugging-Datei aus
-     * 
+     *
      * @param object
      * @param error
      *            wenn true wird auf Error-Konsole oder Debug ausgegeben
@@ -140,7 +138,7 @@ public class Controller {
 
     /**
      * Gibt eine Nachricht auf der Konsole oder in die Debugging-Datei aus
-     * 
+     *
      * @param object
      * @param error
      *            wenn true wird auf Error-Konsole oder Debug ausgegeben
@@ -195,7 +193,7 @@ public class Controller {
 
     /**
      * Komponente mittig relativ zu ihrer Parent-Komponente platzieren
-     * 
+     *
      * @param parent
      * @param child
      */

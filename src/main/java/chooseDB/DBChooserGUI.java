@@ -1,12 +1,12 @@
 package chooseDB;
 
+import de.fhbingen.wbs.translation.LocalizedStrings;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Toolkit;
-
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -19,8 +19,6 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-
-import de.fhbingen.wbs.translation.LocalizedStrings;
 
 /**
  * Studienprojekt: WBS<br/>
@@ -38,7 +36,7 @@ import de.fhbingen.wbs.translation.LocalizedStrings;
  * Jens Eckes,<br/>
  * Sven Seckler,<br/>
  * Lin Yang<br/>
- * 
+ *
  * @author Samson von Graevenitz, Daniel Metzler, Andre Paffenholz, Lin Yang
  * @version 2.0 - 2012-08-22 Die verwendeten Icons stammen von:
  *          http://sublink.ca/icons/sweetieplus/ sowie:
@@ -132,7 +130,7 @@ public class DBChooserGUI extends JFrame {
      * zugewiesen es wird das Windows Look and Feel verwendet die verschiedenen
      * Menüs, Buttons etc. werden initialisiert und zu dem GridBagLayout
      * hinzugefügt und angeordnet mittels createGbc
-     * 
+     *
      * @param dbChooser
      *            callin dbChooser, used to fill login data with data from last
      *            used db.
@@ -266,7 +264,7 @@ public class DBChooserGUI extends JFrame {
      * void createGBC(args) wird am Anordnen der Komponenten auf dem JFrame
      * aufgerufen Methode createGBC zum Hinzufügen der einzelnen Komponenten
      * zum GridBagLayout.
-     * 
+     *
      * @param c
      *            Komponente die zum Layout hinzugefügt wird
      * @param x

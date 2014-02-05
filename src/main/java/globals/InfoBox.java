@@ -1,5 +1,6 @@
 package globals;
 
+import de.fhbingen.wbs.translation.LocalizedStrings;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Container;
@@ -9,20 +10,24 @@ import java.awt.GridBagLayout;
 import java.awt.Image;
 import java.awt.Insets;
 import java.awt.Toolkit;
-
-import javax.swing.*;
-
-import de.fhbingen.wbs.translation.LocalizedStrings;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 
 /**
  * Studienprojekt:	WBS<br/>
- * 
+ *
  * Kunde:				Pentasys AG, Jens von Gersdorff
  * Projektmitglieder:	Andre Paffenholz, <br/>
  * 						Peter Lange, <br/>
  * 						Daniel Metzler,<br/>
  * 						Samson von Graevenitz<br/>
- * 
+ *
  * Kunde:		Pentasys AG, Jens von Gersdorff<br/>
  * Projektmitglieder:	<br/>
  *			Michael Anstatt,<br/>
@@ -32,7 +37,7 @@ import de.fhbingen.wbs.translation.LocalizedStrings;
  *			Lin Yang<br/>
  *
  * Allgemeine InfoBox, wird über Menü->Hilfe->Info aufgerufen<br/>
- * 
+ *
  * @author Samson von Graevenitz, Peter Lange, Jens Eckes, Lin Yang
  * @version 2.0- 2012-08-22
  */
@@ -46,11 +51,11 @@ public class InfoBox extends JDialog{
 
 	/**
 	 * erzeugt ein Infofenster
-	 * 	 
+	 *
 	 * */
 
 	public InfoBox(){
-	
+
 		setTitle("WBS-Advanced - Version: " + version);
 		setResizable(false);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -60,7 +65,7 @@ public class InfoBox extends JDialog{
 		} catch (Exception e) {
 			System.err.println("Could not load LookAndFeel");
 		}
-		
+
 		int width = 436;
 		int height = 626;
 		Toolkit tk=Toolkit.getDefaultToolkit();
@@ -68,32 +73,32 @@ public class InfoBox extends JDialog{
 		setLocation((int)(screenSize.getWidth()/2)-width/2,(int)(screenSize.getHeight()/2)-height/2);
 		setSize(new Dimension(width, height));
 		close=new JButton(LocalizedStrings.getButton().exit());
-		
+
 		add(createInfoBox());
 		new InfoBoxButtonAction(this);
 		setVisible(true);
-		
+
 	}
 	/**
 	 * Erzeugt das Panel mit dem Infobild und dem SchliessenButton -  Wird vom Konstruktor aufgerufen
 	 * @return gibt den Panel für das Infofeld zurück
 	 */
-	
+
 	protected JComponent createInfoBox() {
 
 		JPanel anzeige=new JPanel();
-	
+
 		JPanel panel = new JPanel(false);
 		panel.setSize(new Dimension(400,200));
 		GridBagLayout gbl = new GridBagLayout();
 		panel.setLayout(gbl);
-				
+
 		addComponent(panel,gbl,new JLabel(new ImageIcon(pictInfo)),0, 0, 1, 1);
 		addComponent(panel,gbl,close,0, 1, 1, 1);
 
 		anzeige.setLayout(new BorderLayout(10,10));
 		anzeige.add(BorderLayout.BEFORE_FIRST_LINE,panel);
-		
+
         return anzeige;
     }
 	/**
@@ -113,11 +118,11 @@ public class InfoBox extends JDialog{
 				GridBagConstraints gbc = new GridBagConstraints();
 				gbc.fill = GridBagConstraints.NONE;
 				gbc.anchor = GridBagConstraints.CENTER;
-				gbc.gridx = x; 
+				gbc.gridx = x;
 				gbc.gridy = y;
-				gbc.gridwidth = width; 
+				gbc.gridwidth = width;
 				gbc.gridheight = height;
-				gbc.insets = new Insets(2,2,2,2);  
+				gbc.insets = new Insets(2,2,2,2);
 				gbl.setConstraints( c, gbc );
 				cont.add( c );
 	 }

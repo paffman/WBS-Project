@@ -1,20 +1,17 @@
 package globals;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.List;
-import java.util.Set;
-
-import javax.swing.JOptionPane;
-
-import wpWorker.Worker;
 import dbServices.ValuesService;
 import dbServices.WorkpackageService;
 import dbaccess.DBModelManager;
 import dbaccess.data.Employee;
 import de.fhbingen.wbs.translation.LocalizedStrings;
 import functions.WpManager;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.List;
+import java.util.Set;
+import javax.swing.JOptionPane;
 
 /**
  * Studienprojekt: WBS<br/>
@@ -31,7 +28,7 @@ import functions.WpManager;
  * Sven Seckler,<br/>
  * Lin Yang<br/>
  * Allgemeine InfoBox, wird über Menü->Hilfe->Info aufgerufen (ggf. erweitern) <br/>
- * 
+ *
  * @author Samson von Graevenitz,Peter Lange, Marc-Eric Baumgaertner
  * @version 2.0 - 2012-07-05
  */
@@ -57,7 +54,7 @@ public class Workpackage {
 
     /**
      * Constructor for the Workpackage.
-     * 
+     *
      * @param wp
      *            A workpackage this is wrapped in this class.
      * @param respEmployees
@@ -107,7 +104,7 @@ public class Workpackage {
      * Diese Methode wird automatisch beim Erzeugen der Bäume aufgerufen, um
      * die AP Namen darzustellen (in
      * WPOverview.createTree(ArrayList<Workpackage> wpList) )
-     * 
+     *
      * @return String mit der ID und dem Namen des Arbeitspakets
      */
     public final String toString() {
@@ -116,7 +113,7 @@ public class Workpackage {
 
     /**
      * Gibt den BAC in Tagen zurueck
-     * 
+     *
      * @return BAC
      */
     public final Double getBac() {
@@ -125,7 +122,7 @@ public class Workpackage {
 
     /**
      * Gibt den BAC in Stunden zurueck
-     * 
+     *
      * @return
      */
     public final Double getBacStunden() {
@@ -134,7 +131,7 @@ public class Workpackage {
 
     /**
      * SETTER BAC - setzt den BAC in Tagen
-     * 
+     *
      * @param Bac
      *            neuer BAC
      */
@@ -144,7 +141,7 @@ public class Workpackage {
 
     /**
      * GETTER AC
-     * 
+     *
      * @return AC
      */
     public final Double getAc() {
@@ -153,7 +150,7 @@ public class Workpackage {
 
     /**
      * SETTER BAC - setzt den AC
-     * 
+     *
      * @param ac
      *            neuer AC
      */
@@ -163,7 +160,7 @@ public class Workpackage {
 
     /**
      * GETTER EV
-     * 
+     *
      * @return EV
      */
     public final Double getEv() {
@@ -172,7 +169,7 @@ public class Workpackage {
 
     /**
      * SETTER EV - setzt den EV
-     * 
+     *
      * @param ev
      *            neuer EV
      */
@@ -182,7 +179,7 @@ public class Workpackage {
 
     /**
      * Gibt den ETC in Tagen zurueck
-     * 
+     *
      * @return ETC in Tagen
      */
     public final Double getEtc() {
@@ -191,7 +188,7 @@ public class Workpackage {
 
     /**
      * Gibt den ETC in Stunden zurueck
-     * 
+     *
      * @return ETC in Stunden
      */
     public final Double getEtcStunden() {
@@ -200,7 +197,7 @@ public class Workpackage {
 
     /**
      * SETTER ETC - setzt den ETC in Tagen
-     * 
+     *
      * @param etc
      *            neuer ETC in Tagen
      */
@@ -210,7 +207,7 @@ public class Workpackage {
 
     /**
      * GETTER Tagessatz
-     * 
+     *
      * @return gemittelter Tagessatz
      */
     public final Double getWptagessatz() {
@@ -219,7 +216,7 @@ public class Workpackage {
 
     /**
      * Gibt den durschnittlichen Stundensatz fuer dieses Arbeitspaket zurueck
-     * 
+     *
      * @return durschnittlicher Stundensatz
      */
     public final Double getWpStundensatz() {
@@ -228,7 +225,7 @@ public class Workpackage {
 
     /**
      * SETTER Tagessatz - setzt den gemittelten Tagessatz
-     * 
+     *
      * @param wptagessatz
      *            neuer Tagessatz
      */
@@ -238,7 +235,7 @@ public class Workpackage {
 
     /**
      * Uebernimmt Daten aus einem anderen Arbeitspaket
-     * 
+     *
      * @param other
      */
     public void update(Workpackage other) {
@@ -266,7 +263,7 @@ public class Workpackage {
 
     /**
      * GETTER EAC
-     * 
+     *
      * @return EAC
      */
     public final Double getEac() {
@@ -275,7 +272,7 @@ public class Workpackage {
 
     /**
      * SETTER EAC - setzt den EAC
-     * 
+     *
      * @param eac
      *            neuer EAC
      */
@@ -285,7 +282,7 @@ public class Workpackage {
 
     /**
      * GETTER BAC-Kosten
-     * 
+     *
      * @return BAC in Euro
      */
     public final Double getBac_kosten() {
@@ -294,7 +291,7 @@ public class Workpackage {
 
     /**
      * SETTER BAC-Kosten - setzt die BAC Kosten in Euro
-     * 
+     *
      * @param bac_kosten
      *            neuer BAC in Euro
      */
@@ -304,7 +301,7 @@ public class Workpackage {
 
     /**
      * GETTER AC-Kosten
-     * 
+     *
      * @return AC in Euro
      */
     public final Double getAc_kosten() {
@@ -313,7 +310,7 @@ public class Workpackage {
 
     /**
      * SETTER AC-Kosten - setzt die AC Kosten in Euro
-     * 
+     *
      * @param ac_kosten
      *            neuer AC in Euro
      */
@@ -323,7 +320,7 @@ public class Workpackage {
 
     /**
      * GETTER ETC-Kosten
-     * 
+     *
      * @return ETC in Euro
      */
     public final double getEtc_kosten() {
@@ -332,7 +329,7 @@ public class Workpackage {
 
     /**
      * SETTER ETC-Kosten - setzt die ETC Kosten in Euro
-     * 
+     *
      * @param etc_kosten
      *            neuer ETC in Euro
      */
@@ -342,7 +339,7 @@ public class Workpackage {
 
     /**
      * GETTER LVL1ID
-     * 
+     *
      * @return LVL1ID
      */
     public final int getLvl1ID() {
@@ -351,7 +348,7 @@ public class Workpackage {
 
     /**
      * SETTER LVL1ID - setzt die LVL1ID
-     * 
+     *
      * @param lvl1id
      *            neue LVL1ID
      */
@@ -361,7 +358,7 @@ public class Workpackage {
 
     /**
      * GETTER LVL2ID
-     * 
+     *
      * @return LVL2ID
      */
     public final int getLvl2ID() {
@@ -370,7 +367,7 @@ public class Workpackage {
 
     /**
      * SETTER LVL2ID - setzt die LVL2ID
-     * 
+     *
      * @param lvl2id
      *            neue LVL2ID
      */
@@ -380,7 +377,7 @@ public class Workpackage {
 
     /**
      * GETTER LVL3ID
-     * 
+     *
      * @return LVL32ID
      */
     public int getLvl3ID() {
@@ -389,7 +386,7 @@ public class Workpackage {
 
     /**
      * SETTER LVL3ID - setzt die LVL3ID
-     * 
+     *
      * @param lvl3id
      *            neue LVL3ID
      */
@@ -399,7 +396,7 @@ public class Workpackage {
 
     /**
      * GETTER LVLxID
-     * 
+     *
      * @return LVLxID as String
      */
     public final String getLvlxID() {
@@ -416,7 +413,7 @@ public class Workpackage {
 
     /**
      * SETTER LVLxID - setzt die LVLxID
-     * 
+     *
      * @param lvlxID
      *            neue LVLxID
      */
@@ -428,7 +425,7 @@ public class Workpackage {
     /**
      * WBS2.0 gibt alle Level-IDs in einem Array zurueck, Achtung: index 0 =
      * Level 1!
-     * 
+     *
      * @return Array aller Werte der Levels des AP, beginnend bei Indexwert 0
      */
     public final Integer[] getLvlIDs() {
@@ -442,7 +439,7 @@ public class Workpackage {
 
     /**
      * WBS2.0 gibt die ID eines gewuenschten Levels zurueck
-     * 
+     *
      * @param level
      *            LEvel von dem der Wert benoetigt wird (1 - maximale
      *            Ebenenzahl)
@@ -463,7 +460,7 @@ public class Workpackage {
 
     /**
      * WBS2.0 setzt die ID eines gewuenschten Levels
-     * 
+     *
      * @param level
      * @param value
      */
@@ -491,7 +488,7 @@ public class Workpackage {
 
     /**
      * WBS2.0 gibt das Level des letzten Werts != 0 an
-     * 
+     *
      * @return
      */
     public final int getlastRelevantIndex() {
@@ -506,7 +503,7 @@ public class Workpackage {
 
     /**
      * WBS2.0 fuegt Array von IDs zu String der Form "x.x.x" zusammen
-     * 
+     *
      * @param xIDs
      * @return
      */
@@ -524,7 +521,7 @@ public class Workpackage {
 
     /**
      * GETTER Name
-     * 
+     *
      * @return Name des Arbeitspakets
      */
     public final String getName() {
@@ -533,7 +530,7 @@ public class Workpackage {
 
     /**
      * SETTER Name - setzt einen neuen Namen für das AP
-     * 
+     *
      * @param name
      *            neuer Name als String
      */
@@ -543,7 +540,7 @@ public class Workpackage {
 
     /**
      * GETTER Beschreibung
-     * 
+     *
      * @return liefert die Beschreibung eins APs
      */
     public final String getBeschreibung() {
@@ -552,7 +549,7 @@ public class Workpackage {
 
     /**
      * SETTER Beschreibung - legt eine neue Beschreibung des AP fest
-     * 
+     *
      * @param beschreibung
      *            neue Beschreibung des AP
      */
@@ -562,7 +559,7 @@ public class Workpackage {
 
     /**
      * GETTER CPI
-     * 
+     *
      * @return CPI
      */
     public final Double getCpi() {
@@ -571,7 +568,7 @@ public class Workpackage {
 
     /**
      * SETTER CPI - setzt den neuen CPI
-     * 
+     *
      * @param cpi
      *            neuer CPI
      */
@@ -581,7 +578,7 @@ public class Workpackage {
 
     /**
      * GETTER istOAP
-     * 
+     *
      * @return gibt an, ob das Paket ein OAP ist (true = ja, false = nein)
      */
     public final boolean isIstOAP() {
@@ -590,7 +587,7 @@ public class Workpackage {
 
     /**
      * SETTER istOAP - gibt an, ob es sich um ein OAP handelt
-     * 
+     *
      * @param istOAP
      *            handelt es sich um ein OAP?
      */
@@ -600,7 +597,7 @@ public class Workpackage {
 
     /**
      * GETTER istInaktiv
-     * 
+     *
      * @return gibt an, ob das Paket inaktiv ist (true = ja, false = nein)
      */
     public final boolean isIstInaktiv() {
@@ -609,7 +606,7 @@ public class Workpackage {
 
     /**
      * SETTER istInaktiv - gibt an, ob das Paket inaktiv ist
-     * 
+     *
      * @param istInaktiv
      *            ist das Paket inaktiv zu markieren?
      */
@@ -619,7 +616,7 @@ public class Workpackage {
 
     /**
      * GETTER Leiter
-     * 
+     *
      * @return gibt den Namen des Leiters als String zurück
      */
     public final int getFid_Leiter() {
@@ -628,7 +625,7 @@ public class Workpackage {
 
     /**
      * SETTER Leiter - legt den Leiter des AP fest
-     * 
+     *
      * @param fid_Leiter
      *            Names des Leiters als String
      */
@@ -638,7 +635,7 @@ public class Workpackage {
 
     /**
      * GETTER Zuständige
-     * 
+     *
      * @return gibt die zuständigen Mitarbeiter zurück
      */
     public final String getStringZustaendige() {
@@ -651,7 +648,7 @@ public class Workpackage {
 
     /**
      * Getter fuer den SV des aktuellen Tages
-     * 
+     *
      * @return SV
      */
     public final double getSv() {
@@ -711,7 +708,7 @@ public class Workpackage {
 
     /**
      * GETTER PV
-     * 
+     *
      * @return gibt die Planed Value zurück
      */
     public final double getPv() {
@@ -720,7 +717,7 @@ public class Workpackage {
 
     /**
      * GETTER startDateCalc
-     * 
+     *
      * @return ausgerechnet Startdatum
      */
     public final Date getStartDateCalc() {
@@ -732,7 +729,7 @@ public class Workpackage {
      * zu diesem Zeitpunkt noch geaendert werden darf, d.h. das bisherige
      * Startdatum liegt in der Zukunft Dies gilt nicht fuer OAP da ihre Start-
      * und Enddaten sowieso durch ihre UAP bestimmt werden.
-     * 
+     *
      * @param startDateCalc
      *            als Date von Datenbank
      */
@@ -750,7 +747,7 @@ public class Workpackage {
 
     /**
      * GETTER endDateCalc
-     * 
+     *
      * @return gerechnete Endedatum
      */
     public final Date getEndDateCalc() {
@@ -762,7 +759,7 @@ public class Workpackage {
      * diesem Zeitpunkt noch geaendert werden darf, d.h. das bisherige Enddatum
      * liegt in der Zukunft Dies gilt nicht fuer OAP da ihre Start- und Enddaten
      * sowieso durch ihre UAP bestimmt werden.
-     * 
+     *
      * @param endDateCalc
      *            als Date von Datenbank
      */
@@ -781,7 +778,7 @@ public class Workpackage {
 
     /**
      * GETTER startDateHope
-     * 
+     *
      * @return gewünschte Startdatum zurückgeben
      */
     public final Date getStartDateHope() {
@@ -796,7 +793,7 @@ public class Workpackage {
 
     /**
      * SETTER startDateHope
-     * 
+     *
      * @param startDateWish
      *            als Date von Datenbank
      */
@@ -806,7 +803,7 @@ public class Workpackage {
 
     /**
      * GETTER Release Datum
-     * 
+     *
      * @return gibt das Release Datum zurück
      */
     public final Date getEndDateHope() {
@@ -815,7 +812,7 @@ public class Workpackage {
 
     /**
      * SETTER Release - legt ein neues Release-Datum fest
-     * 
+     *
      * @param release
      *            neues Datum als String
      */
@@ -826,7 +823,7 @@ public class Workpackage {
     // getter/setter
     /**
      * Getter fuer alle Vorgaengern des APListObjects
-     * 
+     *
      * @return Liste mit allen Vorgaengern
      */
     public final Set<Workpackage> getAncestors() {
@@ -835,7 +832,7 @@ public class Workpackage {
 
     /**
      * Getter fuer alle Nachfolger des APListObjects
-     * 
+     *
      * @return Liste mit allen Nachfolgern
      */
     public final Set<Workpackage> getFollowers() {
@@ -992,7 +989,7 @@ public class Workpackage {
 
     /**
      * Returns the ID of the wrapped workpackage.
-     * 
+     *
      * @return The ID of the wrapped Workpackage.
      */
     public final int getWpId() {

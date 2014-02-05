@@ -1,17 +1,13 @@
 package functions;
 
+import dbServices.WorkpackageService;
+import de.fhbingen.wbs.translation.LocalizedStrings;
 import globals.Workpackage;
-
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
 import javax.swing.JOptionPane;
-
-import sun.util.LocaleServiceProviderPool.LocalizedObjectGetter;
-import dbServices.WorkpackageService;
-import de.fhbingen.wbs.translation.LocalizedStrings;
 
 /**
  * Studienprojekt: PSYS WBS 2.0<br/>
@@ -24,7 +20,7 @@ import de.fhbingen.wbs.translation.LocalizedStrings;
  * Lin Yang<br/>
  * Liste mit den Arbeitspaketen<br/>
  * Hilfsklasse fuer {@link WpManager}<br/>
- * 
+ *
  * @author Marc-Eric Baumgärtner, Michael Anstatt
  * @version 2.0 - 2012-08-02
  */
@@ -61,7 +57,7 @@ public class APList {
 
     /**
      * Liefert die Nachfolger (auf JAVA-Ebene)
-     * 
+     *
      * @param workpackage
      *            Arbeitspaket dessen Nachfolger gewuenscht werden
      * @return Set mit Nachfolgern
@@ -72,7 +68,7 @@ public class APList {
 
     /**
      * Liefert die Vorgaenger (auf JAVA-Ebene)
-     * 
+     *
      * @param workpackage
      *            Arbeitspaket dessen Vorgaenger gewuenscht werden
      * @return Set mit Vorgaengern
@@ -83,7 +79,7 @@ public class APList {
 
     /**
      * Vorgaenger aus DB auslesen
-     * 
+     *
      * @param actualWp
      * @param ancestorIDMap
      * @param workpackage
@@ -107,7 +103,7 @@ public class APList {
 
     /**
      * Nachfolger aus DB auslesen
-     * 
+     *
      * @param actualWp
      * @param followerIDMap
      * @param workpackage
@@ -132,7 +128,7 @@ public class APList {
     /**
      * Neues Arbeitspaket anlegen, ohne dass Vorgaenger oder Nachfolger
      * vorhanden sind
-     * 
+     *
      * @param wp
      *            neues Arbeitspaket
      */
@@ -145,7 +141,7 @@ public class APList {
 
     /**
      * Prueft ob das OAP von wp Vorgaenger hat
-     * 
+     *
      * @param wp
      *            Workpackage
      * @return boolean ob OAP Vorgaenger hat
@@ -165,7 +161,7 @@ public class APList {
 
     /**
      * Arbeitspaket aktualisieren
-     * 
+     *
      * @param wp
      *            zu aktualisierendes Arbeitspaket
      */
@@ -180,7 +176,7 @@ public class APList {
      * Vorgaenger nicht gesetzt. Treten keine Schleifen auf wird die Beziehung
      * gesetzt und in die Datenbank eingetragen. Wenn eine Schleife auftritt
      * wird ein Dialogfenster angezeigt
-     * 
+     *
      * @param anchestor
      *            zu setzender Vorgaenger
      * @param main
@@ -215,7 +211,7 @@ public class APList {
      * Nachfolger nicht gesetzt. Treten keine Schleifen auf wird die Beziehung
      * gesetzt und in die Datenbank eingetragen. Wenn eine Schleife auftritt
      * wird ein Dialogfenster angezeigt
-     * 
+     *
      * @param follower
      *            zu setzender Nachfolger
      * @param main
@@ -247,7 +243,7 @@ public class APList {
 
     /**
      * Loescht einen Vorgaenger
-     * 
+     *
      * @param ancestor
      *            zu loeschender Vorgaenger
      * @param main
@@ -260,7 +256,7 @@ public class APList {
 
     /**
      * Loescht einen Nachfolger
-     * 
+     *
      * @param follower
      *            zu loeschender Nachfolger
      * @param main
@@ -273,7 +269,7 @@ public class APList {
 
     /**
      * Findet Schleifen in Nachfolgern
-     * 
+     *
      * @param ap
      *            Arbeitspaket, das selbst (oder eines seiner OAPs) in seinen
      *            eigenen Nachfolgern nicht erneut vorkommen darf
@@ -336,7 +332,7 @@ public class APList {
 
     /**
      * Findet Schleifen in Vorgaengern
-     * 
+     *
      * @param ap
      *            Arbeitspaket, das selbst (oder eines seiner OAPs) in seinen
      *            eigenen Vorgaengern nicht erneut vorkommen darf
@@ -359,7 +355,7 @@ public class APList {
 
     /**
      * Findet rekursiv Schleifen in Vorgaengern
-     * 
+     *
      * @param ap
      *            aktuell untersuchtes AP
      * @param danger
@@ -416,7 +412,7 @@ public class APList {
 
     /**
      * liefert alle APs der APList
-     * 
+     *
      * @return Set<Workpackage> mit allen APs
      */
     protected Set<Workpackage> getAllAp() {
@@ -425,7 +421,7 @@ public class APList {
 
     /**
      * Loescht ein Komplettes Workpackage und seine Abhaengigkeiten
-     * 
+     *
      * @param removeWp
      *            Zu loeschendes Workpackage
      */
@@ -438,7 +434,7 @@ public class APList {
 
     /**
      * Liefert alle Arbeitspakete ohne Vorgaenger
-     * 
+     *
      * @return Set von Workpackage, die keine Vorgaenger haben
      */
     protected Set<Workpackage> getNoAncestorWps() {
@@ -496,7 +492,7 @@ public class APList {
 
     /**
      * Findet Schleifen in Nachfolgern
-     * 
+     *
      * @param ap
      *            Arbeitspaket, das selbst (oder eines seiner OAPs) in seinen
      *            eigenen Nachfolgern nicht erneut vorkommen darf
@@ -524,7 +520,7 @@ public class APList {
 
     /**
      * Findet rekursiv Schleifen in Nachfolgern
-     * 
+     *
      * @param ap
      *            aktuell untersuchtes AP
      * @param checkFor
@@ -552,7 +548,7 @@ public class APList {
 
     /**
      * Findet Schleifen in Vorgaengern
-     * 
+     *
      * @param ap
      *            Arbeitspaket, das selbst (oder eines seiner OAPs) in seinen
      *            eigenen Vorgaengern nicht erneut vorkommen darf
@@ -580,7 +576,7 @@ public class APList {
 
     /**
      * Findet rekursiv Schleifen in Vorgaengern
-     * 
+     *
      * @param ap
      *            aktuell untersuchtes AP
      * @param checkFor

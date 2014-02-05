@@ -2,7 +2,11 @@ package chooseDB;
 
 import c10n.C10N;
 import c10n.annotations.DefaultC10NAnnotations;
-
+import dbaccess.DBModelManager;
+import dbaccess.data.Employee;
+import de.fhbingen.wbs.translation.LocalizedStrings;
+import functions.WpManager;
+import globals.Loader;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -12,18 +16,11 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-
 import javax.swing.JOptionPane;
-
-import dbaccess.DBModelManager;
-import dbaccess.data.Employee;
-import de.fhbingen.wbs.translation.LocalizedStrings;
-import wpOverview.WPOverview;
-import wpWorker.User;
-import functions.WpManager;
-import globals.Loader;
 import jdbcConnection.MySqlConnect;
 import jdbcConnection.SQLExecuter;
+import wpOverview.WPOverview;
+import wpWorker.User;
 
 /**
  * Studienprojekt: WBS Kunde: Pentasys AG, Jens von Gersdorff Projektmitglieder:
@@ -126,9 +123,8 @@ public class DBChooser {
             e.printStackTrace();
             if (e.getMessage().contains("Access denied for user")) {
                 JOptionPane.showMessageDialog(gui, LocalizedStrings
-                        .getMessages().loginConnectionFailure()
-                        + "\n"
-                        + LocalizedStrings.getMessages().loginCheckUsername());
+                        .getMessages().loginConnectionFailure() + "\n" +
+                        LocalizedStrings.getMessages().loginCheckUsername());
             } else {
                 JOptionPane.showMessageDialog(gui, LocalizedStrings
                         .getMessages().loginConnectionFailure()
@@ -159,11 +155,7 @@ public class DBChooser {
             if (!DBModelManager.getSemaphoreModel().enterSemaphore("pl",
                     employee.getId())) {
                 int answer =
-                        JOptionPane.showConfirmDialog(gui, LocalizedStrings
-                                .getMessages().loginPMSemaphoreOccupied(),
-                                LocalizedStrings.getDbChooser()
-                                        .projectManagerLogin(),
-                                JOptionPane.YES_NO_OPTION);
+                        JOptionPane.showConfirmDialog(gui, LocalizedStrings.getMessages().loginPMSemaphoreOccupied(), LocalizedStrings.getDbChooser().projectManagerLogin(), JOptionPane.YES_NO_OPTION);
                 if (answer == JOptionPane.YES_OPTION) {
                     if (!DBModelManager.getSemaphoreModel().enterSemaphore(
                             "pl", employee.getId(), true)) {

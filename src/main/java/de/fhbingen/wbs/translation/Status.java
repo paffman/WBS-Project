@@ -1,6 +1,5 @@
 package de.fhbingen.wbs.translation;
 
-import globals.Controller;
 import c10n.annotations.De;
 import c10n.annotations.En;
 
@@ -105,15 +104,15 @@ public interface Status {
     @De("PV von {0} ist am {1} {2}.")
     @En("PV of {0} is {2} on {1}.")
     String pvValueOnDate(String wp, String date, double pv);
-    
+
     @De("Berechne {0}. Ebene.")
     @En("Calculate level {0}.")
     String calculateLevel(int lvl);
-    
+
     @De("Lade Arbeitspakete...")
     @En("Load workpackages...")
     String loadWps();
-    
+
     @De("Lade Beziehungen...")
     @En("Load dependencies...")
     String loadDependencies();

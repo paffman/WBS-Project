@@ -1,6 +1,15 @@
 package functions;
 
-import java.sql.SQLException;
+import calendar.Day;
+import calendar.TimeCalc;
+import dbServices.ValuesService;
+import dbaccess.DBModelManager;
+import dbaccess.data.AnalyseData;
+import dbaccess.data.Baseline;
+import dbaccess.data.Employee;
+import de.fhbingen.wbs.translation.LocalizedStrings;
+import globals.Loader;
+import globals.Workpackage;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -11,18 +20,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import calendar.Day;
-import calendar.TimeCalc;
-import dbServices.ValuesService;
-import dbaccess.DBModelManager;
-import dbaccess.data.AnalyseData;
-import dbaccess.data.Baseline;
-import dbaccess.data.Employee;
-import de.fhbingen.wbs.translation.LocalizedStrings;
 import wpOverview.WPOverview;
-import globals.Loader;
-import globals.Workpackage;
 
 /**
  * Studienprojekt: PSYS WBS 2.0<br/>
@@ -34,7 +32,7 @@ import globals.Workpackage;
  * Sven Seckler,<br/>
  * Lin Yang<br/>
  * Diese Klasse wird benutzt um die Dauer von Oberarbeitspaketen zuberechen<br/>
- * 
+ *
  * @author Michael Anstatt
  * @version 2.0 - 2012-08-20
  */
@@ -47,7 +45,7 @@ public class CalcOAPBaseline {
 
     /**
      * Konstruktor
-     * 
+     *
      * @param changedWp
      *            Arbeitspaket, dessen OAP aktualisiert werden muessen
      * @param wpOverview
@@ -66,7 +64,7 @@ public class CalcOAPBaseline {
 
     /**
      * Konstruktor
-     * 
+     *
      * @param wpOverview
      *            fuer den Reload wenn fertig
      */
@@ -76,7 +74,7 @@ public class CalcOAPBaseline {
 
     /**
      * Konstruktor
-     * 
+     *
      * @param withTime
      *            Berechnung unter Beruecksichtigung der PV-Berechnung, wenn
      *            true dauert die Berechnung deutlich laenger
@@ -110,7 +108,7 @@ public class CalcOAPBaseline {
 
     /**
      * Konstruktor fuer BErechnung mit erstllen einer Baseline
-     * 
+     *
      * @param baselineID
      *            ID einer Baseline, die bereits (ohne Analysedaten) in die
      *            Datenbank eingetragen wurde
@@ -142,7 +140,7 @@ public class CalcOAPBaseline {
 
     /**
      * Konstruktor fuer eine Baseline
-     * 
+     *
      * @param beschreibung
      *            Beschreibung der Baseline
      * @param wpOverview
@@ -156,7 +154,7 @@ public class CalcOAPBaseline {
      * Berechnet die Daten eines OAP indem alle seine UAP zusammengerechnet
      * werden, falls diese ebenfalls OAP sind muessen sie natuerlich bereits
      * vorher bereechnet worden sein
-     * 
+     *
      * @param oap
      *            aktuelles OAP
      */
@@ -294,7 +292,7 @@ public class CalcOAPBaseline {
 
     /**
      * Schreibt einen Eintrag in die Datenbank fuer eine neue Baseline
-     * 
+     *
      * @param description
      *            Beschreibung der Baseline
      * @return Datenbank-ID der Baseline
@@ -329,7 +327,7 @@ public class CalcOAPBaseline {
 
     /**
      * Schreibt Werte zu einem AP in die DB (Analysedaten)
-     * 
+     *
      * @param wp
      *            Arbeitspaket mit aktuellen Werten
      * @param fidBase
