@@ -26,6 +26,7 @@ import org.jfree.data.time.TimeSeriesCollection;
 import dbaccess.DBModelManager;
 import dbaccess.data.AnalyseData;
 import dbaccess.data.Baseline;
+import de.fhbingen.wbs.translation.LocalizedStrings;
 import wpComparators.APLevelComparator;
 import wpShow.WPShowGUI;
 
@@ -165,7 +166,7 @@ public class ChartCPIView extends WBSChart {
         if (plot != null) {
             plot.addRangeMarker(new ValueMarker(1.0, Color.BLACK,
                     new BasicStroke(3.0f)));
-            frame.getChartPanel().getChart().setTitle("CPI");
+            frame.getChartPanel().getChart().setTitle(LocalizedStrings.getWbs().cpi());
 
             if (this.wp != null) {
                 Marker actualCPI =

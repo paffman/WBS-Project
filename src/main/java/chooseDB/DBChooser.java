@@ -1,9 +1,8 @@
 package chooseDB;
 
 import c10n.C10N;
-import c10n.C10NConfigBase;
-import c10n.LocaleProvider;
 import c10n.annotations.DefaultC10NAnnotations;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -14,11 +13,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import java.util.Locale;
 import javax.swing.JOptionPane;
 
 import dbaccess.DBModelManager;
 import dbaccess.data.Employee;
+import de.fhbingen.wbs.translation.LocalizedStrings;
 import wpOverview.WPOverview;
 import wpWorker.User;
 import functions.WpManager;
@@ -49,7 +48,6 @@ public class DBChooser {
      * Holds the gui-object.
      */
     private DBChooserGUI gui;
-
     /**
      * last Host the client was connected to.
      */
@@ -94,17 +92,18 @@ public class DBChooser {
 
         // check input
         if (host.equals("")) {
-            JOptionPane.showMessageDialog(gui, "Bitte einen Host eintragen!");
+            JOptionPane.showMessageDialog(gui, LocalizedStrings.getMessages()
+                    .loginMissingHost());
             return;
         }
         if (db.equals("")) {
-            JOptionPane.showMessageDialog(gui,
-                    "Bitte einen Datenbanknamen eintragen!");
+            JOptionPane.showMessageDialog(gui, LocalizedStrings.getMessages()
+                    .loginMissingDbName());
             return;
         }
         if (user.equals("")) {
-            JOptionPane.showMessageDialog(gui,
-                    "Bitte einen Benutzer eintragen!");
+            JOptionPane.showMessageDialog(gui, LocalizedStrings.getMessages()
+                    .loginMissingUser());
             return;
         }
 
@@ -119,21 +118,21 @@ public class DBChooser {
                 userPw);
         try {
             if (!tryConnection()) {
-                JOptionPane.showMessageDialog(gui,
-                        "Verbindung konnte nicht aufgebaut werden!");
+                JOptionPane.showMessageDialog(gui, LocalizedStrings
+                        .getMessages().loginConnectionFailure());
                 return;
             }
         } catch (Exception e) {
             e.printStackTrace();
             if (e.getMessage().contains("Access denied for user")) {
-                JOptionPane
-                        .showMessageDialog(
-                                gui,
-                                "Verbindung konnte nicht aufgebaut werden! �berpr�fen sie Benutzernamen und Passwort.");
+                JOptionPane.showMessageDialog(gui, LocalizedStrings
+                        .getMessages().loginConnectionFailure()
+                        + "\n"
+                        + LocalizedStrings.getMessages().loginCheckUsername());
             } else {
-                JOptionPane.showMessageDialog(gui,
-                        "Verbindung konnte nicht aufgebaut werden! Exception: "
-                                + e.toString());
+                JOptionPane.showMessageDialog(gui, LocalizedStrings
+                        .getMessages().loginConnectionFailure()
+                        + "\nException: " + e.toString());
             }
             return;
         }
@@ -145,40 +144,31 @@ public class DBChooser {
         Employee employee =
                 DBModelManager.getEmployeesModel().getEmployee(user);
         if (employee == null) {
-            JOptionPane.showMessageDialog(gui, "Der Benutzer konnte nicht "
-                    + "in der Datenbank gefunden werden!");
+            JOptionPane.showMessageDialog(gui, LocalizedStrings.getMessages()
+                    .loginUserNotFound());
             return;
         }
 
         // check Project Leader authority and semaphore
         if (pl) {
             if (!employee.isProject_leader()) {
-                JOptionPane.showMessageDialog(gui,
-                        "Der Benutzer hat keine Projekleiter Berechtigungen!");
+                JOptionPane.showMessageDialog(gui, LocalizedStrings
+                        .getMessages().loginMissingPMAtuhority());
                 return;
             }
             if (!DBModelManager.getSemaphoreModel().enterSemaphore("pl",
                     employee.getId())) {
                 int answer =
-                        JOptionPane
-                                .showConfirmDialog(
-                                        gui,
-                                        "Es ist bereits ein Projektleiter "
-                                                + "eingeloggt. Wollen sie sich "
-                                                + "trotzdem einloggen? "
-                                                + "Warnung: "
-                                                + "Die Daten k�nnen "
-                                                + "inkonsistent werden, "
-                                                + "wenn mehrere "
-                                                + "Projektleiter daran "
-                                                + "arbeiten.",
-                                        "Projektleiterlogin",
-                                        JOptionPane.YES_NO_OPTION);
+                        JOptionPane.showConfirmDialog(gui, LocalizedStrings
+                                .getMessages().loginPMSemaphoreOccupied(),
+                                LocalizedStrings.getDbChooser()
+                                        .projectManagerLogin(),
+                                JOptionPane.YES_NO_OPTION);
                 if (answer == JOptionPane.YES_OPTION) {
                     if (!DBModelManager.getSemaphoreModel().enterSemaphore(
                             "pl", employee.getId(), true)) {
-                        JOptionPane.showMessageDialog(gui,
-                                "Der Projektleiterlogin ist fehlgeschlagen!");
+                        JOptionPane.showMessageDialog(gui, LocalizedStrings
+                                .getMessages().loginPMLoginFailed());
                         return;
                     }
                 } else {
@@ -225,14 +215,25 @@ public class DBChooser {
             ResultSet rslt =
                     SQLExecuter.executeQuery("call "
                             + "db_identifier_select_by_dbname('" + db + "');");
-            rslt.next();
-            ret = rslt.getString("id");
+            if (rslt == null) {
+                JOptionPane.showMessageDialog(gui, LocalizedStrings
+                        .getMessages().loginConnectionFailure()
+                        + "\n"
+                        + LocalizedStrings.getMessages().loginMissingIndexPw());
+            } else if (rslt.next()) {
+                ret = rslt.getString("id");
+            } else {
+                JOptionPane.showMessageDialog(gui, LocalizedStrings
+                        .getMessages().loginConnectionFailure()
+                        + "\n"
+                        + LocalizedStrings.getMessages().loginMissingIndex());
+            }
 
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(gui,
-                    "Verbindung konnte nicht aufgebaut werden! "
-                            + "Es wurde kein Index-Eintrag f�r "
-                            + "die Datenbank gefunden.");
+            JOptionPane.showMessageDialog(gui, LocalizedStrings.getMessages()
+                    .loginConnectionFailure()
+                    + "\n"
+                    + LocalizedStrings.getMessages().loginMissingIndex());
         } finally {
             try {
                 MySqlConnect.getConnection().close();
@@ -351,26 +352,15 @@ public class DBChooser {
     public final DBChooserGUI getGui() {
         return gui;
     }
-	/**
-	 * erstellt ein Objekt von DBChooser() und beginnt somit das Programm durch Konstruktoraufruf von DBChooser()
-	 *
-	 * @param args
-	 */
-	public static void main(String[] args) {
-        C10N.configure(new DefaultC10NAnnotations());
-        C10N.configure(new C10NConfigBase() {
-            @Override
-            public void configure() {
-                install(new DefaultC10NAnnotations());
 
-                setLocaleProvider(new LocaleProvider() {
-                    @Override
-                    public Locale getLocale() {
-                        return Locale.ENGLISH;
-                    }
-                });
-            }
-        });
+    /**
+     * erstellt ein Objekt von DBChooser() und beginnt somit das Programm durch
+     * Konstruktoraufruf von DBChooser()
+     *
+     * @param args
+     */
+    public static void main(String[] args) {
+        C10N.configure(new DefaultC10NAnnotations());
         new DBChooser();
-	}
+    }
 }

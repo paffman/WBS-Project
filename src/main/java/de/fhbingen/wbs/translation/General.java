@@ -150,4 +150,22 @@ public interface General {
 
     @De("verwalten")
     String toManage();
+
+    @De("Initialisierung einer importierten DB")
+    @En("Initialization of an imported database")
+    String initImportDb();
+
+    @De("VG")
+    @En("PRE")
+    String predecessoreShort();
+
+    @De("NF")
+    @En("SUC")
+    String successorShort();
+
+    @De("MA")
+    @En("EMP")
+    String employeeShort();
+
 }
+

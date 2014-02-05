@@ -13,6 +13,7 @@ import javax.swing.JOptionPane;
 
 import jdbcConnection.SQLExecuter;
 import dbaccess.DBModelManager;
+import de.fhbingen.wbs.translation.LocalizedStrings;
 import wpOverview.WPOverview;
 
 /**
@@ -97,8 +98,8 @@ public class Controller {
      * @param message
      */
     public static void showError(String message) {
-        JOptionPane.showMessageDialog(null, message, "Fehler!",
-                JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(null, message, LocalizedStrings
+                .getErrorMessages().error(), JOptionPane.ERROR_MESSAGE);
     }
 
     /**
@@ -189,7 +190,7 @@ public class Controller {
                     WPOverview.getUser().getId());
         }
         SQLExecuter.closeConnection();
-        System.out.println("Benutzer wurde an der Datenbank abgemeldet");
+        System.out.println(LocalizedStrings.getMessages().logOf());
     }
 
     /**

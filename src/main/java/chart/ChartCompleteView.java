@@ -27,10 +27,14 @@ import org.jfree.data.time.Day;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
 
+import sun.util.LocaleServiceProviderPool.LocalizedObjectGetter;
+import c10n.C10N;
 import dbServices.ValuesService;
 import dbaccess.DBModelManager;
 import dbaccess.data.AnalyseData;
 import dbaccess.data.Baseline;
+import de.fhbingen.wbs.translation.Chart;
+import de.fhbingen.wbs.translation.LocalizedStrings;
 import wpComparators.APLevelComparator;
 
 /**
@@ -98,7 +102,8 @@ public class ChartCompleteView extends WBSChart {
         TimeSeriesCollection dataset = new TimeSeriesCollection();
 
         boolean dataFound = false;
-        TimeSeries diagonal = new TimeSeries("Soll");
+        TimeSeries diagonal =
+                new TimeSeries(LocalizedStrings.getChart().target());
         Calendar minCal = new GregorianCalendar();
         minCal.setTime(new calendar.Day(ValuesService.getPreviousFriday(
                 wp.getStartDateCalc()).getTime()));
@@ -213,10 +218,10 @@ public class ChartCompleteView extends WBSChart {
                     new ValueMarker(WpManager.calcPercentComplete(wp.getBac(),
                             wp.getEtc(), wp.getAc()), Color.GREEN,
                             new BasicStroke(1.5f));
-            // actualPercent.setLabel("aktueller Fortschritt");
             plot.addRangeMarker(actualPercent);
         }
 
-        frame.getChartPanel().getChart().setTitle("Fortschritt (PV)");
+        frame.getChartPanel().getChart()
+                .setTitle(LocalizedStrings.getChart().progressPv());
     }
 }

@@ -14,6 +14,9 @@ public final class LocalizedStrings {
     private static Project project = null;
     private static ProjectSetup projectSetup = null;
     private static Wbs wbs = null;
+    private static DbChooser dbChooser = null;
+    private static Status status = null;
+    private static Chart chart = null;
     private static General general = null;
 
     public static Button getButton() {
@@ -72,6 +75,27 @@ public final class LocalizedStrings {
         return wbs;
     }
 
+    public static DbChooser getDbChooser() {
+        if (dbChooser == null) {
+            dbChooser = C10N.get(DbChooser.class);
+        }
+        return dbChooser;
+    }
+
+    public static Status getStatus() {
+        if (status == null) {
+            status = C10N.get(Status.class);
+        }
+        return status;
+    }
+
+    public static Chart getChart() {
+        if (chart == null) {
+            chart = C10N.get(Chart.class);
+        }
+        return chart;
+    }
+
     public static General getGeneralStrings() {
         if (general == null) {
             general = C10N.get(General.class);
@@ -80,7 +104,6 @@ public final class LocalizedStrings {
     }
 
     private LocalizedStrings() {
-        //forbid usage
+        // forbid usage
     }
 }
-

@@ -21,11 +21,13 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import sun.util.LocaleServiceProviderPool.LocalizedObjectGetter;
 import dbaccess.DBModelManager;
 import dbaccess.data.Employee;
 import dbaccess.data.WorkEffort;
 import dbaccess.data.Workpackage;
 import dbaccess.data.WorkpackageAllocation;
+import de.fhbingen.wbs.translation.LocalizedStrings;
 import functions.CalcOAPBaseline;
 import functions.WpManager;
 import wpOverview.WPOverview;
@@ -42,7 +44,7 @@ public class PrepareImport {
 
     public PrepareImport(WPOverview wpo) {
         prepareAPs();
-        new CalcOAPBaseline("Initialisierung einer importierten DB", wpo);
+        new CalcOAPBaseline(LocalizedStrings.getGeneralStrings().initImportDb(), wpo);
     }
 
     /**
