@@ -34,7 +34,7 @@ public class MySQLEmployeesModelTest {
     public final void testAddNewEmployeeAndDeleteEmployee() {
         Employee ep = new Employee();
         ep.setLogin("test");
-        ep.setPassword("1234");
+        ep.setPassword("1234".toCharArray());
         ep.setLast_name("Test");
         ep.setFirst_name("Nur ein");
         ep.setProject_leader(true);

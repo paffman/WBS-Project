@@ -19,7 +19,6 @@ import dbaccess.DBModelManager;
 import dbaccess.data.Employee;
 import de.fhbingen.wbs.translation.DbChooser;
 import de.fhbingen.wbs.translation.Messages;
-import de.fhbingen.wbs.translation.ProjectSetup;
 import wpOverview.WPOverview;
 import wpWorker.User;
 import functions.WpManager;
@@ -98,8 +97,8 @@ public class DBChooser {
         String host = gui.getHostField().getText();
         String db = gui.getDbNameField().getText();
         String user = gui.getUserField().getText();
-        String indexDbPw = new String(gui.getDbPwPasswordField().getPassword());
-        String userPw = new String(gui.getPwPasswordField().getPassword());
+        char[] indexDbPw = gui.getDbPwPasswordField().getPassword();
+        char[] userPw = gui.getPwPasswordField().getPassword();
         Boolean pl = gui.getPlCheckBox().isSelected();
 
         // check input
@@ -216,7 +215,7 @@ public class DBChooser {
      * @return Unique id of the given database.
      */
     private String getDatabaseIndex(final String host, final String db,
-            final String indexDbPw) {
+            final char[] indexDbPw) {
         MySqlConnect.setDbConncetion(host, "id_wbs", "", "idxUser", indexDbPw);
         String ret = null;
         try {
@@ -290,7 +289,7 @@ public class DBChooser {
      *            password for the index database.
      */
     private void saveLastDB(final String host, final String db,
-            final String user, final String indexPw) {
+            final String user, final char[] indexPw) {
         File dbConfig = new File("DbConfig.txt");
         try {
             PrintWriter out = new PrintWriter(dbConfig);

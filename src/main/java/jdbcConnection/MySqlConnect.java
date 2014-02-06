@@ -3,6 +3,7 @@ package jdbcConnection;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Arrays;
 
 /**
  * This class handles connections to a mySql database.
@@ -29,7 +30,7 @@ public final class MySqlConnect {
     /**
      * password of login.
      */
-    private static String password;
+    private static char[] password;
     /**
      * unique id of the database
      */
@@ -48,14 +49,14 @@ public final class MySqlConnect {
      * 
      * @return Connection-Object
      */
-    public static Connection getConnection() throws SQLException{
+    public static Connection getConnection() throws SQLException {
         try {
             // This will load the MySQL driver, each DB has its own driver
             Class.forName(MYSQL_DRIVER);
             Connection connect =
                     DriverManager.getConnection("jdbc:mysql://" + host + "/"
                             + dbName + "?user=" + login + "&password="
-                            + password);
+                            + new String(password));
             return connect;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -85,7 +86,7 @@ public final class MySqlConnect {
      */
     public static void setDbConncetion(final String aHost,
             final String aDbName, final String aId, final String aLogin,
-            final String aPassword) {
+            final char[] aPassword) {
         MySqlConnect.host = aHost;
         MySqlConnect.dbName = aDbName;
         MySqlConnect.id = aId;
@@ -122,5 +123,23 @@ public final class MySqlConnect {
      */
     public static String getLogin() {
         return login;
+    }
+
+    /**
+     * Function to compare a password with the currently used one.
+     * 
+     * @param pw
+     *            a password
+     * @return true if pw is equal to this.password
+     */
+    public static boolean comparePasswort(char[] pw) {        
+        return Arrays.equals(pw, password);
+    }
+    
+    /**
+     * @param pw a password
+     */
+    public static void setPassword(char[] pw){
+        password = pw;
     }
 }
