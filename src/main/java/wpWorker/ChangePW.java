@@ -124,24 +124,7 @@ public class ChangePW {
      */
 
     protected final boolean checkRules() {
-        final char[] password = gui.txfNewPW.getPassword();
-        if (password.length < 6) {
-            return false;
-        }
-        CharsetEncoder asciiEncoder = Charset.forName("US-ASCII").newEncoder();
-        boolean onlyAscii = true;
-        boolean hasLowercaseCharacter = false;
-        boolean hasSpecialCharacterOrUppercaseCharacter = false;
-        boolean hasNumber = false;
-        for (char c : password) {
-            onlyAscii &= asciiEncoder.canEncode(c);
-            hasLowercaseCharacter |= Character.isLowerCase(c);
-            hasSpecialCharacterOrUppercaseCharacter |=
-                    Character.isUpperCase(c) || !Character.isLetterOrDigit(c);
-            hasNumber |= Character.isDigit(c);
-        }
-        Arrays.fill(password, '0');
-        return onlyAscii && hasLowercaseCharacter
-                && hasSpecialCharacterOrUppercaseCharacter && hasNumber;
+        return ProjectSetupAssistant
+                .isPasswordValid(gui.txfNewPW.getPassword());
     }
 }

@@ -32,7 +32,7 @@ public final class MySqlConnect {
      */
     private static char[] password;
     /**
-     * unique id of the database
+     * unique id of the database.
      */
     private static String id;
 
@@ -48,6 +48,8 @@ public final class MySqlConnect {
      * MySql-Database.
      * 
      * @return Connection-Object
+     * @throws SQLException
+     *             for handling on higher application levels.
      */
     public static Connection getConnection() throws SQLException {
         try {
@@ -132,14 +134,15 @@ public final class MySqlConnect {
      *            a password
      * @return true if pw is equal to this.password
      */
-    public static boolean comparePasswort(char[] pw) {        
+    public static boolean comparePasswort(final char[] pw) {
         return Arrays.equals(pw, password);
     }
-    
+
     /**
-     * @param pw a password
+     * @param pw
+     *            a password
      */
-    public static void setPassword(char[] pw){
+    public static void setPassword(final char[] pw) {
         password = pw;
     }
 }
