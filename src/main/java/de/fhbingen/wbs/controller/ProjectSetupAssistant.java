@@ -457,7 +457,7 @@ public final class ProjectSetupAssistant implements ProjectProperties.Actions,
      *                 DON'T REUSE
      * @return true if passwords match.
      */
-    private boolean arePasswordsEqual(final char[] password,
+    public static boolean arePasswordsEqual(final char[] password,
                                       final char[] password2) {
         boolean returnValue = Arrays.equals(password, password2);
         Arrays.fill(password, '0');
