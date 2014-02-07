@@ -87,7 +87,7 @@ public interface Wbs {
     String affectedWorkpackages();
 
     @De("Timeline")
-    @En("Time line")
+    @En("Timeline")
     String timeLine();
 
     @De("Manuelle Verfügbarkeiten")
