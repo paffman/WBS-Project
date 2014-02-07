@@ -36,7 +36,7 @@ import wpWorker.User;
  * Lin Yang<br/>
  * Ruft die DBChooserGUI auf<br/>
  * setzt nach der Pfadeingabe den Pfad in der MDBConnect Klasse<br/>
- *
+ * 
  * @author Samson von Graevenitz, Daniel Metzler, Michael Anstatt
  * @version 2.0 - 2012-08-20
  */
@@ -84,8 +84,8 @@ public class DBChooser {
         String host = gui.getHostField().getText();
         String db = gui.getDbNameField().getText();
         String user = gui.getUserField().getText();
-        String indexDbPw = new String(gui.getDbPwPasswordField().getPassword());
-        String userPw = new String(gui.getPwPasswordField().getPassword());
+        char[] indexDbPw = gui.getDbPwPasswordField().getPassword();
+        char[] userPw = gui.getPwPasswordField().getPassword();
         Boolean pl = gui.getPlCheckBox().isSelected();
 
         // check input
@@ -191,7 +191,7 @@ public class DBChooser {
 
     /**
      * This method queries the unique id in the id_wbs db for a given dbName
-     *
+     * 
      * @param host
      *            Host where db is located.
      * @param db
@@ -201,7 +201,7 @@ public class DBChooser {
      * @return Unique id of the given database.
      */
     private String getDatabaseIndex(final String host, final String db,
-            final String indexDbPw) {
+            final char[] indexDbPw) {
         MySqlConnect.setDbConncetion(host, "id_wbs", "", "idxUser", indexDbPw);
         String ret = null;
         try {
@@ -275,7 +275,7 @@ public class DBChooser {
      *            password for the index database.
      */
     private void saveLastDB(final String host, final String db,
-            final String user, final String indexPw) {
+            final String user, final char[] indexPw) {
         File dbConfig = new File("DbConfig.txt");
         try {
             PrintWriter out = new PrintWriter(dbConfig);
@@ -353,7 +353,7 @@ public class DBChooser {
      * @param args
      */
     public static void main(String[] args) {
-        Locale.setDefault(Locale.JAPAN);
+        //Locale.setDefault(Locale.GERMAN);
         System.out.println(Locale.getDefault().getLanguage().equals(Locale
                 .GERMAN));
         C10N.configure(new C10NUseEnglishDefaultConfiguration());

@@ -3,6 +3,7 @@ package chooseDB;
 import de.fhbingen.wbs.controller.ProjectSetupAssistant;
 import de.fhbingen.wbs.translation.LocalizedStrings;
 import globals.InfoBox;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JOptionPane;

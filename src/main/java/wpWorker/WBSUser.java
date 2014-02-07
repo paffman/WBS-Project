@@ -177,8 +177,8 @@ public class WBSUser {
             emp.setLogin(worker.getLogin());
             emp.setFirst_name(worker.getVorname());
             emp.setLast_name(worker.getName());
-            emp.setProject_leader(worker.getProjLeiter());
-            emp.setPassword("1234");
+            emp.setProject_leader(worker.getProjLeiter());            
+            emp.setPassword("1234".toCharArray());
             emp.setDaily_rate(worker.getTagessatz());
             DBModelManager.getEmployeesModel().addNewEmployee(emp);
         }
@@ -200,7 +200,7 @@ public class WBSUser {
                 DBModelManager.getEmployeesModel().getEmployee(
                         mitarbeiter.getId());
         if (employee != null) {
-            employee.setPassword("1234");
+            employee.setPassword("1234".toCharArray());
             if (DBModelManager.getEmployeesModel().updateEmployee(employee)) {
                 JOptionPane.showMessageDialog(null,
                         messageStrings.passwordHasBeenReset());

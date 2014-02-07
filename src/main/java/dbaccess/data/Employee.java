@@ -44,7 +44,7 @@ public class Employee {
     private boolean project_leader;
     
     /** Password used to login. Encryption is handled in the Application. */
-    private String password;
+    private char[] password;
     
     /** The daily wage of the employee, needed for earned value analysis. */
     private double daily_rate;
@@ -174,7 +174,7 @@ public class Employee {
      *
      * @return The employees password
      */
-    public String getPassword() {
+    public char[] getPassword() {
         return password;
     }
 
@@ -183,7 +183,7 @@ public class Employee {
      *
      * @param password The employees password
      */
-    public void setPassword(String password) {
+    public void setPassword(char[] password) {
         this.password = password;
         setPassword = true;
     }

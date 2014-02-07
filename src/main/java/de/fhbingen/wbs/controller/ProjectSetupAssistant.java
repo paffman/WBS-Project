@@ -471,7 +471,7 @@ public final class ProjectSetupAssistant implements ProjectProperties.Actions,
      *                 DON'T REUSE
      * @return true if valid.
      */
-    private static boolean isPasswordValid(final char[] password) {
+    public static boolean isPasswordValid(final char[] password) {
         if (password.length < MIN_PW_LENGTH) {
             return false;
         }
