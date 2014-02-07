@@ -1,31 +1,24 @@
 package chart;
 
+import dbaccess.DBModelManager;
+import dbaccess.data.AnalyseData;
+import dbaccess.data.Baseline;
+import de.fhbingen.wbs.translation.LocalizedStrings;
 import functions.WpManager;
 import globals.Workpackage;
-
 import java.awt.BasicStroke;
 import java.awt.Color;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.List;
-
 import javax.swing.JFrame;
-
-import jdbcConnection.SQLExecuter;
-
 import org.jfree.chart.plot.Marker;
 import org.jfree.chart.plot.ValueMarker;
 import org.jfree.data.time.Day;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
-
-import dbaccess.DBModelManager;
-import dbaccess.data.AnalyseData;
-import dbaccess.data.Baseline;
 import wpComparators.APLevelComparator;
 import wpShow.WPShowGUI;
 
@@ -40,7 +33,7 @@ import wpShow.WPShowGUI;
  * Lin Yang<br/>
  * Diese Klassse zeigt einen JFrame mit Diagramm fuer den CPI-Verlauf eines
  * bestimmten Arbeitspakets an<br/>
- * 
+ *
  * @author Michael Anstatt, Lin Yang
  * @version 2.0 - 2012-08-20
  */
@@ -50,7 +43,7 @@ public class ChartCPIView extends WBSChart {
 
     /**
      * Konstruktor zeigt Projekt-CPIs an
-     * 
+     *
      * @param parent
      *            nur zur mittigen Positionierung des JFrames
      */
@@ -61,7 +54,7 @@ public class ChartCPIView extends WBSChart {
 
     /**
      * Konstruktor zeigt CPI-Verlauf fuer ein bestimmtes Arbeitspaket an
-     * 
+     *
      * @param wp
      *            Arbeitspaket
      * @param parent
@@ -76,7 +69,7 @@ public class ChartCPIView extends WBSChart {
     /**
      * Liest Daten fuer das Projekt aus, die zur Anzeige des CPI-Verlaufs
      * benoetigt werden
-     * 
+     *
      * @return TimeSeriesCollection, anzeigefertig fuer JFreeChart
      */
     protected static TimeSeriesCollection getDBData() {
@@ -107,7 +100,7 @@ public class ChartCPIView extends WBSChart {
     /**
      * Liest Daten fuer ein Arbeitspaket aus, die zur Anzeige des CPI-Verlaufs
      * benoetigt werden
-     * 
+     *
      * @param wp
      *            Arbeitspaket
      * @return TimeSeriesCollection, anzeigefertig fuer JFreeChart
@@ -129,7 +122,7 @@ public class ChartCPIView extends WBSChart {
     /**
      * Liest die durch getDBData() vorbereiteten Arbeitspaket-Daten aus der
      * Datenbank
-     * 
+     *
      * @param wp
      *            aktuell auszulesendes Arbeitspaket
      * @return TimeSeries bereits um von getDBData() in eine Collection gemergt
@@ -165,7 +158,7 @@ public class ChartCPIView extends WBSChart {
         if (plot != null) {
             plot.addRangeMarker(new ValueMarker(1.0, Color.BLACK,
                     new BasicStroke(3.0f)));
-            frame.getChartPanel().getChart().setTitle("CPI");
+            frame.getChartPanel().getChart().setTitle(LocalizedStrings.getWbs().cpi());
 
             if (this.wp != null) {
                 Marker actualCPI =

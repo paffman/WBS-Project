@@ -1,5 +1,7 @@
 package wpAddAufwand;
 
+import de.fhbingen.wbs.translation.*;
+import de.fhbingen.wbs.translation.Button;
 import globals.FilterJTextField;
 
 import java.awt.*;
@@ -15,7 +17,7 @@ import wpWorker.Worker;
 
 /**
  * Studienprojekt:	WBS<br/>
- * 
+ *
  * Kunde:				Pentasys AG, Jens von Gersdorff<br/>
  * Projektmitglieder:	Andre Paffenholz, <br/>
  * 						Peter Lange, <br/>
@@ -23,7 +25,7 @@ import wpWorker.Worker;
  * 						Samson von Graevenitz<br/>
  *
  * Studienprojekt:	PSYS WBS 2.0<br/>
- * 
+ *
  * Kunde:		Pentasys AG, Jens von Gersdorff<br/>
  * Projektmitglieder:	<br/>
  *			Michael Anstatt,<br/>
@@ -31,9 +33,9 @@ import wpWorker.Worker;
  *			Jens Eckes,<br/>
  *			Sven Seckler,<br/>
  *			Lin Yang<br/>
- * 
+ *
  * GUI zum Hinzufügen eines Aufwandes zum Arbeitspaket<br/>
- * 
+ *
  * @author Daniel Metzler, Michael Anstatt
  * @version 2.0 2012-0821
  */
@@ -41,14 +43,14 @@ public class AddAufwandGui extends JFrame{
 
 	private static final long serialVersionUID = 1L;
 	protected GridBagLayout gbl;
-	
-	private JLabel lblID, lblName, lblUser,lblBeschreibung, lblAufwand, lblDatum;	
+
+	private JLabel lblID, lblName, lblUser,lblBeschreibung, lblAufwand, lblDatum;
 	protected JTextField txfNr, txfName, txfBeschreibung, txfAufwand;
 	protected JComboBox<Worker> cobUser;
 	protected JFormattedTextField txfDatum;
-	protected JButton btnEdit, btnSchliessen;	
+	protected JButton btnEdit, btnSchliessen;
 
-	
+
 	/**
 	 * Main-Frame bekommt den Namen "WPAufwand" zugewiesen
 	 * es wird das Windows Look and Feel verwendet
@@ -56,7 +58,7 @@ public class AddAufwandGui extends JFrame{
 	 * und zu dem GridBagLayout hinzugefügt und angeordnet mittels createGbc
 	 */
 	public AddAufwandGui(){
-		super("WPAufwand");
+		super();
 		initialize();
 		setResizable(false);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -64,27 +66,30 @@ public class AddAufwandGui extends JFrame{
 			UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
 			SwingUtilities.updateComponentTreeUI(this);
 		} catch (Exception e) {
-			System.err.println("Could not load LookAndFeel");
+			System.err.println(LocalizedStrings.getErrorMessages().couldNotLoadLookAndFeel());
 		}
-		
-        lblID = new JLabel("ArbeitspaketID");
+        Wbs wbsStrings = LocalizedStrings.getWbs();
+        Button buttonStrings = LocalizedStrings
+                .getButton();
+
+        lblID = new JLabel(wbsStrings.workPackageId());
 		txfNr = new FilterJTextField();
 		txfNr.setEnabled(false);
-        
-		lblName = new JLabel("Arbeitspaket Name");
+
+		lblName = new JLabel(wbsStrings.workPackageName());
 		txfName = new FilterJTextField();
 		txfName.setEnabled(false);
-		
-		lblUser = new JLabel("Benutzer");
+
+		lblUser = new JLabel(LocalizedStrings.getLogin().user());
 		cobUser = new JComboBox<Worker>();
-			
-		lblBeschreibung = new JLabel("Beschreibung");
+
+		lblBeschreibung = new JLabel(LocalizedStrings.getGeneralStrings().description());
 		txfBeschreibung = new FilterJTextField();
-		
-		lblAufwand = new JLabel("Aufwand");
+
+		lblAufwand = new JLabel(wbsStrings.workEffort());
 		txfAufwand = new FilterJTextField();
-		
-		lblDatum = new JLabel("Datum");
+
+		lblDatum = new JLabel(LocalizedStrings.getGeneralStrings().date());
 		//Textfeld Datum bekommt das Format dd.mm.yyyy und hat das aktuelle Datum drinnen stehen
 		try {
 			txfDatum =  new JFormattedTextField(new MaskFormatter("##.##.####"));
@@ -94,10 +99,10 @@ public class AddAufwandGui extends JFrame{
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-		
-		btnEdit = new JButton("Editieren");
-		btnSchliessen = new JButton("Schließen");
-		
+
+		btnEdit = new JButton(buttonStrings.ok());
+		btnSchliessen = new JButton(buttonStrings.cancel());
+
 		createGBC(lblID, 0, 0, 1, 1);
 		createGBC(txfNr, 1, 0, 1, 1);
 		createGBC(lblName, 0, 1, 1, 1);
@@ -112,12 +117,12 @@ public class AddAufwandGui extends JFrame{
 		createGBC(txfDatum, 1, 5, 1, 1);
 		createGBC(btnEdit, 0, 6, 1, 1);
 		createGBC(btnSchliessen, 1, 6, 1, 1);
-		
+
 		setVisible(true);
-		
+
 	}
-		
-		
+
+
 		/**
 		 * Methode initialize zum erstellen des Layouts
 		 * Gui ist 300 Pixel breit und 220 Pixel lang
@@ -130,12 +135,12 @@ public class AddAufwandGui extends JFrame{
 			Toolkit tk=Toolkit.getDefaultToolkit();
 			Dimension screenSize=tk.getScreenSize();
 			setLocation((int)(screenSize.getWidth()/2)-width/2,(int)(screenSize.getHeight()/2)-height/2);
-			
+
 			this.setSize(new Dimension(width, height));
 	        gbl = new GridBagLayout();
-			getContentPane().setLayout(gbl);		
+			getContentPane().setLayout(gbl);
 		}
-		
+
 		/**
 		 * void createGBC(args)
 		 * Methode createGBC zum Hinzufügen der einzelnen Komponenten zum GridBagLayout
@@ -148,9 +153,9 @@ public class AddAufwandGui extends JFrame{
 		private void createGBC(Component c, int x, int y, int width, int height){
 		  	GridBagConstraints gbc = new GridBagConstraints();
 		  	gbc.fill=GridBagConstraints.HORIZONTAL;
-		  	gbc.gridx = x;                        
-		  	gbc.gridy = y;  
-		  	gbc.gridwidth = width;  
+		  	gbc.gridx = x;
+		  	gbc.gridy = y;
+		  	gbc.gridwidth = width;
 		  	gbc.weightx =width;
 		  	gbc.weighty = height;
 		  	gbc.gridheight = height;

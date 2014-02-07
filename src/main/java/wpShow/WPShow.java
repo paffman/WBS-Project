@@ -2,16 +2,16 @@ package wpShow;
 
 /**
  * Studienprojekt:	WBS
- * 
+ *
  * Kunde:		Pentasys AG, Jens von Gersdorff
- * Projektmitglieder:	Andre Paffenholz, 
- * 			Peter Lange, 
+ * Projektmitglieder:	Andre Paffenholz,
+ * 			Peter Lange,
  * 			Daniel Metzler,
  * 			Samson von Graevenitz
- * 
- * 
+ *
+ *
  * Studienprojekt:	PSYS WBS 2.0
- * 
+ *
  * Kunde:		Pentasys AG, Jens von Gersdorff
  * Projektmitglieder:	Michael Anstatt,
  *			Marc-Eric Baumgärtner,
@@ -25,6 +25,19 @@ package wpShow;
  * @version 2.0 - 28.06.2012
  */
 
+import chart.ChartCPIView;
+import chart.ChartCompleteView;
+import dbServices.WorkerService;
+import dbaccess.DBModelManager;
+import dbaccess.data.Employee;
+import dbaccess.data.WorkEffort;
+import de.fhbingen.wbs.translation.LocalizedStrings;
+import de.fhbingen.wbs.translation.Messages;
+import de.fhbingen.wbs.translation.Wbs;
+import functions.CalcOAPBaseline;
+import functions.WpManager;
+import globals.Controller;
+import globals.Workpackage;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -35,8 +48,6 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -45,28 +56,18 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
-
-import chart.ChartCPIView;
-import chart.ChartCompleteView;
-import dbServices.WorkerService;
-import dbaccess.DBModelManager;
-import dbaccess.data.Employee;
-import dbaccess.data.WorkEffort;
 import wpAddAufwand.AddAufwand;
 import wpConflict.Conflict;
 import wpOverview.WPOverview;
 import wpWorker.Worker;
-import functions.CalcOAPBaseline;
-import functions.WpManager;
-import globals.Controller;
-import globals.Workpackage;
 
 public class WPShow {
+    private final Wbs wbsStrings;
+    private final Messages messageStrings;
     private WPOverview over;
     private WPShowGUI gui;
     private boolean newWp;
@@ -76,7 +77,7 @@ public class WPShow {
 
     /**
      * Konstruktor
-     * 
+     *
      * @param over
      *            Workpackage GUI
      * @param selected
@@ -88,6 +89,8 @@ public class WPShow {
      */
     public WPShow(WPOverview over, Workpackage selected, boolean newWp,
             JFrame parent) {
+        wbsStrings = LocalizedStrings.getWbs();
+        messageStrings = LocalizedStrings.getMessages();
 
         this.newWp = newWp;
         this.over = over;
@@ -95,7 +98,8 @@ public class WPShow {
         if (newWp) {
             this.wp = new Workpackage();
             this.gui =
-                    new WPShowGUI("Neues Arbeitspaket anlegen", this, parent);
+                    new WPShowGUI(wbsStrings.addNewWorkPackageWindowTitle(),
+                            this, parent);
             String[] newID = getNextId(selected.getStringID()).split("\\.");
             wp.setLvlIDs(newID);
             wp.setEndDateHope(WpManager.getWorkpackage(wp.getOAPID())
@@ -134,7 +138,7 @@ public class WPShow {
 
     /**
      * Liefert eine neue eindeutige ID für ein Arbeitspaket
-     * 
+     *
      * @param currentID
      *            aktuelle ID des markieren Arbeitspaketes im Baum - bzw. leeres
      *            Arbeitspaket bei Aufruf über das Menü
@@ -160,7 +164,7 @@ public class WPShow {
     /**
      * prüft, ob ein AP mit der ID bereits in der Datenbank existiert Wird von
      * addWp() und aus WPReassign.setRekPakete() aufgerufen
-     * 
+     *
      * @param newId
      *            AP-ID des neu zu erstellenden Arbeitspakets
      * @return true = Paket-ID ist noch frei, false = ID ist bereits in der
@@ -174,8 +178,7 @@ public class WPShow {
 
         if (ids.length != levels) {
             JOptionPane.showMessageDialog(null,
-                    "Bitte geben Sie die richtige Anzahl an Ebenen ein \n Ebenenanzahl = "
-                            + levels + "!");
+                    messageStrings.workPackageWrongLevel(levels));
             return false;
         }
 
@@ -183,7 +186,7 @@ public class WPShow {
             JOptionPane
                     .showMessageDialog(
                             null,
-                            "Es existiert bereits ein Arbeitspaket mit dieser ID. Bitte geben Sie eine neue ID ein!");
+                            messageStrings.workPackageIdAlreadyExists());
             return false;
         }
 
@@ -196,7 +199,7 @@ public class WPShow {
         }
         if (actualCheckWp == null) {
             JOptionPane.showMessageDialog(null,
-                    "Es sind keine Oberpakete zu dieser ID vorhanden!");
+                    messageStrings.workPackageNoTopLevelWorkPackagesForThisId());
             return false;
         } else {
             wp.setLvlIDs(ids);
@@ -225,7 +228,7 @@ public class WPShow {
             return true;
         } else {
             JOptionPane.showMessageDialog(gui,
-                    "Bitte erst das Arbeitspaket speichern");
+                    messageStrings.workPackagePleaseSaveToContinue());
             return false;
         }
     }
@@ -261,14 +264,16 @@ public class WPShow {
         if (gui.getIsOAP() && !wp.isIstOAP() && WpManager.calcAC(wp) > 0) {
             JOptionPane
                     .showMessageDialog(gui,
-                            "Das Arbeitspaket muss UAP bleiben, da bereits Aufwände eingetragen wurden");
+                            messageStrings
+                                    .workPackageCanNotBeTopLevelBecauseOfWorkEfforts());
             success = false;
         }
 
         if (!gui.getIsOAP() && wp.isIstOAP()
                 && WpManager.getUAPs(wp).size() > 0) {
             JOptionPane.showMessageDialog(gui,
-                    "Das Arbeitspaket muss OAP bleiben, da UAPs existieren");
+                    messageStrings
+                            .workPackageCanNotBeSubWorkPackageBecauseItHasChildren());
             success = false;
         }
 
@@ -358,24 +363,28 @@ public class WPShow {
             if (newIdIsOK(gui.getNr())) {
                 newLvlIDs = gui.getNr().split(".");
             } else {
-                JOptionPane.showMessageDialog(gui, "Falsche ID eingegeben");
+                JOptionPane.showMessageDialog(gui,
+                        messageStrings.workPackageWrongId());
                 save = false;
             }
         }
 
         String name = gui.getWpName();
         if (name.equals("")) {
-            JOptionPane.showMessageDialog(null, "Name darf nicht leer sein");
+            JOptionPane.showMessageDialog(null,
+                    messageStrings.workPackageNeedsName());
             save = false;
         }
 
         if (getWorkpackage().equals(WpManager.getRootAp())) {
             if (!gui.getIsOAP()) {
-                JOptionPane.showMessageDialog(null, "Projekt muss OAP sein");
+                JOptionPane.showMessageDialog(null,
+                        messageStrings.workPackageRootHasToBeTopLevel());
                 save = false;
             }
             if (gui.getIsInaktiv()) {
-                JOptionPane.showMessageDialog(null, "Projekt muss aktiv sein");
+                JOptionPane.showMessageDialog(null,
+                        messageStrings.workPackageRootHasToBeActive());
                 save = false;
             }
         }
@@ -385,12 +394,12 @@ public class WPShow {
             startHope = gui.getStartHope();
             if (wp.equals(WpManager.getRootAp()) && startHope == null) {
                 JOptionPane.showMessageDialog(gui,
-                        "Das Projekt braucht ein Startdatum");
+                        messageStrings.workPackageRootNeedsDate());
                 save = false;
             }
         } catch (ParseException e) {
             JOptionPane.showMessageDialog(gui,
-                    "Datum ist nicht im korrekten Format dd.mm.yyyy");
+                    messageStrings.dateInvalid());
             save = false;
         }
 
@@ -399,7 +408,8 @@ public class WPShow {
                 if (endHope.before(startHope)) {
                     JOptionPane
                             .showMessageDialog(gui,
-                                    "Gewünschtes Enddatum liegt vor dem gewünschten Startdatum");
+                                    messageStrings
+                                            .endDateCanNotBeBeforeStartDate());
                     save = false;
                 }
             }
@@ -411,7 +421,8 @@ public class WPShow {
             leiterId = gui.getLeiter().getId();
         }
         if (leiter.equals("")) {
-            JOptionPane.showMessageDialog(gui, "Bitte Leiter auswählen");
+            JOptionPane.showMessageDialog(gui,
+                    messageStrings.workPackageSelectManager());
             save = false;
         }
 
@@ -423,7 +434,7 @@ public class WPShow {
                         .getlastRelevantIndex()) {
                     JOptionPane
                             .showMessageDialog(gui,
-                                    "Auf unterster Ebene koennen keine OAP angelegt werden");
+                                    messageStrings.workPackageOutOfLevels());
                     wp.setLvlIDs(levelIDcache);
                     save = false;
                 }
@@ -435,8 +446,11 @@ public class WPShow {
                 if (JOptionPane
                         .showConfirmDialog(
                                 gui,
-                                "Wollen Sie das geänderte Enddatum in die UAP übernehmen?",
-                                "Geändertes Datum", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                                messageStrings
+                                        .workPackageApplyDateOnSubWorkPackages(LocalizedStrings.getProject().endDate().toLowerCase()),
+                                wbsStrings.dateChangedWindowTitle(),
+                                JOptionPane.YES_NO_OPTION) == JOptionPane
+                        .YES_OPTION) {
                     setUAPEndHope(wp, endHope);
 
                 }
@@ -445,8 +459,11 @@ public class WPShow {
                 if (JOptionPane
                         .showConfirmDialog(
                                 gui,
-                                "Wollen Sie das geänderte Startdatum in die UAP übernehmen?",
-                                "Geändertes Datum", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                                messageStrings
+                                        .workPackageApplyDateOnSubWorkPackages(LocalizedStrings.getProject().startDate().toLowerCase()),
+                                wbsStrings.dateChangedWindowTitle(), JOptionPane.YES_NO_OPTION) ==
+                        JOptionPane
+                        .YES_OPTION) {
                     setUAPStartHope(wp, startHope);
                 }
             }
@@ -503,7 +520,8 @@ public class WPShow {
             if (newIdIsOK(gui.getNr())) {
                 newLvlIDs = gui.getNr().split(".");
             } else {
-                JOptionPane.showMessageDialog(gui, "Falsche ID eingegeben");
+                JOptionPane.showMessageDialog(gui,
+                        messageStrings.workPackageWrongId());
                 save = false;
             }
         }
@@ -511,7 +529,7 @@ public class WPShow {
         name = gui.getWpName();
         if (name == null || name.equals("")) {
             save = false;
-            JOptionPane.showMessageDialog(gui, "Bitte Name angeben");
+            JOptionPane.showMessageDialog(gui, messageStrings.workPackageNeedsName());
         }
 
         description = gui.getDescription();
@@ -525,7 +543,7 @@ public class WPShow {
         }
         if (leiterLogin.equals("")) {
             save = false;
-            JOptionPane.showMessageDialog(gui, "Bitte Leiter angeben");
+            JOptionPane.showMessageDialog(gui, messageStrings.workPackageSelectManager());
         }
 
         actualWPWorkers.clear();
@@ -542,7 +560,7 @@ public class WPShow {
             endDateHope = gui.getEndHope();
         } catch (ParseException e) {
             JOptionPane.showMessageDialog(gui,
-                    "Datum ist nicht im korrekten Format dd.mm.yyyy");
+                    messageStrings.dateInvalid());
             save = false;
         }
 
@@ -557,7 +575,7 @@ public class WPShow {
                 while (bacString == null) {
                     bacString =
                             JOptionPane.showInputDialog(gui,
-                                    "Bitte BAC eingeben");
+                                    messageStrings.insertBac());
                 }
                 bac = Double.parseDouble(bacString.replace(",", "."));
 
@@ -567,7 +585,8 @@ public class WPShow {
             }
             bacKosten = bac * wptagessatz;
         } catch (ParseException e) {
-            JOptionPane.showMessageDialog(gui, "BAC muss eine Zahl > 0 sein");
+            JOptionPane.showMessageDialog(gui,
+                    messageStrings.numberMustBePositive(wbsStrings.bac()));
             save = false;
         }
 
@@ -584,7 +603,7 @@ public class WPShow {
                 etcKosten = etc * wptagessatz;
             } catch (ParseException e) {
                 JOptionPane.showMessageDialog(gui,
-                        "ETC muss eine Zahl > 0 sein");
+                        messageStrings.numberMustBePositive(wbsStrings.etc()));
                 save = false;
             }
 
@@ -630,7 +649,7 @@ public class WPShow {
             } else {
                 WpManager.updateAP(wp);
             }
-            
+
             for (String actualWorker : actualWPWorkers) {
                 wp.addWorker(DBModelManager.getEmployeesModel().getEmployee(
                         actualWorker));

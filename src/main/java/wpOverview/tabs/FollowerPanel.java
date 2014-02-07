@@ -1,5 +1,8 @@
 package wpOverview.tabs;
 
+import de.fhbingen.wbs.translation.Button;
+import de.fhbingen.wbs.translation.LocalizedStrings;
+import de.fhbingen.wbs.translation.Wbs;
 import java.awt.BorderLayout;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -28,7 +31,7 @@ import wpOverview.WPOverview;
 import wpOverview.WPOverviewGUI;
 /**
  * Studienprojekt:	PSYS WBS 2.0<br/>
- * 
+ *
  * Kunde:		Pentasys AG, Jens von Gersdorff<br/>
  * Projektmitglieder:<br/>
  *			Michael Anstatt,<br/>
@@ -36,9 +39,9 @@ import wpOverview.WPOverviewGUI;
  *			Jens Eckes,<br/>
  *			Sven Seckler,<br/>
  *			Lin Yang<br/>
- * 
+ *
  * WindowBuilder autogeneriert<br/>
- * 
+ *
  * @author WBS1.0 Team
  * @version 2.0
  */
@@ -64,18 +67,21 @@ public class FollowerPanel extends JPanel {
 	 * Tree KontextMenue anlegen
 	 */
 	private void init() {
+        Wbs wbsStrings = LocalizedStrings.getWbs();
+        Button buttonStrings = LocalizedStrings.getButton();
 		treeContextMenu = new JPopupMenu();
-		miContAufw = new JMenuItem("Aufwand eintragen");
+		miContAufw = new JMenuItem(wbsStrings.insertWorkEffort());
 		treeContextMenu.add(miContAufw);
 		miContAufw.setIcon(WPOverviewGUI.aufw);
 
 		if (WPOverview.getUser().getProjLeiter()) {
 			treeContextMenu.addSeparator();
-			miContAPadd = new JMenuItem("neues Arbeitspaket einfügen");
+			miContAPadd = new JMenuItem(buttonStrings.
+                    addNewNeutral(wbsStrings.workPackage()));
 			miContAPadd.setIcon(WPOverviewGUI.newAp);
 			treeContextMenu.add(miContAPadd);
 			treeContextMenu.addSeparator();
-			miContAPdel = new JMenuItem("Arbeitspaket löschen");
+			miContAPdel = new JMenuItem(buttonStrings.delete(wbsStrings.workPackage()));
 			miContAPdel.setIcon(WPOverviewGUI.delAP);
 			treeContextMenu.add(miContAPdel);
 			treeContextMenu.addSeparator();
@@ -86,21 +92,21 @@ public class FollowerPanel extends JPanel {
 		}
 
 		this.removeAll();
-		
+
 		List<Workpackage> iterator = new ArrayList<Workpackage>(WpManager.getNoAncestorWps());
 		DefaultMutableTreeNode root = createTree(new DefaultMutableTreeNode(""), new ArrayList<Workpackage>(iterator));
-		
+
 		treeAlle = new ToolTipTree(root);
 		treeAlle.setCellRenderer(renderer);
 		treeAlle.setModel(new DefaultTreeModel(root));
-		
+
 		expandAll(treeAlle, true);
 
 		// JPanel panel = new JPanel();
 		this.setLayout(new BorderLayout());
 		this.add(treeAlle, BorderLayout.CENTER);
 	}
-	
+
 	private DefaultMutableTreeNode createTree(DefaultMutableTreeNode actualNode, List<Workpackage> iterator) {
 		Collections.sort(iterator, new APLevelComparator());
 		for(Workpackage actualWp : iterator) {
@@ -109,10 +115,10 @@ public class FollowerPanel extends JPanel {
 			nextNode = createTree(nextNode, nextIterator);
 			actualNode.add(nextNode);
 		}
-		
+
 		return actualNode;
 	}
-	
+
 	public void reload() {
 		init();
 	}

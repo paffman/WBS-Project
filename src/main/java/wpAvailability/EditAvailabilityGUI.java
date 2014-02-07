@@ -1,5 +1,8 @@
 package wpAvailability;
 
+import de.fhbingen.wbs.translation.Button;
+import de.fhbingen.wbs.translation.General;
+import de.fhbingen.wbs.translation.LocalizedStrings;
 import globals.Controller;
 import globals.FilterJTextField;
 
@@ -34,7 +37,7 @@ import wpWorker.Worker;
  * Lin Yang<br/>
  * Diese Klasse dient zur Bearbeitung und Anzeigen von Verfuegbarkeiten.<br/>
  * Sie greift auf die Funktionalitaet der Klasse EditAvailability zu.<br/>
- * 
+ *
  * @author Michael Anstatt
  * @version 2.0 - 18.07.2012
  */
@@ -54,7 +57,7 @@ public class EditAvailabilityGUI extends JFrame {
 
     /**
      * Initialisiert GUI, wird von allen public-Konstruktoren aufgerufen
-     * 
+     *
      * @param headline
      *            Ueberschrift des Fensters
      * @param parent
@@ -84,7 +87,7 @@ public class EditAvailabilityGUI extends JFrame {
 
     /**
      * Elemente auf Panel anordnen
-     * 
+     *
      * @return fertiges {@link JPanel}
      */
     private JPanel createPanel() {
@@ -98,28 +101,30 @@ public class EditAvailabilityGUI extends JFrame {
         panel.setLayout(layout);
 
         int padding = 2;
-
+        General generalStrings = LocalizedStrings.getGeneralStrings();
+        Button buttonStrings = LocalizedStrings.getButton();
         panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         {
             JLabel lblName = new JLabel();
             panel.add(lblName, new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0,
                     GridBagConstraints.WEST, GridBagConstraints.NONE,
                     new Insets(2, 2, 5, 5), 0, 0));
-            lblName.setText("Bezeichnung (optional)");
+            lblName.setText(generalStrings.description() + "(" +
+                    generalStrings.optional() + ")");
         }
         {
             JLabel lblStart = new JLabel();
             panel.add(lblStart, new GridBagConstraints(0, 5, 1, 1, 0.0, 0.0,
                     GridBagConstraints.WEST, GridBagConstraints.NONE,
                     new Insets(2, 2, 5, 5), 0, 0));
-            lblStart.setText("Start");
+            lblStart.setText(generalStrings.start());
         }
         {
             JLabel lblEnd = new JLabel();
             panel.add(lblEnd, new GridBagConstraints(0, 6, 1, 1, 0.0, 0.0,
                     GridBagConstraints.WEST, GridBagConstraints.NONE,
                     new Insets(2, 2, 5, 5), 0, 0));
-            lblEnd.setText("Ende");
+            lblEnd.setText(generalStrings.end());
         }
         {
             tfName = new FilterJTextField();
@@ -134,14 +139,14 @@ public class EditAvailabilityGUI extends JFrame {
             panel.add(cbAllDay, new GridBagConstraints(1, padding, 1, 1, 0.0,
                     0.0, GridBagConstraints.WEST, GridBagConstraints.NONE,
                     new Insets(2, 2, 5, 2), 0, 0));
-            cbAllDay.setText("Ganztägig");
+            cbAllDay.setText(generalStrings.fullTime());
         }
         {
             cbAvailable = new JCheckBox();
             panel.add(cbAvailable, new GridBagConstraints(1, 3, 1, 1, 0.0, 0.0,
                     GridBagConstraints.WEST, GridBagConstraints.NONE,
                     new Insets(2, 2, 5, 2), 0, 0));
-            cbAvailable.setText("Verfügbar");
+            cbAvailable.setText(generalStrings.available());
         }
         {
             spnStart = new JSpinner(new SpinnerDateModel());
@@ -156,8 +161,8 @@ public class EditAvailabilityGUI extends JFrame {
             panel.add(spnEnd, new GridBagConstraints(1, 6, 1, 1, 0.0, 0.0,
                     GridBagConstraints.WEST, GridBagConstraints.NONE,
                     new Insets(2, 2, 5, 2), 0, 0));
-            JLabel lblWorker = new JLabel("Betrifft");
-
+            JLabel lblWorker = new JLabel(LocalizedStrings.getLogin().user());
+            //was: "Betrifft"
             cmbWorker = new JComboBox<Worker>();
             panel.add(lblWorker, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
                     GridBagConstraints.WEST, GridBagConstraints.NONE,
@@ -182,35 +187,32 @@ public class EditAvailabilityGUI extends JFrame {
                     new double[] { 1.0, 1.0, 1.0, Double.MIN_VALUE };
             gbl_panel_1.rowWeights = new double[] { 0.0, Double.MIN_VALUE };
             panel_1.setLayout(gbl_panel_1);
-            {
-                btnSave = new JButton();
-                btnSave.setText("Speichern");
-                GridBagConstraints gbc_btnSave = new GridBagConstraints();
-                gbc_btnSave.fill = GridBagConstraints.HORIZONTAL;
-                gbc_btnSave.anchor = GridBagConstraints.NORTH;
-                gbc_btnSave.insets = new Insets(0, 0, 0, 5);
-                gbc_btnSave.gridx = 0;
-                gbc_btnSave.gridy = 0;
-                panel_1.add(btnSave, gbc_btnSave);
-            }
-            {
-                btnDelete = new JButton("Löschen");
-                GridBagConstraints gbc_btnDelete = new GridBagConstraints();
-                gbc_btnDelete.insets = new Insets(0, 0, 0, 5);
-                gbc_btnDelete.fill = GridBagConstraints.HORIZONTAL;
-                gbc_btnDelete.anchor = GridBagConstraints.NORTH;
-                gbc_btnDelete.gridx = 1;
-                gbc_btnDelete.gridy = 0;
-                panel_1.add(btnDelete, gbc_btnDelete);
-            }
-            {
-                btnAbbrechen = new JButton("Abbrechen");
-                GridBagConstraints gbc_btnAbbrechen = new GridBagConstraints();
-                gbc_btnAbbrechen.fill = GridBagConstraints.HORIZONTAL;
-                gbc_btnAbbrechen.gridx = 2;
-                gbc_btnAbbrechen.gridy = 0;
-                panel_1.add(btnAbbrechen, gbc_btnAbbrechen);
-            }
+
+            btnSave = new JButton();
+            btnSave.setText(buttonStrings.ok());
+            GridBagConstraints gbc_btnSave = new GridBagConstraints();
+            gbc_btnSave.fill = GridBagConstraints.HORIZONTAL;
+            gbc_btnSave.anchor = GridBagConstraints.NORTH;
+            gbc_btnSave.insets = new Insets(0, 0, 0, 5);
+            gbc_btnSave.gridx = 0;
+            gbc_btnSave.gridy = 0;
+            panel_1.add(btnSave, gbc_btnSave);
+
+            btnDelete = new JButton(buttonStrings.delete());
+            GridBagConstraints gbc_btnDelete = new GridBagConstraints();
+            gbc_btnDelete.insets = new Insets(0, 0, 0, 5);
+            gbc_btnDelete.fill = GridBagConstraints.HORIZONTAL;
+            gbc_btnDelete.anchor = GridBagConstraints.NORTH;
+            gbc_btnDelete.gridx = 1;
+            gbc_btnDelete.gridy = 0;
+            panel_1.add(btnDelete, gbc_btnDelete);
+
+            btnAbbrechen = new JButton(buttonStrings.cancel());
+            GridBagConstraints gbc_btnAbbrechen = new GridBagConstraints();
+            gbc_btnAbbrechen.fill = GridBagConstraints.HORIZONTAL;
+            gbc_btnAbbrechen.gridx = 2;
+            gbc_btnAbbrechen.gridy = 0;
+            panel_1.add(btnAbbrechen, gbc_btnAbbrechen);
         }
         return panel;
     }
@@ -225,7 +227,7 @@ public class EditAvailabilityGUI extends JFrame {
 
     /**
      * Liefert das ausgewaehlte Startdatum
-     * 
+     *
      * @return Date Objekt des gewaehlten Startdatums
      */
     protected Date getStart() {
@@ -234,7 +236,7 @@ public class EditAvailabilityGUI extends JFrame {
 
     /**
      * Liefert das ausgewaehlte Enddatums
-     * 
+     *
      * @return Date Objekt des gewaehlten Enddatums
      */
     protected Date getEnd() {
@@ -243,7 +245,7 @@ public class EditAvailabilityGUI extends JFrame {
 
     /**
      * Liefert den ausgewaehlten Arbeiter
-     * 
+     *
      * @return Worker Objekt des gewaehlten Arbeiters
      */
     protected Worker getWorker() {
@@ -252,7 +254,7 @@ public class EditAvailabilityGUI extends JFrame {
 
     /**
      * Boolean ob Ganztaegig
-     * 
+     *
      * @return boolean ob Gaenztaegig
      */
     protected boolean getAllDay() {
@@ -261,7 +263,7 @@ public class EditAvailabilityGUI extends JFrame {
 
     /**
      * Verfuegbarkeit ausgewaehlt?
-     * 
+     *
      * @return Boolean ob Verfuegbar ausgewaehlt
      */
     protected boolean getAvailable() {
@@ -270,7 +272,7 @@ public class EditAvailabilityGUI extends JFrame {
 
     /**
      * Setzt das Auswahlfeld fuer das Startdatum auf ein bestimmtes Datum
-     * 
+     *
      * @param start
      *            Vorgewaehltes Startdatum
      */
@@ -280,7 +282,7 @@ public class EditAvailabilityGUI extends JFrame {
 
     /**
      * Setzt das Auswahlfeld fuer das Enddatum auf ein bestimmtes Datum
-     * 
+     *
      * @param end
      *            Vorgewaehltes Enddatum
      */
@@ -291,7 +293,7 @@ public class EditAvailabilityGUI extends JFrame {
     /**
      * Setzt das Auswahlfeld fuer den Mitarbeiter auf einen bestimmten
      * Mitarbeiter
-     * 
+     *
      * @param worker
      *            Vorgewaehlter Mitarbeiter
      */
@@ -301,7 +303,7 @@ public class EditAvailabilityGUI extends JFrame {
 
     /**
      * Setzt das Auswahlfeld fuer Mitarbeiter auf mehrere Mitarbeiter
-     * 
+     *
      * @param workerArray
      *            Vorgewaehlte Mitarbeiter
      */
@@ -313,7 +315,7 @@ public class EditAvailabilityGUI extends JFrame {
 
     /**
      * Setzt die Checkbox Ganztaegig
-     * 
+     *
      * @param allDay
      *            Checked oder Unchecked
      */
@@ -323,7 +325,7 @@ public class EditAvailabilityGUI extends JFrame {
 
     /**
      * Setzt die Checkbox Verfuegbar
-     * 
+     *
      * @param allDay
      *            Checked oder Unchecked
      */
@@ -333,7 +335,7 @@ public class EditAvailabilityGUI extends JFrame {
 
     /**
      * Setzt das Dateformat der Verfuegbarkeit
-     * 
+     *
      * @param available
      *            true mit stunden, minuten false ohne
      */
@@ -352,7 +354,7 @@ public class EditAvailabilityGUI extends JFrame {
 
     /**
      * Macht den Delete Button sichtbar/nicht sichtbar
-     * 
+     *
      * @param newView
      *            ob nicht sichtbar
      */

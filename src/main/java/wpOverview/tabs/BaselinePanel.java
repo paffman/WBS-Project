@@ -1,5 +1,8 @@
 package wpOverview.tabs;
 
+import de.fhbingen.wbs.translation.Button;
+import de.fhbingen.wbs.translation.LocalizedStrings;
+import de.fhbingen.wbs.translation.Wbs;
 import globals.FilterJTextField;
 
 import java.awt.BorderLayout;
@@ -9,8 +12,6 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 
@@ -26,7 +27,7 @@ import dbaccess.data.Baseline;
 import wpOverview.WPOverview;
 /**
  * Studienprojekt:	PSYS WBS 2.0<br/>
- * 
+ *
  * Kunde:		Pentasys AG, Jens von Gersdorff<br/>
  * Projektmitglieder:<br/>
  *			Michael Anstatt,<br/>
@@ -34,9 +35,9 @@ import wpOverview.WPOverview;
  *			Jens Eckes,<br/>
  *			Sven Seckler,<br/>
  *			Lin Yang<br/>
- * 
+ *
  * Panel des Baseline Fensters<br/>
- * 
+ *
  * @author WBS1.0 Team
  * @version 2.0
  */
@@ -57,19 +58,25 @@ public class BaselinePanel extends JPanel {
 	 * @param parent ParentFrame
 	 */
 	public BaselinePanel(WPOverview over, JFrame parent) {
+        Button buttonStrings = LocalizedStrings.getButton();
+        Wbs wbsStrings = LocalizedStrings.getWbs();
 
-		lblBaseline = new JLabel("Bitte Baseline auswählen");
+		lblBaseline = new JLabel(LocalizedStrings.getGeneralStrings().choose
+                (wbsStrings.baseline()));
 
-		btnAddBaseline = new JButton("Neue Baseline anlegen");
-		btnShowBaseline = new JButton("Baseline anzeigen");
-		btnChart = new JButton("CPI-Diagramm anzeigen");
-		btnComp = new JButton("Fertigstellung anzeigen");
+		btnAddBaseline = new JButton(buttonStrings
+                .addNewFemale(wbsStrings.baseline()));
+		btnShowBaseline = new JButton(buttonStrings.show(wbsStrings.baseline
+                ()));
+		btnChart = new JButton(buttonStrings.show(wbsStrings.cpiGraph()));
+		btnComp = new JButton(buttonStrings.show(wbsStrings.completion()));
 
 		cobChooseBaseline = new JComboBox<String>();
 
 		txfBeschreibung = new FilterJTextField(70);
 		txfBeschreibung.setMinimumSize(new Dimension(250, 18));
-		lblBeschreibung = new JLabel("Baseline Beschreibung");
+		lblBeschreibung = new JLabel(wbsStrings.baseline() + " " +
+                LocalizedStrings.getGeneralStrings().description());
 
 		JPanel panel = new JPanel(false);
 		panel.setSize(new Dimension(400, 200));
@@ -87,19 +94,19 @@ public class BaselinePanel extends JPanel {
 
 		this.setLayout(new BorderLayout(10, 10));
 		this.add(BorderLayout.BEFORE_FIRST_LINE, panel);
-		
+
 		new BaselinePanelAction(this, over, parent);
 
 		getBaselines(WPOverview.getUser().getProjLeiter());
 	}
-	
-	
+
+
 	/**
 	 * Laedt Baseline in ComboBox
 	 * @param leiter Boolean ob angemeldeter User ist Leiter
 	 */
 	protected void getBaselines(boolean leiter) {
-		if (leiter) {			
+		if (leiter) {
 			cobChooseBaseline.removeAllItems();
             List<Baseline> baselines =
                     DBModelManager.getBaselineModel().getBaseline();
@@ -126,12 +133,12 @@ public class BaselinePanel extends JPanel {
             }
 		}
 	}
-	
+
 
 	/**
-	 * addComponent(args) wird am Anordnen der Komponenten auf dem JPanel aufgerufen Methode addComponent 
+	 * addComponent(args) wird am Anordnen der Komponenten auf dem JPanel aufgerufen Methode addComponent
 	 * zum Hinzufügen der einzelnen Komponenten zum GridBagLayout
-	 * 
+	 *
 	 * @param cont Container - aktueller Container auf den das Gridlayout hinzugefügt werden soll
 	 * @param gbl Aktuelles Gridlayout
 	 * @param c Komponente die zum Layout hinzugefügt wird

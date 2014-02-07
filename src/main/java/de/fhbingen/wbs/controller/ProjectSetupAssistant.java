@@ -251,7 +251,7 @@ public final class ProjectSetupAssistant implements ProjectProperties.Actions,
                         projectProperties.getFirstName())
                         + newSummaryLine(labels.surname(),
                         projectProperties.getSurname())
-                        + newSummaryLine(labels.login(),
+                        + newSummaryLine(labels.loginLong(),
                         projectProperties.getUserName())
                         + "</table><br /><b><i>"//NON-NLS
                         + labels.databaseAdminLogin()
@@ -437,7 +437,7 @@ public final class ProjectSetupAssistant implements ProjectProperties.Actions,
      * @param startDate date string to validate.
      * @return true if date is valid.
      */
-    private boolean isDateValid(final String startDate) {
+    private boolean isDateValid(final String startDate) { //TODO improve
         StringTokenizer tokenizer = new StringTokenizer(startDate, ".");
         if (tokenizer.countTokens() != 3) {
             return false;

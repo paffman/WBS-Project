@@ -1,5 +1,7 @@
 package wpConflict;
 
+import de.fhbingen.wbs.translation.General;
+import de.fhbingen.wbs.translation.LocalizedStrings;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -35,7 +37,7 @@ import wpShow.WPShow;
  * Lin Yang<br/>
  * GUI-Klasse, die die Konflikte anzeigt<br />
  * und Methoden bereitstellt neue hinzuzufuegen und alle zu loeschen<br/>
- * 
+ *
  * @author Michael Anstatt, Marc-Eric Baumgärtner, Sven Seckler
  * @version 2.0 - 20.08.2012
  */
@@ -50,19 +52,23 @@ public class ConflictTable extends JTable {
     private int lastClickedRow;
     private WPOverview over;
 
+    private final General generalStrings;
+
     /**
      * Konstruktor
-     * 
+     *
      * @param over
      *            WPOverview GUI
      * @param parent
      *            ParentFrame
      */
     public ConflictTable(final WPOverview over, final JFrame parent) {
+        generalStrings = LocalizedStrings.getGeneralStrings();
         reload();
         this.over = over;
         contextMenu = new JPopupMenu();
-        JMenuItem miRemove = new JMenuItem("Konflikt löschen");
+        JMenuItem miRemove = new JMenuItem(LocalizedStrings.getButton()
+                .delete(LocalizedStrings.getGeneralStrings().conflict()));
         miRemove.setIcon(WPOverviewGUI.delAP);
         miRemove.addActionListener(new ActionListener() {
 
@@ -100,7 +106,7 @@ public class ConflictTable extends JTable {
 
     /**
      * Loescht einen Konflikt aus der DB und von der GUI
-     * 
+     *
      * @param row
      *            Reihe in der der Konflikt steht
      */
@@ -116,7 +122,7 @@ public class ConflictTable extends JTable {
 
     /**
      * Fuegt einen Konflikt der DB und der GUI hinzu
-     * 
+     *
      * @param conflict
      *            Konflikt der hinzugefuegt werden soll
      */
@@ -128,7 +134,7 @@ public class ConflictTable extends JTable {
 
     /**
      * Fuegt einen Set mit Konflikt der DB und der GUI hinzu
-     * 
+     *
      * @param newConflicts
      *            Set von CKnflikten die hinzugefuegt werden sollen
      */
@@ -149,7 +155,7 @@ public class ConflictTable extends JTable {
 
     /**
      * Liefert einen String Array mit allen Daten des uebergebenen Konflikts
-     * 
+     *
      * @param c
      * @return
      */
@@ -163,7 +169,7 @@ public class ConflictTable extends JTable {
 
     /**
      * Liefert eine Beschreibung des Konflikts
-     * 
+     *
      * @param conflict
      *            deren Beschreibung man will
      * @return
@@ -174,7 +180,7 @@ public class ConflictTable extends JTable {
 
     /**
      * Liefert einen String mit der ID des betroffenen APs
-     * 
+     *
      * @param conflict
      *            deren betroffene APs man will
      * @return
@@ -201,10 +207,10 @@ public class ConflictTable extends JTable {
     public void reload() {
         model = new DefaultTableModel();
 
-        model.addColumn("Zeitpunkt");
-        model.addColumn("Grund");
-        model.addColumn("Verursacher");
-        model.addColumn("Betroffene Arbeitspakete");
+        model.addColumn(generalStrings.pointOfTime());
+        model.addColumn(generalStrings.reason());
+        model.addColumn(generalStrings.causer());
+        model.addColumn(LocalizedStrings.getWbs().affectedWorkpackages());
 
         conflicts = new ArrayList<Conflict>(ConflictService.getAllConflicts());
 

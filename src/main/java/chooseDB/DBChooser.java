@@ -1,8 +1,12 @@
 package chooseDB;
 
 import c10n.C10N;
-import c10n.annotations.DefaultC10NAnnotations;
-
+import dbaccess.DBModelManager;
+import dbaccess.data.Employee;
+import de.fhbingen.wbs.translation.C10NUseEnglishDefaultConfiguration;
+import de.fhbingen.wbs.translation.LocalizedStrings;
+import functions.WpManager;
+import globals.Loader;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -12,19 +16,12 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-
+import java.util.Locale;
 import javax.swing.JOptionPane;
-
-import dbaccess.DBModelManager;
-import dbaccess.data.Employee;
-import de.fhbingen.wbs.translation.DbChooser;
-import de.fhbingen.wbs.translation.Messages;
-import wpOverview.WPOverview;
-import wpWorker.User;
-import functions.WpManager;
-import globals.Loader;
 import jdbcConnection.MySqlConnect;
 import jdbcConnection.SQLExecuter;
+import wpOverview.WPOverview;
+import wpWorker.User;
 
 /**
  * Studienprojekt: WBS Kunde: Pentasys AG, Jens von Gersdorff Projektmitglieder:
@@ -50,14 +47,6 @@ public class DBChooser {
      */
     private DBChooserGUI gui;
     /**
-     * Translation interface that contains relevant values.
-     */
-    private final DbChooser labels;
-    /**
-     * Translation interface for general ui messages.
-     */
-    private final Messages messages;
-    /**
      * last Host the client was connected to.
      */
     private String lastDbHost = null;
@@ -81,8 +70,6 @@ public class DBChooser {
     public DBChooser() {
         loadLastDB();
         gui = new DBChooserGUI(this);
-        labels = C10N.get(DbChooser.class);
-        messages = C10N.get(Messages.class);
         new DBChooserButtonAction(this);
     }
 
@@ -103,15 +90,18 @@ public class DBChooser {
 
         // check input
         if (host.equals("")) {
-            JOptionPane.showMessageDialog(gui, messages.loginMissingHost());
+            JOptionPane.showMessageDialog(gui, LocalizedStrings.getMessages()
+                    .loginMissingHost());
             return;
         }
         if (db.equals("")) {
-            JOptionPane.showMessageDialog(gui, messages.loginMissingDbName());
+            JOptionPane.showMessageDialog(gui, LocalizedStrings.getMessages()
+                    .loginMissingDbName());
             return;
         }
         if (user.equals("")) {
-            JOptionPane.showMessageDialog(gui, messages.loginMissingUser());
+            JOptionPane.showMessageDialog(gui, LocalizedStrings.getMessages()
+                    .loginMissingUser());
             return;
         }
 
@@ -126,22 +116,20 @@ public class DBChooser {
                 userPw);
         try {
             if (!tryConnection()) {
-                JOptionPane.showMessageDialog(gui,
-                        messages.loginConnectionFailure());
+                JOptionPane.showMessageDialog(gui, LocalizedStrings
+                        .getMessages().loginConnectionFailure());
                 return;
             }
         } catch (Exception e) {
             e.printStackTrace();
             if (e.getMessage().contains("Access denied for user")) {
-                JOptionPane.showMessageDialog(
-                        gui,
-                        messages.loginConnectionFailure() + "\n"
-                                + messages.loginCheckUsername());
+                JOptionPane.showMessageDialog(gui, LocalizedStrings
+                        .getMessages().loginConnectionFailure() + "\n" +
+                        LocalizedStrings.getMessages().loginCheckUsername());
             } else {
-                JOptionPane.showMessageDialog(
-                        gui,
-                        messages.loginConnectionFailure() + "\nException: "
-                                + e.toString());
+                JOptionPane.showMessageDialog(gui, LocalizedStrings
+                        .getMessages().loginConnectionFailure()
+                        + "\nException: " + e.toString());
             }
             return;
         }
@@ -153,29 +141,27 @@ public class DBChooser {
         Employee employee =
                 DBModelManager.getEmployeesModel().getEmployee(user);
         if (employee == null) {
-            JOptionPane.showMessageDialog(gui, messages.loginUserNotFound());
+            JOptionPane.showMessageDialog(gui, LocalizedStrings.getMessages()
+                    .loginUserNotFound());
             return;
         }
 
         // check Project Leader authority and semaphore
         if (pl) {
             if (!employee.isProject_leader()) {
-                JOptionPane.showMessageDialog(gui,
-                        messages.loginMissingPMAtuhority());
+                JOptionPane.showMessageDialog(gui, LocalizedStrings
+                        .getMessages().loginMissingPMAtuhority());
                 return;
             }
             if (!DBModelManager.getSemaphoreModel().enterSemaphore("pl",
                     employee.getId())) {
                 int answer =
-                        JOptionPane.showConfirmDialog(gui,
-                                messages.loginPMSemaphoreOccupied(),
-                                labels.projectManagerLogin(),
-                                JOptionPane.YES_NO_OPTION);
+                        JOptionPane.showConfirmDialog(gui, LocalizedStrings.getMessages().loginPMSemaphoreOccupied(), LocalizedStrings.getDbChooser().projectManagerLogin(), JOptionPane.YES_NO_OPTION);
                 if (answer == JOptionPane.YES_OPTION) {
                     if (!DBModelManager.getSemaphoreModel().enterSemaphore(
                             "pl", employee.getId(), true)) {
-                        JOptionPane.showMessageDialog(gui,
-                                messages.loginPMLoginFailed());
+                        JOptionPane.showMessageDialog(gui, LocalizedStrings
+                                .getMessages().loginPMLoginFailed());
                         return;
                     }
                 } else {
@@ -223,24 +209,24 @@ public class DBChooser {
                     SQLExecuter.executeQuery("call "
                             + "db_identifier_select_by_dbname('" + db + "');");
             if (rslt == null) {
-                JOptionPane.showMessageDialog(
-                        gui,
-                        messages.loginConnectionFailure() + "\n"
-                                + messages.loginMissingIndexPw());
+                JOptionPane.showMessageDialog(gui, LocalizedStrings
+                        .getMessages().loginConnectionFailure()
+                        + "\n"
+                        + LocalizedStrings.getMessages().loginMissingIndexPw());
             } else if (rslt.next()) {
                 ret = rslt.getString("id");
             } else {
-                JOptionPane.showMessageDialog(
-                        gui,
-                        messages.loginConnectionFailure() + "\n"
-                                + messages.loginMissingIndex());
+                JOptionPane.showMessageDialog(gui, LocalizedStrings
+                        .getMessages().loginConnectionFailure()
+                        + "\n"
+                        + LocalizedStrings.getMessages().loginMissingIndex());
             }
 
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(
-                    gui,
-                    messages.loginConnectionFailure() + "\n"
-                            + messages.loginMissingIndex());
+            JOptionPane.showMessageDialog(gui, LocalizedStrings.getMessages()
+                    .loginConnectionFailure()
+                    + "\n"
+                    + LocalizedStrings.getMessages().loginMissingIndex());
         } finally {
             try {
                 MySqlConnect.getConnection().close();
@@ -255,7 +241,7 @@ public class DBChooser {
 
     /**
      * Tries out the currently used database connection.
-     * 
+     *
      * @return Returns true if the connection works. False if otherwise.
      * @throws Exception
      *             throws any occurring exception
@@ -278,7 +264,7 @@ public class DBChooser {
     /**
      * saveLastDB: writes the login data, except the user password, into a file,
      * which is loaded on the next startup.
-     * 
+     *
      * @param host
      *            host of the database.
      * @param db
@@ -363,11 +349,14 @@ public class DBChooser {
     /**
      * erstellt ein Objekt von DBChooser() und beginnt somit das Programm durch
      * Konstruktoraufruf von DBChooser()
-     * 
+     *
      * @param args
      */
     public static void main(String[] args) {
-        C10N.configure(new DefaultC10NAnnotations());
+        //Locale.setDefault(Locale.GERMAN);
+        System.out.println(Locale.getDefault().getLanguage().equals(Locale
+                .GERMAN));
+        C10N.configure(new C10NUseEnglishDefaultConfiguration());
         new DBChooser();
     }
 }

@@ -1,12 +1,14 @@
 package chart;
 
+import dbServices.ValuesService;
+import dbaccess.DBModelManager;
+import dbaccess.data.AnalyseData;
+import dbaccess.data.Baseline;
+import de.fhbingen.wbs.translation.LocalizedStrings;
 import functions.WpManager;
 import globals.Workpackage;
-
 import java.awt.BasicStroke;
 import java.awt.Color;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -14,11 +16,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
-
 import javax.swing.JFrame;
-
-import jdbcConnection.SQLExecuter;
-
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.Marker;
 import org.jfree.chart.plot.ValueMarker;
@@ -26,11 +24,6 @@ import org.jfree.data.Range;
 import org.jfree.data.time.Day;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
-
-import dbServices.ValuesService;
-import dbaccess.DBModelManager;
-import dbaccess.data.AnalyseData;
-import dbaccess.data.Baseline;
 import wpComparators.APLevelComparator;
 
 /**
@@ -44,7 +37,7 @@ import wpComparators.APLevelComparator;
  * Lin Yang<br/>
  * Diese Klassse zeigt einen JFrame mit Diagramm fuer die prozentuale
  * Fertigstellung eines Arbeitspakets<br/>
- * 
+ *
  * @author Michael Anstatt, Lin Yang
  * @version 2.0 - 2012-08-20
  */
@@ -54,7 +47,7 @@ public class ChartCompleteView extends WBSChart {
 
     /**
      * Konstruktor
-     * 
+     *
      * @param parent
      *            fuer mittige Positionierung relativ zu diesem JFrame
      */
@@ -65,7 +58,7 @@ public class ChartCompleteView extends WBSChart {
 
     /**
      * Kontruktor
-     * 
+     *
      * @param wp
      *            Arbeitspaket zu dem der Chart angezeigt werden soll
      * @param parent
@@ -79,7 +72,7 @@ public class ChartCompleteView extends WBSChart {
 
     /**
      * Liest Daten aus der DB
-     * 
+     *
      * @return zum Anzeigen vorbereitete Daten
      */
     private static TimeSeriesCollection getDBData() {
@@ -88,7 +81,7 @@ public class ChartCompleteView extends WBSChart {
 
     /**
      * Liest Daten aus der DB
-     * 
+     *
      * @param wp
      *            Arbeitspaket, wenn Root werden alle Daten gelesen
      * @return zum Anzeigen vorbereitete Daten
@@ -98,7 +91,8 @@ public class ChartCompleteView extends WBSChart {
         TimeSeriesCollection dataset = new TimeSeriesCollection();
 
         boolean dataFound = false;
-        TimeSeries diagonal = new TimeSeries("Soll");
+        TimeSeries diagonal =
+                new TimeSeries(LocalizedStrings.getChart().target());
         Calendar minCal = new GregorianCalendar();
         minCal.setTime(new calendar.Day(ValuesService.getPreviousFriday(
                 wp.getStartDateCalc()).getTime()));
@@ -157,7 +151,7 @@ public class ChartCompleteView extends WBSChart {
 
     /**
      * Generiert fuer einzelne Arbeitspakete ihren Anzeige-Graph
-     * 
+     *
      * @param wp
      * @return Anzeigbarer Graph
      */
@@ -213,10 +207,10 @@ public class ChartCompleteView extends WBSChart {
                     new ValueMarker(WpManager.calcPercentComplete(wp.getBac(),
                             wp.getEtc(), wp.getAc()), Color.GREEN,
                             new BasicStroke(1.5f));
-            // actualPercent.setLabel("aktueller Fortschritt");
             plot.addRangeMarker(actualPercent);
         }
 
-        frame.getChartPanel().getChart().setTitle("Fortschritt (PV)");
+        frame.getChartPanel().getChart()
+                .setTitle(LocalizedStrings.getChart().progressPv());
     }
 }

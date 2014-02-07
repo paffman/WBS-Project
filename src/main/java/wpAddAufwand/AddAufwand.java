@@ -1,5 +1,6 @@
 package wpAddAufwand;
 
+import de.fhbingen.wbs.translation.LocalizedStrings;
 import globals.Workpackage;
 
 import java.sql.*;
@@ -28,7 +29,7 @@ import wpWorker.Worker;
  * Sven Seckler,<br/>
  * Lin Yang<br/>
  * Funktionen zum Hinzufügen eines Arbeitspaketes<br/>
- * 
+ *
  * @author Daniel Metzler, Michael Anstatt
  * @version 2.0 2012-08-21
  */
@@ -44,7 +45,7 @@ public class AddAufwand {
 
     /**
      * Default-Konstruktor
-     * 
+     *
      * @param workpackage
      * @param wpID
      *            ID des Arbeitspakets
@@ -62,7 +63,7 @@ public class AddAufwand {
         this.wpshow = wpshow;
         new AddAufwandButtonAction(this);
         initialize();
-        gui.setTitle("Aufwand für " + wp);
+        gui.setTitle(LocalizedStrings.getWbs().addAufwandWindowTitle() + wp);
         gui.setLocationRelativeTo(wpshow.getMainFrame());
         gui.setLocation((int) gui.getLocation().getX() - gui.getHeight() / 2,
                 (int) (gui.getLocation().getY() - gui.getWidth() / 2));
@@ -110,7 +111,7 @@ public class AddAufwand {
 
     /**
      * prüft ob alle Eingabe ausgefüllt sind
-     * 
+     *
      * @return true/false, je nachdem ob Felder gefüllt oder nicht
      */
     public boolean checkFieldsFilled() {
@@ -124,7 +125,7 @@ public class AddAufwand {
     /**
      * wird vom Betätigen des Buttons für Editieren aufgerufen Der neue
      * Aufwand wird in die "Aufwand"-Tabelle geschrieben
-     * 
+     *
      * @return true wenn Schreiben erfolgreich war, bei Fehler false
      */
     public boolean addAufwand() {
@@ -161,8 +162,8 @@ public class AddAufwand {
             // neuer Aufwand wird in die Datenbanktabelle Aufwand geschrieben
             WorkEffort effort = new WorkEffort();
             effort.setFid_wp(wp.getWpId());
-            effort.setFid_emp(DBModelManager.getEmployeesModel()
-                    .getEmployee(userLogin).getId());
+            effort.setFid_emp(DBModelManager.getEmployeesModel().getEmployee
+                    (userLogin).getId());
             effort.setRec_date(dte);
             effort.setDescription(gui.txfBeschreibung.getText());
             effort.setEffort(Double.parseDouble(myaufwand));

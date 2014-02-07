@@ -39,6 +39,10 @@ dependencies {
 // main application class
 mainClassName = 'chooseDB.DBChooser'
 
+tasks.withType(JavaCompile) {
+    options.encoding = "ISO-8859-1"
+}
+
 // test task configuration
 test {
     // tests in this package are executed via the test suite

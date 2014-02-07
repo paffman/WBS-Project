@@ -17,6 +17,7 @@ package wpWorker;
  * @version 0.5 - 28.12.2010
  */
 
+import de.fhbingen.wbs.controller.ProjectSetupAssistant;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
 import java.util.Arrays;
@@ -28,29 +29,28 @@ import jdbcConnection.SQLExecuter;
 import dbaccess.DBModelManager;
 import dbaccess.data.Employee;
 import c10n.C10N;
-import de.fhbingen.wbs.controller.ProjectSetupAssistant;
+import de.fhbingen.wbs.translation.LocalizedStrings;
+import de.fhbingen.wbs.translation.Login;
 import de.fhbingen.wbs.translation.Messages;
 
 public class ChangePW {
 
     /**
-     * gui - Hält eine Instanz der GUI usr - Hält den aktuellen User sqlExec -
-     * stellt die Verknüpfung zur DB her
+     * gui - Hält eine Instanz der GUI
+     * usr - Hält den aktuellen User
+     * sqlExec - stellt die Verknüpfung zur DB her
      */
     protected ChangePWGUI gui;
     private ChangePW dies;
     protected Worker usr;
 
     private final Messages messages;
-
     /**
      * Konstruktoraufruf zum ändern des Passworts des aktuellen Users
-     * 
-     * @param usr
-     *            - aktuell eingeloggter User
+     * @param usr - aktuell eingeloggter User
      */
-    public ChangePW(Worker usr) {
-        messages = C10N.get(Messages.class);
+    public ChangePW(Worker usr){
+        messages = LocalizedStrings.getMessages();
         dies = this;
         this.usr = usr;
         gui = new ChangePWGUI();
