@@ -1,29 +1,18 @@
-package wpShow;
-
-/**
- * Studienprojekt:	WBS
- *
- * Kunde:		Pentasys AG, Jens von Gersdorff
- * Projektmitglieder:	Andre Paffenholz,
- * 			Peter Lange,
- * 			Daniel Metzler,
- * 			Samson von Graevenitz
- *
- *
- * Studienprojekt:	PSYS WBS 2.0
- *
- * Kunde:		Pentasys AG, Jens von Gersdorff
- * Projektmitglieder:	Michael Anstatt,
- *			Marc-Eric Baumgärtner,
- *			Jens Eckes,
- *			Sven Seckler,
- *			Lin Yang
- *
- * Allgemeine InfoBox, wird  über Menü->Hilfe->Info aufgerufen <ggf. erweitern>
- *
- * @author Samson von Graevenitz/Peter Lange/<ergänzen>
- * @version 2.0 - 28.06.2012
+/*
+ * The WBS-Tool is a project management tool combining the Work Breakdown
+ * Structure and Earned Value Analysis Copyright (C) 2013 FH-Bingen This
+ * program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your
+ * option) any later version. This program is distributed in the hope that
+ * it will be useful, but WITHOUT ANY WARRANTY;; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details. You should have received a
+ * copy of the GNU General Public License along with this program. If not,
+ * see <http://www.gnu.org/licenses/>.
  */
+
+package wpShow;
 
 import chart.ChartCPIView;
 import chart.ChartCompleteView;
@@ -65,30 +54,44 @@ import wpConflict.Conflict;
 import wpOverview.WPOverview;
 import wpWorker.Worker;
 
+/** The GUI to show a work package. */
 public class WPShow {
+
     private final Wbs wbsStrings;
     private final Messages messageStrings;
+
+    /** The functionality of the WPOverview GUI. */
     private WPOverview over;
+
+    /** The GUI of this class. */
     private WPShowGUI gui;
+
+    /** Check if it is a new work package or an old work package is edit. */
     private boolean newWp;
+
+    /** The work package. */
     private Workpackage wp;
+
+    /** Check if the changes are saved. */
     private boolean saved;
+
+    /** A set with all employees which work on the work package. */
     private Set<String> actualWPWorkers;
 
     /**
-     * Konstruktor
-     *
+     * Constructor.
      * @param over
-     *            Workpackage GUI
+     *            The work package GUI.
      * @param selected
-     *            Ausgewaehltes AP
+     *            The selected work package.
      * @param newWp
-     *            boolean ob neues AP oder nur Modifizieren
+     *            True: The work package is a new work package. False: It
+     *            is an old work package which is change.
      * @param parent
-     *            ParentFrame
+     *            The parent frame.
      */
-    public WPShow(WPOverview over, Workpackage selected, boolean newWp,
-            JFrame parent) {
+    public WPShow(final WPOverview over, final Workpackage selected,
+        final boolean newWp, final JFrame parent) {
         wbsStrings = LocalizedStrings.getWbs();
         messageStrings = LocalizedStrings.getMessages();
 
@@ -97,21 +100,19 @@ public class WPShow {
 
         if (newWp) {
             this.wp = new Workpackage();
-            this.gui =
-                    new WPShowGUI(wbsStrings.addNewWorkPackageWindowTitle(),
-                            this, parent);
+            this.gui = new WPShowGUI(
+                wbsStrings.addNewWorkPackageWindowTitle(), this, parent);
             String[] newID = getNextId(selected.getStringID()).split("\\.");
             wp.setLvlIDs(newID);
             wp.setEndDateHope(WpManager.getWorkpackage(wp.getOAPID())
-                    .getEndDateHope());
+                .getEndDateHope());
             wp.setStartDateHope(WpManager.getWorkpackage(wp.getOAPID())
-                    .getStartDateHope());
+                .getStartDateHope());
             actualWPWorkers = new HashSet<String>();
         } else {
             this.wp = selected;
-            this.gui =
-                    new WPShowGUI(wp.getStringID() + " | " + wp.getName(),
-                            this, parent);
+            this.gui = new WPShowGUI(wp.getStringID() + " | "
+                + wp.getName(), this, parent);
             wp.setwptagessatz(WpManager.calcTagessatz(wp.getWorkerLogins()));
             actualWPWorkers = new HashSet<String>(wp.getWorkerLogins());
         }
@@ -123,7 +124,7 @@ public class WPShow {
         }
         gui.setNewView(newWp);
         gui.setValues(wp, getUser().getProjLeiter(), getAufwandArray(),
-                WorkerService.getRealWorkers(), actualWPWorkers);
+            WorkerService.getRealWorkers(), actualWPWorkers);
 
         if (newWp) {
             this.saved = false;
@@ -132,19 +133,27 @@ public class WPShow {
         }
     }
 
-    public WPShow(WPOverview over, String curID, JFrame parent) {
+    /**
+     * Constructor.
+     * @param over
+     *            The work package GUI.
+     * @param curID
+     *            The current id from the marked work package in the tree.
+     * @param parent
+     *            The parent frame.
+     */
+    public WPShow(final WPOverview over, final String curID,
+        final JFrame parent) {
         this(over, WpManager.getWorkpackage(curID), false, parent);
     }
 
     /**
-     * Liefert eine neue eindeutige ID für ein Arbeitspaket
-     *
+     * Returns a definitely id for the work package.
      * @param currentID
-     *            aktuelle ID des markieren Arbeitspaketes im Baum - bzw. leeres
-     *            Arbeitspaket bei Aufruf über das Menü
-     * @return die neue -eindeutige- Nummer des neuen Arbeitspaketes
+     *            The current id from the marked work package in the tree.
+     * @return The definitely id of the work package.
      */
-    public static String getNextId(String currentID) {
+    public static String getNextId(final String currentID) {
         Workpackage actualWp = WpManager.getWorkpackage(currentID);
         Integer[] ids = actualWp.getLvlIDs();
         int newValue = actualWp.getlastRelevantIndex();
@@ -162,15 +171,13 @@ public class WPShow {
     }
 
     /**
-     * prüft, ob ein AP mit der ID bereits in der Datenbank existiert Wird von
-     * addWp() und aus WPReassign.setRekPakete() aufgerufen
-     *
+     * Checks if the id is okay or the id is already exist. This method is
+     * called by the method addWp() and WPReassign.setRekPakete().
      * @param newId
-     *            AP-ID des neu zu erstellenden Arbeitspakets
-     * @return true = Paket-ID ist noch frei, false = ID ist bereits in der
-     *         Datenbank vorhanden
+     *            The new id of the work package.
+     * @return True: The id is okay. False: The id already exists.
      */
-    public boolean newIdIsOK(String newId) {
+    public final boolean newIdIsOK(final String newId) {
 
         String[] ids = newId.split("\\.");
 
@@ -178,15 +185,13 @@ public class WPShow {
 
         if (ids.length != levels) {
             JOptionPane.showMessageDialog(null,
-                    messageStrings.workPackageWrongLevel(levels));
+                messageStrings.workPackageWrongLevel(levels));
             return false;
         }
 
         if (WpManager.getWorkpackage(newId) != null) {
-            JOptionPane
-                    .showMessageDialog(
-                            null,
-                            messageStrings.workPackageIdAlreadyExists());
+            JOptionPane.showMessageDialog(null,
+                messageStrings.workPackageIdAlreadyExists());
             return false;
         }
 
@@ -194,12 +199,14 @@ public class WPShow {
         actualCheckWp.setLvlIDs(ids); // DUMMY!
 
         while (actualCheckWp != null
-                && !actualCheckWp.equals(WpManager.getRootAp())) {
-            actualCheckWp = WpManager.getWorkpackage(actualCheckWp.getOAPID());
+            && !actualCheckWp.equals(WpManager.getRootAp())) {
+            actualCheckWp = WpManager.getWorkpackage(actualCheckWp
+                .getOAPID());
         }
         if (actualCheckWp == null) {
-            JOptionPane.showMessageDialog(null,
-                    messageStrings.workPackageNoTopLevelWorkPackagesForThisId());
+            JOptionPane
+                .showMessageDialog(null, messageStrings
+                    .workPackageNoTopLevelWorkPackagesForThisId());
             return false;
         } else {
             wp.setLvlIDs(ids);
@@ -207,46 +214,68 @@ public class WPShow {
         }
     }
 
-    public Worker getUser() {
+    /**
+     * Gets the user.
+     * @return The user.
+     */
+    public final Worker getUser() {
         return WPOverview.getUser();
     }
 
-    public boolean isNewWp() {
+    /**
+     * Checks if the work package is a new work package.
+     * @return True: It's a new one. False: It's not new.
+     */
+    public final boolean isNewWp() {
         return this.newWp;
     }
 
-    protected Workpackage getWorkpackage() {
+    /**
+     * Gets the work package.
+     * @return The work package.
+     */
+    protected final Workpackage getWorkpackage() {
         return wp;
     }
 
-    public void setGUIChanged() {
+    /** Doesn't saves the changes. */
+    public final void setGUIChanged() {
         this.saved = false;
     }
 
-    public boolean isSaved() {
+    /**
+     * Returns if the changes should be saved.
+     * @return True: If the changes are saved. False: If the changes aren't
+     *         saved.
+     */
+    public final boolean isSaved() {
         if (saved) {
             return true;
         } else {
             JOptionPane.showMessageDialog(gui,
-                    messageStrings.workPackagePleaseSaveToContinue());
+                messageStrings.workPackagePleaseSaveToContinue());
             return false;
         }
     }
 
-    protected void reload() {
+    /** Reloads the GUI. */
+    protected final void reload() {
         gui.setValues(wp, getUser().getProjLeiter(), getAufwandArray(),
-                WorkerService.getRealWorkers(), actualWPWorkers);
+            WorkerService.getRealWorkers(), actualWPWorkers);
     }
 
+    /**
+     * Returns an String array with the work efforts.
+     * @return An array with the work efforts.
+     */
     private String[][] getAufwandArray() {
         List<String[]> all = new ArrayList<String[]>();
-        List<WorkEffort> efforts =
-                DBModelManager.getWorkEffortModel().getWorkEffort(wp.getWpId());
+        List<WorkEffort> efforts = DBModelManager.getWorkEffortModel()
+            .getWorkEffort(wp.getWpId());
         for (WorkEffort effort : efforts) {
             String[] row = new String[4];
-            row[0] =
-                    DBModelManager.getEmployeesModel()
-                            .getEmployee(effort.getFid_emp()).getLogin();
+            row[0] = DBModelManager.getEmployeesModel()
+                .getEmployee(effort.getFid_emp()).getLogin();
             row[1] = Controller.DECFORM.format(effort.getEffort());
             row[2] = Controller.DATE_DAY.format(effort.getRec_date());
             row[3] = effort.getDescription();
@@ -255,25 +284,26 @@ public class WPShow {
         return all.toArray(new String[1][1]);
     }
 
-    public boolean save() {
+    /**
+     * Saves the changes.
+     * @return True: If the changes are saved successful. False: Else.
+     */
+    public final boolean save() {
 
         boolean success = true;
 
         boolean startInaktiv = wp.isIstInaktiv();
 
         if (gui.getIsOAP() && !wp.isIstOAP() && WpManager.calcAC(wp) > 0) {
-            JOptionPane
-                    .showMessageDialog(gui,
-                            messageStrings
-                                    .workPackageCanNotBeTopLevelBecauseOfWorkEfforts());
+            JOptionPane.showMessageDialog(gui, messageStrings
+                .workPackageCanNotBeTopLevelBecauseOfWorkEfforts());
             success = false;
         }
 
         if (!gui.getIsOAP() && wp.isIstOAP()
-                && WpManager.getUAPs(wp).size() > 0) {
-            JOptionPane.showMessageDialog(gui,
-                    messageStrings
-                            .workPackageCanNotBeSubWorkPackageBecauseItHasChildren());
+            && WpManager.getUAPs(wp).size() > 0) {
+            JOptionPane.showMessageDialog(gui, messageStrings
+                .workPackageCanNotBeSubWorkPackageBecauseItHasChildren());
             success = false;
         }
 
@@ -287,7 +317,8 @@ public class WPShow {
 
         if (success) {
             if (startInaktiv != wp.isIstInaktiv() && wp.isIstOAP()) {
-                WpManager.setUapsInaktiv(wp.getStringID(), wp.isIstInaktiv());
+                WpManager.setUapsInaktiv(wp.getStringID(),
+                    wp.isIstInaktiv());
             }
             checkConflicts();
             if (wp.isIstOAP()) {
@@ -308,33 +339,36 @@ public class WPShow {
         return success;
     }
 
+    /** Checks if conflicts exist on the work package. */
     private void checkConflicts() {
 
         if (newWp) {
             WPOverview.throwConflict(new Conflict(new Date(System
-                    .currentTimeMillis()), Conflict.NEW_WP, WPOverview
-                    .getUser().getId(), wp));
+                .currentTimeMillis()), Conflict.NEW_WP, WPOverview
+                .getUser().getId(), wp));
         }
 
         if (gui.getIsInaktiv() != wp.isIstInaktiv()) {
             WPOverview.throwConflict(new Conflict(new Date(System
-                    .currentTimeMillis()), Conflict.CHANGED_ACTIVESTATE,
-                    WPOverview.getUser().getId(), wp));
+                .currentTimeMillis()), Conflict.CHANGED_ACTIVESTATE,
+                WPOverview.getUser().getId(), wp));
         }
 
         try {
             if (!gui.getBAC().equals(wp.getBac())) {
                 WPOverview.throwConflict(new Conflict(new Date(System
-                        .currentTimeMillis()), Conflict.CHANGED_BAC, WPOverview
-                        .getUser().getId(), wp));
+                    .currentTimeMillis()), Conflict.CHANGED_BAC, WPOverview
+                    .getUser().getId(), wp));
             }
             if (gui.getStartHope() != null
-                    && !gui.getStartHope().equals(wp.getStartDateHope())) {
+                && !gui.getStartHope().equals(wp.getStartDateHope())) {
                 WPOverview.throwConflict(new Conflict(new Date(System
-                        .currentTimeMillis()), Conflict.CHANGED_WISHDATES,
-                        WPOverview.getUser().getId(), wp));
+                    .currentTimeMillis()), Conflict.CHANGED_WISHDATES,
+                    WPOverview.getUser().getId(), wp));
             }
-        } catch (ParseException e) {/* Wurde bereits ausgeschlossen */
+        } catch (ParseException e) {
+            /* Can not be reached. */
+            e.printStackTrace();
         }
 
         List<String> wpWorkers = wp.getWorkerLogins();
@@ -344,14 +378,18 @@ public class WPShow {
 
         for (int i = 0; i < wpWorkers.size(); i++) {
             if (guiWorkers.length != wpWorkers.size()
-                    || wpWorkers.get(i).equals(guiWorkers[i])) {
+                || wpWorkers.get(i).equals(guiWorkers[i])) {
                 WPOverview.throwConflict(new Conflict(new Date(System
-                        .currentTimeMillis()), Conflict.CHANGED_RESOURCES,
-                        WPOverview.getUser().getId(), wp));
+                    .currentTimeMillis()), Conflict.CHANGED_RESOURCES,
+                    WPOverview.getUser().getId(), wp));
             }
         }
     }
 
+    /**
+     * Saves the upper work package.
+     * @return True: If the save was successful. False: Else.
+     */
     private boolean saveOAP() {
 
         boolean save = true;
@@ -364,7 +402,7 @@ public class WPShow {
                 newLvlIDs = gui.getNr().split(".");
             } else {
                 JOptionPane.showMessageDialog(gui,
-                        messageStrings.workPackageWrongId());
+                    messageStrings.workPackageWrongId());
                 save = false;
             }
         }
@@ -372,19 +410,19 @@ public class WPShow {
         String name = gui.getWpName();
         if (name.equals("")) {
             JOptionPane.showMessageDialog(null,
-                    messageStrings.workPackageNeedsName());
+                messageStrings.workPackageNeedsName());
             save = false;
         }
 
         if (getWorkpackage().equals(WpManager.getRootAp())) {
             if (!gui.getIsOAP()) {
                 JOptionPane.showMessageDialog(null,
-                        messageStrings.workPackageRootHasToBeTopLevel());
+                    messageStrings.workPackageRootHasToBeTopLevel());
                 save = false;
             }
             if (gui.getIsInaktiv()) {
                 JOptionPane.showMessageDialog(null,
-                        messageStrings.workPackageRootHasToBeActive());
+                    messageStrings.workPackageRootHasToBeActive());
                 save = false;
             }
         }
@@ -394,22 +432,20 @@ public class WPShow {
             startHope = gui.getStartHope();
             if (wp.equals(WpManager.getRootAp()) && startHope == null) {
                 JOptionPane.showMessageDialog(gui,
-                        messageStrings.workPackageRootNeedsDate());
+                    messageStrings.workPackageRootNeedsDate());
                 save = false;
             }
         } catch (ParseException e) {
-            JOptionPane.showMessageDialog(gui,
-                    messageStrings.dateInvalid());
+            JOptionPane
+                .showMessageDialog(gui, messageStrings.dateInvalid());
             save = false;
         }
 
         if (save) {
             if (endHope != null && startHope != null) {
                 if (endHope.before(startHope)) {
-                    JOptionPane
-                            .showMessageDialog(gui,
-                                    messageStrings
-                                            .endDateCanNotBeBeforeStartDate());
+                    JOptionPane.showMessageDialog(gui,
+                        messageStrings.endDateCanNotBeBeforeStartDate());
                     save = false;
                 }
             }
@@ -422,7 +458,7 @@ public class WPShow {
         }
         if (leiter.equals("")) {
             JOptionPane.showMessageDialog(gui,
-                    messageStrings.workPackageSelectManager());
+                messageStrings.workPackageSelectManager());
             save = false;
         }
 
@@ -431,10 +467,9 @@ public class WPShow {
                 Integer[] levelIDcache = wp.getLvlIDs();
                 wp.setLvlIDs(newLvlIDs);
                 if (WpManager.getRootAp().getLvlIDs().length == wp
-                        .getlastRelevantIndex()) {
-                    JOptionPane
-                            .showMessageDialog(gui,
-                                    messageStrings.workPackageOutOfLevels());
+                    .getlastRelevantIndex()) {
+                    JOptionPane.showMessageDialog(gui,
+                        messageStrings.workPackageOutOfLevels());
                     wp.setLvlIDs(levelIDcache);
                     save = false;
                 }
@@ -443,27 +478,22 @@ public class WPShow {
 
         if (save) {
             if (endHope != null && !endHope.equals(wp.getEndDateHope())) {
-                if (JOptionPane
-                        .showConfirmDialog(
-                                gui,
-                                messageStrings
-                                        .workPackageApplyDateOnSubWorkPackages(LocalizedStrings.getProject().endDate().toLowerCase()),
-                                wbsStrings.dateChangedWindowTitle(),
-                                JOptionPane.YES_NO_OPTION) == JOptionPane
-                        .YES_OPTION) {
+                if (JOptionPane.showConfirmDialog(gui, messageStrings
+                    .workPackageApplyDateOnSubWorkPackages(LocalizedStrings
+                        .getProject().endDate().toLowerCase()), wbsStrings
+                    .dateChangedWindowTitle(), JOptionPane.YES_NO_OPTION)
+                    == JOptionPane.YES_OPTION) {
                     setUAPEndHope(wp, endHope);
 
                 }
             }
-            if (startHope != null && !startHope.equals(wp.getStartDateHope())) {
-                if (JOptionPane
-                        .showConfirmDialog(
-                                gui,
-                                messageStrings
-                                        .workPackageApplyDateOnSubWorkPackages(LocalizedStrings.getProject().startDate().toLowerCase()),
-                                wbsStrings.dateChangedWindowTitle(), JOptionPane.YES_NO_OPTION) ==
-                        JOptionPane
-                        .YES_OPTION) {
+            if (startHope != null
+                && !startHope.equals(wp.getStartDateHope())) {
+                if (JOptionPane.showConfirmDialog(gui, messageStrings
+                    .workPackageApplyDateOnSubWorkPackages(LocalizedStrings
+                        .getProject().startDate().toLowerCase()),
+                    wbsStrings.dateChangedWindowTitle(),
+                    JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
                     setUAPStartHope(wp, startHope);
                 }
             }
@@ -475,7 +505,8 @@ public class WPShow {
             wp.setBeschreibung(gui.getDescription());
             wp.setIstInaktiv(gui.getIsInaktiv());
 
-            if (gui.getIsOAP() != wp.isIstOAP()) { // WAR VORHER KEIN OAP
+            if (gui.getIsOAP() != wp.isIstOAP()) { // Wasn't a upper work
+                                                   // package before.
                 wp.setBac(0.);
                 wp.setEtc(0.);
                 wp.setAc(0.);
@@ -504,6 +535,10 @@ public class WPShow {
 
     }
 
+    /**
+     * Saves the under work package.
+     * @return True: If successful. False: If not successful.
+     */
     private boolean saveUAP() {
         boolean save = true;
 
@@ -512,8 +547,8 @@ public class WPShow {
         boolean istOAP = false, istInaktiv = gui.getIsInaktiv();
         Date startDateHope = null, endDateHope = null;
         Double bac = 0.0;
-        double etc = 0, ac = 0, ev, bacKosten = 0, acKosten = 0, eac, etcKosten =
-                0, wptagessatz;
+        double etc = 0, ac = 0, ev, bacKosten = 0;
+        double acKosten = 0, eac, etcKosten = 0, wptagessatz;
 
         String[] newLvlIDs = new String[1];
         if (newWp) {
@@ -521,7 +556,7 @@ public class WPShow {
                 newLvlIDs = gui.getNr().split(".");
             } else {
                 JOptionPane.showMessageDialog(gui,
-                        messageStrings.workPackageWrongId());
+                    messageStrings.workPackageWrongId());
                 save = false;
             }
         }
@@ -529,7 +564,8 @@ public class WPShow {
         name = gui.getWpName();
         if (name == null || name.equals("")) {
             save = false;
-            JOptionPane.showMessageDialog(gui, messageStrings.workPackageNeedsName());
+            JOptionPane.showMessageDialog(gui,
+                messageStrings.workPackageNeedsName());
         }
 
         description = gui.getDescription();
@@ -543,7 +579,8 @@ public class WPShow {
         }
         if (leiterLogin.equals("")) {
             save = false;
-            JOptionPane.showMessageDialog(gui, messageStrings.workPackageSelectManager());
+            JOptionPane.showMessageDialog(gui,
+                messageStrings.workPackageSelectManager());
         }
 
         actualWPWorkers.clear();
@@ -559,13 +596,13 @@ public class WPShow {
             startDateHope = gui.getStartHope();
             endDateHope = gui.getEndHope();
         } catch (ParseException e) {
-            JOptionPane.showMessageDialog(gui,
-                    messageStrings.dateInvalid());
+            JOptionPane
+                .showMessageDialog(gui, messageStrings.dateInvalid());
             save = false;
         }
 
-        wptagessatz =
-                WpManager.calcTagessatz(new ArrayList<String>(actualWPWorkers));
+        wptagessatz = WpManager.calcTagessatz(new ArrayList<String>(
+            actualWPWorkers));
 
         try {
             bac = gui.getBAC();
@@ -573,9 +610,8 @@ public class WPShow {
 
                 String bacString = null;
                 while (bacString == null) {
-                    bacString =
-                            JOptionPane.showInputDialog(gui,
-                                    messageStrings.insertBac());
+                    bacString = JOptionPane.showInputDialog(gui,
+                        messageStrings.insertBac());
                 }
                 bac = Double.parseDouble(bacString.replace(",", "."));
 
@@ -586,12 +622,14 @@ public class WPShow {
             bacKosten = bac * wptagessatz;
         } catch (ParseException e) {
             JOptionPane.showMessageDialog(gui,
-                    messageStrings.numberMustBePositive(wbsStrings.bac()));
+                messageStrings.numberMustBePositive(wbsStrings.bac()));
             save = false;
         }
 
-        if (newWp || gui.getIsOAP() != wp.isIstOAP()) { // Wenn dieses AP vorher
-                                                        // OAP war
+        if (newWp || gui.getIsOAP() != wp.isIstOAP()) { // If this work
+                                                        // package wasn't a
+                                                        // upper work
+                                                        // package before
             etc = bac;
             etcKosten = etc * wptagessatz;
         } else {
@@ -603,16 +641,15 @@ public class WPShow {
                 etcKosten = etc * wptagessatz;
             } catch (ParseException e) {
                 JOptionPane.showMessageDialog(gui,
-                        messageStrings.numberMustBePositive(wbsStrings.etc()));
+                    messageStrings.numberMustBePositive(wbsStrings.etc()));
                 save = false;
             }
 
         }
 
         ac = WpManager.calcAC(wp);
-        ev =
-                WpManager.calcEV(bacKosten,
-                        WpManager.calcPercentComplete(bac, etc, ac));
+        ev = WpManager.calcEV(bacKosten,
+            WpManager.calcPercentComplete(bac, etc, ac));
         eac = WpManager.calcEAC(bacKosten, acKosten, etcKosten);
 
         if (save) {
@@ -651,8 +688,8 @@ public class WPShow {
             }
 
             for (String actualWorker : actualWPWorkers) {
-                wp.addWorker(DBModelManager.getEmployeesModel().getEmployee(
-                        actualWorker));
+                wp.addWorker(DBModelManager.getEmployeesModel()
+                    .getEmployee(actualWorker));
             }
             return true;
         }
@@ -660,38 +697,50 @@ public class WPShow {
         return false;
     }
 
-    protected KeyListener getChangeListenerTextfield() {
+    /**
+     * Returns the key listener of the text field.
+     * @return The key listener of the text field.
+     */
+    protected final KeyListener getChangeListenerTextfield() {
         return new KeyListener() {
             @Override
-            public void keyPressed(KeyEvent arg0) {
+            public void keyPressed(final KeyEvent arg0) {
                 setGUIChanged();
             }
 
             @Override
-            public void keyReleased(KeyEvent arg0) {
+            public void keyReleased(final KeyEvent arg0) {
                 setGUIChanged();
             }
 
             @Override
-            public void keyTyped(KeyEvent arg0) {
+            public void keyTyped(final KeyEvent arg0) {
                 setGUIChanged();
             }
         };
     }
 
-    protected ItemListener getChangeItemListener() {
+    /**
+     * Returns the item listener.
+     * @return the item listener.
+     */
+    protected final ItemListener getChangeItemListener() {
         return new ItemListener() {
             @Override
-            public void itemStateChanged(ItemEvent arg0) {
+            public void itemStateChanged(final ItemEvent arg0) {
                 setGUIChanged();
             }
         };
     }
 
-    protected ActionListener getBtnOKListener() {
+    /**
+     * Returns the action listener for the OK button.
+     * @return The action listener of the OK button.
+     */
+    protected final ActionListener getBtnOKListener() {
         return new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 if (save()) {
                     gui.dispose();
                 }
@@ -699,59 +748,79 @@ public class WPShow {
         };
     }
 
-    protected ActionListener getBtnAddAncestorListener() {
+    /**
+     * Returns the action listener for the ancestor button.
+     * @return The action listener.
+     */
+    protected final ActionListener getBtnAddAncestorListener() {
         return new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 if (isSaved()) {
                     new SequencerGUI(getWorkpackage(),
-                            SequencerGUI.MODE_ADD_ANCHESTOR, gui);
+                        SequencerGUI.MODE_ADD_ANCHESTOR, gui);
                 }
             }
         };
     }
 
-    protected ActionListener getBtnAddFollowerListener() {
+    /**
+     * Returns the action listener for the button to add a follower.
+     * @return The action listener.
+     */
+    protected final ActionListener getBtnAddFollowerListener() {
         return new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 if (isSaved()) {
                     new SequencerGUI(getWorkpackage(),
-                            SequencerGUI.MODE_ADD_FOLLOWER, gui);
+                        SequencerGUI.MODE_ADD_FOLLOWER, gui);
                 }
             }
         };
     }
 
-    protected ActionListener getBtnEditAncestorListener() {
+    /**
+     * Returns the action listener for the button to edit a ancestor.
+     * @return The action listener.
+     */
+    protected final ActionListener getBtnEditAncestorListener() {
         return new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 if (isSaved()) {
                     new SequencerGUI(getWorkpackage(),
-                            SequencerGUI.MODE_DELETE_ANCHESTOR, gui);
-                }
-
-            }
-        };
-    }
-
-    protected ActionListener getBtnEditFollowerListener() {
-        return new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (isSaved()) {
-                    new SequencerGUI(getWorkpackage(),
-                            SequencerGUI.MODE_DELETE_FOLLOWER, gui);
+                        SequencerGUI.MODE_DELETE_ANCHESTOR, gui);
                 }
 
             }
         };
     }
 
-    protected ActionListener getBtnAddAufwandListener() {
+    /**
+     * Returns the action listener for the button to edit a follower.
+     * @return The action listener.
+     */
+    protected final ActionListener getBtnEditFollowerListener() {
         return new ActionListener() {
-            public void actionPerformed(ActionEvent arg0) {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                if (isSaved()) {
+                    new SequencerGUI(getWorkpackage(),
+                        SequencerGUI.MODE_DELETE_FOLLOWER, gui);
+                }
+
+            }
+        };
+    }
+
+    /**
+     * Returns the action listener for the button to add a work effort.
+     * @return The action listener.
+     */
+    protected final ActionListener getBtnAddAufwandListener() {
+        return new ActionListener() {
+            public void actionPerformed(final ActionEvent arg0) {
                 if (isSaved()) {
                     new AddAufwand(getThis(), getWorkpackage());
                 }
@@ -759,61 +828,89 @@ public class WPShow {
         };
     }
 
-    protected ActionListener getBtnSaveListener() {
+    /**
+     * Returns the action listener for the button to save the changes.
+     * @return The action listener.
+     */
+    protected final ActionListener getBtnSaveListener() {
         return new ActionListener() {
-            public void actionPerformed(ActionEvent arg0) {
+            public void actionPerformed(final ActionEvent arg0) {
                 save();
             }
         };
     }
 
-    protected ActionListener getBtnCancelListener() {
+    /**
+     * Returns the action listener for the button to cancel the changes.
+     * @return The action listener.
+     */
+    protected final ActionListener getBtnCancelListener() {
         return new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 gui.dispose();
             }
         };
     }
 
-    protected ActionListener getBtnAddWorkerListener(
-            final JComboBox<Worker> cobAddWorker) {
+    /**
+     * Returns the action listener for the button to add a worker.
+     * @param cobAddWorker
+     *            The combo box which contains the workers.
+     * @return The action listener.
+     */
+    protected final ActionListener getBtnAddWorkerListener(
+        final JComboBox<Worker> cobAddWorker) {
         return new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 if (((Worker) cobAddWorker.getSelectedItem()) != null) {
                     actualWPWorkers.add(((Worker) cobAddWorker
-                            .getSelectedItem()).getLogin());
+                        .getSelectedItem()).getLogin());
                 }
                 gui.fillWorkerCombos(actualWPWorkers);
             }
         };
     }
 
-    protected ActionListener getBtnRemoveWorkerListener(
-            final JComboBox<Worker> cobRemoveWorker) {
+    /**
+     * Returns the action listener for the button to remove a worker.
+     * @param cobRemoveWorker
+     *            The combo box which contains the workers.
+     * @return The action listener.
+     */
+    protected final ActionListener getBtnRemoveWorkerListener(
+        final JComboBox<Worker> cobRemoveWorker) {
         return new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 if (((Worker) cobRemoveWorker.getSelectedItem()) != null) {
                     actualWPWorkers.remove(((Worker) cobRemoveWorker
-                            .getSelectedItem()).getLogin());
+                        .getSelectedItem()).getLogin());
                 }
                 gui.fillWorkerCombos(actualWPWorkers);
             }
         };
     }
 
-    protected ActionListener getBtnBeendenListener() {
+    /**
+     * Returns the action listener for the button to close the window.
+     * @return The action listener.
+     */
+    protected final ActionListener getBtnBeendenListener() {
         return new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 gui.dispose();
                 Controller.leaveDB();
             }
         };
     }
 
-    protected FocusListener getBACETCListener() {
+    /**
+     * Returns the bac and etc listener.
+     * @return The focus listener.
+     */
+    protected final FocusListener getBACETCListener() {
         return new FocusAdapter() {
 
-            public void focusGained(FocusEvent e) {
+            public void focusGained(final FocusEvent e) {
                 JTextField txfTmp = (JTextField) e.getSource();
                 if (txfTmp != null) {
                     txfTmp.setSelectionStart(0);
@@ -821,7 +918,7 @@ public class WPShow {
                 }
             }
 
-            public void focusLost(FocusEvent e) {
+            public void focusLost(final FocusEvent e) {
                 JTextField txfTmp = (JTextField) e.getSource();
                 if (txfTmp != null) {
                     txfTmp.setText(txfTmp.getText().replace(",", "."));
@@ -831,42 +928,66 @@ public class WPShow {
         };
     }
 
-    protected ActionListener getBtnCPIListener() {
+    /**
+     * Returns the action listener for the button for the cpi.
+     * @return The action listener.
+     */
+    protected final ActionListener getBtnCPIListener() {
         return new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 new ChartCPIView(wp, gui);
             }
         };
 
     }
 
-    protected ActionListener getBtnSPIListener() {
+    /**
+     * Returns the action listener for the button for the spi.
+     * @return The action listener.
+     */
+    protected final ActionListener getBtnSPIListener() {
         return new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 new ChartCompleteView(wp, gui);
             }
         };
     }
 
-    protected ActionListener getBtnAllPVListener() {
+    /**
+     * Returns the action listener for the button to close the window.
+     * @return The action listener.
+     */
+    protected final ActionListener getBtnAllPVListener() {
         return new ActionListener() {
 
             @Override
-            public void actionPerformed(ActionEvent arg0) {
+            public void actionPerformed(final ActionEvent arg0) {
                 new PVTableGUI(wp);
             }
         };
     }
 
+    /**
+     * Return it self.
+     * @return A reference to it self.
+     */
     private WPShow getThis() {
         return this;
     }
 
-    public Component getMainFrame() {
+    /**
+     * Returns the main frame.
+     * @return The main frame.
+     */
+    public final Component getMainFrame() {
         return gui;
     }
 
-    public double getETCfromGUI() {
+    /**
+     * Returns the etc from the GUI.
+     * @return The value of the etc.
+     */
+    public final double getETCfromGUI() {
         try {
             return gui.getETC();
         } catch (ParseException e) {
@@ -874,12 +995,24 @@ public class WPShow {
         }
     }
 
-    public void updateETCInGUI(double etc) {
+    /**
+     * Updates the etc in the GUI.
+     * @param etc
+     *            The new value of the etc.
+     */
+    public final void updateETCInGUI(final double etc) {
         gui.setETC(etc);
         save();
     }
 
-    private void setUAPStartHope(Workpackage oap, Date date) {
+    /**
+     * Set the start of the under work package.
+     * @param oap
+     *            The work package.
+     * @param date
+     *            The start date.
+     */
+    private void setUAPStartHope(final Workpackage oap, final Date date) {
         oap.setStartDateHope(date);
         WpManager.updateAP(oap);
         for (Workpackage actualUAP : WpManager.getUAPs(oap)) {
@@ -887,7 +1020,14 @@ public class WPShow {
         }
     }
 
-    private void setUAPEndHope(Workpackage oap, Date date) {
+    /**
+     * Set the end of the under work package.
+     * @param oap
+     *            The work package.
+     * @param date
+     *            The end date.
+     */
+    private void setUAPEndHope(final Workpackage oap, final Date date) {
         oap.setEndDateHope(date);
         WpManager.updateAP(oap);
         for (Workpackage actualUAP : WpManager.getUAPs(oap)) {
