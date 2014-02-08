@@ -1,6 +1,19 @@
+/*
+ * The WBS-Tool is a project management tool combining the Work Breakdown
+ * Structure and Earned Value Analysis Copyright (C) 2013 FH-Bingen This
+ * program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your
+ * option) any later version. This program is distributed in the hope that
+ * it will be useful, but WITHOUT ANY WARRANTY;; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details. You should have received a
+ * copy of the GNU General Public License along with this program. If not,
+ * see <http://www.gnu.org/licenses/>.
+ */
+
 package wpAvailability;
 
-import de.fhbingen.wbs.translation.LocalizedStrings;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -8,61 +21,47 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-
-import calendar.Availability;
-import calendar.Day;
-import dbServices.CalendarService;
-import dbServices.WorkerService;
 
 import wpConflict.Conflict;
 import wpOverview.WPOverview;
 import wpOverview.tabs.AvailabilityGraph;
 import wpWorker.Worker;
+import calendar.Availability;
+import calendar.Day;
+import dbServices.CalendarService;
+import dbServices.WorkerService;
+import de.fhbingen.wbs.translation.LocalizedStrings;
 
 /**
- * Studienprojekt: PSYS WBS 2.0<br/>
- * Kunde: Pentasys AG, Jens von Gersdorff<br/>
- * Projektmitglieder:<br/>
- * Michael Anstatt,<br/>
- * Marc-Eric Baumgärtner,<br/>
- * Jens Eckes,<br/>
- * Sven Seckler,<br/>
- * Lin Yang<br/>
- * Diese Klasse wird zum editieren der Verfuegbarkeiten benutzt.<br/>
- * Sie bietet die Funktionalitaet fuer die Klasse EditAvailabilityGUI.<br/>
- *
- * @author Michael Anstatt
- * @version 2.0 - 2012-08-21
+ * Is used to edit the availabilities. Also this class is the functionality
+ * for the class EditAvailabilityGUI.
  */
 public class EditAvailability {
+    /** The GUI of this class. */
     private EditAvailabilityGUI gui;
+    /** Represents the availability. */
     private Availability availability = null;
 
     /**
-     * Vorhandene Availability bearbeiten
-     *
+     * Edit the selected availability.
      * @param avGraph
-     *            Verfuegbarkeiten Graph
+     *            The graph of availability.
      * @param availability
-     *            Verfuegbarkeiten
+     *            The availability.
      * @param parent
-     *            ParentFrame
+     *            The parent frame.
      */
     public EditAvailability(final AvailabilityGraph avGraph,
-            Availability availability, JFrame parent) {
+        final Availability availability, final JFrame parent) {
         this.availability = availability;
-        gui =
-                new EditAvailabilityGUI(this, LocalizedStrings.getWbs()
-                        .editAvailability(),
-                        parent);
+        gui = new EditAvailabilityGUI(this, LocalizedStrings.getWbs()
+            .editAvailability(), parent);
         gui.setNewView(false);
 
         List<Worker> workers = WorkerService.getRealWorkers();
@@ -88,7 +87,7 @@ public class EditAvailability {
 
         gui.addWindowListener(new WindowAdapter() {
             @Override
-            public void windowClosing(WindowEvent e) {
+            public void windowClosing(final WindowEvent e) {
                 avGraph.reloadMain();
 
             }
@@ -97,21 +96,21 @@ public class EditAvailability {
     }
 
     /**
-     * Legt neue Availability an
-     *
+     * Creates a new availability.
      * @param avGraph
-     *            Verfuegbarkeits Graph
+     *            The graph of availability.
      * @param worker
-     *            Arbeiter
+     *            The worker from which the availability is edit.
      * @param day
-     *            Day Objekt mit Arbeitszeiten
+     *            A Day object with the work times.
      * @param parent
-     *            ParentFrame
+     *            The parent frame
      */
-    public EditAvailability(final AvailabilityGraph avGraph, Worker worker,
-            Day day, JFrame parent) {
+    public EditAvailability(final AvailabilityGraph avGraph,
+        final Worker worker,
+        final Day day, final JFrame parent) {
         gui = new EditAvailabilityGUI(this, LocalizedStrings.getWbs()
-                .newAvailability(), parent);
+            .newAvailability(), parent);
         gui.setNewView(true);
 
         List<Worker> workers = WorkerService.getRealWorkers();
@@ -138,60 +137,60 @@ public class EditAvailability {
 
         gui.addWindowListener(new WindowAdapter() {
             @Override
-            public void windowClosing(WindowEvent e) {
+            public void windowClosing(final WindowEvent e) {
                 avGraph.remake();
             }
         });
     }
 
     /**
-     * Speichert die Verfuegbarkeit in der DB
+     * Saves the availability in the data base.
      */
-    public void save() {
+    public final void save() {
         Date start = gui.getStart();
         Date end = gui.getEnd();
 
         if (availability != null) {
             if (gui.getWorker().equals(AvailabilityGraph.PROJECT_WORKER)) {
                 CalendarService.setProjectAvailability(new Availability(gui
-                        .getWorker().getId(), gui.getAllDay(), gui
-                        .getAvailable(), start, end, gui.getDescription(),
-                        availability.getId()));
+                    .getWorker().getId(), gui.getAllDay(), gui
+                    .getAvailable(), start, end, gui.getDescription(),
+                    availability.getId()));
             } else {
                 CalendarService.setWorkerAvailability(
-                        gui.getWorker().getLogin(),
-                        new Availability(gui.getWorker().getId(), gui
-                                .getAllDay(), gui.getAvailable(), start, end,
-                                gui.getDescription(), availability.getId()));
+                    gui.getWorker().getLogin(),
+                    new Availability(gui.getWorker().getId(), gui
+                        .getAllDay(), gui.getAvailable(), start, end, gui
+                        .getDescription(), availability.getId()));
             }
         } else {
             if (gui.getWorker().equals(AvailabilityGraph.PROJECT_WORKER)) {
                 CalendarService.setProjectAvailability(new Availability(gui
-                        .getWorker().getId(), gui.getAllDay(), gui
-                        .getAvailable(), start, end, gui.getDescription()));
+                    .getWorker().getId(), gui.getAllDay(), gui
+                    .getAvailable(), start, end, gui.getDescription()));
             } else {
                 CalendarService.setWorkerAvailability(
-                        gui.getWorker().getLogin(),
-                        new Availability(gui.getWorker().getId(), gui
-                                .getAllDay(), gui.getAvailable(), start, end,
-                                gui.getDescription()));
+                    gui.getWorker().getLogin(),
+                    new Availability(gui.getWorker().getId(), gui
+                        .getAllDay(), gui.getAvailable(), start, end, gui
+                        .getDescription()));
             }
 
         }
 
         gui.dispose();
-        // Schliessen simulieren, notwendig fuer WindowListener
-        WindowEvent closingEvent =
-                new WindowEvent(gui, WindowEvent.WINDOW_CLOSING);
+     // Simulates the closing, is used for the WindowListener
+        WindowEvent closingEvent = new WindowEvent(gui,
+            WindowEvent.WINDOW_CLOSING);
         Toolkit.getDefaultToolkit().getSystemEventQueue()
-                .postEvent(closingEvent);
+            .postEvent(closingEvent);
 
     }
 
     /**
-     * Loescht Verfuegbarkeit aus der DB
+     * Deletes the availability from the data base.
      */
-    public void delete() {
+    public final void delete() {
         if (availability != null) {
             if (gui.getWorker().equals(AvailabilityGraph.PROJECT_WORKER)) {
                 CalendarService.deleteProjectAvailability(availability);
@@ -201,50 +200,64 @@ public class EditAvailability {
         }
 
         gui.dispose();
-        // Schliessen simulieren, notwendig fuer WindowListener
-        WindowEvent closingEvent =
-                new WindowEvent(gui, WindowEvent.WINDOW_CLOSING);
+     // Simulates the closing, is used for the WindowListener
+        WindowEvent closingEvent = new WindowEvent(gui,
+            WindowEvent.WINDOW_CLOSING);
         Toolkit.getDefaultToolkit().getSystemEventQueue()
-                .postEvent(closingEvent);
+            .postEvent(closingEvent);
     }
 
-    protected ActionListener getSaveListener() {
+    /**
+     * Returns the ActionListener from the save button.
+     * @return The ActionListener.
+     */
+    protected final ActionListener getSaveListener() {
         return new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 WPOverview.throwConflict(new Conflict(new Date(System
-                        .currentTimeMillis()), Conflict.CHANGED_RESOURCES,
-                        WPOverview.getUser().getId()));
+                    .currentTimeMillis()), Conflict.CHANGED_RESOURCES,
+                    WPOverview.getUser().getId()));
                 save();
             }
         };
     }
 
-    protected ActionListener getDeleteListener() {
+    /**
+     * Returns the ActionListener for delete a availability.
+     * @return The ActionListener.
+     */
+    protected final ActionListener getDeleteListener() {
         return new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 WPOverview.throwConflict(new Conflict(new Date(System
-                        .currentTimeMillis()), Conflict.CHANGED_RESOURCES,
-                        WPOverview.getUser().getId()));
+                    .currentTimeMillis()), Conflict.CHANGED_RESOURCES,
+                    WPOverview.getUser().getId()));
                 delete();
             }
         };
     }
 
-    protected ActionListener getCancelListener() {
+    /**
+     * Returns the ActionListener for cancel the changes.
+     * @return The ActionListener.
+     */
+    protected final ActionListener getCancelListener() {
         return new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 gui.dispose();
             }
         };
     }
 
-    protected ItemListener getCbAvailableListener() {
+    /** Returns the ItemListener for getting the cb.
+     * @return The ItemListener. */
+    protected final ItemListener getCbAvailableListener() {
         return new ItemListener() {
             @Override
-            public void itemStateChanged(ItemEvent e) {
+            public void itemStateChanged(final ItemEvent e) {
                 gui.setAvailableView(e.getStateChange() == ItemEvent.SELECTED);
             }
         };
