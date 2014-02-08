@@ -1,36 +1,45 @@
+/*
+ * The WBS-Tool is a project management tool combining the Work Breakdown
+ * Structure and Earned Value Analysis Copyright (C) 2013 FH-Bingen This
+ * program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your
+ * option) any later version. This program is distributed in the hope that
+ * it will be useful, but WITHOUT ANY WARRANTY;; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details. You should have received a
+ * copy of the GNU General Public License along with this program. If not,
+ * see <http://www.gnu.org/licenses/>.
+ */
+
 package wpBaseline;
 
+import java.awt.Component;
 
-import java.awt.*;
-import javax.swing.*;
-import javax.swing.table.*;
+import javax.swing.JProgressBar;
+import javax.swing.JTable;
+import javax.swing.table.TableCellRenderer;
 
 /**
- * Studienprojekt:	WBS<br/>
- * 
- * Kunde:				Pentasys AG, Jens von Gersdorff<br/>
- * Projektmitglieder:	Andre Paffenholz, <br/>
- * 						Peter Lange, <br/>
- * 						Daniel Metzler,<br/>
- * 						Samson von Graevenitz<br/>
- * 
- * setzt in die Zelle eine JProgressBar und setzt den Wert der ProgressBar anhand des Wertes in der Zelle<br/>
- * wird von dem Konstruktor der Klasse WBSBaseline mit der Fertigstellungs-Spalte aufgerufen<br/>
- * fügt eine JProgressBar in die Zelle und setzt den Status auf den in der Zelle abgelegten IntegerWert<br/>
- * 
- * @author Daniel Metzler
- * @version 1.9- 17.02.2011
+ * Sets a JProgressBar into a cell and sets the progress bar's value on the
+ * basis of the value of the cell. This class is called by the constructor
+ * of the class WBSBaseline.
  */
 public class StatusCellRenderer implements TableCellRenderer {
-	private JProgressBar progress;
-    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-    	int intValue = Integer.parseInt(value.toString().replace(',','.'));
+    /** The progress bar which is set into the cell. */
+    private JProgressBar progress;
+
+    @Override
+    public final Component getTableCellRendererComponent(
+        final JTable table, final Object value, final boolean isSelected,
+        final boolean hasFocus, final int row, final int column) {
+        int intValue = Integer.parseInt(value.toString().replace(',', '.'));
         if (progress == null) {
-        	//JProgressBar wird erzeugt
-        	progress = new JProgressBar();
+            // JProgressBar is created
+            progress = new JProgressBar();
         }
 
-        //Progressbar wird auf den Wert IntegerWert der Zelle gesetzt
+        // JProgressBar is set by the value of the cell.
         progress.setValue(intValue);
         return progress;
     }
