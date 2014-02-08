@@ -77,7 +77,7 @@ public class WPShow {
 
     /**
      * Konstruktor
-     *
+     * 
      * @param over
      *            Workpackage GUI
      * @param selected
@@ -138,7 +138,7 @@ public class WPShow {
 
     /**
      * Liefert eine neue eindeutige ID für ein Arbeitspaket
-     *
+     * 
      * @param currentID
      *            aktuelle ID des markieren Arbeitspaketes im Baum - bzw. leeres
      *            Arbeitspaket bei Aufruf über das Menü
@@ -164,7 +164,7 @@ public class WPShow {
     /**
      * prüft, ob ein AP mit der ID bereits in der Datenbank existiert Wird von
      * addWp() und aus WPReassign.setRekPakete() aufgerufen
-     *
+     * 
      * @param newId
      *            AP-ID des neu zu erstellenden Arbeitspakets
      * @return true = Paket-ID ist noch frei, false = ID ist bereits in der
@@ -183,10 +183,8 @@ public class WPShow {
         }
 
         if (WpManager.getWorkpackage(newId) != null) {
-            JOptionPane
-                    .showMessageDialog(
-                            null,
-                            messageStrings.workPackageIdAlreadyExists());
+            JOptionPane.showMessageDialog(null,
+                    messageStrings.workPackageIdAlreadyExists());
             return false;
         }
 
@@ -198,8 +196,9 @@ public class WPShow {
             actualCheckWp = WpManager.getWorkpackage(actualCheckWp.getOAPID());
         }
         if (actualCheckWp == null) {
-            JOptionPane.showMessageDialog(null,
-                    messageStrings.workPackageNoTopLevelWorkPackagesForThisId());
+            JOptionPane
+                    .showMessageDialog(null, messageStrings
+                            .workPackageNoTopLevelWorkPackagesForThisId());
             return false;
         } else {
             wp.setLvlIDs(ids);
@@ -262,18 +261,15 @@ public class WPShow {
         boolean startInaktiv = wp.isIstInaktiv();
 
         if (gui.getIsOAP() && !wp.isIstOAP() && WpManager.calcAC(wp) > 0) {
-            JOptionPane
-                    .showMessageDialog(gui,
-                            messageStrings
-                                    .workPackageCanNotBeTopLevelBecauseOfWorkEfforts());
+            JOptionPane.showMessageDialog(gui, messageStrings
+                    .workPackageCanNotBeTopLevelBecauseOfWorkEfforts());
             success = false;
         }
 
         if (!gui.getIsOAP() && wp.isIstOAP()
                 && WpManager.getUAPs(wp).size() > 0) {
-            JOptionPane.showMessageDialog(gui,
-                    messageStrings
-                            .workPackageCanNotBeSubWorkPackageBecauseItHasChildren());
+            JOptionPane.showMessageDialog(gui, messageStrings
+                    .workPackageCanNotBeSubWorkPackageBecauseItHasChildren());
             success = false;
         }
 
@@ -398,18 +394,15 @@ public class WPShow {
                 save = false;
             }
         } catch (ParseException e) {
-            JOptionPane.showMessageDialog(gui,
-                    messageStrings.dateInvalid());
+            JOptionPane.showMessageDialog(gui, messageStrings.dateInvalid());
             save = false;
         }
 
         if (save) {
             if (endHope != null && startHope != null) {
                 if (endHope.before(startHope)) {
-                    JOptionPane
-                            .showMessageDialog(gui,
-                                    messageStrings
-                                            .endDateCanNotBeBeforeStartDate());
+                    JOptionPane.showMessageDialog(gui,
+                            messageStrings.endDateCanNotBeBeforeStartDate());
                     save = false;
                 }
             }
@@ -432,9 +425,8 @@ public class WPShow {
                 wp.setLvlIDs(newLvlIDs);
                 if (WpManager.getRootAp().getLvlIDs().length == wp
                         .getlastRelevantIndex()) {
-                    JOptionPane
-                            .showMessageDialog(gui,
-                                    messageStrings.workPackageOutOfLevels());
+                    JOptionPane.showMessageDialog(gui,
+                            messageStrings.workPackageOutOfLevels());
                     wp.setLvlIDs(levelIDcache);
                     save = false;
                 }
@@ -443,27 +435,21 @@ public class WPShow {
 
         if (save) {
             if (endHope != null && !endHope.equals(wp.getEndDateHope())) {
-                if (JOptionPane
-                        .showConfirmDialog(
-                                gui,
-                                messageStrings
-                                        .workPackageApplyDateOnSubWorkPackages(LocalizedStrings.getProject().endDate().toLowerCase()),
-                                wbsStrings.dateChangedWindowTitle(),
-                                JOptionPane.YES_NO_OPTION) == JOptionPane
-                        .YES_OPTION) {
+                if (JOptionPane.showConfirmDialog(gui, messageStrings
+                        .workPackageApplyDateOnSubWorkPackages(LocalizedStrings
+                                .getProject().endDate().toLowerCase()),
+                        wbsStrings.dateChangedWindowTitle(),
+                        JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
                     setUAPEndHope(wp, endHope);
 
                 }
             }
             if (startHope != null && !startHope.equals(wp.getStartDateHope())) {
-                if (JOptionPane
-                        .showConfirmDialog(
-                                gui,
-                                messageStrings
-                                        .workPackageApplyDateOnSubWorkPackages(LocalizedStrings.getProject().startDate().toLowerCase()),
-                                wbsStrings.dateChangedWindowTitle(), JOptionPane.YES_NO_OPTION) ==
-                        JOptionPane
-                        .YES_OPTION) {
+                if (JOptionPane.showConfirmDialog(gui, messageStrings
+                        .workPackageApplyDateOnSubWorkPackages(LocalizedStrings
+                                .getProject().startDate().toLowerCase()),
+                        wbsStrings.dateChangedWindowTitle(),
+                        JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
                     setUAPStartHope(wp, startHope);
                 }
             }
@@ -529,7 +515,8 @@ public class WPShow {
         name = gui.getWpName();
         if (name == null || name.equals("")) {
             save = false;
-            JOptionPane.showMessageDialog(gui, messageStrings.workPackageNeedsName());
+            JOptionPane.showMessageDialog(gui,
+                    messageStrings.workPackageNeedsName());
         }
 
         description = gui.getDescription();
@@ -543,7 +530,8 @@ public class WPShow {
         }
         if (leiterLogin.equals("")) {
             save = false;
-            JOptionPane.showMessageDialog(gui, messageStrings.workPackageSelectManager());
+            JOptionPane.showMessageDialog(gui,
+                    messageStrings.workPackageSelectManager());
         }
 
         actualWPWorkers.clear();
@@ -559,8 +547,7 @@ public class WPShow {
             startDateHope = gui.getStartHope();
             endDateHope = gui.getEndHope();
         } catch (ParseException e) {
-            JOptionPane.showMessageDialog(gui,
-                    messageStrings.dateInvalid());
+            JOptionPane.showMessageDialog(gui, messageStrings.dateInvalid());
             save = false;
         }
 
@@ -613,7 +600,6 @@ public class WPShow {
         ev =
                 WpManager.calcEV(bacKosten,
                         WpManager.calcPercentComplete(bac, etc, ac));
-        eac = WpManager.calcEAC(bacKosten, acKosten, etcKosten);
 
         if (save) {
 
@@ -623,6 +609,7 @@ public class WPShow {
             acKosten = WpManager.calcACKosten(wp);
 
             double cpi = WpManager.calcCPI(acKosten, etcKosten, bacKosten);
+            eac = WpManager.calcEAC(bacKosten, acKosten, etcKosten);
 
             wp.setName(name);
             wp.setIstOAP(istOAP);
