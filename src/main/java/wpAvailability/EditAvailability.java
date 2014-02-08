@@ -106,7 +106,8 @@ public class EditAvailability {
      * @param parent
      *            The parent frame
      */
-    public EditAvailability(final AvailabilityGraph avGraph, final Worker worker,
+    public EditAvailability(final AvailabilityGraph avGraph,
+        final Worker worker,
         final Day day, final JFrame parent) {
         gui = new EditAvailabilityGUI(this, LocalizedStrings.getWbs()
             .newAvailability(), parent);
@@ -213,7 +214,7 @@ public class EditAvailability {
     protected final ActionListener getSaveListener() {
         return new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 WPOverview.throwConflict(new Conflict(new Date(System
                     .currentTimeMillis()), Conflict.CHANGED_RESOURCES,
                     WPOverview.getUser().getId()));
@@ -253,7 +254,7 @@ public class EditAvailability {
 
     /** Returns the ItemListener for getting the cb.
      * @return The ItemListener. */
-    protected ItemListener getCbAvailableListener() {
+    protected final ItemListener getCbAvailableListener() {
         return new ItemListener() {
             @Override
             public void itemStateChanged(final ItemEvent e) {
