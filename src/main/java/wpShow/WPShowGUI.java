@@ -37,6 +37,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.FlowLayout;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -914,13 +915,17 @@ public class WPShowGUI extends JFrame {
             this.txfEndCalc.setText("");
         }
 
+        DecimalFormatSymbols ds = new DecimalFormatSymbols();
+        ds.setDecimalSeparator('.');
+        DecimalFormat workDaysFormater = new DecimalFormat("#0.000", ds);
+
         this.barComplete.setValue(WpManager.calcPercentComplete(wp.getBac(),
                 wp.getEtc(), wp.getAc()));
         this.txfCPI.setText("" + Controller.DECFORM_VALUES.format(wp.getCpi()));
         this.txfSPI.setText("" + Controller.DECFORM_VALUES.format(wp.getSpi()));
-        this.txfBAC.setText("" + Controller.DECFORM_DAYS.format(wp.getBac()));
-        this.txfETC.setText("" + Controller.DECFORM_DAYS.format(wp.getEtc()));
-        this.txfAC.setText("" + Controller.DECFORM_DAYS.format(wp.getAc()));
+        this.txfBAC.setText("" + workDaysFormater.format(wp.getBac()));
+        this.txfETC.setText("" + workDaysFormater.format(wp.getEtc()));
+        this.txfAC.setText("" + workDaysFormater.format(wp.getAc()));
         this.txfEV.setText("" + Controller.DECFORM_VALUES.format(wp.getEv()));
         this.txfSV.setText(""
                 + Controller.DECFORM_VALUES.format(wp.getSv())

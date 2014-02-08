@@ -2,15 +2,19 @@ package globals;
 
 import dbaccess.DBModelManager;
 import de.fhbingen.wbs.translation.LocalizedStrings;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+
 import jdbcConnection.SQLExecuter;
 import wpOverview.WPOverview;
 
@@ -52,7 +56,6 @@ public class Controller {
             "HH:mm");
 
     public final static DecimalFormat DECFORM_VALUES = new DecimalFormat("#0.00");
-    public final static DecimalFormat DECFORM_DAYS = new DecimalFormat("#0.000");
 
     /**
      * Freie Tage, in der Regel Samstag und Sonntag
