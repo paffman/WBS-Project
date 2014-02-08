@@ -246,7 +246,7 @@ public class WPShow {
             row[0] =
                     DBModelManager.getEmployeesModel()
                             .getEmployee(effort.getFid_emp()).getLogin();
-            row[1] = Controller.DECFORM.format(effort.getEffort());
+            row[1] = Controller.DECFORM_VALUES.format(effort.getEffort());
             row[2] = Controller.DATE_DAY.format(effort.getRec_date());
             row[3] = effort.getDescription();
             all.add(row);

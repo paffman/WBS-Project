@@ -78,28 +78,28 @@ public class BaselineView {
                     spacer += " ";
                 }
                 actualData[i++] = spacer + actualWp.toString();
-                actualData[i++] = Controller.DECFORM.format(ad.getBac());
-                actualData[i++] = Controller.DECFORM.format(ad.getAc());
-                actualData[i++] = Controller.DECFORM.format(ad.getEtc());
-                actualData[i++] = Controller.DECFORM.format(ad.getCpi());
+                actualData[i++] = Controller.DECFORM_VALUES.format(ad.getBac());
+                actualData[i++] = Controller.DECFORM_VALUES.format(ad.getAc());
+                actualData[i++] = Controller.DECFORM_VALUES.format(ad.getEtc());
+                actualData[i++] = Controller.DECFORM_VALUES.format(ad.getCpi());
                 actualData[i++] =
-                        Controller.DECFORM.format(ad.getBac_costs()) + " EUR";
+                        Controller.DECFORM_VALUES.format(ad.getBac_costs()) + " EUR";
                 actualData[i++] =
-                        Controller.DECFORM.format(ad.getAc_costs()) + " EUR";
+                        Controller.DECFORM_VALUES.format(ad.getAc_costs()) + " EUR";
                 actualData[i++] =
-                        Controller.DECFORM.format(ad.getEtc_costs()) + " EUR";
+                        Controller.DECFORM_VALUES.format(ad.getEtc_costs()) + " EUR";
                 actualData[i++] =
-                        Controller.DECFORM.format(ad.getEac()) + " EUR";
+                        Controller.DECFORM_VALUES.format(ad.getEac()) + " EUR";
                 actualData[i++] =
-                        Controller.DECFORM.format(ad.getEv()) + " EUR";
+                        Controller.DECFORM_VALUES.format(ad.getEv()) + " EUR";
                 actualData[i++] =
-                        Controller.DECFORM.format(WpManager.calcTrend(
+                        Controller.DECFORM_VALUES.format(WpManager.calcTrend(
                                 ad.getEv(), ad.getAc_costs()));
                 actualData[i++] =
-                        Controller.DECFORM.format(ad.getPv()) + " EUR";
+                        Controller.DECFORM_VALUES.format(ad.getPv()) + " EUR";
                 actualData[i++] =
-                        Controller.DECFORM.format(ad.getSv()) + " EUR";
-                actualData[i++] = Controller.DECFORM.format(ad.getSpi());
+                        Controller.DECFORM_VALUES.format(ad.getSv()) + " EUR";
+                actualData[i++] = Controller.DECFORM_VALUES.format(ad.getSpi());
                 actualData[i++] =
                         ""
                                 + WpManager.calcPercentComplete(ad.getBac(),

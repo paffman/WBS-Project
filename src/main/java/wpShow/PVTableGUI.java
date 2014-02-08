@@ -91,7 +91,7 @@ public class PVTableGUI extends JFrame {
 			if(actualPV < 0) {
 				actualPV = 0;
 			}
-			model.addRow(new Object[] {Controller.DATE_DAY.format(actualDate), Controller.DECFORM.format(actualPV)+" EUR", Controller.DECFORM.format(wp.getSv(actualDate))+" EUR", Controller.DECFORM.format(wp.getSpi(actualDate))});
+			model.addRow(new Object[] {Controller.DATE_DAY.format(actualDate), Controller.DECFORM_VALUES.format(actualPV)+" EUR", Controller.DECFORM_VALUES.format(wp.getSv(actualDate))+" EUR", Controller.DECFORM_VALUES.format(wp.getSpi(actualDate))});
 		}
 
 		scrollPane.setViewportView(table);

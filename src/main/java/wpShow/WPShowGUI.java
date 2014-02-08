@@ -12,7 +12,9 @@ import globals.Workpackage;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JSplitPane;
+
 import java.awt.BorderLayout;
+
 import javax.swing.JPanel;
 import javax.swing.JTable;
 
@@ -21,6 +23,7 @@ import java.awt.Component;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+
 import javax.swing.JCheckBox;
 import javax.swing.JTextField;
 import javax.swing.JProgressBar;
@@ -33,6 +36,7 @@ import javax.swing.border.LineBorder;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.FlowLayout;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -45,7 +49,6 @@ import javax.swing.JScrollPane;
 
 import dbServices.WorkerService;
 import dbServices.ValuesService;
-
 import wpOverview.WPOverview;
 import wpWorker.Worker;
 
@@ -69,7 +72,7 @@ import java.awt.Font;
  * Sven Seckler,<br/>
  * Lin Yang<br/>
  * Eingabemaske fuer Arbeitspakete <br/>
- *
+ * 
  * @author Samson von Graevenitz, Peter Lange, Michael Anstatt, Marc-Eric
  *         Baumgärtner
  * @version 2.0 - 2012-0824
@@ -133,7 +136,6 @@ public class WPShowGUI extends JFrame {
     private final Wbs wbsStrings;
     private final Button buttonStrings;
 
-
     public WPShowGUI(String title, WPShow function, JFrame parent) {
         super(title);
         this.function = function;
@@ -179,7 +181,8 @@ public class WPShowGUI extends JFrame {
         leftPanel.add(txfNr, gbc_txfNr);
         txfNr.setColumns(10);
 
-        JLabel lblName = new JLabel(wbsStrings.workPackage()); //TODO OK? war: name
+        JLabel lblName = new JLabel(wbsStrings.workPackage()); // TODO OK? war:
+                                                               // name
         GridBagConstraints gbc_lblName = new GridBagConstraints();
         gbc_lblName.anchor = GridBagConstraints.WEST;
         gbc_lblName.insets = new Insets(0, 0, 5, 5);
@@ -289,8 +292,8 @@ public class WPShowGUI extends JFrame {
         btnEditFollower = new JButton(buttonStrings.manage());
         panel_3.add(btnEditFollower);
 
-        JLabel lblVerantwortlicher = new JLabel(generalStrings
-                .responsiblePerson());
+        JLabel lblVerantwortlicher =
+                new JLabel(generalStrings.responsiblePerson());
         GridBagConstraints gbc_lblVerantwortlicher = new GridBagConstraints();
         gbc_lblVerantwortlicher.anchor = GridBagConstraints.WEST;
         gbc_lblVerantwortlicher.insets = new Insets(0, 0, 5, 5);
@@ -306,8 +309,10 @@ public class WPShowGUI extends JFrame {
         gbc_cobLeiter.gridy = 6;
         leftPanel.add(cobLeiter, gbc_cobLeiter);
 
-        JLabel lblMitarbeiter = new JLabel(LocalizedStrings.getLogin().user()
-        ); //TODO ok? war Mitarbeiter
+        JLabel lblMitarbeiter = new JLabel(LocalizedStrings.getLogin().user()); // TODO
+                                                                                // ok?
+                                                                                // war
+                                                                                // Mitarbeiter
         GridBagConstraints gbc_lblMitarbeiter = new GridBagConstraints();
         gbc_lblMitarbeiter.anchor = GridBagConstraints.WEST;
         gbc_lblMitarbeiter.insets = new Insets(0, 0, 5, 5);
@@ -486,8 +491,9 @@ public class WPShowGUI extends JFrame {
         btnSPI = new JButton(wbsStrings.graph(wbsStrings.spi()));
         panel_9.add(btnSPI);
 
-        JLabel lblBac = new JLabel(wbsStrings.bac() + " / "
-                + wbsStrings.etc() + " / " + wbsStrings.ac());
+        JLabel lblBac =
+                new JLabel(wbsStrings.bac() + " / " + wbsStrings.etc() + " / "
+                        + wbsStrings.ac());
         lblBac.setToolTipText(wbsStrings.inDays());
         GridBagConstraints gbc_lblBac = new GridBagConstraints();
         gbc_lblBac.anchor = GridBagConstraints.WEST;
@@ -549,7 +555,8 @@ public class WPShowGUI extends JFrame {
         panel_6.add(txfPV);
         txfPV.setColumns(10);
 
-        JLabel lblBacKosten = new JLabel(generalStrings.costs(wbsStrings.bac()));
+        JLabel lblBacKosten =
+                new JLabel(generalStrings.costs(wbsStrings.bac()));
         GridBagConstraints gbc_lblBacKosten = new GridBagConstraints();
         gbc_lblBacKosten.anchor = GridBagConstraints.WEST;
         gbc_lblBacKosten.insets = new Insets(0, 0, 5, 5);
@@ -625,8 +632,8 @@ public class WPShowGUI extends JFrame {
         leftPanel.add(txfEAC, gbc_txfEAC);
         txfEAC.setColumns(10);
 
-        JLabel lblEtcKosten = new JLabel(generalStrings.costs(wbsStrings.etc
-                ()));
+        JLabel lblEtcKosten =
+                new JLabel(generalStrings.costs(wbsStrings.etc()));
         GridBagConstraints gbc_lblEtcKosten = new GridBagConstraints();
         gbc_lblEtcKosten.anchor = GridBagConstraints.WEST;
         gbc_lblEtcKosten.insets = new Insets(0, 0, 5, 5);
@@ -664,8 +671,9 @@ public class WPShowGUI extends JFrame {
         leftPanel.add(txfTagessatz, gbc_txfTagessatz);
         txfTagessatz.setColumns(10);
 
-        lblPvSpi = new JLabel(wbsStrings.pv() + " / " + wbsStrings.spi() +
-                generalStrings.date());
+        lblPvSpi =
+                new JLabel(wbsStrings.pv() + " / " + wbsStrings.spi()
+                        + generalStrings.date());
         GridBagConstraints gbc_lblPvSpi = new GridBagConstraints();
         gbc_lblPvSpi.insets = new Insets(0, 0, 5, 5);
         gbc_lblPvSpi.anchor = GridBagConstraints.WEST;
@@ -753,9 +761,8 @@ public class WPShowGUI extends JFrame {
         tblAufwand.setRowSelectionAllowed(false);
         tblAufwand.setModel(new DefaultTableModel(new Object[][] { { "", "",
                 "", null }, }, new String[] {
-                LocalizedStrings.getLogin().user(), //TODO ok? war: Name
-                wbsStrings.workEffort(),
-                generalStrings.date(),
+                LocalizedStrings.getLogin().user(), // TODO ok? war: Name
+                wbsStrings.workEffort(), generalStrings.date(),
                 generalStrings.description() }) {
 
             private static final long serialVersionUID = 5903248957368034227L;
@@ -860,6 +867,7 @@ public class WPShowGUI extends JFrame {
     protected void setValues(Workpackage wp, boolean leiter,
             String[][] aufwaende, ArrayList<Worker> allWorkers,
             Set<String> actualWPWorkers) {
+
         this.txfNr.setText(wp.getStringID());
         this.txfName.setText(wp.getName());
         this.chbOAP.setSelected(wp.isIstOAP());
@@ -908,36 +916,36 @@ public class WPShowGUI extends JFrame {
 
         this.barComplete.setValue(WpManager.calcPercentComplete(wp.getBac(),
                 wp.getEtc(), wp.getAc()));
-        this.txfCPI.setText("" + Controller.DECFORM.format(wp.getCpi()));
-        this.txfSPI.setText("" + Controller.DECFORM.format(wp.getSpi()));
-        this.txfBAC.setText("" + wp.getBac()); //TODO format!
-        this.txfETC.setText("" + wp.getEtc());
-        this.txfAC.setText("" + wp.getAc());
-        this.txfEV.setText("" + wp.getEv());
+        this.txfCPI.setText("" + Controller.DECFORM_VALUES.format(wp.getCpi()));
+        this.txfSPI.setText("" + Controller.DECFORM_VALUES.format(wp.getSpi()));
+        this.txfBAC.setText("" + Controller.DECFORM_DAYS.format(wp.getBac()));
+        this.txfETC.setText("" + Controller.DECFORM_DAYS.format(wp.getEtc()));
+        this.txfAC.setText("" + Controller.DECFORM_DAYS.format(wp.getAc()));
+        this.txfEV.setText("" + Controller.DECFORM_VALUES.format(wp.getEv()));
         this.txfSV.setText(""
-                + Controller.DECFORM.format(wp.getSv()).replace(",", ".")
-                + generalStrings.currencySymbol());
-        this.txfPV.setText(""
-                + Controller.DECFORM.format(wp.getPv()).replace(",", ".")
-                + generalStrings.currencySymbol());
-        this.txfBACCost.setText(""
-                + Controller.DECFORM.format(wp.getBac_kosten()).replace(",",
-                        ".") + generalStrings.currencySymbol());
-        this.txfACCost.setText(""
-                + Controller.DECFORM.format(wp.getAc_kosten())
+                + Controller.DECFORM_VALUES.format(wp.getSv())
                         .replace(",", ".") + generalStrings.currencySymbol());
+        this.txfPV.setText(""
+                + Controller.DECFORM_VALUES.format(wp.getPv())
+                        .replace(",", ".") + generalStrings.currencySymbol());
+        this.txfBACCost.setText(""
+                + Controller.DECFORM_VALUES.format(wp.getBac_kosten()).replace(
+                        ",", ".") + generalStrings.currencySymbol());
+        this.txfACCost.setText(""
+                + Controller.DECFORM_VALUES.format(wp.getAc_kosten()).replace(
+                        ",", ".") + generalStrings.currencySymbol());
         this.txfEV.setText(""
-                + Controller.DECFORM.format(wp.getEv()).replace(",", ".")
-                + generalStrings.currencySymbol());
+                + Controller.DECFORM_VALUES.format(wp.getEv())
+                        .replace(",", ".") + generalStrings.currencySymbol());
         this.txfEAC.setText(""
-                + Controller.DECFORM.format(wp.getEac()).replace(",", ".")
-                + generalStrings.currencySymbol());
+                + Controller.DECFORM_VALUES.format(wp.getEac()).replace(",",
+                        ".") + generalStrings.currencySymbol());
         this.txfETCCost.setText(""
-                + Controller.DECFORM.format(wp.getEtc_kosten()).replace(",",
-                        ".") + generalStrings.currencySymbol());
+                + Controller.DECFORM_VALUES.format(wp.getEtc_kosten()).replace(
+                        ",", ".") + generalStrings.currencySymbol());
         this.txfTagessatz.setText(""
-                + Controller.DECFORM.format(wp.getWptagessatz()).replace(",",
-                        ".") + generalStrings.currencySymbol());
+                + Controller.DECFORM_VALUES.format(wp.getWptagessatz())
+                        .replace(",", ".") + generalStrings.currencySymbol());
 
         txfCPI.setDisabledTextColor(WPOverview.getCPIColor(wp.getCpi(),
                 wp.getAc())[0]);
@@ -1124,9 +1132,9 @@ public class WPShowGUI extends JFrame {
         if (WpManager.getFollowers(wp) != null) {
             followers = WpManager.getFollowers(wp).size();
         }
-        btnEditAncestor.setText(generalStrings.toManage() + " (" + ancestors +
-                ")");
-        btnEditFollower.setText(generalStrings.toManage() + " (" + followers +
-                ")");
+        btnEditAncestor.setText(generalStrings.toManage() + " (" + ancestors
+                + ")");
+        btnEditFollower.setText(generalStrings.toManage() + " (" + followers
+                + ")");
     }
 }

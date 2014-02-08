@@ -51,7 +51,8 @@ public class Controller {
     public static final SimpleDateFormat DATE_TIME = new SimpleDateFormat(
             "HH:mm");
 
-    public final static DecimalFormat DECFORM = new DecimalFormat("#0.00");
+    public final static DecimalFormat DECFORM_VALUES = new DecimalFormat("#0.00");
+    public final static DecimalFormat DECFORM_DAYS = new DecimalFormat("#0.000");
 
     /**
      * Freie Tage, in der Regel Samstag und Sonntag
