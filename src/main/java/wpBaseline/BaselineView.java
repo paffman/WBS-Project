@@ -1,8 +1,25 @@
+/*
+ * The WBS-Tool is a project management tool combining the Work Breakdown
+ * Structure and Earned Value Analysis Copyright (C) 2013 FH-Bingen This
+ * program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your
+ * option) any later version. This program is distributed in the hope that
+ * it will be useful, but WITHOUT ANY WARRANTY;; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details. You should have received a
+ * copy of the GNU General Public License along with this program. If not,
+ * see <http://www.gnu.org/licenses/>.
+ */
+
 package wpBaseline;
 
 import de.fhbingen.wbs.translation.LocalizedStrings;
 
-import java.sql.ResultSet;
+import functions.WpManager;
+import globals.Controller;
+import globals.Workpackage;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -13,42 +30,26 @@ import javax.swing.JFrame;
 
 import dbaccess.DBModelManager;
 import dbaccess.data.AnalyseData;
-import functions.WpManager;
-import globals.Controller;
-import globals.Workpackage;
-import jdbcConnection.SQLExecuter;
 
 /**
- * Studienprojekt: PSYS WBS 2.0<br/>
- * Kunde: Pentasys AG, Jens von Gersdorff<br/>
- * Projektmitglieder:<br/>
- * Michael Anstatt,<br/>
- * Marc-Eric Baumgärtner,<br/>
- * Jens Eckes,<br/>
- * Sven Seckler,<br/>
- * Lin Yang<br/>
- * Funktionalitaet der BaselineViewGUI<br/>
- * 
- * @author Michael Anstatt, Lin Yang
- * @version 2.0 - 20.08.2012
+ * Functionality of the BaselineViewGUI.
  */
 public class BaselineView {
     /**
-     * Konstruktor
+     * Constructor.
      * 
      * @param baselineID
-     *            ID der gewuenschten Baseline
+     *            id from the wished baseline
      * @param parent
      *            ParentFrame
      */
-    public BaselineView(int baselineID, JFrame parent) {
+    public BaselineView(final int baselineID, final JFrame parent) {
         try {
             String[][] data = getData(baselineID).toArray(new String[1][1]);
             BaselineViewGUI gui = new BaselineViewGUI(parent);
             for (String[] actualRow : data) {
                 gui.addRow(actualRow);
             }
-            ;
 
         } catch (SQLException e) {
             Controller.showError(LocalizedStrings.getErrorMessages()
@@ -58,14 +59,15 @@ public class BaselineView {
     }
 
     /**
-     * Fuellt die BaselineViewGUI mit Daten aus der DB
+     * Insert the data from the database into the BaselineViewGUI.
      * 
      * @param baselineID
-     *            ID der gewuenschten Baseline
-     * @return Liste mit StringArrays der Daten
+     *            id from the wished baseline
+     * @return A list with the data in form of a String-array
      * @throws SQLException
+     *             Throws an SQLException
      */
-    private List<String[]> getData(int baselineID) throws SQLException {
+    private List<String[]> getData(final int baselineID) throws SQLException {
         List<AnalyseData> data =
                 DBModelManager.getAnalyseDataModel().getAnalyseDataForBaseline(
                         baselineID);
@@ -81,31 +83,31 @@ public class BaselineView {
                     spacer += " ";
                 }
                 actualData[i++] = spacer + actualWp.toString();
-                actualData[i++] = Controller.DECFORM_VALUES.format(ad.getBac());
-                actualData[i++] = Controller.DECFORM_VALUES.format(ad.getAc());
-                actualData[i++] = Controller.DECFORM_VALUES.format(ad.getEtc());
-                actualData[i++] = Controller.DECFORM_VALUES.format(ad.getCpi());
+                actualData[i++] = Controller.DECFORM.format(ad.getBac());
+                actualData[i++] = Controller.DECFORM.format(ad.getAc());
+                actualData[i++] = Controller.DECFORM.format(ad.getEtc());
+                actualData[i++] = Controller.DECFORM.format(ad.getCpi());
                 actualData[i++] =
-                        Controller.DECFORM_VALUES.format(ad.getBac_costs())
+                        Controller.DECFORM.format(ad.getBac_costs())
                                 + " EUR";
                 actualData[i++] =
-                        Controller.DECFORM_VALUES.format(ad.getAc_costs())
+                        Controller.DECFORM.format(ad.getAc_costs())
                                 + " EUR";
                 actualData[i++] =
-                        Controller.DECFORM_VALUES.format(ad.getEtc_costs())
+                        Controller.DECFORM.format(ad.getEtc_costs())
                                 + " EUR";
                 actualData[i++] =
-                        Controller.DECFORM_VALUES.format(ad.getEac()) + " EUR";
+                        Controller.DECFORM.format(ad.getEac()) + " EUR";
                 actualData[i++] =
-                        Controller.DECFORM_VALUES.format(ad.getEv()) + " EUR";
+                        Controller.DECFORM.format(ad.getEv()) + " EUR";
                 actualData[i++] =
-                        Controller.DECFORM_VALUES.format(WpManager.calcTrend(
+                        Controller.DECFORM.format(WpManager.calcTrend(
                                 ad.getEv(), ad.getAc_costs()));
                 actualData[i++] =
-                        Controller.DECFORM_VALUES.format(ad.getPv()) + " EUR";
+                        Controller.DECFORM.format(ad.getPv()) + " EUR";
                 actualData[i++] =
-                        Controller.DECFORM_VALUES.format(ad.getSv()) + " EUR";
-                actualData[i++] = Controller.DECFORM_VALUES.format(ad.getSpi());
+                        Controller.DECFORM.format(ad.getSv()) + " EUR";
+                actualData[i++] = Controller.DECFORM.format(ad.getSpi());
                 actualData[i++] =
                         ""
                                 + WpManager.calcPercentComplete(ad.getBac(),
@@ -116,12 +118,18 @@ public class BaselineView {
         return sortDataByStringId(allData);
     }
 
-    private List<String[]> sortDataByStringId(List<String[]> unsortedData) {
+    /**
+     * Sorts the given list by the StringID.
+     * @param unsortedData an List to sort by the StringId.
+     * @return the given list, but sorted.
+     */
+    private List<String[]>
+            sortDataByStringId(final List<String[]> unsortedData) {
 
         Collections.sort(unsortedData, new Comparator<String[]>() {
 
             @Override
-            public int compare(String[] arg0, String[] arg1) {
+            public int compare(final String[] arg0, final String[] arg1) {
                 String id0 = arg0[0].substring(0, arg0[0].indexOf("-") - 1);
                 String id1 = arg1[0].substring(0, arg1[0].indexOf("-") - 1);
                 String[] idStrings0 = id0.split("\\.");

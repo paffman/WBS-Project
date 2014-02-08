@@ -44,15 +44,19 @@ public final class SQLExecuter {
             if (openConnection != null) {
                 int reconnectTries = 0;
 
+                System.out.println(openConnection.isValid(VALIDITY_CHECK_TIMEOUT));
                 while (!openConnection.isValid(VALIDITY_CHECK_TIMEOUT) &&
                         reconnectTries < RECONNECT_TRIES) {
                     openConnection = null;
                     openConnection = MySqlConnect.getConnection();
                     reconnectTries++;
+                    System.out.println(reconnectTries); //%%
                 }
 
+                System.out.println(reconnectTries); //%%
+                System.out.println(RECONNECT_TRIES); //%%
                 if (reconnectTries >= RECONNECT_TRIES) {
-                    // todo close tool
+                    System.exit(0);
                     return false;
                 }
             }
