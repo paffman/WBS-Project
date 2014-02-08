@@ -1,5 +1,6 @@
 package wpOverview.tabs;
 
+import de.fhbingen.wbs.translation.LocalizedStrings;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -17,7 +18,7 @@ import wpBaseline.BaselineView;
 import wpOverview.WPOverview;
 /**
  * Studienprojekt:	PSYS WBS 2.0<br/>
- * 
+ *
  * Kunde:		Pentasys AG, Jens von Gersdorff<br/>
  * Projektmitglieder:<br/>
  *			Michael Anstatt,<br/>
@@ -25,9 +26,9 @@ import wpOverview.WPOverview;
  *			Jens Eckes,<br/>
  *			Sven Seckler,<br/>
  *			Lin Yang<br/>
- * 
+ *
  * Funktionalitaet des BaselinePanel<br/>
- * 
+ *
  * @author WBS1.0 Team
  * @version 2.0
  */
@@ -48,7 +49,11 @@ public class BaselinePanelAction {
 						if (ConflictService.getAllConflicts().isEmpty()) {
 							calc = true;
 						} else {
-							if (JOptionPane.showConfirmDialog(null, "Die Dauerberchnung ist eventuell nicht aktuell. Trotzdem Baseline berechnen?", "Baseline-Berechnung",
+							if (JOptionPane.showConfirmDialog(null,
+                                    LocalizedStrings.getMessages()
+                                            .durationCalculationNotUpToDate(),
+                                    LocalizedStrings.getWbs()
+                                            .baselineCalculation(),
 									JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
 								calc = true;
 							} else {

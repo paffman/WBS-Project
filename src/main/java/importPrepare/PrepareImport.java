@@ -1,40 +1,40 @@
 package importPrepare;
 
-import java.sql.ResultSet;
-
-/**
- * Studienprojekt:	WBS
- * 
- * Kunde:				Pentasys AG, Jens von Gersdorff
- * Projektmitglieder:	Andre Paffenholz, 
- * 						Peter Lange, 
- * 						Daniel Metzler,
- * 						Samson von Graevenitz
- * 
- * Berechnen der Daten von externen Projekten, die nicht direkt in der WBS Anwendung erzeugt worden sind
- * und als MDB mit dem Programm geladen worden sind.
- * 
- * @author Andre Paffenholz
- * @version 0.3 - .12.2010
- */
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-
 import dbaccess.DBModelManager;
 import dbaccess.data.Employee;
 import dbaccess.data.WorkEffort;
 import dbaccess.data.Workpackage;
 import dbaccess.data.WorkpackageAllocation;
+import de.fhbingen.wbs.translation.LocalizedStrings;
 import functions.CalcOAPBaseline;
 import functions.WpManager;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import wpOverview.WPOverview;
+
+/**
+ * Studienprojekt:	WBS
+ *
+ * Kunde:				Pentasys AG, Jens von Gersdorff
+ * Projektmitglieder:	Andre Paffenholz,
+ * 						Peter Lange,
+ * 						Daniel Metzler,
+ * 						Samson von Graevenitz
+ *
+ * Berechnen der Daten von externen Projekten, die nicht direkt in der WBS
+ * Anwendung erzeugt worden sind
+ * und als MDB mit dem Programm geladen worden sind.
+ *
+ * @author Andre Paffenholz
+ * @version 0.3 - .12.2010
+ */
 
 public class PrepareImport {
 
     /**
      * User Konstruktor
-     * 
+     *
      * @param wpo
      *            - WPOverview: WPOverview Objekt, ueber das PrepareImport
      *            erzeugt worden ist
@@ -42,7 +42,7 @@ public class PrepareImport {
 
     public PrepareImport(WPOverview wpo) {
         prepareAPs();
-        new CalcOAPBaseline("Initialisierung einer importierten DB", wpo);
+        new CalcOAPBaseline(LocalizedStrings.getGeneralStrings().initImportDb(), wpo);
     }
 
     /**
@@ -109,7 +109,7 @@ public class PrepareImport {
 
     /**
      * Liefert den Aufwand fuer ein durch die Parameter bestimmtes Paket zurueck
-     * 
+     *
      * @param wp
      *            Id of a workpackage.
      * @return der Aufwand als Double
@@ -122,7 +122,7 @@ public class PrepareImport {
     /**
      * Liefert die ACKosten fuer ein durch die Parameter bestimmtes Paket
      * zurueck
-     * 
+     *
      * @param lvl1ID
      *            - Level1 ID als int
      * @param lvl2ID
@@ -155,7 +155,7 @@ public class PrepareImport {
      * Berechnet den Mittelwert der Tagessätze der Mitarbeiter, die einem AP
      * zugewiesen sind Wird aufgerufen von: - WPShow.addButtonAction() - von
      * beiden Konstruktoren der WPShow
-     * 
+     *
      * @return der gemittelte Tagessatz als Double
      */
     public double getTagessatz(int wp) {

@@ -5,6 +5,9 @@ import c10n.annotations.En;
 
 /**
  * Project related translations.
+ * <p/>
+ * Be sure to encode this file ISO-8859-1, else you will need to use unicode
+ * escape characters to prevent encoding issues.
  */
 public interface Project {
     @En("Project Manager")
@@ -30,4 +33,12 @@ public interface Project {
     @En("Start date")
     @De("Startdatum")
     String startDate();
+
+    @En("End date")
+    @De("Enddatum")
+    String endDate();
+
+    @De("Übersicht Projekt")
+    @En("Project Overview")
+    String projectOverviewWindowTitle();
 }

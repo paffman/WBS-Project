@@ -1,5 +1,9 @@
 package wpOverview.tabs;
 
+import calendar.Availability;
+import dbServices.CalendarService;
+import dbServices.WorkerService;
+import de.fhbingen.wbs.translation.LocalizedStrings;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -11,7 +15,6 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
-
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.axis.DateAxis;
 import org.jfree.chart.axis.DateTickUnit;
@@ -23,17 +26,12 @@ import org.jfree.data.gantt.Task;
 import org.jfree.data.gantt.TaskSeries;
 import org.jfree.data.gantt.TaskSeriesCollection;
 import org.jfree.ui.HorizontalAlignment;
-
-import calendar.Availability;
-import dbServices.CalendarService;
-import dbServices.WorkerService;
-
 import wpOverview.WPOverview;
 import wpWorker.Worker;
 
 /**
  * Studienprojekt:	PSYS WBS 2.0<br/>
- * 
+ *
  * Kunde:		Pentasys AG, Jens von Gersdorff<br/>
  * Projektmitglieder:<br/>
  *			Michael Anstatt,<br/>
@@ -41,9 +39,9 @@ import wpWorker.Worker;
  *			Jens Eckes,<br/>
  *			Sven Seckler,<br/>
  *			Lin Yang<br/>
- * 
+ *
  * WindowBuilder autogeneriert<br/>
- * 
+ *
  * @author WBS1.0 Team
  * @version 2.0
  */
@@ -57,7 +55,7 @@ import wpWorker.Worker;
  * Sven Seckler,<br/>
  * Lin Yang<br/>
  * Zeigt die Verfuegbarkeiten fuer Mitarbeiter an<br/>
- * 
+ *
  * @author Michael Anstatt
  * @version 2.0 - 2012-08-21
  */
@@ -70,8 +68,8 @@ public class AvailabilityGraph {
     public static final int MONTH = 2;
     public static final int YEAR = 3;
 
-    public static final Worker PROJECT_WORKER = new Worker(
-            "Projektverfügbarkeit");
+    public static final Worker PROJECT_WORKER = new Worker(LocalizedStrings
+            .getGeneralStrings().projectAvailability());
 
     private GregorianCalendar actualDay;
     private GregorianCalendar actualStart;
@@ -87,7 +85,7 @@ public class AvailabilityGraph {
 
     /**
      * Konstruktor
-     * 
+     *
      * @param gui
      *            GUI Klasse des AvailabilityGraph
      * @param over
@@ -150,7 +148,7 @@ public class AvailabilityGraph {
 
     /**
      * Setzt die Ansicht auf Tag, Woche, Monat oder Jahr
-     * 
+     *
      * @param newView
      *            DAY / MONTH / WEEK oder YEAR
      */
@@ -218,8 +216,10 @@ public class AvailabilityGraph {
         GregorianCalendar helper = (GregorianCalendar) actualEnd.clone();
         helper.add(Calendar.DATE, -1);
 
-        makeChart("KW "
-                + new SimpleDateFormat("ww yyyy").format(helper.getTime()));
+        makeChart(LocalizedStrings.getGeneralStrings()
+                .calendarWeekAbbreviation() +
+                " " + new SimpleDateFormat("ww yyyy").format(helper.getTime()
+        ));
     }
 
     /**
@@ -277,7 +277,7 @@ public class AvailabilityGraph {
 
     /**
      * Erzeugt einen Chart in der ANsicht mit bestimmtem Titel
-     * 
+     *
      * @param title
      */
     protected void makeChart(String title) {
@@ -335,7 +335,7 @@ public class AvailabilityGraph {
 
     /**
      * Erzeugt den Balken fuer die Projektverfuegbarkeit
-     * 
+     *
      * @param set
      *            Set von Project-Availabilities
      * @return den Task, anzeigefertig fuer JFreeChart
@@ -393,9 +393,12 @@ public class AvailabilityGraph {
         gui.pnlGraph.setPreferredSize(new Dimension((int) gui.pnlGraph
                 .getPreferredSize().getWidth(), 100 + 50 * workers.size() + 1));
 
-        final TaskSeries stdTasks = new TaskSeries("Verfügbarkeit");
-        final TaskSeries manualTasks = new TaskSeries("Verfügbar");
-        final TaskSeries notTasks = new TaskSeries("nicht Verfügbar");
+        final TaskSeries stdTasks = new TaskSeries(LocalizedStrings
+                .getGeneralStrings().availability());
+        final TaskSeries manualTasks = new TaskSeries(LocalizedStrings
+                .getGeneralStrings().available());
+        final TaskSeries notTasks = new TaskSeries(LocalizedStrings
+                .getGeneralStrings().notAvailable());
 
         TreeSet<Availability> projectAvailability =
                 CalendarService.getRealProjectAvailability(

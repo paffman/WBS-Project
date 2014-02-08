@@ -1,12 +1,12 @@
 package chooseDB;
 
+import de.fhbingen.wbs.translation.LocalizedStrings;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Toolkit;
-
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -19,9 +19,6 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-
-import c10n.C10N;
-import de.fhbingen.wbs.translation.DbChooser;
 
 /**
  * Studienprojekt: WBS<br/>
@@ -39,7 +36,7 @@ import de.fhbingen.wbs.translation.DbChooser;
  * Jens Eckes,<br/>
  * Sven Seckler,<br/>
  * Lin Yang<br/>
- * 
+ *
  * @author Samson von Graevenitz, Daniel Metzler, Andre Paffenholz, Lin Yang
  * @version 2.0 - 2012-08-22 Die verwendeten Icons stammen von:
  *          http://sublink.ca/icons/sweetieplus/ sowie:
@@ -65,10 +62,6 @@ public class DBChooserGUI extends JFrame {
      * Width of the window.
      */
     private static final int WINDOW_WIDTH = 400;
-    /**
-     * Translation interface that contains relevant values.
-     */
-    private final DbChooser labels;
     /**
      * Button to confirm db connection entries and start the wbs-tool.
      */
@@ -137,14 +130,13 @@ public class DBChooserGUI extends JFrame {
      * zugewiesen es wird das Windows Look and Feel verwendet die verschiedenen
      * Menüs, Buttons etc. werden initialisiert und zu dem GridBagLayout
      * hinzugefügt und angeordnet mittels createGbc
-     * 
+     *
      * @param dbChooser
      *            callin dbChooser, used to fill login data with data from last
      *            used db.
      */
     public DBChooserGUI(final DBChooser dbChooser) {
         super("Login");
-        labels = C10N.get(DbChooser.class);
         try {
             UIManager.setLookAndFeel("com.sun.java.swing."
                     + "plaf.windows.WindowsLookAndFeel");
@@ -158,17 +150,19 @@ public class DBChooserGUI extends JFrame {
 
         // menus
         mainMenuBar = new JMenuBar();
-        fileMenu = new JMenu(labels.file());
-        helpMenu = new JMenu(labels.help());
-        okMenuItem = new JMenuItem(labels.next());
+        fileMenu = new JMenu(LocalizedStrings.getDbChooser().file());
+        helpMenu = new JMenu(LocalizedStrings.getDbChooser().help());
+        okMenuItem = new JMenuItem(LocalizedStrings.getDbChooser().next());
         okMenuItem.setIcon(okIcon);
-        closeMenuItem = new JMenuItem(labels.cancel());
+        closeMenuItem = new JMenuItem(LocalizedStrings.getDbChooser().cancel());
         closeMenuItem.setIcon(closeIcon);
-        helpMenuItem = new JMenuItem(labels.help());
+        helpMenuItem = new JMenuItem(LocalizedStrings.getDbChooser().help());
         helpMenuItem.setIcon(helpIcon);
-        infoMenuItem = new JMenuItem(labels.info());
+        infoMenuItem = new JMenuItem(LocalizedStrings.getDbChooser().info());
         infoMenuItem.setIcon(infoIcon);
-        newDbMenuItem = new JMenuItem(labels.projectSetupAssistant());
+        newDbMenuItem =
+                new JMenuItem(LocalizedStrings.getDbChooser()
+                        .projectSetupAssistant());
 
         mainMenuBar.add(fileMenu);
         fileMenu.add(newDbMenuItem);
@@ -180,22 +174,32 @@ public class DBChooserGUI extends JFrame {
         helpMenu.addSeparator();
         helpMenu.add(infoMenuItem);
 
-        // labels and input elements
-        JLabel titleLabel = new JLabel(labels.database() + ":");
-        JLabel hostLabel = new JLabel(labels.serverAddress() + ":");
-        JLabel dbNameLabel = new JLabel(labels.databaseName() + ":");
-        JLabel dbPwLabel = new JLabel(labels.indexPassword() + ":");
-        JLabel titleUserLabel = new JLabel(labels.user() + ":");
-        JLabel userLabel = new JLabel(labels.login() + ":");
-        JLabel pwLabel = new JLabel(labels.password() + ":");
-        plCheckBox = new JCheckBox(labels.projectManager());
+        // LocalizedStrings.getDbChooser() and input elements
+        JLabel titleLabel =
+                new JLabel(LocalizedStrings.getDbChooser().database() + ":");
+        JLabel hostLabel =
+                new JLabel(LocalizedStrings.getDbChooser().serverAddress()
+                        + ":");
+        JLabel dbNameLabel =
+                new JLabel(LocalizedStrings.getDbChooser().databaseName() + ":");
+        JLabel dbPwLabel =
+                new JLabel(LocalizedStrings.getDbChooser().indexPassword()
+                        + ":");
+        JLabel titleUserLabel =
+                new JLabel(LocalizedStrings.getDbChooser().user() + ":");
+        JLabel userLabel =
+                new JLabel(LocalizedStrings.getDbChooser().login() + ":");
+        JLabel pwLabel =
+                new JLabel(LocalizedStrings.getDbChooser().password() + ":");
+        plCheckBox =
+                new JCheckBox(LocalizedStrings.getDbChooser().projectManager());
         hostField = new JTextField();
         dbNameField = new JTextField();
         userField = new JTextField();
         dbPwPasswordField = new JPasswordField();
         pwPasswordField = new JPasswordField();
-        closeButton = new JButton(labels.cancel());
-        okButton = new JButton(labels.ok());
+        closeButton = new JButton(LocalizedStrings.getDbChooser().cancel());
+        okButton = new JButton(LocalizedStrings.getDbChooser().ok());
 
         // load saved database into fields
         if (dbChooser.getLastDbHost() != null) {
@@ -260,7 +264,7 @@ public class DBChooserGUI extends JFrame {
      * void createGBC(args) wird am Anordnen der Komponenten auf dem JFrame
      * aufgerufen Methode createGBC zum Hinzufügen der einzelnen Komponenten
      * zum GridBagLayout.
-     * 
+     *
      * @param c
      *            Komponente die zum Layout hinzugefügt wird
      * @param x

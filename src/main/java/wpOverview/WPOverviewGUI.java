@@ -1,22 +1,39 @@
 package wpOverview;
 
+import dbServices.ConflictService;
+import de.fhbingen.wbs.translation.Button;
+import de.fhbingen.wbs.translation.General;
+import de.fhbingen.wbs.translation.LocalizedStrings;
+import de.fhbingen.wbs.translation.Wbs;
 import functions.WpManager;
 import globals.Controller;
 import globals.Workpackage;
-
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.GridLayout;
+import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
-
-import javax.swing.*;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.WindowConstants;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.EmptyBorder;
-
-import dbServices.ConflictService;
-
 import wpConflict.Conflict;
 import wpConflict.ConflictTable;
 import wpOverview.tabs.APCalendarPanel;
@@ -37,7 +54,7 @@ import wpOverview.tabs.WorkerPanel;
  * Jens Eckes,<br/>
  * Sven Seckler,<br/>
  * Lin Yang<br/>
- * 
+ *
  * @author Samson von Graevenitz, Daniel Metzler, Andre Paffenholz, Michael
  *         Anstatt, Marc-Eric Baumgärtner
  * @version 2.0 - <aktuelles Datum> GUI zum auswählen der Arbeitspakete des
@@ -90,6 +107,9 @@ public class WPOverviewGUI extends JFrame {
     public static ImageIcon childrenIn = new ImageIcon(Toolkit
             .getDefaultToolkit().getImage(
                     WPOverviewGUI.class.getResource("/_icons/up.png")));
+    private final Wbs wbsStrings;
+    private final General generalStrings;
+    private final Button buttonStrings;
     private ImageIcon conflictIcon;
 
     protected JTabbedPane tabs;
@@ -119,11 +139,15 @@ public class WPOverviewGUI extends JFrame {
      * Menüs, Buttons etc. werden initialisiert es wird ein TabbedPane
      * verwendet um die aktiven und inaktiven Arbeitspaket in verschieden Tabs
      * anzuzeigen und jedes zu TabbedPane wird das GridBagLayout hinzugefügt
-     * 
+     *
      * @param over
      */
     public WPOverviewGUI(WPOverview over, JFrame parent) {
-        super("WP-Overview");
+        super();
+
+        wbsStrings = LocalizedStrings.getWbs();
+        generalStrings = LocalizedStrings.getGeneralStrings();
+        buttonStrings = LocalizedStrings.getButton();
 
         initialize();
 
@@ -191,43 +215,46 @@ public class WPOverviewGUI extends JFrame {
                     .setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
             SwingUtilities.updateComponentTreeUI(this);
         } catch (Exception e) {
-            System.err.println("Could not load LookAndFeel");
+            System.err.println(LocalizedStrings.getErrorMessages().couldNotLoadLookAndFeel());
         }
     }
 
     /**
      * Erstellt die MenuBar (Datei, Hilfe)
-     * 
+     *
      * @return Menubar
      */
     private JMenuBar createMenu() {
         JMenu mnDatei, mnHilfe;
         JMenuBar mnbMenu;
         mnbMenu = new JMenuBar();
-        mnDatei = new JMenu("Datei");
-        mnHilfe = new JMenu("Hilfe");
-        miAktualisieren = new JMenuItem("Aktualisieren");
+        mnDatei = new JMenu(buttonStrings.file());
+        mnHilfe = new JMenu(buttonStrings.help());
+        miAktualisieren = new JMenuItem(buttonStrings.refresh());
         miAktualisieren.setIcon(akt);
-        miCalcDuration = new JMenuItem("Dauer berechnen");
+        miCalcDuration = new JMenuItem(buttonStrings.calculate(generalStrings
+                .duration()));
         miCalcDuration.setIcon(aktoap);
-        miChangePW = new JMenuItem("Passwort ändern");
+        miChangePW = new JMenuItem(buttonStrings.change(LocalizedStrings
+                .getLogin().password()));
         miChangePW.setIcon(pw);
-        miAbmelden = new JMenuItem("Abmelden");
+        miAbmelden = new JMenuItem(buttonStrings.logout());
         miAbmelden.setIcon(abmeld);
-        miBeenden = new JMenuItem("Schließen");
+        miBeenden = new JMenuItem(buttonStrings.close());
         miBeenden.setIcon(schlies);
-        miHilfe = new JMenuItem("Hilfe");
+        miHilfe = new JMenuItem(buttonStrings.help());
         miHilfe.setIcon(hilfe);
-        miInfo = new JMenuItem("Info");
+        miInfo = new JMenuItem(buttonStrings.info());
         miInfo.setIcon(info);
 
         // Menüeinträge für Projektleiter
         if (WPOverview.getUser().getProjLeiter()) {
-            miAP = new JMenuItem("neues Arbeitspaket");
+            miAP = new JMenuItem(buttonStrings.enter(wbsStrings.workPackage()));
             miAP.setIcon(newAp);
-            miDelAp = new JMenuItem("Arbeitspaket löschen");
+            miDelAp = new JMenuItem(buttonStrings.delete(wbsStrings.workPackage()));
             miDelAp.setIcon(newAp);
-            miImportInitial = new JMenuItem("Importierte DB berechnen");
+            miImportInitial = new JMenuItem(buttonStrings.calculate
+                    (LocalizedStrings.getDatabase().importedDatabase()));
             miImportInitial.setIcon(dbcalc);
         }
 
@@ -252,7 +279,7 @@ public class WPOverviewGUI extends JFrame {
 
     /**
      * Erstellt das Menu mit den Tabs und liefert es zurueck
-     * 
+     *
      * @param treeAlle
      *            Tree mit allen APs
      * @param treeOffen
@@ -278,17 +305,23 @@ public class WPOverviewGUI extends JFrame {
 
         final JTabbedPane tabs = new JTabbedPane();
         tabs.setBorder(new EmptyBorder(3, 3, 3, 3));
-        tabs.addTab("alle Arbeitspakete", createScrollPane(treeAlle));
-        tabs.addTab("offene Arbeitspakete", createScrollPane(treeOffen));
-        tabs.addTab("fertige Arbeitspakete", createScrollPane(treeFertig));
+        tabs.addTab(wbsStrings.workPackages(generalStrings.all()),
+                createScrollPane(treeAlle));
+        tabs.addTab(wbsStrings.workPackages(generalStrings.open()),
+                createScrollPane(treeOffen));
+        tabs.addTab(wbsStrings.workPackages(generalStrings.finished()),
+                createScrollPane(treeFertig));
         if (WPOverview.getUser().getProjLeiter()) {
-            tabs.addTab("Mitarbeiter", createScrollPane(workers));
-            tabs.addTab("Baseline", baseline);
+            tabs.addTab(LocalizedStrings.getLogin().user(),
+                    createScrollPane(workers));
+            tabs.addTab(wbsStrings.baseline(), baseline);
         }
-        tabs.addTab("Verfügbarkeiten", createScrollPane(availability));
-        tabs.addTab("Timeline", createScrollPane(timeline));
+        tabs.addTab(generalStrings.availabilities(),
+                createScrollPane(availability));
+        tabs.addTab(wbsStrings.timeLine(), createScrollPane(timeline));
         if (WPOverview.getUser().getProjLeiter()) {
-            tabs.addTab("Abhängigkeiten", createScrollPane(follower));
+            tabs.addTab(generalStrings.dependencies(),
+                    createScrollPane(follower));
         }
         if (ConflictService.getAllConflicts().size() == 0) {
             conflictIcon =
@@ -304,7 +337,7 @@ public class WPOverviewGUI extends JFrame {
         if (WPOverview.getUser().getProjLeiter()) {
 
             final JPanel spConflicts = createScrollPane(conflicts);
-            final String conflictText = "Konflikte";
+            final String conflictText = generalStrings.conflicts();
             final WPOverviewGUI wpOverviewGUI = this;
             tabs.addTab(conflictText, conflictIcon, spConflicts);
             tabs.addMouseListener(new MouseAdapter() {
@@ -338,7 +371,7 @@ public class WPOverviewGUI extends JFrame {
 
     /**
      * Erzeugt die Fußzeile des Fensters
-     * 
+     *
      * @param legende
      *            Legende die die Farben erklaert
      * @param lblStatusbar
@@ -347,7 +380,7 @@ public class WPOverviewGUI extends JFrame {
      */
     private JComponent createFooter(Legende legende, JLabel lblStatusbar) {
         JPanel south = new JPanel();
-        btnSchliessen = new JButton("Schließen");
+        btnSchliessen = new JButton(buttonStrings.close());
         south.setLayout(new GridLayout(3, 1));
         south.add(legende);
         south.add(btnSchliessen);
@@ -358,7 +391,7 @@ public class WPOverviewGUI extends JFrame {
 
     /**
      * Erzeugt ein Panel mit Scrollbalken
-     * 
+     *
      * @param component
      *            Componente die scrollbar sein soll
      * @return Liefert ein Panel mit einen Scrollbalken zurueck
@@ -388,7 +421,7 @@ public class WPOverviewGUI extends JFrame {
 
     /**
      * Deaktiviert/Aktiviert die Legende
-     * 
+     *
      * @param show
      *            Boolean ob an oder abgeschaltet werden soll
      */
@@ -398,7 +431,7 @@ public class WPOverviewGUI extends JFrame {
 
     /**
      * ändert den Text in der Statusbar
-     * 
+     *
      * @param str
      *            String zur Anzeige in der Statusbar
      */
@@ -446,7 +479,7 @@ public class WPOverviewGUI extends JFrame {
     /**
      * Fuegt einen Conflict zur Conflicttable und setzt das Icon des
      * Konflikt-Tabs auf Warning
-     * 
+     *
      * @param conflict
      *            Konflikt der geworfen werden soll
      */

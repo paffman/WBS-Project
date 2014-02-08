@@ -1,5 +1,9 @@
 package wpOverview;
 
+import de.fhbingen.wbs.translation.Button;
+import de.fhbingen.wbs.translation.General;
+import de.fhbingen.wbs.translation.LocalizedStrings;
+import de.fhbingen.wbs.translation.Wbs;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -16,38 +20,44 @@ import wpWorker.WBSUser;
 
 /**
  * Studienprojekt:	WBS
- * 
+ *
  * Kunde:				Pentasys AG, Jens von Gersdorff
- * Projektmitglieder:	Andre Paffenholz, 
- * 						Peter Lange, 
+ * Projektmitglieder:	Andre Paffenholz,
+ * 						Peter Lange,
  * 						Daniel Metzler,
  * 						Samson von Graevenitz
- * 
+ *
  * Erstellt eine freibewegbare ToolLeiste,
  * enthält Symbole zur schnelleren/einfacheren
  * handhabe des Programmes
- * 
+ *
  * @author Samson von Graevenitz
  * @version 23.01.2011
  */
 
 public class ToolBar extends JToolBar {
 
-	JButton aktualisiereTree, calcDuration, neuesAP, delAP, neuerMa, cpiGraph;
+    JButton aktualisiereTree, calcDuration, neuesAP, delAP, neuerMa, cpiGraph;
 
 	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Fügt der Toolbar Items hinzug
-	 * 
+	 *
 	 * @param isProjektleiter - wird verwendet, um zu prüfen, ob Felder ausgegraut werden müssen weil keine Berechtigung
 	 */
 	public ToolBar(final WPOverview over, final WPOverviewGUI gui) {
 		super();
 
+        Wbs wbsStrings = LocalizedStrings.getWbs();
+        Button buttonStrings = LocalizedStrings.getButton();
+        General generalStrings = LocalizedStrings.getGeneralStrings();
+
 		aktualisiereTree = new JButton();
-		aktualisiereTree.setIcon(new ImageIcon(getClass().getResource("/_icons/aktualisieren.png")));
-		aktualisiereTree.setToolTipText("Ansichten aktualisieren");
+		aktualisiereTree.setIcon(new ImageIcon(getClass().getResource
+                ("/_icons/aktualisieren.png"))); //NON-NLS
+		aktualisiereTree.setToolTipText(buttonStrings.refresh(generalStrings
+                .views()));
 		aktualisiereTree.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				over.reload();
@@ -55,30 +65,33 @@ public class ToolBar extends JToolBar {
 		});
 
 		calcDuration = new JButton();
-		calcDuration.setIcon(new ImageIcon(getClass().getResource("/_icons/OAPaktualisieren_gross.png")));
-		calcDuration.setToolTipText("Dauer berechnen");
+		calcDuration.setIcon(new ImageIcon(getClass().getResource
+                ("/_icons/OAPaktualisieren_gross.png")));
+		calcDuration.setToolTipText(buttonStrings.calculate(generalStrings
+                .duration()));
 		calcDuration.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				new Thread() {
-					public void run() {
-						gui.setEnabled(false);
-						Loader loader = new Loader(gui);
-						new CalcOAPBaseline(true, over);
-						loader.dispose();
-						Loader.reset();
-						gui.setEnabled(true);
-						gui.requestFocus();
-					}
-				}.start();
-				
-				over.reload();
-				
-			}
-		});
+            public void actionPerformed(ActionEvent e) {
+                new Thread() {
+                    public void run() {
+                        gui.setEnabled(false);
+                        Loader loader = new Loader(gui);
+                        new CalcOAPBaseline(true, over);
+                        loader.dispose();
+                        Loader.reset();
+                        gui.setEnabled(true);
+                        gui.requestFocus();
+                    }
+                }.start();
+
+                over.reload();
+
+            }
+        });
 
 		neuesAP = new JButton();
 		neuesAP.setIcon(new ImageIcon(getClass().getResource("/_icons/newAP_gross.png")));
-		neuesAP.setToolTipText("Neues Arbeitspaket anlegen");
+		neuesAP.setToolTipText(buttonStrings.addNewNeutral(wbsStrings
+                .workPackage()));
 		neuesAP.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				over.readAP(true);
@@ -87,7 +100,7 @@ public class ToolBar extends JToolBar {
 
 		delAP = new JButton();
 		delAP.setIcon(new ImageIcon(getClass().getResource("/_icons/delAP_gross.png")));
-		delAP.setToolTipText("Arbeitspaket löschen");
+		delAP.setToolTipText(buttonStrings.delete(wbsStrings.workPackage()));
 		delAP.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				WpManager.removeAP(over.getSelectedWorkpackage());
@@ -97,7 +110,8 @@ public class ToolBar extends JToolBar {
 
 		neuerMa = new JButton();
 		neuerMa.setIcon(new ImageIcon(getClass().getResource("/_icons/newMa_gross.png")));
-		neuerMa.setToolTipText("Mitarbeiter Hinzufügen");
+		neuerMa.setToolTipText(buttonStrings.addNewNeutral(LocalizedStrings
+                .getLogin().user()));
 		neuerMa.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				new WBSUser(over);
@@ -106,7 +120,7 @@ public class ToolBar extends JToolBar {
 
 		cpiGraph = new JButton();
 		cpiGraph.setIcon(new ImageIcon(getClass().getResource("/_icons/cpiGraph_gross.png")));
-		cpiGraph.setToolTipText("CPI-Graph");
+		cpiGraph.setToolTipText(wbsStrings.cpiGraph());
 		cpiGraph.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				new ChartCPIView(gui);
@@ -129,7 +143,7 @@ public class ToolBar extends JToolBar {
 
 	/**
 	 * Aktiviert alle Icons in der Toolbar entsprechend den angegebenen Parametern
-	 * 
+	 *
 	 * @param newAP Boolean für neues AP
 	 * @param deleteAP Boolean für AP-löschen
 	 * @param newMa Boolean für neuen Mitarbeiter

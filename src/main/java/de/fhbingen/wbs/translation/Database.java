@@ -3,8 +3,6 @@ package de.fhbingen.wbs.translation;
 import c10n.annotations.De;
 import c10n.annotations.En;
 
-import java.util.StringTokenizer;
-
 /**
  * Interface for database related translations.
  */
@@ -28,12 +26,15 @@ public interface Database {
     @De("Datenbankname (wird angelegt)")
     @En("Database name (will be created)")
     String databaseName();
-    
+
+    @De("Importierte DB")
+    String importedDatabase();
+
     @En("Index-db password")
     @De("Index-DB Passwort")
     String indexPassword();
-    
+
     @En("User")
-    @De("Benutzer")    
+    @De("Benutzer")
     String user();
 }

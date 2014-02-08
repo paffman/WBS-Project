@@ -17,6 +17,7 @@ package wpWorker;
 
 import c10n.C10N;
 import de.fhbingen.wbs.translation.Button;
+import de.fhbingen.wbs.translation.LocalizedStrings;
 import de.fhbingen.wbs.translation.Login;
 import de.fhbingen.wbs.translation.Messages;
 import globals.FilterJTextField;
@@ -50,9 +51,9 @@ public class ChangePWGUI extends JFrame{//TODO extend JDialog
 	 */
 	public ChangePWGUI(){
 		super();
-        login = C10N.get(Login.class);
-        messages = C10N.get(Messages.class);
-        buttons = C10N.get(Button.class);
+        login = LocalizedStrings.getLogin();
+        messages = LocalizedStrings.getMessages();
+        buttons = LocalizedStrings.getButton();
         setTitle(login.changePassword());
 		setResizable(false);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);

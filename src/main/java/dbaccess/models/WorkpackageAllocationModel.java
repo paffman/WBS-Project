@@ -30,7 +30,7 @@ public interface WorkpackageAllocationModel {
 
     /**
      * A method to add a new workpackage allocation.
-     * 
+     *
      * @param wpAllocation
      *            The allocation which is added.
      * @return success of the action.
@@ -39,14 +39,14 @@ public interface WorkpackageAllocationModel {
 
     /**
      * A method to get all workpackage allocations.
-     * 
+     *
      * @return Returns a list with all workpackage allocations of the project.
      */
     List<WorkpackageAllocation> getWorkpackageAllocation();
 
     /**
      * A method to get all workpackage allocations from a specific workpackage.
-     * 
+     *
      * @param fidWP
      *            The id from the specific workpackage.
      * @return Returns a list with the work package allocations from the
@@ -56,7 +56,7 @@ public interface WorkpackageAllocationModel {
 
     /**
      * A method to get all workpackages for a single employee.
-     * 
+     *
      * @param fidEmp
      *            Id of the employee.
      * @return Returns a List of all Workpackages allocated to the employee.
@@ -65,8 +65,8 @@ public interface WorkpackageAllocationModel {
 
     /**
      * A method to get all workpackages for a single employee within a certain
-     * span of time.
-     * 
+     * span of pointOfTime.
+     *
      * @param fidEmp
      *            Id of the employee.
      * @param from
@@ -81,7 +81,7 @@ public interface WorkpackageAllocationModel {
 
     /**
      * A method to delete a workpackage allocation.
-     * 
+     *
      * @param employeeID
      *            The id from the employee.
      * @param workpackageID
