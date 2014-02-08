@@ -1,3 +1,17 @@
+/*
+ * The WBS-Tool is a project management tool combining the Work Breakdown
+ * Structure and Earned Value Analysis Copyright (C) 2013 FH-Bingen This
+ * program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your
+ * option) any later version. This program is distributed in the hope that
+ * it will be useful, but WITHOUT ANY WARRANTY;; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details. You should have received a
+ * copy of the GNU General Public License along with this program. If not,
+ * see <http://www.gnu.org/licenses/>.
+ */
+
 package wpShow;
 
 import de.fhbingen.wbs.translation.Button;
@@ -53,88 +67,181 @@ import java.awt.GridLayout;
 import java.awt.Font;
 
 /**
- * Studienprojekt: WBS<br/>
- * Kunde: Pentasys AG, Jens von Gersdorff<br/>
- * Projektmitglieder:<br/>
- * Andre Paffenholz, <br/>
- * Peter Lange, <br/>
- * Daniel Metzler,<br/>
- * Samson von Graevenitz<br/>
- * Studienprojekt: PSYS WBS 2.0<br/>
- * Kunde: Pentasys AG, Jens von Gersdorff<br/>
- * Projektmitglieder: <br/>
- * Michael Anstatt,<br/>
- * Marc-Eric Baumgärtner,<br/>
- * Jens Eckes,<br/>
- * Sven Seckler,<br/>
- * Lin Yang<br/>
- * Eingabemaske fuer Arbeitspakete <br/>
- *
- * @author Samson von Graevenitz, Peter Lange, Michael Anstatt, Marc-Eric
- *         Baumgärtner
- * @version 2.0 - 2012-0824
+ * The GUI to insert work packages.
  */
 public class WPShowGUI extends JFrame {
 
+    /** Constant serialized ID used for compatibility. */
     private static final long serialVersionUID = -5497472870591199416L;
+
+    /** The table to show the work effort. */
     private JTable tblAufwand;
+
+    /** The text field for the work package number. */
     private JTextField txfNr;
+
+    /** The text field for the work package name. */
     private JTextField txfName;
+
+    /** The text field for the sv. */
     private JTextField txfSV;
+
+    /** The text field for the cpi. */
     private JTextField txfCPI;
+
+    /** The text field for the actual cost. */
     private JTextField txfACCost;
+
+    /** The text field for the bac costs. */
     private JTextField txfBACCost;
+
+    /** The text field for the ev. */
     private JTextField txfEV;
+
+    /** The text field for the eac. */
     private JTextField txfEAC;
+
+    /** The text field for the etc cost. */
     private JTextField txfETCCost;
+
+    /** The text field for the start calc. */
     private JTextField txfStartCalc;
+
+    /** The text field for the start hope. */
     private JTextField txfStartHope;
+
+    /** The text field for the end calc. */
     private JTextField txfEndCalc;
+
+    /** The text field for the end hope. */
     private JTextField txfEndHope;
+
+    /** The text field for the worker. */
     private JTextField txfWorker;
+
+    /** The text field for the pv. */
     private JTextField txfPV;
+
+    /** The text field for the spi. */
     private JTextField txfSPI;
+
+    /** The button to add an ancestor. */
     private JButton btnAddAncestor;
+
+    /** The button to edit an ancestor. */
     private JButton btnEditAncestor;
+
+    /** The button to add an follower. */
     private JButton btnAddFollower;
+
+    /** The button to edit an follower. */
     private JButton btnEditFollower;
+
+    /** The button to add an worker. */
     private JButton btnAddWorker;
+
+    /** The button to remove an worker. */
     private JButton btnRemoveWorker;
+
+    /** The button to save the changes. */
     private JButton btnSave;
+
+    /** The button to cancel the changes. */
     private JButton btnCancel;
+
+    /** The combo box which contains the workers to add them. */
     private JComboBox<Worker> cobAddWorker;
+
+    /** The combo box which contains the workers to remove them. */
     private JComboBox<Worker> cobRemoveWorker;
+
+    /** The text area to describe the work package. */
     private JTextArea txfDesc;
+
+    /** The check box to select the work package as upper work package. */
     private JCheckBox chbOAP;
+
+    /** The check box to select the work package as inactive. */
     private JCheckBox chbInaktiv;
+
+    /** The button to add a work effort. */
     private JButton btnAddAufwand;
+
+    /** The combo box which contains the workers which are leader. */
     private JComboBox<Worker> cobLeiter;
+
+    /** The text field for a daily rate. */
     private JTextField txfTagessatz;
+
+    /** The progress bar to show the progress. */
     private JProgressBar barComplete;
+
+    /** The scroll pane to scroll the text field. */
     private JScrollPane scrollTable;
+
+    /** The label to describe the daily rate. */
     private JLabel lblTagessatz;
+
+    /** The button OK. */
     private JButton btnOk;
+
+    /** The functionality for this GUI. */
     private WPShow function;
+
+    /** The label to describe the pv and spi. */
     private JLabel lblPvSpi;
+
+    /** The label to describe the predecessor. */
     private JLabel lblVorgnger;
+
+    /** The label to describe the successor. */
     private JLabel lblNachfolger;
+
+    /** A panel for the GUI. */
     private JPanel panel_9;
+
+    /** The button for the cpi. */
     private JButton btnCPI;
+
+    /** The button for the spi. */
     private JButton btnSPI;
+
+    /** A panel for the GUI. */
     private JPanel panel_10;
+
+    /** The text field for the bac. */
     private JTextField txfBAC;
+
+    /** The text field for the etc. */
     private JTextField txfETC;
+
+    /** The text field for the ac. */
     private JTextField txfAC;
+
+    /** A panel for the GUI. */
     private JPanel panel_11;
+
+    /** The text field for the date. */
     private JTextField txfDate;
+
+    /** The button for all planned values. */
     private JButton btnAllPV;
 
     private final General generalStrings;
     private final Wbs wbsStrings;
     private final Button buttonStrings;
 
-
-    public WPShowGUI(String title, WPShow function, JFrame parent) {
+    /**
+     * Constructor.
+     * @param title
+     *            The title of the GUI.
+     * @param function
+     *            The functionality for this GUI.
+     * @param parent
+     *            The parent frame.
+     */
+    public WPShowGUI(final String title, final WPShow function,
+        final JFrame parent) {
         super(title);
         this.function = function;
 
@@ -150,16 +257,14 @@ public class WPShowGUI extends JFrame {
         leftPanel.setBorder(new EmptyBorder(5, 5, 5, 3));
         splitPane.setLeftComponent(leftPanel);
         GridBagLayout gbl_leftPanel = new GridBagLayout();
-        gbl_leftPanel.columnWidths = new int[] { 0, 0, 0 };
-        gbl_leftPanel.rowHeights =
-                new int[] { 0, 0, 0, 40, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                        0, 0, 0, 0, 0, 0, 0, 0, 0 };
-        gbl_leftPanel.columnWeights =
-                new double[] { 1.0, 1.0, Double.MIN_VALUE };
-        gbl_leftPanel.rowWeights =
-                new double[] { 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                        0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                        0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
+        gbl_leftPanel.columnWidths = new int[] {0, 0, 0 };
+        gbl_leftPanel.rowHeights = new int[] {0, 0, 0, 40, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+        gbl_leftPanel.columnWeights = new double[] {1.0, 1.0,
+            Double.MIN_VALUE };
+        gbl_leftPanel.rowWeights = new double[] {0.0, 0.0, 0.0, 1.0, 0.0,
+            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
         leftPanel.setLayout(gbl_leftPanel);
 
         JLabel lblNr = new JLabel(wbsStrings.workPackageId());
@@ -179,7 +284,8 @@ public class WPShowGUI extends JFrame {
         leftPanel.add(txfNr, gbc_txfNr);
         txfNr.setColumns(10);
 
-        JLabel lblName = new JLabel(wbsStrings.workPackage()); //TODO OK? war: name
+        JLabel lblName = new JLabel(wbsStrings.workPackage()); // TODO OK?
+                                                               // war: name
         GridBagConstraints gbc_lblName = new GridBagConstraints();
         gbc_lblName.anchor = GridBagConstraints.WEST;
         gbc_lblName.insets = new Insets(0, 0, 5, 5);
@@ -289,8 +395,8 @@ public class WPShowGUI extends JFrame {
         btnEditFollower = new JButton(buttonStrings.manage());
         panel_3.add(btnEditFollower);
 
-        JLabel lblVerantwortlicher = new JLabel(generalStrings
-                .responsiblePerson());
+        JLabel lblVerantwortlicher = new JLabel(
+            generalStrings.responsiblePerson());
         GridBagConstraints gbc_lblVerantwortlicher = new GridBagConstraints();
         gbc_lblVerantwortlicher.anchor = GridBagConstraints.WEST;
         gbc_lblVerantwortlicher.insets = new Insets(0, 0, 5, 5);
@@ -306,8 +412,8 @@ public class WPShowGUI extends JFrame {
         gbc_cobLeiter.gridy = 6;
         leftPanel.add(cobLeiter, gbc_cobLeiter);
 
-        JLabel lblMitarbeiter = new JLabel(LocalizedStrings.getLogin().user()
-        ); //TODO ok? war Mitarbeiter
+        JLabel lblMitarbeiter = new JLabel(LocalizedStrings.getLogin()
+            .user()); // TODO ok? war Mitarbeiter
         GridBagConstraints gbc_lblMitarbeiter = new GridBagConstraints();
         gbc_lblMitarbeiter.anchor = GridBagConstraints.WEST;
         gbc_lblMitarbeiter.insets = new Insets(0, 0, 5, 5);
@@ -334,10 +440,11 @@ public class WPShowGUI extends JFrame {
         gbc_panel_4.gridy = 8;
         leftPanel.add(panel_4, gbc_panel_4);
         GridBagLayout gbl_panel_4 = new GridBagLayout();
-        gbl_panel_4.columnWidths = new int[] { 0, 0, 0 };
-        gbl_panel_4.rowHeights = new int[] { 23, 23, 0 };
-        gbl_panel_4.columnWeights = new double[] { 1.0, 0.0, Double.MIN_VALUE };
-        gbl_panel_4.rowWeights = new double[] { 0.0, 0.0, Double.MIN_VALUE };
+        gbl_panel_4.columnWidths = new int[] {0, 0, 0 };
+        gbl_panel_4.rowHeights = new int[] {23, 23, 0 };
+        gbl_panel_4.columnWeights = new double[] {1.0, 0.0,
+            Double.MIN_VALUE };
+        gbl_panel_4.rowWeights = new double[] {0.0, 0.0, Double.MIN_VALUE };
         panel_4.setLayout(gbl_panel_4);
 
         btnAddWorker = new JButton("+");
@@ -487,7 +594,7 @@ public class WPShowGUI extends JFrame {
         panel_9.add(btnSPI);
 
         JLabel lblBac = new JLabel(wbsStrings.bac() + " / "
-                + wbsStrings.etc() + " / " + wbsStrings.ac());
+            + wbsStrings.etc() + " / " + wbsStrings.ac());
         lblBac.setToolTipText(wbsStrings.inDays());
         GridBagConstraints gbc_lblBac = new GridBagConstraints();
         gbc_lblBac.anchor = GridBagConstraints.WEST;
@@ -549,7 +656,8 @@ public class WPShowGUI extends JFrame {
         panel_6.add(txfPV);
         txfPV.setColumns(10);
 
-        JLabel lblBacKosten = new JLabel(generalStrings.costs(wbsStrings.bac()));
+        JLabel lblBacKosten = new JLabel(generalStrings.costs(wbsStrings
+            .bac()));
         GridBagConstraints gbc_lblBacKosten = new GridBagConstraints();
         gbc_lblBacKosten.anchor = GridBagConstraints.WEST;
         gbc_lblBacKosten.insets = new Insets(0, 0, 5, 5);
@@ -568,7 +676,8 @@ public class WPShowGUI extends JFrame {
         leftPanel.add(txfBACCost, gbc_txfBACCost);
         txfBACCost.setColumns(10);
 
-        JLabel lblAcKosten = new JLabel(generalStrings.costs(wbsStrings.ac()));
+        JLabel lblAcKosten = new JLabel(generalStrings.costs(wbsStrings
+            .ac()));
         GridBagConstraints gbc_lblAcKosten = new GridBagConstraints();
         gbc_lblAcKosten.anchor = GridBagConstraints.WEST;
         gbc_lblAcKosten.insets = new Insets(0, 0, 5, 5);
@@ -625,8 +734,8 @@ public class WPShowGUI extends JFrame {
         leftPanel.add(txfEAC, gbc_txfEAC);
         txfEAC.setColumns(10);
 
-        JLabel lblEtcKosten = new JLabel(generalStrings.costs(wbsStrings.etc
-                ()));
+        JLabel lblEtcKosten = new JLabel(generalStrings.costs(wbsStrings
+            .etc()));
         GridBagConstraints gbc_lblEtcKosten = new GridBagConstraints();
         gbc_lblEtcKosten.anchor = GridBagConstraints.WEST;
         gbc_lblEtcKosten.insets = new Insets(0, 0, 5, 5);
@@ -664,8 +773,8 @@ public class WPShowGUI extends JFrame {
         leftPanel.add(txfTagessatz, gbc_txfTagessatz);
         txfTagessatz.setColumns(10);
 
-        lblPvSpi = new JLabel(wbsStrings.pv() + " / " + wbsStrings.spi() +
-                generalStrings.date());
+        lblPvSpi = new JLabel(wbsStrings.pv() + " / " + wbsStrings.spi()
+            + generalStrings.date());
         GridBagConstraints gbc_lblPvSpi = new GridBagConstraints();
         gbc_lblPvSpi.insets = new Insets(0, 0, 5, 5);
         gbc_lblPvSpi.anchor = GridBagConstraints.WEST;
@@ -686,14 +795,17 @@ public class WPShowGUI extends JFrame {
         txfDate.setEditable(false);
         txfDate.setEnabled(false);
         panel_11.add(txfDate);
-        txfDate.setText(Controller.DATE_DAY.format(ValuesService.getNextFriday(
-                new Date(System.currentTimeMillis())).getTime()));
+        txfDate
+            .setText(Controller.DATE_DAY.format(ValuesService
+                .getNextFriday(new Date(System.currentTimeMillis()))
+                .getTime()));
 
         btnAllPV = new JButton(generalStrings.history());
         btnAllPV.addActionListener(function.getBtnAllPVListener());
         panel_11.add(btnAllPV);
 
-        btnAddAufwand = new JButton(wbsStrings.enter(wbsStrings.workEffort()));
+        btnAddAufwand = new JButton(wbsStrings.enter(wbsStrings
+            .workEffort()));
         GridBagConstraints gbc_btnAddAufwand = new GridBagConstraints();
         gbc_btnAddAufwand.fill = GridBagConstraints.HORIZONTAL;
         gbc_btnAddAufwand.insets = new Insets(0, 0, 5, 0);
@@ -710,11 +822,11 @@ public class WPShowGUI extends JFrame {
         gbc_panel_8.gridy = 24;
         leftPanel.add(panel_8, gbc_panel_8);
         GridBagLayout gbl_panel_8 = new GridBagLayout();
-        gbl_panel_8.columnWidths = new int[] { 0, 0, 0, 0 };
-        gbl_panel_8.rowHeights = new int[] { 0, 0 };
-        gbl_panel_8.columnWeights =
-                new double[] { 1.0, 1.0, 1.0, Double.MIN_VALUE };
-        gbl_panel_8.rowWeights = new double[] { 0.0, Double.MIN_VALUE };
+        gbl_panel_8.columnWidths = new int[] {0, 0, 0, 0 };
+        gbl_panel_8.rowHeights = new int[] {0, 0 };
+        gbl_panel_8.columnWeights = new double[] {1.0, 1.0, 1.0,
+            Double.MIN_VALUE };
+        gbl_panel_8.rowWeights = new double[] {0.0, Double.MIN_VALUE };
         panel_8.setLayout(gbl_panel_8);
 
         btnOk = new JButton(buttonStrings.ok());
@@ -751,23 +863,21 @@ public class WPShowGUI extends JFrame {
 
         tblAufwand = new JTable();
         tblAufwand.setRowSelectionAllowed(false);
-        tblAufwand.setModel(new DefaultTableModel(new Object[][] { { "", "",
-                "", null }, }, new String[] {
-                LocalizedStrings.getLogin().user(), //TODO ok? war: Name
-                wbsStrings.workEffort(),
-                generalStrings.date(),
-                generalStrings.description() }) {
+        tblAufwand.setModel(new DefaultTableModel(new Object[][] {{"", "",
+            "", null }, }, new String[] {
+            LocalizedStrings.getLogin().user(), // TODO ok? war: Name
+            wbsStrings.workEffort(), generalStrings.date(),
+            generalStrings.description() }) {
 
             private static final long serialVersionUID = 5903248957368034227L;
             @SuppressWarnings("rawtypes")
-            // autogenerierter Code von Eclipse
-            Class[] columnTypes = new Class[] { String.class, String.class,
-                    String.class, String.class };
+            // autogenerated code
+            Class[] columnTypes = new Class[] {String.class, String.class,
+                String.class, String.class };
 
-            @SuppressWarnings({ "unchecked", "rawtypes" })
-            // autogenerierter Code von Eclipse
-                    public
-                    Class getColumnClass(int columnIndex) {
+            @SuppressWarnings({"unchecked", "rawtypes" })
+            // autogenerated code
+            public Class getColumnClass(int columnIndex) {
                 return columnTypes[columnIndex];
             }
         });
@@ -787,79 +897,154 @@ public class WPShowGUI extends JFrame {
         addButtonAction();
     }
 
-    protected String getNr() {
+    /**
+     * Returns the number of the work package.
+     * @return The number of the work package.
+     */
+    protected final String getNr() {
         return txfNr.getText();
     }
 
-    protected String getWpName() {
+    /**
+     * Returns the work package name.
+     * @return The name of the work package.
+     */
+    protected final String getWpName() {
         return txfName.getText();
     }
 
-    protected boolean getIsOAP() {
+    /**
+     * Returns if the work package is a upper work package or not.
+     * @return True: If the work package is a upper work package. False:
+     *         Else.
+     */
+    protected final boolean getIsOAP() {
         return chbOAP.isSelected();
     }
 
-    protected boolean getIsInaktiv() {
+    /**
+     * Returns if the work package is inactive or active.
+     * @return True: If the work package is inactive. False: Else.
+     */
+    protected final boolean getIsInaktiv() {
         return chbInaktiv.isSelected();
     }
 
-    protected Double getBAC() throws ParseException {
+    /**
+     * Returns the value of the bac.
+     * @throws ParseException
+     *             Throws a ParseException.
+     * @return The value of the bac.
+     */
+    protected final Double getBAC() throws ParseException {
         if (txfBAC.getText().equals("")) {
             return null;
         }
         return Double.parseDouble(txfBAC.getText());
     }
 
-    protected double getETC() throws ParseException {
+    /**
+     * Returns the value of the etc.
+     * @throws ParseException
+     *             Throws a ParseException.
+     * @return The value of the etc.
+     */
+    protected final double getETC() throws ParseException {
         return Double.parseDouble(txfETC.getText());
     }
 
-    protected Worker getLeiter() {
+    /**
+     * Returns the worker which is leader of the work package.
+     * @return The leader of the work package.
+     */
+    protected final Worker getLeiter() {
         return (Worker) cobLeiter.getSelectedItem();
     }
 
-    protected void setWorkers(List<String> workers) {
+    /**
+     * Sets the workers to the work package.
+     * @param workers
+     *            A list with the workers.
+     */
+    protected void setWorkers(final List<String> workers) {
         String responsableWorkers = "";
         for (String actualWorker : workers) {
             responsableWorkers += actualWorker + ", ";
         }
         if (responsableWorkers.length() != 0) {
-            responsableWorkers =
-                    responsableWorkers.substring(0,
-                            responsableWorkers.length() - 2);
+            responsableWorkers = responsableWorkers.substring(0,
+                responsableWorkers.length() - 2);
         }
         this.txfWorker.setText(responsableWorkers);
     }
 
-    protected String[] getWorkers() {
+    /**
+     * Returns the workers of the work package.
+     * @return The workers of this work package.
+     */
+    protected final String[] getWorkers() {
         return this.txfWorker.getText().split(", ");
     }
 
-    protected Worker getAddWorker() {
+    /**
+     * Returns the selected worker.
+     * @return The worker from the selected combo box entry.
+     */
+    protected final Worker getAddWorker() {
         return (Worker) cobAddWorker.getSelectedItem();
     }
 
-    protected Worker getRemoveWorker() {
+    /**
+     * Returns the selected worker.
+     * @return The worker from the selected combo box entry.
+     */
+    protected final Worker getRemoveWorker() {
         return (Worker) cobRemoveWorker.getSelectedItem();
     }
 
-    protected Date getStartHope() throws ParseException {
+    /**
+     * Returns the start hope date.
+     * @throws ParseException
+     *             Throws a ParseException.
+     * @return The start hope date.
+     */
+    protected final Date getStartHope() throws ParseException {
         if (txfStartHope.getText().equals("")) {
             return null;
         }
         return Controller.DATE_DAY.parse(txfStartHope.getText());
     }
 
-    protected Date getEndHope() throws ParseException {
+    /**
+     * Returns the end hope date.
+     * @throws ParseException
+     *             Throws a ParseException.
+     * @return The end hope date.
+     */
+    protected final Date getEndHope() throws ParseException {
         if (txfEndHope.getText().equals("")) {
             return null;
         }
         return Controller.DATE_DAY.parse(txfEndHope.getText());
     }
 
-    protected void setValues(Workpackage wp, boolean leiter,
-            String[][] aufwaende, ArrayList<Worker> allWorkers,
-            Set<String> actualWPWorkers) {
+    /**
+     * Sets the values to the work package.
+     * @param wp
+     *            The work package.
+     * @param leiter
+     *            True: If the worker is a leader. False: Else.
+     * @param aufwaende
+     *            A String array with the work efforts.
+     * @param allWorkers
+     *            A list with all workers.
+     * @param actualWPWorkers
+     *            A set with all workers which currently worked on it.
+     */
+    protected final void setValues(final Workpackage wp,
+        final boolean leiter, final String[][] aufwaende,
+        final ArrayList<Worker> allWorkers,
+        final Set<String> actualWPWorkers) {
         this.txfNr.setText(wp.getStringID());
         this.txfName.setText(wp.getName());
         this.chbOAP.setSelected(wp.isIstOAP());
@@ -880,72 +1065,74 @@ public class WPShowGUI extends JFrame {
 
         if (wp.getStartDateHope() != null) {
             this.txfStartHope.setText(Controller.DATE_DAY.format(wp
-                    .getStartDateHope()));
+                .getStartDateHope()));
         } else {
             this.txfStartHope.setText("");
         }
 
         if (wp.getEndDateHope() != null) {
             this.txfEndHope.setText(Controller.DATE_DAY.format(wp
-                    .getEndDateHope()));
+                .getEndDateHope()));
         } else {
             this.txfEndHope.setText("");
         }
 
         if (wp.getStartDateCalc() != null) {
             this.txfStartCalc.setText(Controller.DATE_DAY.format(wp
-                    .getStartDateCalc()));
+                .getStartDateCalc()));
         } else {
             this.txfStartCalc.setText("");
         }
 
         if (wp.getEndDateCalc() != null) {
             this.txfEndCalc.setText(Controller.DATE_DAY.format(wp
-                    .getEndDateCalc()));
+                .getEndDateCalc()));
         } else {
             this.txfEndCalc.setText("");
         }
 
-        this.barComplete.setValue(WpManager.calcPercentComplete(wp.getBac(),
-                wp.getEtc(), wp.getAc()));
+        this.barComplete.setValue(WpManager.calcPercentComplete(
+            wp.getBac(), wp.getEtc(), wp.getAc()));
         this.txfCPI.setText("" + Controller.DECFORM.format(wp.getCpi()));
         this.txfSPI.setText("" + Controller.DECFORM.format(wp.getSpi()));
-        this.txfBAC.setText("" + wp.getBac()); //TODO format!
+        this.txfBAC.setText("" + wp.getBac()); // TODO format!
         this.txfETC.setText("" + wp.getEtc());
         this.txfAC.setText("" + wp.getAc());
         this.txfEV.setText("" + wp.getEv());
         this.txfSV.setText(""
-                + Controller.DECFORM.format(wp.getSv()).replace(",", ".")
-                + generalStrings.currencySymbol());
+            + Controller.DECFORM.format(wp.getSv()).replace(",", ".")
+            + generalStrings.currencySymbol());
         this.txfPV.setText(""
-                + Controller.DECFORM.format(wp.getPv()).replace(",", ".")
-                + generalStrings.currencySymbol());
+            + Controller.DECFORM.format(wp.getPv()).replace(",", ".")
+            + generalStrings.currencySymbol());
         this.txfBACCost.setText(""
-                + Controller.DECFORM.format(wp.getBac_kosten()).replace(",",
-                        ".") + generalStrings.currencySymbol());
+            + Controller.DECFORM.format(wp.getBac_kosten()).replace(",",
+                ".") + generalStrings.currencySymbol());
         this.txfACCost.setText(""
-                + Controller.DECFORM.format(wp.getAc_kosten())
-                        .replace(",", ".") + generalStrings.currencySymbol());
+            + Controller.DECFORM.format(wp.getAc_kosten())
+                .replace(",", ".") + generalStrings.currencySymbol());
         this.txfEV.setText(""
-                + Controller.DECFORM.format(wp.getEv()).replace(",", ".")
-                + generalStrings.currencySymbol());
+            + Controller.DECFORM.format(wp.getEv()).replace(",", ".")
+            + generalStrings.currencySymbol());
         this.txfEAC.setText(""
-                + Controller.DECFORM.format(wp.getEac()).replace(",", ".")
-                + generalStrings.currencySymbol());
+            + Controller.DECFORM.format(wp.getEac()).replace(",", ".")
+            + generalStrings.currencySymbol());
         this.txfETCCost.setText(""
-                + Controller.DECFORM.format(wp.getEtc_kosten()).replace(",",
-                        ".") + generalStrings.currencySymbol());
+            + Controller.DECFORM.format(wp.getEtc_kosten()).replace(",",
+                ".") + generalStrings.currencySymbol());
         this.txfTagessatz.setText(""
-                + Controller.DECFORM.format(wp.getWptagessatz()).replace(",",
-                        ".") + generalStrings.currencySymbol());
+            + Controller.DECFORM.format(wp.getWptagessatz()).replace(",",
+                ".") + generalStrings.currencySymbol());
 
         txfCPI.setDisabledTextColor(WPOverview.getCPIColor(wp.getCpi(),
-                wp.getAc())[0]);
-        txfCPI.setBackground(WPOverview.getCPIColor(wp.getCpi(), wp.getAc())[1]);
+            wp.getAc())[0]);
+        txfCPI
+            .setBackground(WPOverview.getCPIColor(wp.getCpi(), wp.getAc())[1]);
 
         txfSPI.setDisabledTextColor(WPOverview.getSPIColor(wp.getSpi(),
-                wp.getAc())[0]);
-        txfSPI.setBackground(WPOverview.getSPIColor(wp.getSpi(), wp.getAc())[1]);
+            wp.getAc())[0]);
+        txfSPI
+            .setBackground(WPOverview.getSPIColor(wp.getSpi(), wp.getAc())[1]);
 
         updateDependencyCount(wp);
 
@@ -954,17 +1141,35 @@ public class WPShowGUI extends JFrame {
 
     }
 
-    public void setOAPView(boolean leiter) {
+    /**
+     * Sets the upper work package view.
+     * @param leiter
+     *            True: If the worker is a leader. False: Else.
+     */
+    public final void setOAPView(final boolean leiter) {
         setUAPViews(false, leiter);
         setOAPViews(true, leiter);
     }
 
-    public void setUAPView(boolean leiter) {
+    /**
+     * Sets the under work package view.
+     * @param leiter
+     *            True: If the worker is a leader. False: Else.
+     */
+    public final void setUAPView(final boolean leiter) {
         setOAPViews(false, leiter);
         setUAPViews(true, leiter);
     }
 
-    private void setOAPViews(boolean isOAP, boolean leiter) {
+    /**
+     * Sets the upper work package view.
+     * @param isOAP
+     *            True: If the work package is a upper work package. False:
+     *            Else.
+     * @param leiter
+     *            True: If the worker is a leader. False: Else.
+     */
+    private void setOAPViews(final boolean isOAP, final boolean leiter) {
         boolean notIfOAP = !isOAP;
         this.cobAddWorker.setVisible(notIfOAP);
         this.cobRemoveWorker.setVisible(notIfOAP);
@@ -1000,7 +1205,15 @@ public class WPShowGUI extends JFrame {
 
     }
 
-    private void setUAPViews(boolean isUAP, boolean leiter) {
+    /**
+     * Sets the upper work package view.
+     * @param isUAP
+     *            True: If the work package is a under work package. False:
+     *            Else.
+     * @param leiter
+     *            True: If the worker is a leader. False: Else.
+     */
+    private void setUAPViews(final boolean isUAP, final boolean leiter) {
         if (!leiter) {
             this.tblAufwand.removeColumn(this.tblAufwand.getColumn("Name"));
             this.txfBAC.setEnabled(false);
@@ -1009,11 +1222,20 @@ public class WPShowGUI extends JFrame {
         }
     }
 
-    protected String getDescription() {
+    /**
+     * Returns the description of the work package.
+     * @return The description of the work package.
+     */
+    protected final String getDescription() {
         return this.txfDesc.getText();
     }
 
-    public void fillWorkerCombos(Set<String> actualWPWorkers) {
+    /**
+     * Fills the worker combo boxes.
+     * @param actualWPWorkers
+     *            A set with the actual work package workers.
+     */
+    public void fillWorkerCombos(final Set<String> actualWPWorkers) {
         cobAddWorker.removeAllItems();
         cobRemoveWorker.removeAllItems();
         List<Worker> dummies = new ArrayList<Worker>();
@@ -1031,9 +1253,9 @@ public class WPShowGUI extends JFrame {
 
         }
         if (this.getLeiter() != null) {
-            cobRemoveWorker.removeItem(this.getLeiter()); // Leiter soll nicht
-                                                          // zum loeschen zur
-                                                          // Verfuegung stehen
+            cobRemoveWorker.removeItem(this.getLeiter()); // The leader can
+                                                          // not be
+                                                          // deleted.
         }
 
         String responsableWorkers = "";
@@ -1041,14 +1263,21 @@ public class WPShowGUI extends JFrame {
             responsableWorkers += actualWorker + ", ";
         }
         if (responsableWorkers.length() != 0) {
-            responsableWorkers =
-                    responsableWorkers.substring(0,
-                            responsableWorkers.length() - 2);
+            responsableWorkers = responsableWorkers.substring(0,
+                responsableWorkers.length() - 2);
         }
         this.txfWorker.setText(responsableWorkers);
     }
 
-    private void fillWorkedTable(String[][] values, boolean leiter) {
+    /**
+     * Fills the worked table.
+     * @param values
+     *            The values which are insert.
+     * @param leiter
+     *            True: If the worker is a leader. False: Else.
+     */
+    private void fillWorkedTable(final String[][] values,
+        final boolean leiter) {
         DefaultTableModel model = (DefaultTableModel) tblAufwand.getModel();
         while (model.getRowCount() > 0) {
             model.removeRow(0);
@@ -1073,29 +1302,33 @@ public class WPShowGUI extends JFrame {
 
     }
 
+    /** Adds the button action. */
     public void addButtonAction() {
         for (Component actualComponent : getComponents()) {
             if (actualComponent instanceof JTextField) {
                 actualComponent.addKeyListener(function
-                        .getChangeListenerTextfield());
+                    .getChangeListenerTextfield());
             } else if (actualComponent instanceof JCheckBox) {
                 ((JCheckBox) actualComponent).addItemListener(function
-                        .getChangeItemListener());
+                    .getChangeItemListener());
             }
         }
 
-        btnAddAncestor.addActionListener(function.getBtnAddAncestorListener());
-        btnEditAncestor
-                .addActionListener(function.getBtnEditAncestorListener());
-        btnAddFollower.addActionListener(function.getBtnAddFollowerListener());
-        btnEditFollower
-                .addActionListener(function.getBtnEditFollowerListener());
+        btnAddAncestor.addActionListener(function
+            .getBtnAddAncestorListener());
+        btnEditAncestor.addActionListener(function
+            .getBtnEditAncestorListener());
+        btnAddFollower.addActionListener(function
+            .getBtnAddFollowerListener());
+        btnEditFollower.addActionListener(function
+            .getBtnEditFollowerListener());
         cobLeiter.addItemListener(function.getChangeItemListener());
         btnAddWorker.addActionListener(function
-                .getBtnAddWorkerListener(cobAddWorker));
+            .getBtnAddWorkerListener(cobAddWorker));
         btnRemoveWorker.addActionListener(function
-                .getBtnRemoveWorkerListener(cobRemoveWorker));
-        btnAddAufwand.addActionListener(function.getBtnAddAufwandListener());
+            .getBtnRemoveWorkerListener(cobRemoveWorker));
+        btnAddAufwand
+            .addActionListener(function.getBtnAddAufwandListener());
         btnOk.addActionListener(function.getBtnOKListener());
         btnSave.addActionListener(function.getBtnSaveListener());
         btnCancel.addActionListener(function.getBtnCancelListener());
@@ -1107,15 +1340,30 @@ public class WPShowGUI extends JFrame {
 
     }
 
-    protected void setETC(double etc) {
+    /**
+     * Sets the value of the etc.
+     * @param etc
+     *            The value of the etc.
+     */
+    protected final void setETC(final double etc) {
         txfETC.setText("" + etc);
     }
 
-    public void setNewView(boolean newWp) {
+    /**
+     * Sets the new view.
+     * @param newWp
+     *            True: If the work package is new. False: Else.
+     */
+    public final void setNewView(final boolean newWp) {
         txfNr.setEditable(newWp);
     }
 
-    public void updateDependencyCount(Workpackage wp) {
+    /**
+     * Update the count of dependencies.
+     * @param wp
+     *            The work package.
+     */
+    public final void updateDependencyCount(final Workpackage wp) {
         int ancestors = 0;
         int followers = 0;
         if (WpManager.getAncestors(wp) != null) {
@@ -1124,9 +1372,9 @@ public class WPShowGUI extends JFrame {
         if (WpManager.getFollowers(wp) != null) {
             followers = WpManager.getFollowers(wp).size();
         }
-        btnEditAncestor.setText(generalStrings.toManage() + " (" + ancestors +
-                ")");
-        btnEditFollower.setText(generalStrings.toManage() + " (" + followers +
-                ")");
+        btnEditAncestor.setText(generalStrings.toManage() + " ("
+            + ancestors + ")");
+        btnEditFollower.setText(generalStrings.toManage() + " ("
+            + followers + ")");
     }
 }
