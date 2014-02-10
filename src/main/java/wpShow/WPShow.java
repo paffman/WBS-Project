@@ -650,7 +650,6 @@ public class WPShow {
         ac = WpManager.calcAC(wp);
         ev = WpManager.calcEV(bacKosten,
             WpManager.calcPercentComplete(bac, etc, ac));
-        eac = WpManager.calcEAC(bacKosten, acKosten, etcKosten);
 
         if (save) {
 
@@ -660,6 +659,7 @@ public class WPShow {
             acKosten = WpManager.calcACKosten(wp);
 
             double cpi = WpManager.calcCPI(acKosten, etcKosten, bacKosten);
+            eac = WpManager.calcEAC(bacKosten, acKosten, etcKosten);
 
             wp.setName(name);
             wp.setIstOAP(istOAP);

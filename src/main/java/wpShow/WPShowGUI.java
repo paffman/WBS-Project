@@ -26,7 +26,9 @@ import globals.Workpackage;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JSplitPane;
+
 import java.awt.BorderLayout;
+
 import javax.swing.JPanel;
 import javax.swing.JTable;
 
@@ -35,6 +37,7 @@ import java.awt.Component;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+
 import javax.swing.JCheckBox;
 import javax.swing.JTextField;
 import javax.swing.JProgressBar;
@@ -47,6 +50,8 @@ import javax.swing.border.LineBorder;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.FlowLayout;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -59,7 +64,6 @@ import javax.swing.JScrollPane;
 
 import dbServices.WorkerService;
 import dbServices.ValuesService;
-
 import wpOverview.WPOverview;
 import wpWorker.Worker;
 
@@ -181,8 +185,6 @@ public class WPShowGUI extends JFrame {
 
     /** The label to describe the daily rate. */
     private JLabel lblTagessatz;
-
-    /** The button OK. */
     private JButton btnOk;
 
     /** The functionality for this GUI. */
@@ -1091,38 +1093,42 @@ public class WPShowGUI extends JFrame {
             this.txfEndCalc.setText("");
         }
 
+        DecimalFormatSymbols ds = new DecimalFormatSymbols();
+        ds.setDecimalSeparator('.');
+        DecimalFormat workDaysFormater = new DecimalFormat("#0.000", ds);
+
         this.barComplete.setValue(WpManager.calcPercentComplete(
             wp.getBac(), wp.getEtc(), wp.getAc()));
         this.txfCPI.setText("" + Controller.DECFORM.format(wp.getCpi()));
         this.txfSPI.setText("" + Controller.DECFORM.format(wp.getSpi()));
-        this.txfBAC.setText("" + wp.getBac()); // TODO format!
-        this.txfETC.setText("" + wp.getEtc());
-        this.txfAC.setText("" + wp.getAc());
-        this.txfEV.setText("" + wp.getEv());
+        this.txfBAC.setText("" + workDaysFormater.format(wp.getBac()));
+        this.txfETC.setText("" + workDaysFormater.format(wp.getEtc()));
+        this.txfAC.setText("" + workDaysFormater.format(wp.getAc()));
+        this.txfEV.setText("" + Controller.DECFORM.format(wp.getEv()));
         this.txfSV.setText(""
-            + Controller.DECFORM.format(wp.getSv()).replace(",", ".")
-            + generalStrings.currencySymbol());
+                + Controller.DECFORM.format(wp.getSv())
+                        .replace(",", ".") + generalStrings.currencySymbol());
         this.txfPV.setText(""
-            + Controller.DECFORM.format(wp.getPv()).replace(",", ".")
-            + generalStrings.currencySymbol());
+                + Controller.DECFORM.format(wp.getPv())
+                        .replace(",", ".") + generalStrings.currencySymbol());
         this.txfBACCost.setText(""
-            + Controller.DECFORM.format(wp.getBac_kosten()).replace(",",
-                ".") + generalStrings.currencySymbol());
+                + Controller.DECFORM.format(wp.getBac_kosten()).replace(
+                        ",", ".") + generalStrings.currencySymbol());
         this.txfACCost.setText(""
-            + Controller.DECFORM.format(wp.getAc_kosten())
-                .replace(",", ".") + generalStrings.currencySymbol());
+                + Controller.DECFORM.format(wp.getAc_kosten()).replace(
+                        ",", ".") + generalStrings.currencySymbol());
         this.txfEV.setText(""
-            + Controller.DECFORM.format(wp.getEv()).replace(",", ".")
-            + generalStrings.currencySymbol());
+                + Controller.DECFORM.format(wp.getEv())
+                        .replace(",", ".") + generalStrings.currencySymbol());
         this.txfEAC.setText(""
-            + Controller.DECFORM.format(wp.getEac()).replace(",", ".")
-            + generalStrings.currencySymbol());
+                + Controller.DECFORM.format(wp.getEac()).replace(",",
+                        ".") + generalStrings.currencySymbol());
         this.txfETCCost.setText(""
-            + Controller.DECFORM.format(wp.getEtc_kosten()).replace(",",
-                ".") + generalStrings.currencySymbol());
+                + Controller.DECFORM.format(wp.getEtc_kosten()).replace(
+                        ",", ".") + generalStrings.currencySymbol());
         this.txfTagessatz.setText(""
-            + Controller.DECFORM.format(wp.getWptagessatz()).replace(",",
-                ".") + generalStrings.currencySymbol());
+                + Controller.DECFORM.format(wp.getWptagessatz())
+                        .replace(",", ".") + generalStrings.currencySymbol());
 
         txfCPI.setDisabledTextColor(WPOverview.getCPIColor(wp.getCpi(),
             wp.getAc())[0]);

@@ -2,15 +2,19 @@ package globals;
 
 import dbaccess.DBModelManager;
 import de.fhbingen.wbs.translation.LocalizedStrings;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+
 import jdbcConnection.SQLExecuter;
 import wpOverview.WPOverview;
 

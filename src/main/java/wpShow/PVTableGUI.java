@@ -52,6 +52,7 @@ public class PVTableGUI extends JFrame {
 
     /**
      * Constructor.
+     * 
      * @param wp
      *            The work package.
      */
@@ -69,19 +70,19 @@ public class PVTableGUI extends JFrame {
 
         table = new JTable();
         table.setModel(new DefaultTableModel(new Object[][] {{null, null,
-            null, null }, }, new String[] {
-            LocalizedStrings.getGeneralStrings().date(), wbsStrings.pv(),
-            wbsStrings.sv(), wbsStrings.spi() }));
+                null, null}, }, new String[] {
+                LocalizedStrings.getGeneralStrings().date(), wbsStrings.pv(),
+                wbsStrings.sv(), wbsStrings.spi() }));
 
         Calendar minCal = new GregorianCalendar();
         minCal.setTime(new calendar.Day(ValuesService.getPreviousFriday(
-            wp.getStartDateCalc()).getTime()));
+                wp.getStartDateCalc()).getTime()));
 
         Calendar maxCal = new GregorianCalendar();
         maxCal.setTime(new calendar.Day(ValuesService.getNextFriday(
-            wp.getEndDateCalc()).getTime(), true));
-        Map<Date, Double> pvs = ValuesService.getPVs(minCal.getTime(),
-            maxCal.getTime());
+                wp.getEndDateCalc()).getTime(), true));
+        Map<Date, Double> pvs =
+                ValuesService.getPVs(minCal.getTime(), maxCal.getTime());
 
         List<Date> orderedDates = new ArrayList<Date>(pvs.keySet());
         Collections.sort(orderedDates);
@@ -95,11 +96,10 @@ public class PVTableGUI extends JFrame {
             if (actualPV < 0) {
                 actualPV = 0;
             }
-            model.addRow(new Object[] {
-                Controller.DATE_DAY.format(actualDate),
-                Controller.DECFORM.format(actualPV) + " EUR",
-                Controller.DECFORM.format(wp.getSv(actualDate)) + " EUR",
-                Controller.DECFORM.format(wp.getSpi(actualDate)) });
+            model.addRow(new Object[] {Controller.DATE_DAY.format(actualDate),
+                    Controller.DECFORM.format(actualPV) + " EUR",
+                    Controller.DECFORM.format(wp.getSv(actualDate)) + " EUR",
+                    Controller.DECFORM.format(wp.getSpi(actualDate))});
         }
 
         scrollPane.setViewportView(table);

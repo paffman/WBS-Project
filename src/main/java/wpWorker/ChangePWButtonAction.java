@@ -3,18 +3,12 @@ package wpWorker;
 import de.fhbingen.wbs.translation.LocalizedStrings;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.ResultSet;
 
 import javax.swing.JOptionPane;
 
-import com.mysql.jdbc.MySQLConnection;
-
-import c10n.C10N;
 import dbaccess.DBModelManager;
 import dbaccess.data.Employee;
 import de.fhbingen.wbs.translation.Messages;
-import jdbcConnection.MySqlConnect;
-import jdbcConnection.SQLExecuter;
 import wpOverview.WPOverviewGUI;
 
 public class ChangePWButtonAction {

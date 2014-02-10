@@ -188,7 +188,7 @@ public class DBChooserGUI extends JFrame {
         JLabel titleUserLabel =
                 new JLabel(LocalizedStrings.getDbChooser().user() + ":");
         JLabel userLabel =
-                new JLabel(LocalizedStrings.getDbChooser().login() + ":");
+                new JLabel(LocalizedStrings.getDbChooser().loginLong() + ":");
         JLabel pwLabel =
                 new JLabel(LocalizedStrings.getDbChooser().password() + ":");
         plCheckBox =

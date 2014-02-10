@@ -90,12 +90,8 @@ public class ChangePW {
      * @return true/false je nachdem, ob prüfung positiv oder negativ
      */
     protected boolean checkNewPW() {
-        char[] pw = gui.txfNewPW.getPassword();
-        char[] pwc = gui.txfNewPWConfirm.getPassword();
-        if (Arrays.equals(pw, pwc)) {
-            return true;
-        }
-        return false;
+        return ProjectSetupAssistant.arePasswordsEqual(
+                gui.txfNewPW.getPassword(), gui.txfNewPWConfirm.getPassword());
     }
 
     /**
