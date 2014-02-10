@@ -28,6 +28,18 @@ local.properties
 # PDT-specific
 .buildpath
 
+#################
+## IntelliJ
+#################
+
+.idea
+*.iml
+
+#################
+## Gradle
+#################
+
+.gradle
 
 #################
 ## Visual Studio
@@ -213,3 +225,4 @@ pip-log.txt
 
 #Mr Developer
 .mr.developer.cfg
+.checkstyle

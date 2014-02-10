@@ -1,0 +1,77 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.github.jengelman.gradle.plugins:shadow:0.8'
+    }
+}
+
+apply plugin: 'application'
+apply plugin: 'eclipse'
+apply plugin: 'checkstyle'
+apply plugin: 'idea'
+apply plugin: 'shadow'
+
+sourceCompatibility = 1.7
+version = '3.0'
+
+// download dependencies from Maven Central
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+
+    // dependencies for our main app
+    compile group: 'jfree', name: 'jcommon', version: '1.0.16'
+    compile group: 'jfree', name: 'jfreechart', version: '1.0.13'
+    compile group: 'mysql', name: 'mysql-connector-java', version: '5.1.28'
+    compile group: 'c10n', name: 'c10n-core', version: '1.1'
+
+    // dependencies for our tests
+    testCompile group: 'junit', name: 'junit', version: '4.11'
+
+    // dependencies needed at runtime
+    runtime group: 'mysql', name: 'mysql-connector-java', version: '5.1.28'
+}
+
+// main application class
+mainClassName = 'chooseDB.DBChooser'
+
+tasks.withType(JavaCompile) {
+    options.encoding = "ISO-8859-1"
+}
+
+// test task configuration
+test {
+    // tests in this package are executed via the test suite
+    exclude 'dbaccess/models/mysql/*Test.class'
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'chooseDB.DBChooser'
+    }
+}
+
+shadow {
+    classifier 'dist'
+}
+
+// checkstyle configurations
+tasks.withType(Checkstyle) {
+    ignoreFailures = true
+}
+
+task csReport (dependsOn: [checkstyleMain, checkstyleTest]) << {
+    ant.xslt(in: "$reporting.baseDir/checkstyle/main.xml",
+             style: "config/checkstyle/checkstyle-simple.xsl",
+             out: "$reporting.baseDir/checkstyle/main.html")
+
+    ant.xslt(in: "$reporting.baseDir/checkstyle/test.xml",
+             style: "config/checkstyle/checkstyle-simple.xsl",
+             out: "$reporting.baseDir/checkstyle/test.html")
+}
+
+check.dependsOn csReport
