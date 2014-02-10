@@ -1,3 +1,17 @@
+/*
+ * The WBS-Tool is a project management tool combining the Work Breakdown
+ * Structure and Earned Value Analysis Copyright (C) 2013 FH-Bingen This
+ * program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your
+ * option) any later version. This program is distributed in the hope that
+ * it will be useful, but WITHOUT ANY WARRANTY;; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details. You should have received a
+ * copy of the GNU General Public License along with this program. If not,
+ * see <http://www.gnu.org/licenses/>.
+ */
+
 package wpOverview.tabs;
 
 import de.fhbingen.wbs.translation.LocalizedStrings;
@@ -54,216 +68,249 @@ import org.jfree.ui.RectangleEdge;
 import org.jfree.ui.RectangleInsets;
 import wpComparators.APLevelComparator;
 import wpOverview.WPOverview;
+
 /**
- * Studienprojekt:	PSYS WBS 2.0<br/>
- *
- * Kunde:		Pentasys AG, Jens von Gersdorff<br/>
- * Projektmitglieder:<br/>
- *			Michael Anstatt,<br/>
- *			Marc-Eric Baumgärtner,<br/>
- *			Jens Eckes,<br/>
- *			Sven Seckler,<br/>
- *			Lin Yang<br/>
- *
- * <br/>
- *
- * @author WBS1.0 Team
- * @version 2.0
+ * The class for the work package calendar.
  */
 public class APCalendarPanel extends JPanel {
-	private static final long serialVersionUID = -4157955530411333945L;
 
-	private final static int showLevels = 6;
-	private List<Integer> colorList;
+    /** Constant serialized ID used for compatibility. */
+    private static final long serialVersionUID = -4157955530411333945L;
 
-	IntervalCategoryDataset dataset;
-	JFreeChart chart;
+    /** Represents the count of levels. */
+    private final static int showLevels = 6;
 
-	public APCalendarPanel() {
-		init();
+    /** A list with the colors. */
+    private List<Integer> colorList;
 
-	}
-	/**
-	 * Initialisiert das APCalender Panel incl. ActionListener etc.
-	 */
-	private void init() {
-		List<Workpackage> userWp = new ArrayList<Workpackage>(WpManager.getUserWp(WPOverview.getUser()));
+    IntervalCategoryDataset dataset;
 
-		Collections.sort(userWp, new APLevelComparator());
+    /** The chart. */
+    JFreeChart chart;
 
-		dataset = createDataset(userWp);
-		chart = createChart(dataset);
+    /**
+     * Default constructor: initialize the work package calendar inclusive
+     * the listeners.
+     */
+    public APCalendarPanel() {
+        init();
 
-		final ChartPanel chartPanel = new ChartPanel(chart);
+    }
 
-		final JPopupMenu popup = new JPopupMenu();
-		JMenuItem miSave = new JMenuItem(LocalizedStrings.getButton().save
-                (LocalizedStrings.getWbs().timeLine()));
-		miSave.addActionListener(new ActionListener() {
+    /**
+     * Initialize the work package calendar panel inclusive the listeners.
+     */
+    private void init() {
+        List<Workpackage> userWp = new ArrayList<Workpackage>(
+            WpManager.getUserWp(WPOverview.getUser()));
 
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				String dbPath = MDBConnect.pathDB;//TODO warum mdb?
-				String outfile = dbPath.subSequence(4, dbPath.lastIndexOf("/") + 1) + "chart-" + System.currentTimeMillis() + ".jpg";
-				try {
-					ChartUtilities.saveChartAsJPEG(new File(outfile), chart, chartPanel.getWidth(), chartPanel.getWidth());
-					Controller.showMessage(LocalizedStrings.getMessages()
-                            .timeLineSaved(outfile));
-				} catch (IOException e) {
-					Controller.showError(LocalizedStrings.getErrorMessages()
-                            .timeLineExportError());
-				}
-			}
+        Collections.sort(userWp, new APLevelComparator());
 
-		});
-		popup.add(miSave);
+        dataset = createDataset(userWp);
+        chart = createChart(dataset);
 
-		chartPanel.addMouseListener(new MouseAdapter() {
+        final ChartPanel chartPanel = new ChartPanel(chart);
 
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				if (e.getButton() == MouseEvent.BUTTON3) {
-					popup.show(e.getComponent(), e.getX(), e.getY());
-				}
-			}
+        final JPopupMenu popup = new JPopupMenu();
+        JMenuItem miSave = new JMenuItem(LocalizedStrings.getButton().save(
+            LocalizedStrings.getWbs().timeLine()));
+        miSave.addActionListener(new ActionListener() {
 
-		});
-		chartPanel.setMinimumDrawHeight(50 + 15 * userWp.size());
-		chartPanel.setMaximumDrawHeight(50 + 15 * userWp.size());
-		chartPanel.setMaximumDrawWidth(9999);
-		chartPanel.setPreferredSize(new Dimension((int) chartPanel.getPreferredSize().getWidth(), 50 + 15 * userWp.size()));
+            @Override
+            public void actionPerformed(final ActionEvent arg0) {
+                String dbPath = MDBConnect.pathDB;// TODO warum mdb?
+                String outfile = dbPath.subSequence(4,
+                    dbPath.lastIndexOf("/") + 1)
+                    + "chart-" + System.currentTimeMillis() + ".jpg";
+                try {
+                    ChartUtilities.saveChartAsJPEG(new File(outfile),
+                        chart, chartPanel.getWidth(), chartPanel.getWidth());
+                    Controller.showMessage(LocalizedStrings.getMessages()
+                        .timeLineSaved(outfile));
+                } catch (IOException e) {
+                    Controller.showError(LocalizedStrings
+                        .getErrorMessages().timeLineExportError());
+                }
+            }
 
-		chartPanel.setPopupMenu(null);
+        });
+        popup.add(miSave);
 
-		this.setLayout(new BorderLayout());
+        chartPanel.addMouseListener(new MouseAdapter() {
 
-		this.removeAll();
+            @Override
+            public void mouseClicked(final MouseEvent e) {
+                if (e.getButton() == MouseEvent.BUTTON3) {
+                    popup.show(e.getComponent(), e.getX(), e.getY());
+                }
+            }
 
-		JPanel panel = new JPanel();
-		panel.setLayout(new GridBagLayout());
-		GridBagConstraints constraints = new GridBagConstraints();
-		constraints.fill = GridBagConstraints.HORIZONTAL;
-		constraints.weightx = 1;
-		constraints.weighty = 1;
-		constraints.anchor = GridBagConstraints.NORTHWEST;
-		panel.add(chartPanel, constraints);
+        });
+        chartPanel.setMinimumDrawHeight(50 + 15 * userWp.size());
+        chartPanel.setMaximumDrawHeight(50 + 15 * userWp.size());
+        chartPanel.setMaximumDrawWidth(9999);
+        chartPanel.setPreferredSize(new Dimension((int) chartPanel
+            .getPreferredSize().getWidth(), 50 + 15 * userWp.size()));
 
-		panel.setBackground(Color.white);
-		this.add(panel, BorderLayout.CENTER);
+        chartPanel.setPopupMenu(null);
 
-		GanttRenderer.setDefaultShadowsVisible(false);
-		GanttRenderer.setDefaultBarPainter(new BarPainter() {
+        this.setLayout(new BorderLayout());
 
-			@Override
-			public void paintBar(Graphics2D g, BarRenderer arg1, int row, int col, RectangularShape rect, RectangleEdge arg5) {
+        this.removeAll();
 
-				String wpName = (String)dataset.getColumnKey(col);
-				int i = 0;
-				int spaceCount = 0;
-				while(wpName.charAt(i++) == ' ' && spaceCount < 17) {
-					spaceCount++;
-				}
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridBagLayout());
+        GridBagConstraints constraints = new GridBagConstraints();
+        constraints.fill = GridBagConstraints.HORIZONTAL;
+        constraints.weightx = 1;
+        constraints.weighty = 1;
+        constraints.anchor = GridBagConstraints.NORTHWEST;
+        panel.add(chartPanel, constraints);
 
-					g.setColor(new Color(spaceCount*15, spaceCount*15, spaceCount*15));
-					g.fill(rect);
-					g.setColor(Color.black);
-					g.setStroke(new BasicStroke());
-					g.draw(rect);
-			}
+        panel.setBackground(Color.white);
+        this.add(panel, BorderLayout.CENTER);
 
-			@Override
-			public void paintBarShadow(Graphics2D arg0, BarRenderer arg1, int arg2, int arg3, RectangularShape arg4, RectangleEdge arg5, boolean arg6) {
+        GanttRenderer.setDefaultShadowsVisible(false);
+        GanttRenderer.setDefaultBarPainter(new BarPainter() {
 
-			}
+            @Override
+            public void paintBar(final Graphics2D g,
+                final BarRenderer arg1, final int row, final int col,
+                final RectangularShape rect, final RectangleEdge arg5) {
 
-		});
+                String wpName = (String) dataset.getColumnKey(col);
+                int i = 0;
+                int spaceCount = 0;
+                while (wpName.charAt(i++) == ' ' && spaceCount < 17) {
+                    spaceCount++;
+                }
 
-		((CategoryPlot) chart.getPlot()).setRenderer(new GanttRenderer() {
-			private static final long serialVersionUID = -6078915091070733812L;
+                g.setColor(new Color(spaceCount * 15, spaceCount * 15,
+                    spaceCount * 15));
+                g.fill(rect);
+                g.setColor(Color.black);
+                g.setStroke(new BasicStroke());
+                g.draw(rect);
+            }
 
-			public void drawItem(Graphics2D g2, CategoryItemRendererState state, Rectangle2D dataArea, CategoryPlot plot, CategoryAxis domainAxis,
-					ValueAxis rangeAxis, CategoryDataset dataset, int row, int column, int pass) {
-				super.drawItem(g2, state, dataArea, plot, domainAxis, rangeAxis, dataset, row, column, pass);
-			}
-		});
+            @Override
+            public void paintBarShadow(final Graphics2D arg0,
+                final BarRenderer arg1, final int arg2, final int arg3,
+                final RectangularShape arg4, final RectangleEdge arg5,
+                final boolean arg6) {
 
-	}
-	/**
-	 * Wandelt Workpackages in Tasks um
-	 * @param userWp Liste mit Arbeitspaketen
-	 * @return IntervalCategoryDataset Tasks der Workpackages
-	 */
-	public IntervalCategoryDataset createDataset(List<Workpackage> userWp) {
+            }
 
-		final TaskSeries s1 = new TaskSeries(LocalizedStrings
-                .getGeneralStrings().overview());
-		colorList = new ArrayList<Integer>();
-		for (Workpackage actualPackage : userWp) {
-			if (actualPackage.getEndDateCalc() != null && actualPackage.getStartDateCalc() != null) {
-				if (actualPackage.getlastRelevantIndex() <= showLevels) {
+        });
 
-					Date endDateCalc = null;
-					Date start = null;
+        ((CategoryPlot) chart.getPlot()).setRenderer(new GanttRenderer() {
+            private static final long serialVersionUID = -6078915091070733812L;
 
-					endDateCalc = actualPackage.getEndDateCalc();
-					start = actualPackage.getStartDateCalc();
+            public void drawItem(final Graphics2D g2,
+                final CategoryItemRendererState state,
+                final Rectangle2D dataArea, final CategoryPlot plot,
+                final CategoryAxis domainAxis, final ValueAxis rangeAxis,
+                final CategoryDataset dataset, final int row,
+                final int column, final int pass) {
+                super.drawItem(g2, state, dataArea, plot, domainAxis,
+                    rangeAxis, dataset, row, column, pass);
+            }
+        });
 
-					String indent = "";
+    }
 
-					for (int i = 0; i < actualPackage.getlastRelevantIndex(); i++) {
-						indent += "   ";
-					}
-					if (!endDateCalc.before(start)) {
-						Task t = new Task(indent + actualPackage.toString(), new SimpleTimePeriod(start, endDateCalc));
-						t.setPercentComplete(0.01 * WpManager.calcPercentComplete(actualPackage.getBac(), actualPackage.getEtc(), actualPackage.getAc()));
-						s1.add(t);
-						colorList.add(actualPackage.getlastRelevantIndex());
-					}
+    /**
+     * Convert work packages to tasks.
+     * @param userWp
+     *            list with work packages.
+     * @return IntervalCategoryDataset: tasks of the work packages.
+     */
+    public final IntervalCategoryDataset createDataset(
+        final List<Workpackage> userWp) {
 
-				}
-			}
-		}
+        final TaskSeries s1 = new TaskSeries(LocalizedStrings
+            .getGeneralStrings().overview());
+        colorList = new ArrayList<Integer>();
+        for (Workpackage actualPackage : userWp) {
+            if (actualPackage.getEndDateCalc() != null
+                && actualPackage.getStartDateCalc() != null) {
+                if (actualPackage.getlastRelevantIndex() <= showLevels) {
 
-		final TaskSeriesCollection collection = new TaskSeriesCollection();
-		collection.add(s1);
+                    Date endDateCalc = null;
+                    Date start = null;
 
-		return collection;
-	}
-	/**
-	 * Erstellt das JFreeChart
-	 * @param dataset Taskliste fuer das JFreeChart
-	 * @return JFreeChart der Tasks
-	 */
-	private JFreeChart createChart(final IntervalCategoryDataset dataset) {
-		final JFreeChart chart = ChartFactory.createGanttChart("",
-				"",
-				"",
-				dataset,
-				true,
-				false,
-				false
-				);
-		chart.getCategoryPlot().getDomainAxis().setCategoryMargin(0.4);
-		chart.getCategoryPlot().getDomainAxis().setLowerMargin(0);
-		chart.getCategoryPlot().getDomainAxis().setUpperMargin(0);
+                    endDateCalc = actualPackage.getEndDateCalc();
+                    start = actualPackage.getStartDateCalc();
 
-		chart.getCategoryPlot().getDomainAxis().setTickLabelFont(new Font(Font.SANS_SERIF, Font.PLAIN, 10));
-		chart.getCategoryPlot().getDomainAxis().setTickLabelInsets(new RectangleInsets(0, 0, 0, 0));
+                    String indent = "";
 
-		chart.getCategoryPlot()
-				.getDomainAxis()
-				.setCategoryLabelPositions(
-						new CategoryLabelPositions(
-								new CategoryLabelPosition(RectangleAnchor.LEFT, TextBlockAnchor.CENTER_LEFT, CategoryLabelWidthType.RANGE, 1),
-								new CategoryLabelPosition(RectangleAnchor.LEFT, TextBlockAnchor.CENTER_LEFT, CategoryLabelWidthType.RANGE, 1),
-								new CategoryLabelPosition(RectangleAnchor.LEFT, TextBlockAnchor.CENTER_LEFT, CategoryLabelWidthType.RANGE, 1),
-								new CategoryLabelPosition(RectangleAnchor.LEFT, TextBlockAnchor.CENTER_LEFT, CategoryLabelWidthType.RANGE, 1)));
-		return chart;
-	}
-	/**
-	 * Laedt die Oberflaeche neu
-	 */
-	public void reload() {
-		init();
-	}
+                    for (int i = 0; i < actualPackage
+                        .getlastRelevantIndex(); i++) {
+                        indent += "   ";
+                    }
+                    if (!endDateCalc.before(start)) {
+                        Task t = new Task(
+                            indent + actualPackage.toString(),
+                            new SimpleTimePeriod(start, endDateCalc));
+                        t.setPercentComplete(0.01 * WpManager
+                            .calcPercentComplete(actualPackage.getBac(),
+                                actualPackage.getEtc(),
+                                actualPackage.getAc()));
+                        s1.add(t);
+                        colorList.add(actualPackage.getlastRelevantIndex());
+                    }
+
+                }
+            }
+        }
+
+        final TaskSeriesCollection collection = new TaskSeriesCollection();
+        collection.add(s1);
+
+        return collection;
+    }
+
+    /**
+     * Create the JFreeChart.
+     * @param dataset
+     *            task list for the JFreeChart.
+     * @return JFreeChart of tasks.
+     */
+    private JFreeChart createChart(final IntervalCategoryDataset dataset) {
+        final JFreeChart chart = ChartFactory.createGanttChart("", "", "",
+            dataset, true, false, false);
+        chart.getCategoryPlot().getDomainAxis().setCategoryMargin(0.4);
+        chart.getCategoryPlot().getDomainAxis().setLowerMargin(0);
+        chart.getCategoryPlot().getDomainAxis().setUpperMargin(0);
+
+        chart.getCategoryPlot().getDomainAxis()
+            .setTickLabelFont(new Font(Font.SANS_SERIF, Font.PLAIN, 10));
+        chart.getCategoryPlot().getDomainAxis()
+            .setTickLabelInsets(new RectangleInsets(0, 0, 0, 0));
+
+        chart
+            .getCategoryPlot()
+            .getDomainAxis()
+            .setCategoryLabelPositions(
+                new CategoryLabelPositions(new CategoryLabelPosition(
+                    RectangleAnchor.LEFT, TextBlockAnchor.CENTER_LEFT,
+                    CategoryLabelWidthType.RANGE, 1),
+                    new CategoryLabelPosition(RectangleAnchor.LEFT,
+                        TextBlockAnchor.CENTER_LEFT,
+                        CategoryLabelWidthType.RANGE, 1),
+                    new CategoryLabelPosition(RectangleAnchor.LEFT,
+                        TextBlockAnchor.CENTER_LEFT,
+                        CategoryLabelWidthType.RANGE, 1),
+                    new CategoryLabelPosition(RectangleAnchor.LEFT,
+                        TextBlockAnchor.CENTER_LEFT,
+                        CategoryLabelWidthType.RANGE, 1)));
+        return chart;
+    }
+
+    /**
+     * Reload the panel.
+     */
+    public final void reload() {
+        init();
+    }
 }

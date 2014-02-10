@@ -1,3 +1,17 @@
+/*
+ * The WBS-Tool is a project management tool combining the Work Breakdown
+ * Structure and Earned Value Analysis Copyright (C) 2013 FH-Bingen This
+ * program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your
+ * option) any later version. This program is distributed in the hope that
+ * it will be useful, but WITHOUT ANY WARRANTY;; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details. You should have received a
+ * copy of the GNU General Public License along with this program. If not,
+ * see <http://www.gnu.org/licenses/>.
+ */
+
 package wpOverview.tabs;
 
 import java.awt.event.ActionEvent;
@@ -15,135 +29,145 @@ import globals.Workpackage;
 
 import wpOverview.WPOverview;
 import wpShow.WPShow;
+
 /**
- * Studienprojekt:	PSYS WBS 2.0<br/>
- * 
- * Kunde:		Pentasys AG, Jens von Gersdorff<br/>
- * Projektmitglieder:<br/>
- *			Michael Anstatt,<br/>
- *			Marc-Eric Baumgärtner,<br/>
- *			Jens Eckes,<br/>
- *			Sven Seckler,<br/>
- *			Lin Yang<br/>
- * 
- * Funktionalität des TreePanel<br/>
- * 
- * @author WBS1.0 Team
- * @version 2.0
+ * Functionality of the TreePanel.
  */
 public class TreePanelAction {
-	private TreePanel gui;
-	/**
-	 * Konstruktor
-	 * @param gui Baum GUI
-	 * @param over WPOverview Funktionalität
-	 * @param parent ParentFrame
-	 */
-	public TreePanelAction(final TreePanel gui, final WPOverview over, final JFrame parent) {
-		this.gui = gui;
-		
-		gui.getTree().addMouseListener(new MouseAdapter() {
-			public void mouseClicked(MouseEvent e) {
-				DefaultMutableTreeNode node = (DefaultMutableTreeNode) gui.getTree().getLastSelectedPathComponent();
-				Workpackage selected = null;
-				if (node != null) {
-					selected = (Workpackage) node.getUserObject();
-					if (e.getClickCount() == 2 && ((Workpackage) node.getUserObject()) != null) {
-						new WPShow(over, selected, false, parent);
-					}
-				}
-				
-				over.setSelectedWorkpackage(selected);
-			}
 
-			public void mouseReleased(MouseEvent e) {
-				DefaultMutableTreeNode node = (DefaultMutableTreeNode) gui.getTree().getLastSelectedPathComponent();
-				Workpackage selected = null;
-				if (node != null) {
-					selected = (Workpackage) node.getUserObject();
-					if (e.isPopupTrigger()) {
-						gui.getTree().setSelectionPath(gui.getTree().getPathForLocation(e.getX(), e.getY()));
-						
+    /** The GUI of the tree panel. */
+    private TreePanel gui;
 
-						// Context Menü anzeigen
-						gui.treeContextMenu.show(e.getComponent(), e.getX(), e.getY());
-					}
-				}
-				over.setSelectedWorkpackage(selected);
-			}
-		});
+    /**
+     * Constructor.
+     * @param gui
+     *            The GUI of the tree panel.
+     * @param over
+     *            The functionality of the WPOverview.
+     * @param parent
+     *            The parent frame.
+     */
+    public TreePanelAction(final TreePanel gui, final WPOverview over,
+        final JFrame parent) {
+        this.gui = gui;
 
-		if (WPOverview.getUser().getProjLeiter()) {
+        gui.getTree().addMouseListener(new MouseAdapter() {
+            public void mouseClicked(final MouseEvent e) {
+                DefaultMutableTreeNode node = (DefaultMutableTreeNode) gui
+                    .getTree().getLastSelectedPathComponent();
+                Workpackage selected = null;
+                if (node != null) {
+                    selected = (Workpackage) node.getUserObject();
+                    if (e.getClickCount() == 2
+                        && ((Workpackage) node.getUserObject()) != null) {
+                        new WPShow(over, selected, false, parent);
+                    }
+                }
 
-			// AP einfügen
-			gui.miContAPadd.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					over.readAP(true);
-				}
-			});
+                over.setSelectedWorkpackage(selected);
+            }
 
-			// AP löschen
-			gui.miContAPdel.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					WpManager.removeAP(over.getSelectedWorkpackage());
-					over.reload();
-				}
-			});
+            public void mouseReleased(final MouseEvent e) {
+                DefaultMutableTreeNode node = (DefaultMutableTreeNode) gui
+                    .getTree().getLastSelectedPathComponent();
+                Workpackage selected = null;
+                if (node != null) {
+                    selected = (Workpackage) node.getUserObject();
+                    if (e.isPopupTrigger()) {
+                        gui.getTree().setSelectionPath(
+                            gui.getTree().getPathForLocation(e.getX(),
+                                e.getY()));
 
-			// Aufwand eintragen
-			gui.miContAufw.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					over.readAP(false);
-				}
-			});
+                        // Show context menu
+                        gui.treeContextMenu.show(e.getComponent(),
+                            e.getX(), e.getY());
+                    }
+                }
+                over.setSelectedWorkpackage(selected);
+            }
+        });
 
-			// Unterstruktur einfügen
-			//WBS 2.0 auskommentiert keine Funktion
-//			gui.miContReassign.addActionListener(new ActionListener() {
-//				public void actionPerformed(ActionEvent e) {
-//					 new WPReassign(over.tp, WPOverview.getUser(), over);
-//				}
-//			});
-			
-			gui.miChildrenOut.addActionListener(new ActionListener() {
+        if (WPOverview.getUser().getProjLeiter()) {
 
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					DefaultMutableTreeNode selected = (DefaultMutableTreeNode) gui.getTree().getLastSelectedPathComponent();
-					expand(selected);					
-				}
-				
-			});
-			
-			gui.miChildrenIn.addActionListener(new ActionListener() {
+            // Insert work package
+            gui.miContAPadd.addActionListener(new ActionListener() {
+                public void actionPerformed(final ActionEvent e) {
+                    over.readAP(true);
+                }
+            });
 
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					DefaultMutableTreeNode selected = (DefaultMutableTreeNode) gui.getTree().getLastSelectedPathComponent();
-					collapse(selected);					
-				}
-				
-			});
-		}
-	}
-	/**
-	 * Klappt den gewaehlten Knoten auf
-	 * @param actualNode Aktueller Knoten der aufgeklappt werden soll
-	 */
-	private void expand(DefaultMutableTreeNode actualNode) {
-		gui.getTree().expandPath(new TreePath(((DefaultTreeModel)gui.getTree().getModel()).getPathToRoot(actualNode)));
-		for(int i = 0; i<actualNode.getChildCount(); i++) {
-			expand((DefaultMutableTreeNode)actualNode.getChildAt(i));
-		}
-	}
-	/**
-	 * Klappt den gewaehlten Knoten zu
-	 * @param actualNode Aktueller Knoten der zugeklappt werden soll
-	 */
-	private void collapse(DefaultMutableTreeNode actualNode) {	
-		for(int i = 0; i<actualNode.getChildCount(); i++) {
-			collapse((DefaultMutableTreeNode)actualNode.getChildAt(i));
-		}
-		gui.getTree().collapsePath(new TreePath(((DefaultTreeModel)gui.getTree().getModel()).getPathToRoot(actualNode)));
-	}
+            // Delete work package
+            gui.miContAPdel.addActionListener(new ActionListener() {
+                public void actionPerformed(final ActionEvent e) {
+                    WpManager.removeAP(over.getSelectedWorkpackage());
+                    over.reload();
+                }
+            });
+
+            // Add effort
+            gui.miContAufw.addActionListener(new ActionListener() {
+                public void actionPerformed(final ActionEvent e) {
+                    over.readAP(false);
+                }
+            });
+
+            // Insert structure
+            // WBS 2.0 out commented: no function
+            // gui.miContReassign.addActionListener(new ActionListener() {
+            // public void actionPerformed(ActionEvent e) {
+            // new WPReassign(over.tp, WPOverview.getUser(), over);
+            // }
+            // });
+
+            gui.miChildrenOut.addActionListener(new ActionListener() {
+
+                @Override
+                public void actionPerformed(final ActionEvent e) {
+                    DefaultMutableTreeNode selected = (DefaultMutableTreeNode) gui
+                        .getTree().getLastSelectedPathComponent();
+                    expand(selected);
+                }
+
+            });
+
+            gui.miChildrenIn.addActionListener(new ActionListener() {
+
+                @Override
+                public void actionPerformed(final ActionEvent e) {
+                    DefaultMutableTreeNode selected = (DefaultMutableTreeNode) gui
+                        .getTree().getLastSelectedPathComponent();
+                    collapse(selected);
+                }
+
+            });
+        }
+    }
+
+    /**
+     * Opens the selected node.
+     * @param actualNode
+     *            The node which is open.
+     */
+    private void expand(final DefaultMutableTreeNode actualNode) {
+        gui.getTree().expandPath(
+            new TreePath(((DefaultTreeModel) gui.getTree().getModel())
+                .getPathToRoot(actualNode)));
+        for (int i = 0; i < actualNode.getChildCount(); i++) {
+            expand((DefaultMutableTreeNode) actualNode.getChildAt(i));
+        }
+    }
+
+    /**
+     * Closes the selected node.
+     * @param actualNode
+     *            The node which is close.
+     */
+    private void collapse(final DefaultMutableTreeNode actualNode) {
+        for (int i = 0; i < actualNode.getChildCount(); i++) {
+            collapse((DefaultMutableTreeNode) actualNode.getChildAt(i));
+        }
+        gui.getTree().collapsePath(
+            new TreePath(((DefaultTreeModel) gui.getTree().getModel())
+                .getPathToRoot(actualNode)));
+    }
 }
