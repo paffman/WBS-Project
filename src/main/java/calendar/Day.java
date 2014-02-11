@@ -1,3 +1,17 @@
+/*
+ * The WBS-Tool is a project management tool combining the Work Breakdown
+ * Structure and Earned Value Analysis Copyright (C) 2013 FH-Bingen This
+ * program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your
+ * option) any later version. This program is distributed in the hope that
+ * it will be useful, but WITHOUT ANY WARRANTY;; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details. You should have received a
+ * copy of the GNU General Public License along with this program. If not,
+ * see <http://www.gnu.org/licenses/>.
+ */
+
 package calendar;
 
 import java.util.Calendar;
@@ -5,51 +19,41 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 /**
- * Studienprojekt:	PSYS WBS 2.0<br/>
- * 
- * Kunde:		Pentasys AG, Jens von Gersdorff<br/>
- * Projektmitglieder:<br/>
- *			Michael Anstatt,<br/>
- *			Marc-Eric Baumgärtner,<br/>
- *			Jens Eckes,<br/>
- *			Sven Seckler,<br/>
- *			Lin Yang<br/>
- * 
- * Repraesentiert einen Tag (ohne Beruecksichtigung von Uhrzeiten)<br/>
- * 
- * @author Michael Anstatt
- * @version 2.0 - 2012-08-20
+ * Represents a day (without the time).
  */
 public class Day extends Date {
 
-	private static final long serialVersionUID = 4043833541398751602L;
+    /** Constant serialized ID used for compatibility. */
+    private static final long serialVersionUID = 4043833541398751602L;
 
-	/**
-	 * Konstruktor
-	 * @param date Datum, zu dem der Tag (ohne Uhrzeit) benoetigt wird
-	 */
-	public Day(Date date) {
-		this(date, false);
-	}
-	
-	/**
-	 * Konstruktor
-	 * 
-	 * @param date Datum, zu dem der Tag (ohne Uhrzeit) benoetigt wird
-	 * @param endOfDay wenn true springt Datum zum Ende des Tages, 23:59:59 Uhr
-	 */
-	public Day(Date date, boolean endOfDay) {
-		Calendar cal = new GregorianCalendar();
-		cal.setTime(date);
-		cal.set(Calendar.HOUR_OF_DAY, 0);
-		cal.set(Calendar.MINUTE, 0);
-		cal.set(Calendar.SECOND, 0);
-		cal.set(Calendar.MILLISECOND, 0);
-		if(endOfDay) {
-			cal.add(Calendar.HOUR, 23);
-			cal.add(Calendar.MINUTE, 59);
-			cal.add(Calendar.SECOND, 59);
-		}
-		super.setTime(cal.getTimeInMillis());
-	}
+    /**
+     * Constructor.
+     * @param date
+     *            Date to which the day is needed.
+     */
+    public Day(final Date date) {
+        this(date, false);
+    }
+
+    /**
+     * Constructor.
+     * @param date
+     *            Date to which the day is needed.
+     * @param endOfDay
+     *            If true, the created date has the end time 23:59:59.
+     */
+    public Day(final Date date, final boolean endOfDay) {
+        Calendar cal = new GregorianCalendar();
+        cal.setTime(date);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        if (endOfDay) {
+            cal.add(Calendar.HOUR, 23);
+            cal.add(Calendar.MINUTE, 59);
+            cal.add(Calendar.SECOND, 59);
+        }
+        super.setTime(cal.getTimeInMillis());
+    }
 }
