@@ -86,7 +86,7 @@ public class ChangePWGUI extends JFrame { // TODO extend JDialog
         }
         initialize();
 
-        lblUser = new JLabel("Aktueller User");
+        lblUser = new JLabel(login.currentUser());
         txfUser = new FilterJTextField();
         txfUser.setEnabled(false);
         lblOldPW = new JLabel(login.oldPassword());
