@@ -99,13 +99,15 @@ public class WBSUser {
     public final boolean check() {
         // Login isn't filled.
         if (gui.txfLogin.getText().equals("")) {
-            JOptionPane.showMessageDialog(gui, "Bitte Login ausfÃ¼llen");
+            JOptionPane.showMessageDialog(gui, messageStrings.fillFieldError
+                    (LocalizedStrings.getLogin().login()));
             return false;
         }
         // Name isn't filled.
         if (gui.txfName.getText().equals("")
             || gui.txfVorname.getText().equals("")) {
-            JOptionPane.showMessageDialog(gui, "Bitte Namen ausfÃ¼llen");
+            JOptionPane.showMessageDialog(gui, messageStrings.fillFieldError
+                    (LocalizedStrings.getLogin().firstName()));
             return false;
         }
 
