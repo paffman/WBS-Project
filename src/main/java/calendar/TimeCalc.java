@@ -59,8 +59,6 @@ public class TimeCalc {
     /** Manages the availabilities. */
     private AVManager avManager;
 
-    // private Map<String, Double> dailyRates;
-
     /**
      * Constructor.
      */
