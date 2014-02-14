@@ -24,7 +24,9 @@ import java.util.GregorianCalendar;
  */
 public class Availability implements Comparable<Availability> {
 
-    /** The id of the employee. */
+    /**
+     *  The id of the employee.
+     */
     private int userID;
 
     /** The description why the employee is not available. */
@@ -182,9 +184,9 @@ public class Availability implements Comparable<Availability> {
         if (allDay) {
             GregorianCalendar cal = new GregorianCalendar();
             cal.setTime(date);
-            cal.set(Calendar.HOUR_OF_DAY, 23);
-            cal.set(Calendar.MINUTE, 59);
-            cal.set(Calendar.SECOND, 59);
+            cal.set(Calendar.HOUR_OF_DAY, DateFunctions.MAX_HOUR_OF_DAY);
+            cal.set(Calendar.MINUTE, DateFunctions.MAX_MINUTE_SECOND_OF_HOUR);
+            cal.set(Calendar.SECOND, DateFunctions.MAX_MINUTE_SECOND_OF_HOUR);
             cal.set(Calendar.MILLISECOND, 0);
             return cal.getTime();
         } else {
@@ -203,11 +205,11 @@ public class Availability implements Comparable<Availability> {
 
     /**
      * Adds a employee to an availability.
-     * @param userID
+     * @param newUserID
      *            The id from the employee.
      */
-    public final void setUserID(final int userID) {
-        this.userID = userID;
+    public final void setUserID(final int newUserID) {
+        this.userID = newUserID;
     }
 
     /**
@@ -229,12 +231,12 @@ public class Availability implements Comparable<Availability> {
 
     /**
      * Sets the availability of the employee.
-     * @param availabe
+     * @param isAvailable
      *            True: The employee is available. False: The employee is
      *            not available.
      */
-    public final void setAvailabe(final boolean availabe) {
-        this.availabe = availabe;
+    public final void setAvailabe(final boolean isAvailable) {
+        this.availabe = isAvailable;
     }
 
     /**
@@ -247,20 +249,20 @@ public class Availability implements Comparable<Availability> {
 
     /**
      * Sets the begin of the availability inclusive time.
-     * @param startDate
+     * @param newStartDate
      *            The start date.
      */
-    public final void setStartTime(final Date startDate) {
-        this.startDate = calcStart(startDate);
+    public final void setStartTime(final Date newStartDate) {
+        this.startDate = calcStart(newStartDate);
     }
 
     /**
      * Sets the end of the availability inclusive time.
-     * @param endDate
+     * @param newEndDate
      *            The end date.
      */
-    public final void setEndTime(final Date endDate) {
-        this.endDate = calcEnd(endDate);
+    public final void setEndTime(final Date newEndDate) {
+        this.endDate = calcEnd(newEndDate);
     }
 
     /**
@@ -281,11 +283,11 @@ public class Availability implements Comparable<Availability> {
 
     /**
      * Sets the description of the availability.
-     * @param description
+     * @param newDescription
      *            The description of the availability.
      */
-    public final void setDescription(final String description) {
-        this.description = description;
+    public final void setDescription(final String newDescription) {
+        this.description = newDescription;
     }
 
     /**
@@ -298,11 +300,11 @@ public class Availability implements Comparable<Availability> {
 
     /**
      * Sets the identifier of the availability.
-     * @param id
+     * @param newId
      *            The id of the availability.
      */
-    public final void setId(final Integer id) {
-        this.id = id;
+    public final void setId(final Integer newId) {
+        this.id = newId;
     }
 
     /**
@@ -328,14 +330,14 @@ public class Availability implements Comparable<Availability> {
     public final int getDuration() {
         long difference = this.getEndTime().getTime()
             - this.getStartTime().getTime();
-        return (int) (difference / (1000 * 60 * 60));
+        return (int) (difference / DateFunctions.FACTOR_MILLISECONDS_TO_HOURS);
     }
 
     @Override
     public final String toString() {
-        return "UserId: " + userID + " description: " + description
-            + " allDay: " + allDay + " available: " + availabe
-            + " startDate: " + startDate + " endDate: " + endDate;
+        return "UserId: " + userID + " description: " + description //NON-NLS
+            + " allDay: " + allDay + " available: " + availabe //NON-NLS
+            + " startDate: " + startDate + " endDate: " + endDate; //NON-NLS
     }
 
     @Override

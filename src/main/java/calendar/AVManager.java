@@ -39,7 +39,8 @@ public class AVManager {
     /**
      * Assignment: Day -> (Employee -> Availabilities).
      */
-    private static Map<Day, Map<String, List<Availability>>> completeAvailabilities;
+    private static Map<Day, Map<String, List<Availability>>>
+            completeAvailabilities;
 
     /**
      * Assignment: Day -> (Employee -> Used hours).
@@ -66,10 +67,11 @@ public class AVManager {
      */
     public AVManager() {
         this.allProjectWorkers = WorkerService.getRealWorkers();
-        availableWork = new HashMap<Day, Map<String, Integer>>();
-        consumedWork = new HashMap<Day, Map<String, Integer>>();
-        completeAvailabilities = new HashMap<Day, Map<String, List<Availability>>>();
-        readDays = new HashSet<Day>();
+        availableWork = new HashMap<>();
+        consumedWork = new HashMap<>();
+        completeAvailabilities =
+                new HashMap<>();
+        readDays = new HashSet<>();
     }
 
     /**
@@ -80,7 +82,7 @@ public class AVManager {
      */
     public final Date getNextWorkDate(final Date oldDate) {
         if (oldDate != null) {
-            List<Availability> dayProjAvs = new ArrayList<Availability>();
+            List<Availability> dayProjAvs = new ArrayList<>();
             Day actualDay = new Day(oldDate);
             Date returnDate = null;
             boolean readNext = false;
@@ -110,9 +112,6 @@ public class AVManager {
                                                               // is
                                                               // founded.
                     }
-                    if (returnDate != null) {
-                        return returnDate;
-                    }
                 }
                 readNext = true;
             }
@@ -126,14 +125,17 @@ public class AVManager {
     /**
      * Reads the next working time for a specific day if on this day is
      * already worked for workedToday hours.
-     * @param actualDay
+     * @param day
      *            The date without the time.
-     * @param workedToday
+     * @param hoursWorkedToday
      *            The count of worked hours.
      * @return The next working time.
      */
-    public final Date getNextWorkTime(Day actualDay, int workedToday) {
-        List<Availability> dayProjAvs = new ArrayList<Availability>();
+    public final Date getNextWorkTime(final Day day,
+                                      final int hoursWorkedToday) {
+        List<Availability> dayProjAvs = new ArrayList<>();
+        int workedToday = hoursWorkedToday;
+        Day actualDay = day;
         Date returnDate = null;
         while (returnDate == null) {
             while (dayProjAvs.isEmpty()) {
@@ -155,9 +157,6 @@ public class AVManager {
                     cal.setTime(actualAv.getStartTime());
                     cal.add(Calendar.HOUR_OF_DAY, workedToday);
                     returnDate = cal.getTime();
-                }
-                if (returnDate != null) {
-                    return returnDate;
                 }
             }
         }
@@ -190,12 +189,12 @@ public class AVManager {
      */
     private void fillData(final Day actualDay) {
         List<Availability> avs;
-        Map<String, Integer> availableDayWorks = new HashMap<String, Integer>();
-        Map<String, Integer> consumedDayWorks = new HashMap<String, Integer>();
+        Map<String, Integer> availableDayWorks = new HashMap<>();
+        Map<String, Integer> consumedDayWorks = new HashMap<>();
         completeAvailabilities.put(actualDay,
             new HashMap<String, List<Availability>>());
         for (Worker actualWorker : allProjectWorkers) {
-            avs = new ArrayList<Availability>();
+            avs = new ArrayList<>();
             avs.addAll(CalendarService.getRealWorkerAvailability(
                 actualWorker.getId(), actualDay, new Day(actualDay, true)));
             completeAvailabilities.get(actualDay).put(
@@ -207,7 +206,7 @@ public class AVManager {
                         actualDay));
             consumedDayWorks.put(actualWorker.getLogin(), 0);
         }
-        avs = new ArrayList<Availability>();
+        avs = new ArrayList<>();
         avs.addAll(CalendarService.getRealProjectAvailability(actualDay,
             new Day(actualDay, true)));
         completeAvailabilities.get(actualDay).put(
@@ -239,7 +238,7 @@ public class AVManager {
         if (!readDays.contains(actualDay)) {
             fillData(actualDay);
         }
-        Map<String, Integer> remainingDayWorks = new HashMap<String, Integer>();
+        Map<String, Integer> remainingDayWorks = new HashMap<>();
         int remaining;
         for (String actualWorker : workers) {
             remaining = getCompleteDayWorks(actualDay).get(actualWorker)

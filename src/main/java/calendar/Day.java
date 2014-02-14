@@ -23,9 +23,6 @@ import java.util.GregorianCalendar;
  */
 public class Day extends Date {
 
-    /** Constant serialized ID used for compatibility. */
-    private static final long serialVersionUID = 4043833541398751602L;
-
     /**
      * Constructor.
      * @param date
@@ -50,9 +47,9 @@ public class Day extends Date {
         cal.set(Calendar.SECOND, 0);
         cal.set(Calendar.MILLISECOND, 0);
         if (endOfDay) {
-            cal.add(Calendar.HOUR, 23);
-            cal.add(Calendar.MINUTE, 59);
-            cal.add(Calendar.SECOND, 59);
+            cal.add(Calendar.HOUR, DateFunctions.MAX_HOUR_OF_DAY);
+            cal.add(Calendar.MINUTE, DateFunctions.MAX_MINUTE_SECOND_OF_HOUR);
+            cal.add(Calendar.SECOND, DateFunctions.MAX_MINUTE_SECOND_OF_HOUR);
         }
         super.setTime(cal.getTimeInMillis());
     }

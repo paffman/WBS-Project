@@ -46,11 +46,6 @@ import wpOverview.tabs.AvailabilityGraph;
 public class TimeCalc {
 
     /**
-     * All sub work packages without predecessors.
-     */
-    private static List<Workpackage> uapWithoutAncestors;
-
-    /**
      * Contains assignment Level -> Upper work packages without successors
      * (e.g. 2 - (1.2.0.0, 3.1.0.0))
      */
@@ -84,14 +79,15 @@ public class TimeCalc {
 
         this.avManager = new AVManager();
 
-        uapWithoutAncestors = new LinkedList<Workpackage>();
-        levelOAP = new HashMap<Integer, List<Workpackage>>();
+
+        List<Workpackage> uapWithoutAncestors = new LinkedList<>();
+        levelOAP = new HashMap<>();
 
         // Creates a list with all sub work package without predecessors.
         init(uapWithoutAncestors, levelOAP);
 
         // A map that helps by manage the worked hours.
-        consumedWork = new HashMap<Day, Map<String, Integer>>();
+        consumedWork = new HashMap<>();
 
         // Calculates the duration of the sub work packages without
         // predecessors and sets the start date for successors.
@@ -112,7 +108,7 @@ public class TimeCalc {
                 List<Workpackage> allLevelWps;
                 int actualLevel = actualWp.getlastRelevantIndex();
                 if (levelOAP.get(actualLevel) == null) {
-                    allLevelWps = new ArrayList<Workpackage>();
+                    allLevelWps = new ArrayList<>();
                     levelOAP.put(actualLevel, allLevelWps);
                 }
                 allLevelWps = levelOAP.get(actualLevel);
@@ -190,7 +186,7 @@ public class TimeCalc {
         } else {
             boolean ok = true;
             Set<Workpackage> ancestors = WpManager.getAncestors(wp);
-            TreeSet<Date> dates = new TreeSet<Date>();
+            TreeSet<Date> dates = new TreeSet<>();
             for (Workpackage actualWp : ancestors) {
                 if (!actualWp.isIstInaktiv()) {
                     if (actualWp.getEndDateCalc() == null) {
@@ -276,7 +272,7 @@ public class TimeCalc {
                     List<Workpackage> allLevelWps;
                     actualLevel = actualWp.getlastRelevantIndex();
                     if (levelOAP.get(actualLevel) == null) {
-                        allLevelWps = new ArrayList<Workpackage>();
+                        allLevelWps = new ArrayList<>();
                         levelOAP.put(actualLevel, allLevelWps); // Insert
                                                                 // the
                                                                 // upper
@@ -307,8 +303,9 @@ public class TimeCalc {
      * This means that the date is not saved, it is only used to calculate
      * the duration.
      * @param wp
-     *            The actual work package.
+     *          The actual work package.
      * @param startHope
+     *          Date you hope to start.
      */
     private void fillUAPHopes(final Workpackage wp, final Date startHope) {
         if (wp.getStartDateHope() != null) {
@@ -444,7 +441,7 @@ public class TimeCalc {
                         Controller.DATE_DAY_TIME.format(ancestorStartNew)),
                     Controller.TIME_CALCULATION_DEBUG);
 
-                List<Workpackage> actualFollowers = new ArrayList<Workpackage>(
+                List<Workpackage> actualFollowers = new ArrayList<>(
                     actualOAP.getFollowers());
                 Collections
                     .sort(actualFollowers, new APEndDateComparator());
@@ -508,7 +505,7 @@ public class TimeCalc {
                 .getUser().getId(), uap));
         }
 
-        int bac = (int) uap.getBacStunden().doubleValue();
+        int bac = uap.getBacStunden().intValue();
         List<Employee> employees = uap.getWorkers();
         List<String> workers = new ArrayList<String>();
         for (Employee emp : employees) {
@@ -526,7 +523,7 @@ public class TimeCalc {
         int allWorkedToday = 0;
         int possibleWorkToday = 0;
 
-        Map<Day, Double> pvs = new HashMap<Day, Double>();
+        Map<Day, Double> pvs = new HashMap<>();
 
         while (stillWork) {
 
@@ -573,11 +570,12 @@ public class TimeCalc {
                     }
                     allWorkedToday = possibleWorkToday;
                 } else {
-                    int optimalWork = (int) bac / workers.size();
+                    int optimalWork = bac / workers.size();
                     while ((int) bac > 0) {
                         for (String actualWorker : workers) {
                             if ((int) bac > 0) {
-                                if (actualDayRemaining.get(actualWorker) >= optimalWork) {
+                                if (actualDayRemaining.get(actualWorker)
+                                        >= optimalWork) {
                                     bac -= optimalWork;
                                     avManager.addWork(actualWorker,
                                         actualDay, optimalWork);
@@ -738,7 +736,7 @@ public class TimeCalc {
                 Controller.DATE_DAY_TIME.format(ancestorStartNew)),
             Controller.TIME_CALCULATION_DEBUG);
 
-        List<Workpackage> actualFollowers = new ArrayList<Workpackage>(
+        List<Workpackage> actualFollowers = new ArrayList<>(
             uap.getFollowers());
         Collections.sort(actualFollowers, new APEndDateComparator());
         Collections.sort(actualFollowers, new APFollowerComparator());
@@ -774,7 +772,7 @@ public class TimeCalc {
         final Workpackage wp) {
         final String wpID = wp.getStringID();
         final int wpKey = wp.getWpId();
-        List<Day> days = new ArrayList<Day>(singlePVs.keySet());
+        List<Day> days = new ArrayList<>(singlePVs.keySet());
         Collections.sort(days);
         double actualPV = 0.0;
         Calendar cal = new GregorianCalendar();

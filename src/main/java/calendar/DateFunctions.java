@@ -21,7 +21,26 @@ import java.util.Date;
 /**
  * Contains methods to calculate the date.
  */
-public class DateFunctions {
+public final class DateFunctions {
+    /**
+     * Maximum hour of day.
+     */
+    public static final int MAX_HOUR_OF_DAY = 23;
+    /**
+     * Maximum minute or second of hour or minute.
+     */
+    public static final int MAX_MINUTE_SECOND_OF_HOUR = 59;
+    /**
+     * Value to divide milliseconds by and get hours.
+     */
+    public static final int FACTOR_MILLISECONDS_TO_HOURS = 3600000;
+
+    /**
+     * Prevent instantiation.
+     */
+    private DateFunctions() {
+
+    }
 
     /**
      * Convert a Java date into a SQL date. Format: #MM/DD/YYYY HH:MM:SS#
@@ -38,7 +57,7 @@ public class DateFunctions {
                 + c.get(Calendar.YEAR) + " " + c.get(Calendar.HOUR_OF_DAY)
                 + ":" + c.get(Calendar.MINUTE) + ":00#";
         } else {
-            return "Null";
+            return "Null"; //NON-NLS
         }
     }
 
@@ -56,7 +75,7 @@ public class DateFunctions {
             return "#" + month + "/" + c.get(Calendar.DAY_OF_MONTH) + "/"
                 + c.get(Calendar.YEAR) + "#";
         } else {
-            return "Null";
+            return "Null"; //NON-NLS
         }
     }
 
