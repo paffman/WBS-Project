@@ -40,9 +40,6 @@ import de.fhbingen.wbs.translation.Login;
  */
 public class WBSUserGUI extends JFrame {
 
-    /** Constant serialized ID used for compatibility. */
-    private static final long serialVersionUID = 1L;
-
     /** The used layout: GridBagLayout. */
     protected GridBagLayout gbl;
 
@@ -61,6 +58,16 @@ public class WBSUserGUI extends JFrame {
 
     /** Check box to set the permissions of the user. */
     protected JCheckBox cbBerechtigung;
+
+    /**
+     * Default frame width.
+     */
+    private static final int DEFAULT_WIDTH = 300;
+
+    /**
+     * Default frame height.
+     */
+    private static final int DEFAULT_HEIGHT = 200;
 
     /**
      * Constructor. The GUI components are initialized and added to the
@@ -98,8 +105,8 @@ public class WBSUserGUI extends JFrame {
         lblTagessatz = new JLabel(LocalizedStrings.getWbs().dailyRate());
         txfTagessatz = new FilterJTextField();
 
-        btnedit = new JButton(button.ok()); // was: "Ã„ndern"
-        btnhinzufuegen = new JButton(button.ok()); // was: "HinzufÃ¼gen"
+        btnedit = new JButton(button.ok());
+        btnhinzufuegen = new JButton(button.ok());
         btnschliessen = new JButton(button.close());
         btnPwReset = new JButton(button.passwordReset());
 
@@ -126,13 +133,11 @@ public class WBSUserGUI extends JFrame {
      * inserted in the center of the layout.
      */
     private void initialize() {
-        int width = 300;
-        int height = 200;
         Toolkit tk = Toolkit.getDefaultToolkit();
         Dimension screenSize = tk.getScreenSize();
-        setLocation((int) (screenSize.getWidth() / 2) - width / 2,
-            (int) (screenSize.getHeight() / 2) - height / 2);
-        this.setSize(new Dimension(width, height));
+        setLocation((int) (screenSize.getWidth() / 2) - DEFAULT_WIDTH / 2,
+            (int) (screenSize.getHeight() / 2) - DEFAULT_HEIGHT / 2);
+        this.setSize(new Dimension(DEFAULT_WIDTH, DEFAULT_HEIGHT));
         gbl = new GridBagLayout();
         getContentPane().setLayout(gbl);
     }

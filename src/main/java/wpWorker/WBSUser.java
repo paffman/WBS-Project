@@ -28,68 +28,68 @@ import wpOverview.WPOverviewGUI;
  * A class to insert the work effort to the work package.
  */
 public class WBSUser {
-
+    /**
+     * Translation interface.
+     */
     private final Messages messageStrings;
 
     /** The associated GUI to this class. */
-    protected WBSUserGUI gui = new WBSUserGUI();
+    private WBSUserGUI gui = new WBSUserGUI();
 
     /** The employee. */
-    protected Worker mitarbeiter;
+    private Worker mitarbeiter;
 
     /** The functionality of the WPOvervieGUI. */
-    protected WPOverview over;
-
-    /** A instance of it self. */
-    private WBSUser dies;
+    private WPOverview over;
 
     /**
      * Constructor.
      * @param mit
      *            The employee from the WPOverview.
-     * @param over
+     * @param wpOverview
      *            The functionality of the WPOverviewGUI. It initialize the
      *            text fields with the data from the user.
      */
-    public WBSUser(final Worker mit, final WPOverview over) {
+    public WBSUser(final Worker mit, final WPOverview wpOverview) {
         this.messageStrings = LocalizedStrings.getMessages();
-        dies = this;
+
         mitarbeiter = mit;
-        this.over = over;
-        gui.btnhinzufuegen.setVisible(false);
-        gui.txfLogin.setEnabled(false);
-        new WBSUserButtonAction(dies);
+        this.over = wpOverview;
+        getGui().btnhinzufuegen.setVisible(false);
+        getGui().txfLogin.setEnabled(false);
+        new WBSUserButtonAction(this);
         initialize();
-        gui.setTitle(mit.getLogin() + " | " + mit.getName() + ", "
-            + mit.getVorname());
+        getGui().setTitle(mit.getLogin() + " | " + mit.getName() + ", "
+                 + mit.getVorname());
     }
 
     /**
      * Constructor.
-     * @param over
+     * @param wpOverview
      *            The functionality of the WPOverviewGUI. It initialize the
      *            text fields with the data from the user.
      */
-    public WBSUser(final WPOverview over) {
+    public WBSUser(final WPOverview wpOverview) {
         this.messageStrings = LocalizedStrings.getMessages();
-        this.over = over;
-        gui.btnedit.setVisible(false);
-        gui.btnPwReset.setVisible(false);
+        this.over = wpOverview;
+        getGui().btnedit.setVisible(false);
+        getGui().btnPwReset.setVisible(false);
         new WBSUserButtonAction(this);
-        gui.setTitle(LocalizedStrings.getLogin().newUserWindowTitle());
+        getGui().setTitle(LocalizedStrings.getLogin().newUserWindowTitle());
     }
 
     /**
      * Set the text fields in the GUI with the data from the user.
      */
     public final void initialize() {
-        gui.txfLogin.setText(mitarbeiter.getLogin());
-        gui.txfVorname.setText(mitarbeiter.getVorname());
-        gui.txfName.setText(mitarbeiter.getName());
-        gui.cbBerechtigung
-            .setSelected((mitarbeiter.getBerechtigung() == 1 ? true : false));
-        gui.txfTagessatz
-            .setText(Double.toString(mitarbeiter.getTagessatz()));
+        getGui().txfLogin.setText(getMitarbeiter().getLogin());
+        getGui().txfVorname.setText(getMitarbeiter().getVorname());
+        getGui().txfName.setText(getMitarbeiter().getName());
+        getGui().cbBerechtigung
+            .setSelected((getMitarbeiter().getBerechtigung() == 1));
+
+        getGui().txfTagessatz
+            .setText(Double.toString(getMitarbeiter().getTagessatz()));
     }
 
     /**
@@ -98,27 +98,29 @@ public class WBSUser {
      */
     public final boolean check() {
         // Login isn't filled.
-        if (gui.txfLogin.getText().equals("")) {
-            JOptionPane.showMessageDialog(gui, messageStrings.fillFieldError
-                    (LocalizedStrings.getLogin().login()));
+        if (getGui().txfLogin.getText().equals("")) {
+            JOptionPane.showMessageDialog(getGui(),
+                    messageStrings.fillFieldError(LocalizedStrings.getLogin()
+                            .login()));
             return false;
         }
         // Name isn't filled.
-        if (gui.txfName.getText().equals("")
-            || gui.txfVorname.getText().equals("")) {
-            JOptionPane.showMessageDialog(gui, messageStrings.fillFieldError
-                    (LocalizedStrings.getLogin().firstName()));
+        if (getGui().txfName.getText().equals("")
+            || getGui().txfVorname.getText().equals("")) {
+            JOptionPane.showMessageDialog(getGui(),
+                    messageStrings.fillFieldError(LocalizedStrings.getLogin().
+                            firstName()));
             return false;
         }
 
         try {
-            if (gui.txfTagessatz.getText().equals("")
-                || Double.parseDouble(gui.txfTagessatz.getText()) <= 0) {
-                JOptionPane.showMessageDialog(gui, messageStrings
+            if (getGui().txfTagessatz.getText().equals("")
+                || Double.parseDouble(getGui().txfTagessatz.getText()) <= 0) {
+                JOptionPane.showMessageDialog(getGui(), messageStrings
                     .fillFieldError(LocalizedStrings.getWbs().dailyRate()));
                 return false;
             }
-            JOptionPane.showMessageDialog(gui, messageStrings
+            JOptionPane.showMessageDialog(getGui(), messageStrings
                 .valueInFieldIsNotANumber(LocalizedStrings.getWbs()
                     .dailyRate()));
         } catch (NumberFormatException ex) {
@@ -147,7 +149,7 @@ public class WBSUser {
             boolean success = DBModelManager.getEmployeesModel()
                 .updateEmployee(emp);
             if (success) {
-                over.reload();
+                getOver().reload();
                 WPOverviewGUI.setStatusText(messageStrings.userChanged());
             }
             return success;
@@ -163,14 +165,12 @@ public class WBSUser {
      * @return True: The employee is added successful. False: Else.
      */
     public final boolean addMitarbeiter(final Worker worker) {
-        boolean vorhanden = false;
         // Get all employees and check that the new employee doesn't
         // exists.
         Employee emp = DBModelManager.getEmployeesModel().getEmployee(
             worker.getLogin());
-        vorhanden = emp != null;
-        // If employee doesn't exists.
-        if (!vorhanden) {
+
+        if (emp == null) {
             emp = new Employee();
             emp.setLogin(worker.getLogin());
             emp.setFirst_name(worker.getVorname());
@@ -179,14 +179,11 @@ public class WBSUser {
             emp.setPassword("1234".toCharArray());
             emp.setDaily_rate(worker.getTagessatz());
             DBModelManager.getEmployeesModel().addNewEmployee(emp);
-        }
-        if (vorhanden) {
-            return false;
-        } else {
-            over.reload();
+            getOver().reload();
             WPOverviewGUI.setStatusText(messageStrings.userAdded());
             return true;
         }
+        return false;
     }
 
     /**
@@ -194,13 +191,13 @@ public class WBSUser {
      * @return The actual employee.
      */
     public final Worker getActualWorker() {
-        return mitarbeiter;
+        return getMitarbeiter();
     }
 
     /** Reset the password. */
     public final void passwordReset() {
         Employee employee = DBModelManager.getEmployeesModel().getEmployee(
-            mitarbeiter.getId());
+            getMitarbeiter().getId());
         if (employee != null) {
             employee.setPassword("1234".toCharArray());
             if (DBModelManager.getEmployeesModel().updateEmployee(employee)) {
@@ -211,5 +208,29 @@ public class WBSUser {
                     messageStrings.passwordChangeError());
             }
         }
+    }
+
+    /**
+     *  The associated GUI to this class.
+     *  @return Gui instance.
+     */
+    public final WBSUserGUI getGui() {
+        return gui;
+    }
+
+    /**
+     * The employee.
+     * @return Employee instance.
+     */
+    public final Worker getMitarbeiter() {
+        return mitarbeiter;
+    }
+
+    /**
+     * The functionality of the WPOvervieGUI.
+     * @return WPOverviewGui instance.
+     */
+    public final WPOverview getOver() {
+        return over;
     }
 }

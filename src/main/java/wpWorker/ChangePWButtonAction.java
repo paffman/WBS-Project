@@ -31,16 +31,19 @@ public class ChangePWButtonAction {
     /** A instance of the functionality. */
     private ChangePW changepw;
 
+    /**
+     * Translation interface.
+     */
     private final Messages messages;
 
     /**
      * Constructor.
-     * @param changepw
+     * @param changePwInstance
      *            The functionality to change a password.
      */
-    public ChangePWButtonAction(final ChangePW changepw) {
+    public ChangePWButtonAction(final ChangePW changePwInstance) {
         messages = LocalizedStrings.getMessages();
-        this.changepw = changepw;
+        this.changepw = changePwInstance;
         addButtonAction();
     }
 
@@ -49,9 +52,9 @@ public class ChangePWButtonAction {
      * Calls the needed procedures.
      */
     public final void addButtonAction() {
-        changepw.gui.txfUser.setText(changepw.usr.getName());
+        changepw.getGui().txfUser.setText(changepw.getUsr().getName());
 
-        changepw.gui.btnOk.addActionListener(new ActionListener() {
+        changepw.getGui().btnOk.addActionListener(new ActionListener() {
             public void actionPerformed(final ActionEvent e) {
                 // Check if all fields are filled.
                 if (changepw.checkFieldsFilled()) {
@@ -62,38 +65,38 @@ public class ChangePWButtonAction {
                             if (changepw.checkRules()) {
                                 Employee emp = DBModelManager
                                     .getEmployeesModel().getEmployee(
-                                        changepw.usr.getId());
+                                        changepw.getUsr().getId());
                                 changepw.setNewPassword(emp);
                                 WPOverviewGUI.setStatusText(messages
                                     .passwordChangeConfirm());
-                                changepw.gui.dispose();
+                                changepw.getGui().dispose();
                             } else {
-                                JOptionPane.showMessageDialog(changepw.gui,
+                                JOptionPane.showMessageDialog(changepw.getGui(),
                                     messages.passwordInvalidError() + "\n"
                                         + messages.guidelinesPassword(),
                                     null, JOptionPane.INFORMATION_MESSAGE);
                             }
                         } else {
-                            JOptionPane.showMessageDialog(changepw.gui,
+                            JOptionPane.showMessageDialog(changepw.getGui(),
                                 messages.passwordsNotMatchingError(), null,
                                 JOptionPane.INFORMATION_MESSAGE);
                         }
                     } else {
-                        JOptionPane.showMessageDialog(changepw.gui,
+                        JOptionPane.showMessageDialog(changepw.getGui(),
                             messages.passwordOldWrong(), null,
                             JOptionPane.INFORMATION_MESSAGE);
                     }
                 } else {
-                    JOptionPane.showMessageDialog(changepw.gui,
+                    JOptionPane.showMessageDialog(changepw.getGui(),
                         messages.fillAllFieldsError(), null,
                         JOptionPane.INFORMATION_MESSAGE);
                 }
             }
         });
 
-        changepw.gui.btnCancel.addActionListener(new ActionListener() {
+        changepw.getGui().btnCancel.addActionListener(new ActionListener() {
             public void actionPerformed(final ActionEvent e) {
-                changepw.gui.dispose();
+                changepw.getGui().dispose();
             }
         });
 

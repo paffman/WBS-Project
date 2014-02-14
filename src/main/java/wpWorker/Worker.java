@@ -41,94 +41,80 @@ public class Worker {
 
     /**
      * Constructor: Creates a worker.
-     * @param login
+     * @param workerLogin
      *            The login of the user.
-     * @param id
+     * @param workerId
      *            The id of the worker.
-     * @param vorname
+     * @param firstName
      *            The first name of the worker.
-     * @param name
+     * @param surname
      *            The name of the user.
      * @param berechtigung
      *            The permission on the data base. 0: Worker, 1: Project
      *            leader.
-     * @param tagessatz
+     * @param dailyRate
      *            The daily rate of the user.
      */
-    public Worker(final String login, final int id, final String vorname,
-        final String name, final int berechtigung, final double tagessatz) {
-        this(login, id, vorname, name, berechtigung == 1, tagessatz);
+    public Worker(final String workerLogin, final int workerId,
+                  final String firstName, final String surname,
+                  final int berechtigung, final double dailyRate) {
+        this(workerLogin, workerId, firstName, surname, berechtigung == 1,
+                dailyRate);
     }
 
     /**
      * Constructor: Creates a worker.
-     * @param login
+     * @param workerLogin
      *            The login of the user.
-     * @param vorname
+     * @param firstName
      *            The first name of the worker.
-     * @param name
+     * @param surname
      *            The name of the user.
      * @param berechtigung
      *            The permission on the data base. 0: Worker, 1: Project
      *            leader.
-     * @param tagessatz
+     * @param dailyRate
      *            The daily rate of the user.
      */
-    public Worker(final String login, final String vorname,
-        final String name, final int berechtigung, final double tagessatz) {
-        this(login, -1, vorname, name, berechtigung == 1, tagessatz);
+    public Worker(final String workerLogin, final String firstName,
+        final String surname, final int berechtigung, final double dailyRate) {
+        this(workerLogin, -1, firstName, surname, berechtigung == 1, dailyRate);
     }
 
     /**
      * Constructor: Creates a worker.
-     * @param login
+     * @param workerLogin
      *            The login of the user.
-     * @param id
+     * @param workerId
      *            The id of the worker.
-     * @param vorname
+     * @param firstName
      *            The first name of the worker.
-     * @param name
+     * @param surname
      *            The name of the user.
-     * @param leiter
+     * @param isProjectManager
      *            True: If the worker is a leader. False: Else.
-     * @param tagessatz
+     * @param dailyRate
      *            The daily rate of the user.
      */
-    public Worker(final String login, final int id, final String vorname,
-        final String name, final boolean leiter, final double tagessatz) {
+    public Worker(final String workerLogin, final int workerId,
+                  final String firstName, final String surname,
+                  final boolean isProjectManager, final double dailyRate) {
 
-        this.login = login;
-        this.id = id;
-        this.vorname = vorname;
-        this.name = name;
-        this.tagessatz = tagessatz;
-        this.leiter = leiter;
+        this.login = workerLogin;
+        this.id = workerId;
+        this.vorname = firstName;
+        this.name = surname;
+        this.tagessatz = dailyRate;
+        this.leiter = isProjectManager;
     }
-
-    // public Mitarbeiter(String login, String vorname, String name,
-    // boolean
-    // leiter, String passwort, double tagessatz) {
-    // this.login = login;
-    // this.vorname = vorname;
-    // this.name = name;
-    // this.passwort = passwort;
-    // this.tagessatz = tagessatz;
-    // this.leiter = leiter;
-    // if(leiter) {
-    // this.berechtigung = 1;
-    // } else {
-    // this.berechtigung = 0;
-    // }
-    // }
-    //
 
     /**
      * Constructor: Create a worker.
-     * @param login
+     * @param workerLogin
      *            The login of the user.
      */
-    public Worker(final String login) {
-        this.login = login;
+    public Worker(final String workerLogin) {
+        this.login = workerLogin;
         this.id = -1;
         this.vorname = "";
         this.name = "";
@@ -138,13 +124,13 @@ public class Worker {
 
     /**
      * Constructor: Create a worker.
-     * @param id
+     * @param workerId
      *            The workers id.
      */
-    public Worker(final int id) {
-        this.login = DBModelManager.getEmployeesModel().getEmployee(id)
+    public Worker(final int workerId) {
+        this.login = DBModelManager.getEmployeesModel().getEmployee(workerId)
             .getLogin();
-        this.id = id;
+        this.id = workerId;
         this.vorname = "";
         this.name = "";
         this.leiter = false;
@@ -153,15 +139,15 @@ public class Worker {
 
     /**
      * Constructor: Create a worker.
-     * @param login
+     * @param workerLogin
      *            The login of the user.
-     * @param leiter
+     * @param isProjectManager
      *            True: The worker is a project leader. False: The worker
      *            isn't a leader.
      */
-    public Worker(final String login, final boolean leiter) {
-        this.login = login;
-        this.leiter = leiter;
+    public Worker(final String workerLogin, final boolean isProjectManager) {
+        this.login = workerLogin;
+        this.leiter = isProjectManager;
         this.name = "";
         this.vorname = "";
     }
@@ -191,7 +177,10 @@ public class Worker {
      * @return The permission of the worker. 0: worker. 1: leader.
      */
     public final int getBerechtigung() {
-        return leiter ? 1 : 0;
+        if (leiter) {
+            return 1;
+        }
+        return 0;
     }
 
     /**
@@ -227,20 +216,20 @@ public class Worker {
 
     /**
      * Sets the name of the user.
-     * @param name
+     * @param newSurname
      *            The users name.
      */
-    public final void setName(final String name) {
-        this.name = name;
+    public final void setName(final String newSurname) {
+        this.name = newSurname;
     }
 
     /**
      * Sets the first name of the user.
-     * @param vorname
+     * @param newFirstName
      *            The users first name.
      */
-    public final void setVorname(final String vorname) {
-        this.vorname = vorname;
+    public final void setVorname(final String newFirstName) {
+        this.vorname = newFirstName;
     }
 
     /**
@@ -254,11 +243,11 @@ public class Worker {
 
     /**
      * Sets the daily rate of the worker.
-     * @param tagessatz
+     * @param newDailyRate
      *            The daily rate of the worker.
      */
-    public final void setTagessatz(final double tagessatz) {
-        this.tagessatz = tagessatz;
+    public final void setTagessatz(final double newDailyRate) {
+        this.tagessatz = newDailyRate;
     }
 
     /**
@@ -292,11 +281,11 @@ public class Worker {
     }
 
     /**
-     * @param id
+     * @param newId
      *            the id to set
      */
-    public final void setId(final int id) {
-        this.id = id;
+    public final void setId(final int newId) {
+        this.id = newId;
     }
 
 }

@@ -42,15 +42,18 @@ public class ChangePWGUI extends JFrame { // TODO extend JDialog
     /** Constant serialized ID used for compatibility. */
     private static final long serialVersionUID = 1L;
 
-    private final Login login;
-    private final Messages messages;
-    private final Button buttons;
+    /**
+     * Default frame width.
+     */
+    private static final int DEFAULT_WIDTH = 300;
+
+    /**
+     * Default frame height.
+     */
+    private static final int DEFAULT_HEIGHT = 150;
 
     /** The used layout for the GUI: GridBagLayout. */
-    protected GridBagLayout gbl;
-
-    /** The single labels to describe the fields of the GUI. */
-    public JLabel lblUser, lblOldPW, lblNewPW, lblNewPWConfirm;
+    private GridBagLayout gbl;
 
     /** The text field to insert the user. */
     public JTextField txfUser;
@@ -71,9 +74,11 @@ public class ChangePWGUI extends JFrame { // TODO extend JDialog
      */
     public ChangePWGUI() {
         super();
-        login = LocalizedStrings.getLogin();
-        messages = LocalizedStrings.getMessages();
-        buttons = LocalizedStrings.getButton();
+
+        Login login = LocalizedStrings.getLogin();
+        Messages messages = LocalizedStrings.getMessages();
+        Button buttons = LocalizedStrings.getButton();
+
         setTitle(login.changePassword());
         setResizable(false);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -86,14 +91,14 @@ public class ChangePWGUI extends JFrame { // TODO extend JDialog
         }
         initialize();
 
-        lblUser = new JLabel(login.currentUser());
+        JLabel lblUser = new JLabel(login.currentUser());
         txfUser = new FilterJTextField();
         txfUser.setEnabled(false);
-        lblOldPW = new JLabel(login.oldPassword());
+        JLabel lblOldPW = new JLabel(login.oldPassword());
         txfOldPW = new JPasswordField();
-        lblNewPW = new JLabel(login.newPassword());
+        JLabel lblNewPW = new JLabel(login.newPassword());
         txfNewPW = new JPasswordField();
-        lblNewPWConfirm = new JLabel(login.repeatPassword());
+        JLabel lblNewPWConfirm = new JLabel(login.repeatPassword());
         txfNewPWConfirm = new JPasswordField();
         btnOk = new JButton(buttons.ok());
         btnCancel = new JButton(buttons.cancel());
@@ -115,14 +120,12 @@ public class ChangePWGUI extends JFrame { // TODO extend JDialog
      * inserted in the center.
      */
     private void initialize() {
-        int width = 300;
-        int height = 150;
         Toolkit tk = Toolkit.getDefaultToolkit();
         Dimension screenSize = tk.getScreenSize();
-        setLocation((int) (screenSize.getWidth() / 2) - width / 2,
-            (int) (screenSize.getHeight() / 2) - height / 2);
+        setLocation((int) (screenSize.getWidth() / 2) - DEFAULT_WIDTH / 2,
+            (int) (screenSize.getHeight() / 2) - DEFAULT_HEIGHT / 2);
 
-        this.setSize(new Dimension(width, height));
+        this.setSize(new Dimension(DEFAULT_WIDTH, DEFAULT_HEIGHT));
         gbl = new GridBagLayout();
         getContentPane().setLayout(gbl);
         setVisible(true);

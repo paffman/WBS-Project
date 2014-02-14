@@ -27,11 +27,11 @@ public class WBSUserButtonAction {
 
     /**
      * Constructor.
-     * @param Mitarbeiter
+     * @param wbsUser
      *            The employee.
      */
-    public WBSUserButtonAction(final WBSUser Mitarbeiter) {
-        this.mitarbeiter = Mitarbeiter;
+    public WBSUserButtonAction(final WBSUser wbsUser) {
+        this.mitarbeiter = wbsUser;
         addButtonAction();
     }
 
@@ -40,60 +40,60 @@ public class WBSUserButtonAction {
      * "Edit". Also add the key listener to the text field "Daily rate".
      */
     public final void addButtonAction() {
-        mitarbeiter.gui.btnedit.addActionListener(new ActionListener() {
+        mitarbeiter.getGui().btnedit.addActionListener(new ActionListener() {
             public void actionPerformed(final ActionEvent arg0) {
                 if (mitarbeiter.check()) {
                     int rights;
-                    if (mitarbeiter.gui.cbBerechtigung.isSelected()) {
+                    if (mitarbeiter.getGui().cbBerechtigung.isSelected()) {
                         rights = 1;
                     } else {
                         rights = 0;
                     }
                     Worker actualWorker = mitarbeiter.getActualWorker();
-                    actualWorker.setName(mitarbeiter.gui.txfName.getText());
-                    actualWorker.setVorname(mitarbeiter.gui.txfVorname
+                    actualWorker.setName(mitarbeiter.getGui().txfName.getText());
+                    actualWorker.setVorname(mitarbeiter.getGui().txfVorname
                         .getText());
                     actualWorker.setBerechtigung(rights);
                     actualWorker.setTagessatz(Double
-                        .parseDouble(mitarbeiter.gui.txfTagessatz.getText()));
+                        .parseDouble(mitarbeiter.getGui().txfTagessatz.getText()));
                     mitarbeiter.changeMitarbeiter(actualWorker);
-                    mitarbeiter.gui.dispose();
+                    mitarbeiter.getGui().dispose();
                 }
             }
         });
 
-        mitarbeiter.gui.btnschliessen
+        mitarbeiter.getGui().btnschliessen
             .addActionListener(new ActionListener() {
                 public void actionPerformed(final ActionEvent arg0) {
-                    mitarbeiter.gui.dispose();
+                    mitarbeiter.getGui().dispose();
                 }
             });
 
-        mitarbeiter.gui.btnPwReset.addActionListener(new ActionListener() {
+        mitarbeiter.getGui().btnPwReset.addActionListener(new ActionListener() {
             public void actionPerformed(final ActionEvent arg0) {
                 // Get employee from database.
                 mitarbeiter.passwordReset();
-                mitarbeiter.gui.dispose();
+                mitarbeiter.getGui().dispose();
             }
         });
 
-        mitarbeiter.gui.btnhinzufuegen
+        mitarbeiter.getGui().btnhinzufuegen
             .addActionListener(new ActionListener() {
                 public void actionPerformed(final ActionEvent arg0) {
                     if (mitarbeiter.check()) {
                         int rights;
-                        if (mitarbeiter.gui.cbBerechtigung.isSelected()) {
+                        if (mitarbeiter.getGui().cbBerechtigung.isSelected()) {
                             rights = 1;
                         } else {
                             rights = 0;
                         }
                         mitarbeiter.addMitarbeiter(new Worker(
-                            mitarbeiter.gui.txfLogin.getText(),
-                            mitarbeiter.gui.txfVorname.getText(),
-                            mitarbeiter.gui.txfName.getText(), rights,
-                            Double.parseDouble(mitarbeiter.gui.txfTagessatz
+                            mitarbeiter.getGui().txfLogin.getText(),
+                            mitarbeiter.getGui().txfVorname.getText(),
+                            mitarbeiter.getGui().txfName.getText(), rights,
+                            Double.parseDouble(mitarbeiter.getGui().txfTagessatz
                                 .getText())));
-                        mitarbeiter.gui.dispose();
+                        mitarbeiter.getGui().dispose();
                     }
                 }
             });

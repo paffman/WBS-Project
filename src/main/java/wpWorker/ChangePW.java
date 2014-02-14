@@ -29,31 +29,29 @@ import de.fhbingen.wbs.translation.Messages;
  * change the password.
  */
 public class ChangePW {
-
     /**
      * The GUI to change the password.
      */
-    protected ChangePWGUI gui;
-
-    /** A instance of it self. */
-    private ChangePW dies;
+    private ChangePWGUI gui;
 
     /** The user from which the password is changed. */
-    protected Worker usr;
+    private Worker usr;
 
+    /**
+     * Translation interface.
+     */
     private final Messages messages;
 
     /**
      * Constructor.
-     * @param usr
+     * @param worker
      *            The user from which password is changed.
      */
-    public ChangePW(final Worker usr) {
+    public ChangePW(final Worker worker) {
         messages = LocalizedStrings.getMessages();
-        dies = this;
-        this.usr = usr;
+        this.usr = worker;
         gui = new ChangePWGUI();
-        new ChangePWButtonAction(dies);
+        new ChangePWButtonAction(this);
     }
 
     /**
@@ -62,12 +60,9 @@ public class ChangePW {
      *         filled out.
      */
     protected final boolean checkFieldsFilled() {
-        if (gui.txfOldPW.getPassword().length > 0
-            && gui.txfNewPW.getPassword().length > 0
-            && gui.txfNewPWConfirm.getPassword().length > 0) {
-            return true;
-        }
-        return false;
+        return getGui().txfOldPW.getPassword().length > 0
+                && getGui().txfNewPW.getPassword().length > 0
+                && getGui().txfNewPWConfirm.getPassword().length > 0;
     }
 
     /**
@@ -76,7 +71,7 @@ public class ChangePW {
      *         doesn't matches.
      */
     protected final boolean checkOldPW() {
-        return MySqlConnect.comparePasswort(gui.txfOldPW.getPassword());
+        return MySqlConnect.comparePasswort(getGui().txfOldPW.getPassword());
     }
 
     /**
@@ -84,8 +79,8 @@ public class ChangePW {
      * @return True: If passwords matches. False: Else.
      */
     protected final boolean checkNewPW() {
-        return ProjectSetupAssistant.arePasswordsEqual(
-            gui.txfNewPW.getPassword(), gui.txfNewPWConfirm.getPassword());
+        return ProjectSetupAssistant.arePasswordsEqual(getGui().txfNewPW
+                .getPassword(), getGui().txfNewPWConfirm.getPassword());
     }
 
     /**
@@ -94,16 +89,16 @@ public class ChangePW {
      *            A result set which contains the user.
      */
     protected final void setNewPassword(final Employee emp) {
-        emp.setPassword(gui.txfNewPW.getPassword());
+        emp.setPassword(getGui().txfNewPW.getPassword());
         boolean success = DBModelManager.getEmployeesModel()
             .updateEmployee(emp);
         if (!success) {
-            JOptionPane.showMessageDialog(gui,
+            JOptionPane.showMessageDialog(getGui(),
                 messages.passwordChangeError(), null,
                 JOptionPane.INFORMATION_MESSAGE);
         } else {
             SQLExecuter.closeConnection();
-            MySqlConnect.setPassword(gui.txfNewPW.getPassword());
+            MySqlConnect.setPassword(getGui().txfNewPW.getPassword());
         }
     }
 
@@ -113,7 +108,22 @@ public class ChangePW {
      */
 
     protected final boolean checkRules() {
-        return ProjectSetupAssistant.isPasswordValid(gui.txfNewPW
+        return ProjectSetupAssistant.isPasswordValid(getGui().txfNewPW
             .getPassword());
+    }
+
+    /**
+     * The GUI to change the password.
+     * @return gui element.
+     */
+    public final ChangePWGUI getGui() {
+        return gui;
+    }
+
+    /** The user from which the password is changed.
+     * @return gui element.
+     */
+    public final Worker getUsr() {
+        return usr;
     }
 }
