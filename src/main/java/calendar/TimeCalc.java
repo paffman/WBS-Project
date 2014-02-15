@@ -54,6 +54,7 @@ public class TimeCalc {
     /**
      * Contains assignment Day -> Employee, worked hours.
      */
+    //TODO see if this is needed anywhere
     private static Map<Day, Map<String, Integer>> consumedWork;
 
     /** Manages the availabilities. */
@@ -213,13 +214,13 @@ public class TimeCalc {
 
     /**
      * Fills the list uapWithoutAncestors and levelOAP.
-     * @param levelOAP
+     * @param levelOap
      *            A list which contain all sub packages without ancestors.
      * @param uapWithoutAncestors
      *            A list with the upper work packages.
      */
     public final void init(final List<Workpackage> uapWithoutAncestors,
-        final Map<Integer, List<Workpackage>> levelOAP) {
+        final Map<Integer, List<Workpackage>> levelOap) {
 
         Set<Workpackage> allWithoutAncestors = WpManager.getNoAncestorWps();
 
@@ -228,7 +229,7 @@ public class TimeCalc {
         int maxLevels = root.getLvlIDs().length;
 
         for (int i = 1; i <= maxLevels; i++) {
-            levelOAP.put(i, new ArrayList<Workpackage>()); // Creates a set
+            levelOap.put(i, new ArrayList<Workpackage>()); // Creates a set
                                                            // for each
                                                            // level which
                                                            // is filled
@@ -269,9 +270,9 @@ public class TimeCalc {
 
                     List<Workpackage> allLevelWps;
                     actualLevel = actualWp.getlastRelevantIndex();
-                    if (levelOAP.get(actualLevel) == null) {
+                    if (levelOap.get(actualLevel) == null) {
                         allLevelWps = new ArrayList<>();
-                        levelOAP.put(actualLevel, allLevelWps); // Insert
+                        levelOap.put(actualLevel, allLevelWps); // Insert
                                                                 // the
                                                                 // upper
                                                                 // work
@@ -279,7 +280,7 @@ public class TimeCalc {
                                                                 // to the
                                                                 // list.
                     }
-                    allLevelWps = levelOAP.get(actualLevel);
+                    allLevelWps = levelOap.get(actualLevel);
                     allLevelWps.add(actualWp);
 
                 } else {
@@ -457,11 +458,9 @@ public class TimeCalc {
 
                         if (actualFollower.getEndDateCalc() == null
                             && actualFollower.canCalc()) {
-                            Controller
-                                .showConsoleMessage(
-                                    LocalizedStrings.getStatus()
-                                        .successorFound(
-                                            actualOAP.getStringID()),
+                            Controller.showConsoleMessage(LocalizedStrings
+                                    .getStatus().successorFound(actualOAP
+                                            .getStringID()),
                                     Controller.TIME_CALCULATION_DEBUG);
                             if (actualFollower.isIstOAP()) {
                                 calcOAP(actualFollower);
@@ -505,7 +504,7 @@ public class TimeCalc {
 
         int bac = uap.getBacStunden().intValue();
         List<Employee> employees = uap.getWorkers();
-        List<String> workers = new ArrayList<String>();
+        List<String> workers = new ArrayList<>();
         for (Employee emp : employees) {
             workers.add(emp.getLogin());
         }
@@ -518,8 +517,8 @@ public class TimeCalc {
 
         boolean stillWork = true;
 
-        int allWorkedToday = 0;
-        int possibleWorkToday = 0;
+        int allWorkedToday;
+        int possibleWorkToday;
 
         Map<Day, Double> pvs = new HashMap<>();
 
@@ -569,9 +568,9 @@ public class TimeCalc {
                     allWorkedToday = possibleWorkToday;
                 } else {
                     int optimalWork = bac / workers.size();
-                    while ((int) bac > 0) {
+                    while (bac > 0) {
                         for (String actualWorker : workers) {
-                            if ((int) bac > 0) {
+                            if (bac > 0) {
                                 if (actualDayRemaining.get(actualWorker)
                                         >= optimalWork) {
                                     bac -= optimalWork;
@@ -635,7 +634,7 @@ public class TimeCalc {
                         optimalWork = 1;
                     }
                 }
-                if ((int) bac == 0) {
+                if (bac == 0) {
                     double percent = (double) allWorkedToday
                         / (double) possibleWorkToday;
                     double hoursConsumed = (percent * avManager
