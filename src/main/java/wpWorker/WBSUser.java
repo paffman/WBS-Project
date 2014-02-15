@@ -1,19 +1,18 @@
-package wpWorker;
-
-/**
- * Studienprojekt:	WBS
- *
- * Kunde:				Pentasys AG, Jens von Gersdorff
- * Projektmitglieder:	Andre Paffenholz,
- * 						Peter Lange,
- * 						Daniel Metzler,
- * 						Samson von Graevenitz
- *
- * GUI zum Hinzufügen eines Aufwandes zum Arbeitspaket
- *
- * @author Daniel Metzler
- * @version 1.9 - 17.02.2011
+/*
+ * The WBS-Tool is a project management tool combining the Work Breakdown
+ * Structure and Earned Value Analysis Copyright (C) 2013 FH-Bingen This
+ * program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your
+ * option) any later version. This program is distributed in the hope that
+ * it will be useful, but WITHOUT ANY WARRANTY;; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details. You should have received a
+ * copy of the GNU General Public License along with this program. If not,
+ * see <http://www.gnu.org/licenses/>.
  */
+
+package wpWorker;
 
 import de.fhbingen.wbs.translation.LocalizedStrings;
 import de.fhbingen.wbs.translation.Messages;
@@ -25,101 +24,105 @@ import dbaccess.data.Employee;
 import wpOverview.WPOverview;
 import wpOverview.WPOverviewGUI;
 
+/**
+ * A class to insert the work effort to the work package.
+ */
 public class WBSUser {
-
+    /**
+     * Translation interface.
+     */
     private final Messages messageStrings;
-    /**
-     * Variablen für die WBSMitarbeiterGUI und den SQLExecuter Variable für
-     * den Mitarbeiter und die WPOverview
-     */
 
-    protected WBSUserGUI gui = new WBSUserGUI();
-    protected Worker mitarbeiter;
-    protected WPOverview over;
-    private WBSUser dies;
+    /** The associated GUI to this class. */
+    private WBSUserGUI gui = new WBSUserGUI();
+
+    /** The employee. */
+    private Worker mitarbeiter;
+
+    /** The functionality of the WPOvervieGUI. */
+    private WPOverview over;
 
     /**
-     * Konstruktoraufruf wenn vorhander Mitarbeiter geändert werden soll
-     *
+     * Constructor.
      * @param mit
-     *            Mitarbeiter aus der WPOverview wird übergeben
-     * @param over
-     *            WPOverview wird übergeben initialisiert die Textfelder mit
-     *            den Daten des ausgewählten Benutzers
+     *            The employee from the WPOverview.
+     * @param wpOverview
+     *            The functionality of the WPOverviewGUI. It initialize the
+     *            text fields with the data from the user.
      */
-    public WBSUser(Worker mit, WPOverview over) {
+    public WBSUser(final Worker mit, final WPOverview wpOverview) {
         this.messageStrings = LocalizedStrings.getMessages();
-        dies = this;
+
         mitarbeiter = mit;
-        this.over = over;
-        gui.btnhinzufuegen.setVisible(false);
-        gui.txfLogin.setEnabled(false);
-        new WBSUserButtonAction(dies);
-        initialize();
-        gui.setTitle(mit.getLogin() + " | " + mit.getName() + ", "
-                + mit.getVorname());
-    }
-
-    /**
-     * Konstruktoraufruf wenn neuer Mitarbeiter angelegt wird
-     *
-     * @param over
-     *            WPOverview wird übergeben
-     */
-    public WBSUser(WPOverview over) {
-        this.messageStrings = LocalizedStrings.getMessages();
-        this.over = over;
-        gui.btnedit.setVisible(false);
-        gui.btnPwReset.setVisible(false);
+        this.over = wpOverview;
+        getGui().btnhinzufuegen.setVisible(false);
+        getGui().txfLogin.setEnabled(false);
         new WBSUserButtonAction(this);
-        gui.setTitle(LocalizedStrings.getLogin().newUserWindowTitle());
+        initialize();
+        getGui().setTitle(mit.getLogin() + " | " + mit.getName() + ", "
+                 + mit.getVorname());
     }
 
     /**
-     * Setzt die Textfelder in der WBSMitarbeiterGUI mit den Daten des Benutzers
-     * anhand des übergebenen Mitarbeiters
+     * Constructor.
+     * @param wpOverview
+     *            The functionality of the WPOverviewGUI. It initialize the
+     *            text fields with the data from the user.
      */
-    public void initialize() {
-        gui.txfLogin.setText(mitarbeiter.getLogin());
-        gui.txfVorname.setText(mitarbeiter.getVorname());
-        gui.txfName.setText(mitarbeiter.getName());
-        gui.cbBerechtigung
-                .setSelected((mitarbeiter.getBerechtigung() == 1 ? true : false));
-        gui.txfTagessatz.setText(Double.toString(mitarbeiter.getTagessatz()));
+    public WBSUser(final WPOverview wpOverview) {
+        this.messageStrings = LocalizedStrings.getMessages();
+        this.over = wpOverview;
+        getGui().btnedit.setVisible(false);
+        getGui().btnPwReset.setVisible(false);
+        new WBSUserButtonAction(this);
+        getGui().setTitle(LocalizedStrings.getLogin().newUserWindowTitle());
     }
 
     /**
-     * wird von der Methode addMitarbeiter() und changeMitarbeiter() aufgerufen
-     * Führt die PlausibilitätsPrüfung der einzelnen Felder in der
-     * WBSMitarbeiterGUI durch
-     *
-     * @return true = alles OK, false = es sind Unstimmigkeiten aufgetreten
+     * Set the text fields in the GUI with the data from the user.
      */
-    public boolean check() {
-        // Login wurde nicht ausgefüllt
-        if (gui.txfLogin.getText().equals("")) {
-            JOptionPane.showMessageDialog(gui, "Bitte Login ausfüllen");
+    public final void initialize() {
+        getGui().txfLogin.setText(getMitarbeiter().getLogin());
+        getGui().txfVorname.setText(getMitarbeiter().getVorname());
+        getGui().txfName.setText(getMitarbeiter().getName());
+        getGui().cbBerechtigung
+            .setSelected((getMitarbeiter().getBerechtigung() == 1));
+
+        getGui().txfTagessatz
+            .setText(Double.toString(getMitarbeiter().getTagessatz()));
+    }
+
+    /**
+     * Check the plausibility from the single text fields in the GUI.
+     * @return True: If all fields are correct. False: Else.
+     */
+    public final boolean check() {
+        // Login isn't filled.
+        if (getGui().txfLogin.getText().equals("")) {
+            JOptionPane.showMessageDialog(getGui(),
+                    messageStrings.fillFieldError(LocalizedStrings.getLogin()
+                            .login()));
             return false;
         }
-        // Name wurde nicht ausgefüllt
-        if (gui.txfName.getText().equals("")
-                || gui.txfVorname.getText().equals("")) {
-            JOptionPane.showMessageDialog(gui, "Bitte Namen ausfüllen");
+        // Name isn't filled.
+        if (getGui().txfName.getText().equals("")
+            || getGui().txfVorname.getText().equals("")) {
+            JOptionPane.showMessageDialog(getGui(),
+                    messageStrings.fillFieldError(LocalizedStrings.getLogin().
+                            firstName()));
             return false;
         }
 
         try {
-            if (gui.txfTagessatz.getText().equals("")
-                    || Double.parseDouble(gui.txfTagessatz.getText()) <= 0) {
-                JOptionPane
-                        .showMessageDialog(gui, messageStrings.fillFieldError(
-                                LocalizedStrings.getWbs().dailyRate()));
+            if (getGui().txfTagessatz.getText().equals("")
+                || Double.parseDouble(getGui().txfTagessatz.getText()) <= 0) {
+                JOptionPane.showMessageDialog(getGui(), messageStrings
+                    .fillFieldError(LocalizedStrings.getWbs().dailyRate()));
                 return false;
             }
-            JOptionPane
-                    .showMessageDialog(gui,
-                            messageStrings.valueInFieldIsNotANumber(
-                                    LocalizedStrings.getWbs().dailyRate()));
+            JOptionPane.showMessageDialog(getGui(), messageStrings
+                .valueInFieldIsNotANumber(LocalizedStrings.getWbs()
+                    .dailyRate()));
         } catch (NumberFormatException ex) {
             return false;
         }
@@ -128,26 +131,25 @@ public class WBSUser {
     }
 
     /**
-     * wird beim Betätigen des Buttons "btnedit" aufgerufen Mitarbeiter-Daten
-     * werden aktualisiert
-     *
-     * @return true = erfolgreiche übernahme der Änderungen, false =
-     *         übernahme fehlgeschlagen
+     * Changes the employee. This method is called by a click on the button
+     * "btnedit".
+     * @param worker
+     *            The employee which is changed.
+     * @return True: If the changes are successful. False: Else.
      */
-    public boolean changeMitarbeiter(Worker worker) {
-        // Mitarbeiter wird aus der Datenbank geholt
-        Employee emp =
-                DBModelManager.getEmployeesModel().getEmployee(
-                        worker.getLogin());
+    public final boolean changeMitarbeiter(final Worker worker) {
+        // Get employee from database.
+        Employee emp = DBModelManager.getEmployeesModel().getEmployee(
+            worker.getLogin());
         if (emp != null) {
             emp.setFirst_name(worker.getVorname());
             emp.setLast_name(worker.getName());
             emp.setProject_leader(worker.getBerechtigung() == 1);
             emp.setDaily_rate(worker.getTagessatz());
-            boolean success =
-                    DBModelManager.getEmployeesModel().updateEmployee(emp);
+            boolean success = DBModelManager.getEmployeesModel()
+                .updateEmployee(emp);
             if (success) {
-                over.reload();
+                getOver().reload();
                 WPOverviewGUI.setStatusText(messageStrings.userChanged());
             }
             return success;
@@ -157,57 +159,78 @@ public class WBSUser {
     }
 
     /**
-     * wird beim Betätigen des Buttons "btnHinzufügen" aufgerufen fügt einen
-     * neuen Mitarbeiter in die Datenbank ein
-     *
-     * @return true = erfolgreich, false = fehlgeschlagen
+     * To add a employee to the database.
+     * @param worker
+     *            The worker which has to be added.
+     * @return True: The employee is added successful. False: Else.
      */
-    public boolean addMitarbeiter(Worker worker) {
-        boolean vorhanden = false;
-        // holt sich alle Mitarbeiter und prüft ob der neu eingegeben
-        // Mitarbeiter bereits vorhanden ist
-        Employee emp =
-                DBModelManager.getEmployeesModel().getEmployee(
-                        worker.getLogin());
-        vorhanden = emp != null;
-        // wenn Mitarbeiter nicht vorhanden ist wird er in die Datenbank
-        // geschrieben
-        if (!vorhanden) {
+    public final boolean addMitarbeiter(final Worker worker) {
+        // Get all employees and check that the new employee doesn't
+        // exists.
+        Employee emp = DBModelManager.getEmployeesModel().getEmployee(
+            worker.getLogin());
+
+        if (emp == null) {
             emp = new Employee();
             emp.setLogin(worker.getLogin());
             emp.setFirst_name(worker.getVorname());
             emp.setLast_name(worker.getName());
-            emp.setProject_leader(worker.getProjLeiter());            
+            emp.setProject_leader(worker.getProjLeiter());
             emp.setPassword("1234".toCharArray());
             emp.setDaily_rate(worker.getTagessatz());
             DBModelManager.getEmployeesModel().addNewEmployee(emp);
-        }
-        if (vorhanden)
-            return false;
-        else {
-            over.reload();
+            getOver().reload();
             WPOverviewGUI.setStatusText(messageStrings.userAdded());
             return true;
         }
+        return false;
     }
 
-    public Worker getActualWorker() {
-        return mitarbeiter;
+    /**
+     * Get the actual employee.
+     * @return The actual employee.
+     */
+    public final Worker getActualWorker() {
+        return getMitarbeiter();
     }
 
-    public void passwordReset() {
-        Employee employee =
-                DBModelManager.getEmployeesModel().getEmployee(
-                        mitarbeiter.getId());
+    /** Reset the password. */
+    public final void passwordReset() {
+        Employee employee = DBModelManager.getEmployeesModel().getEmployee(
+            getMitarbeiter().getId());
         if (employee != null) {
             employee.setPassword("1234".toCharArray());
             if (DBModelManager.getEmployeesModel().updateEmployee(employee)) {
                 JOptionPane.showMessageDialog(null,
-                        messageStrings.passwordHasBeenReset());
+                    messageStrings.passwordHasBeenReset());
             } else {
                 JOptionPane.showMessageDialog(null,
-                        messageStrings.passwordChangeError());
+                    messageStrings.passwordChangeError());
             }
         }
+    }
+
+    /**
+     *  The associated GUI to this class.
+     *  @return Gui instance.
+     */
+    public final WBSUserGUI getGui() {
+        return gui;
+    }
+
+    /**
+     * The employee.
+     * @return Employee instance.
+     */
+    public final Worker getMitarbeiter() {
+        return mitarbeiter;
+    }
+
+    /**
+     * The functionality of the WPOvervieGUI.
+     * @return WPOverviewGui instance.
+     */
+    public final WPOverview getOver() {
+        return over;
     }
 }

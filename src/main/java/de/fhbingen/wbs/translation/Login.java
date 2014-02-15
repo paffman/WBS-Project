@@ -59,4 +59,7 @@ public interface Login {
     @En("Project managing permission")
     String projectManagerPermission();
 
+    @De("Aktueller Benutzer")
+    @En("Current user")
+    String currentUser();
 }
