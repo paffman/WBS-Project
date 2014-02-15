@@ -50,11 +50,8 @@ public final class SQLExecuter {
                     openConnection = null;
                     openConnection = MySqlConnect.getConnection();
                     reconnectTries++;
-                    System.out.println(reconnectTries); //%%
                 }
 
-                System.out.println(reconnectTries); //%%
-                System.out.println(RECONNECT_TRIES); //%%
                 if (reconnectTries >= RECONNECT_TRIES) {
                     System.exit(0);
                     return false;

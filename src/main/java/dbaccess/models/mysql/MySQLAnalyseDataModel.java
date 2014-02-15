@@ -82,11 +82,13 @@ public class MySQLAnalyseDataModel implements AnalyseDataModel {
     }
 
     @Override
-    public AnalyseData getAnalyseData(int fid) {
+    public List<AnalyseData> getAnalyseData(int fid) {
         connection = SQLExecuter.getConnection();
-        AnalyseData aData = new AnalyseData();
+        List<AnalyseData> adList = new ArrayList<AnalyseData>();
         try {
             ResultSet result = null;
+            AnalyseData aData = new AnalyseData();
+            
             PreparedStatement stm = null;
 
             String storedProcedure = "CALL analyse_data_select_by(?,?)";
@@ -96,15 +98,17 @@ public class MySQLAnalyseDataModel implements AnalyseDataModel {
             stm.setBoolean(2, false);
 
             result = stm.executeQuery();
-
-            if (result.next()) {
+            
+            while (result.next()) {
                 aData = AnalyseData.fromResultSet(result);
-
+                adList.add(aData);
             }
+
+            return adList;
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return aData;
+        return adList;
     }
 
     @Override

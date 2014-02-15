@@ -37,7 +37,7 @@ import wpComparators.APLevelComparator;
  * Lin Yang<br/>
  * Diese Klassse zeigt einen JFrame mit Diagramm fuer die prozentuale
  * Fertigstellung eines Arbeitspakets<br/>
- *
+ * 
  * @author Michael Anstatt, Lin Yang
  * @version 2.0 - 2012-08-20
  */
@@ -47,7 +47,7 @@ public class ChartCompleteView extends WBSChart {
 
     /**
      * Konstruktor
-     *
+     * 
      * @param parent
      *            fuer mittige Positionierung relativ zu diesem JFrame
      */
@@ -58,7 +58,7 @@ public class ChartCompleteView extends WBSChart {
 
     /**
      * Kontruktor
-     *
+     * 
      * @param wp
      *            Arbeitspaket zu dem der Chart angezeigt werden soll
      * @param parent
@@ -72,7 +72,7 @@ public class ChartCompleteView extends WBSChart {
 
     /**
      * Liest Daten aus der DB
-     *
+     * 
      * @return zum Anzeigen vorbereitete Daten
      */
     private static TimeSeriesCollection getDBData() {
@@ -81,7 +81,7 @@ public class ChartCompleteView extends WBSChart {
 
     /**
      * Liest Daten aus der DB
-     *
+     * 
      * @param wp
      *            Arbeitspaket, wenn Root werden alle Daten gelesen
      * @return zum Anzeigen vorbereitete Daten
@@ -109,6 +109,9 @@ public class ChartCompleteView extends WBSChart {
         for (Date actualDate : orderedDates) {
             GregorianCalendar cal = new GregorianCalendar();
             cal.setTime(actualDate);
+            System.out.println("wp: " + wp.getStringID()); //%%
+            System.out.println(ValuesService.getApPv(wp.getWpId(), cal)); //%%
+            System.out.println(ValuesService.getApPv(wp.getWpId(), maxCal)); //%%            
             diagonal.add(
                     new Day(cal.get(Calendar.DATE),
                             cal.get(Calendar.MONTH) + 1, cal.get(Calendar.YEAR)),
@@ -151,12 +154,12 @@ public class ChartCompleteView extends WBSChart {
 
     /**
      * Generiert fuer einzelne Arbeitspakete ihren Anzeige-Graph
-     *
+     * 
      * @param wp
      * @return Anzeigbarer Graph
      */
     protected static TimeSeries getTimeSeries(final Workpackage wp) {
-        AnalyseData rslt =
+        List<AnalyseData> rslt =
                 DBModelManager.getAnalyseDataModel().getAnalyseData(
                         wp.getWpId());
 
@@ -164,18 +167,18 @@ public class ChartCompleteView extends WBSChart {
         Baseline bl = null;
         GregorianCalendar cal = new GregorianCalendar();
 
-        if (rslt != null) {
+        for ( AnalyseData aData : rslt ){
             bl =
                     DBModelManager.getBaselineModel().getBaseline(
-                            rslt.getFid_baseline());
+                            aData.getFid_baseline());
             if (bl != null) {
                 cal.setTime(bl.getBl_date());
                 actualTs.addOrUpdate(
                         new Day(cal.get(Calendar.DATE),
                                 cal.get(Calendar.MONTH) + 1, cal
                                         .get(Calendar.YEAR)), WpManager
-                                .calcPercentComplete(rslt.getBac(),
-                                        rslt.getEtc(), rslt.getAc()));
+                                .calcPercentComplete(aData.getBac(),
+                                        aData.getEtc(), aData.getAc()));
             }
 
         }
