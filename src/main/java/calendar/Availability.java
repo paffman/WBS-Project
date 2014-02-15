@@ -1,293 +1,353 @@
+/*
+ * The WBS-Tool is a project management tool combining the Work Breakdown
+ * Structure and Earned Value Analysis Copyright (C) 2013 FH-Bingen This
+ * program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your
+ * option) any later version. This program is distributed in the hope that
+ * it will be useful, but WITHOUT ANY WARRANTY;Í¾ without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details. You should have received a
+ * copy of the GNU General Public License along with this program. If not,
+ * see <http://www.gnu.org/licenses/>.
+ */
+
 package calendar;
 
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
-
 /**
- * Studienprojekt:	PSYS WBS 2.0<br/>
- * 
- * Kunde:		Pentasys AG, Jens von Gersdorff<br/>
- * Projektmitglieder:<br/>
- *			Michael Anstatt,<br/>
- *			Marc-Eric Baumgärtner,<br/>
- *			Jens Eckes,<br/>
- *			Sven Seckler,<br/>
- *			Lin Yang<br/>
- * 
- * Repraesentiert eine Verfuegbarkeit oder Nicht-Verfuegbarkeit eines Mitarbeiters oder des Projekts<br/>
- * 
- * @author Jens Eckes, Michael Anstatt
- * @version 2.0 - 20.08.2012
+ * Represents the availability/ non-availability of a employee or the
+ * project.
  */
 public class Availability implements Comparable<Availability> {
-	private int userID;
-	private String description;
-	private boolean allDay;
-	private boolean availabe;
-	private Date startDate;
-	private Date endDate;
-	private int id;
 
-	/**
-	 * Konstruktor
-	 * 
-	 * @param userID
-	 * @param allDay
-	 * @param available
-	 * @param startDate
-	 * @param endDate
-	 */
-	public Availability(int userID, boolean allDay, boolean available, Date startDate, Date endDate) {
-		this(userID, allDay, available, startDate, endDate, "", Integer.MIN_VALUE);
-	}
+    /**
+     *  The id of the employee.
+     */
+    private int userID;
 
-	/**
-	 * Konstruktor
-	 * 
-	 * @param userID
-	 * @param allDay
-	 * @param availabe
-	 * @param startDate
-	 * @param endDate
-	 * @param description
-	 */
-	public Availability(int userID, boolean allDay, boolean availabe, Date startDate, Date endDate, String description) {
-		this(userID, allDay, availabe, startDate, endDate, description, Integer.MIN_VALUE);
-	}
+    /** The description why the employee is not available. */
+    private String description;
 
-	/**
-	 * Konstruktor
-	 * 
-	 * @param userID
-	 * @param allDay
-	 * @param available
-	 * @param startDate
-	 * @param endDate
-	 * @param id
-	 */
-	public Availability(int userID, boolean allDay, boolean available, Date startDate, Date endDate, int id) {
-		this(userID, allDay, available, startDate, endDate, "", id);
-	}
+    /**
+     * True: If an employee is not available the whole day. False: If an
+     * employee is not available only a few hours.
+     */
+    private boolean allDay;
 
-	/**
-	 * Konstruktor
-	 * 
-	 * @param userID
-	 * @param allDay
-	 * @param availabe
-	 * @param startDate
-	 * @param endDate
-	 * @param description
-	 * @param id
-	 */
-	public Availability(int userID, boolean allDay, boolean availabe, Date startDate, Date endDate, String description, int id) {
-		this.userID = userID;
-		this.description = description;
-		this.allDay = allDay;
-		this.availabe = availabe;
+    /**
+     * True: The employee is available. False: The employee is not
+     * available.
+     */
+    private boolean availabe;
 
-		this.startDate = calcStart(startDate);
-		this.endDate = calcEnd(endDate);
+    /** The start date of the availability. */
+    private Date startDate;
 
-		this.setId(id);
-	}
+    /** The end date of the availability. */
+    private Date endDate;
 
-	/**
-	 * Berechnet den Startzeitpunkt, also den Anfang des Tages, 0 Uhr
-	 * 
-	 * @param date Startdatum mit Zeitangabe
-	 * @return Startdatum ohne Zeitangabe (0 Uhr)
-	 */
-	private Date calcStart(Date date) {
-		if (allDay) {
-			GregorianCalendar cal = new GregorianCalendar();
-			cal.setTime(date);
-			cal.set(Calendar.HOUR_OF_DAY, 0);
-			cal.set(Calendar.MINUTE, 0);
-			cal.set(Calendar.SECOND, 0);
-			cal.set(Calendar.MILLISECOND, 0);
-			return cal.getTime();
-		} else {
-			return date;
-		}
-	}
+    /** Identifier for the availability. */
+    private int id;
 
-	/**
-	 * Berechnet das tatsaechliche "Ende eines Datums", also bei ganztaegigen Daten 23:59:59
-	 * @param date Datum, dessen Ende berechnet werden soll
-	 * @return Enddatum (entweder selbe wie Parameter oder 23:59:59 wenn ganztaegige Availability vorliegt)
-	 */
-	private Date calcEnd(Date date) {
-		if (allDay) {
-			GregorianCalendar cal = new GregorianCalendar();
-			cal.setTime(date);
-			cal.set(Calendar.HOUR_OF_DAY, 23);
-			cal.set(Calendar.MINUTE, 59);
-			cal.set(Calendar.SECOND, 59);
-			cal.set(Calendar.MILLISECOND, 0);
-			return cal.getTime();
-		} else {
-			return date;
-		}
+    /**
+     * Constructor.
+     * @param userID
+     *            The id of the employee.
+     * @param allDay
+     *            True: If an employee is not available the whole day.
+     *            False: If an employee is not available only a few hours.
+     * @param available
+     *            True: The employee is available. False: The employee is
+     *            not available.
+     * @param startDate
+     *            The start date of the availability.
+     * @param endDate
+     *            The end date of the availability.
+     */
+    public Availability(final int userID, final boolean allDay,
+        final boolean available, final Date startDate, final Date endDate) {
+        this(userID, allDay, available, startDate, endDate, "",
+            Integer.MIN_VALUE);
+    }
 
-	}
+    /**
+     * Constructor.
+     * @param userID
+     *            The id of the employee.
+     * @param allDay
+     *            True: If an employee is not available the whole day.
+     *            False: If an employee is not available only a few hours.
+     * @param available
+     *            True: The employee is available. False: The employee is
+     *            not available.
+     * @param startDate
+     *            The start date of the availability.
+     * @param endDate
+     *            The end date of the availability.
+     * @param description
+     *            The description why the employee is not available.
+     */
+    public Availability(final int userID, final boolean allDay,
+        final boolean available, final Date startDate, final Date endDate,
+        final String description) {
+        this(userID, allDay, available, startDate, endDate, description,
+            Integer.MIN_VALUE);
+    }
 
-	/**
-	 * Getter fuer die UserID (entspricht dem Login-Name des Besitzers der Availability)
-	 * @return
-	 */
-	public int getUserID() {
-		return userID;
-	}
+    /**
+     * Constructor.
+     * @param userID
+     *            The id of the employee.
+     * @param allDay
+     *            True: If an employee is not available the whole day.
+     *            False: If an employee is not available only a few hours.
+     * @param available
+     *            True: The employee is available. False: The employee is
+     *            not available.
+     * @param startDate
+     *            The start date of the availability.
+     * @param endDate
+     *            The end date of the availability.
+     * @param id
+     *            The identifier of the availability.
+     */
+    public Availability(final int userID, final boolean allDay,
+        final boolean available, final Date startDate, final Date endDate,
+        final int id) {
+        this(userID, allDay, available, startDate, endDate, "", id);
+    }
 
-	/**
-	 * Setter fuer User-ID (entspricht dem Login-Name des Besitzers der Availability)
-	 * @param userID
-	 */
-	public void setUserID(int userID) {
-		this.userID = userID;
-	}
+    /**
+     * Constructor.
+     * @param userID
+     *            The id of the employee.
+     * @param allDay
+     *            True: If an employee is not available the whole day.
+     *            False: If an employee is not available only a few hours.
+     * @param available
+     *            True: The employee is available. False: The employee is
+     *            not available.
+     * @param startDate
+     *            The start date of the availability.
+     * @param endDate
+     *            The end date of the availability.
+     * @param description
+     *            The description why the employee is not available.
+     * @param id
+     *            The identifier of the availability.
+     */
+    public Availability(final int userID, final boolean allDay,
+        final boolean available, final Date startDate, final Date endDate,
+        final String description, final int id) {
+        this.userID = userID;
+        this.description = description;
+        this.allDay = allDay;
+        this.availabe = available;
 
-	/**
-	 * Getter fuer ganztaegige Availability
-	 * @return true wenn ganztaegig
-	 */
-	public boolean isAllDay() {
-		return allDay;
-	}
+        this.startDate = calcStart(startDate);
+        this.endDate = calcEnd(endDate);
 
-	/**
-	 * Getter fuer available
-	 * @return false wenn BEsitzer zu dieser Zeit nicht verfuegbar ist
-	 */
-	public boolean isAvailabe() {
-		return availabe;
-	}
+        this.setId(id);
+    }
 
-	/**
-	 * Setter fuer die Availability
-	 * 
-	 * @param availabe wenn true ist der Besitzer dieser Availability verfuegbar ansonsten ist er zu dieser Zeit nicht verfuegbar
-	 */
-	public void setAvailabe(boolean availabe) {
-		this.availabe = availabe;
-	}
+    /**
+     * Calculates the start date. The begin of the day is: 00:00:00.
+     * @param date
+     *            The date with a specific time.
+     * @return The start date (without the specific time).
+     */
+    private Date calcStart(final Date date) {
+        if (allDay) {
+            GregorianCalendar cal = new GregorianCalendar();
+            cal.setTime(date);
+            cal.set(Calendar.HOUR_OF_DAY, 0);
+            cal.set(Calendar.MINUTE, 0);
+            cal.set(Calendar.SECOND, 0);
+            cal.set(Calendar.MILLISECOND, 0);
+            return cal.getTime();
+        } else {
+            return date;
+        }
+    }
 
-	/**
-	 * Getter fuer den Beginn der Availability mit Uhrzeit
-	 * 
-	 * @return Beginn der Availability mit Uhrzeit
-	 */
-	public Date getStartTime() {
-		return startDate;
-	}
+    /**
+     * Calculates the end date. The end of the day is: 23:59:59.
+     * @param date
+     *            The date which has to be calculated.
+     * @return The calculated date.
+     */
+    private Date calcEnd(final Date date) {
+        if (allDay) {
+            GregorianCalendar cal = new GregorianCalendar();
+            cal.setTime(date);
+            cal.set(Calendar.HOUR_OF_DAY, DateFunctions.MAX_HOUR_OF_DAY);
+            cal.set(Calendar.MINUTE, DateFunctions.MAX_MINUTE_SECOND_OF_HOUR);
+            cal.set(Calendar.SECOND, DateFunctions.MAX_MINUTE_SECOND_OF_HOUR);
+            cal.set(Calendar.MILLISECOND, 0);
+            return cal.getTime();
+        } else {
+            return date;
+        }
 
-	/**
-	 * Setter fuer den Beginn der Availability mit Uhrzeit
-	 * 
-	 * @param endDate
-	 */
-	public void setStartTime(Date startDate) {
-		this.startDate = calcStart(startDate);
-	}
+    }
 
-	/**
-	 * Setter fuer das Ende der Availability mit Uhrzeit
-	 * 
-	 * @param endDate
-	 */
-	public void setEndTime(Date endDate) {
-		this.endDate = calcEnd(endDate);
-	}
+    /**
+     * Returns the id from the employee.
+     * @return The employees id.
+     */
+    public final int getUserID() {
+        return userID;
+    }
 
-	/**
-	 * Gibt das Ende der Availability mit Uhrzeit zurueck
-	 * 
-	 * @return Ende der Availability mit Uhrzeit
-	 */
-	public Date getEndTime() {
-		return endDate;
-	}
+    /**
+     * Adds a employee to an availability.
+     * @param newUserID
+     *            The id from the employee.
+     */
+    public final void setUserID(final int newUserID) {
+        this.userID = newUserID;
+    }
 
-	/**
-	 * Getter Description
-	 * 
-	 * @return
-	 */
-	public String getDescription() {
-		return description;
-	}
+    /**
+     * Returns the availability of the employee.
+     * @return True: If the employee is available the whole day. False: If
+     *         the employee is available only a few hours.
+     */
+    public final boolean isAllDay() {
+        return allDay;
+    }
 
-	/**
-	 * Setter Description
-	 * 
-	 * @param description
-	 */
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    /**
+     * Returns if the employee is available or is not available.
+     * @return True: Available. False: Not available.
+     */
+    public final boolean isAvailabe() {
+        return availabe;
+    }
 
-	/**
-	 * Getter ID
-	 * 
-	 * @return
-	 */
-	public int getId() {
-		return id;
-	}
+    /**
+     * Sets the availability of the employee.
+     * @param isAvailable
+     *            True: The employee is available. False: The employee is
+     *            not available.
+     */
+    public final void setAvailabe(final boolean isAvailable) {
+        this.availabe = isAvailable;
+    }
 
-	/**
-	 * Setter fuer die ID
-	 * 
-	 * @param id
-	 */
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    /**
+     * Returns the begin of the available inclusive time.
+     * @return The begin of the available.
+     */
+    public final Date getStartTime() {
+        return startDate;
+    }
 
-	/**
-	 * @return der Tag an dem die Availability beginnt
-	 */
-	public Day getStartDay() {
-		return new Day(startDate);
-	}
+    /**
+     * Sets the begin of the availability inclusive time.
+     * @param newStartDate
+     *            The start date.
+     */
+    public final void setStartTime(final Date newStartDate) {
+        this.startDate = calcStart(newStartDate);
+    }
 
-	/**
-	 * @return der Tag an dem die Availability endet
-	 */
-	public Day getEndDay() {
-		return new Day(endDate);
-	}
+    /**
+     * Sets the end of the availability inclusive time.
+     * @param newEndDate
+     *            The end date.
+     */
+    public final void setEndTime(final Date newEndDate) {
+        this.endDate = calcEnd(newEndDate);
+    }
 
-	/**
-	 * Gibt die Laenge der Availability
-	 * 
-	 * @return die Dauer in Stunden
-	 */
-	public int getDuration() {
-		long difference = this.getEndTime().getTime() - this.getStartTime().getTime();
-		return (int) (difference / (1000 * 60 * 60));
-	}
+    /**
+     * Returns the end of the availability inclusive time.
+     * @return The end of the availability.
+     */
+    public final Date getEndTime() {
+        return endDate;
+    }
 
-	@Override
-	public String toString() {
-		return "UserId: " + userID + " description: " + description + " allDay: " + allDay + " available: " + availabe + " startDate: " + startDate
-				+ " endDate: " + endDate;
-	}
+    /**
+     * Returns the description of the availability.
+     * @return The description of the availability.
+     */
+    public final String getDescription() {
+        return description;
+    }
 
-	/**
-	 * Standardmaessig nach Datum sortieren
-	 */
-	@Override
-	public int compareTo(Availability other) {
+    /**
+     * Sets the description of the availability.
+     * @param newDescription
+     *            The description of the availability.
+     */
+    public final void setDescription(final String newDescription) {
+        this.description = newDescription;
+    }
 
-		if (this.startDate.compareTo(other.startDate) != 0) {
-			return this.startDate.compareTo(other.startDate);
-		} else {
-			return this.endDate.compareTo(other.endDate);
-		}
+    /**
+     * Returns the identifier of the availability.
+     * @return The id of the availability.
+     */
+    public final int getId() {
+        return id;
+    }
 
-	}
+    /**
+     * Sets the identifier of the availability.
+     * @param newId
+     *            The id of the availability.
+     */
+    public final void setId(final Integer newId) {
+        this.id = newId;
+    }
+
+    /**
+     * Returns the start date of the availability.
+     * @return The day on which the availability starts.
+     */
+    public final Day getStartDay() {
+        return new Day(startDate);
+    }
+
+    /**
+     * Returns the end date of the availability.
+     * @return The day on which the availability ends.
+     */
+    public final Day getEndDay() {
+        return new Day(endDate);
+    }
+
+    /**
+     * Returns the duration of the availability.
+     * @return The duration in hours.
+     */
+    public final int getDuration() {
+        long difference = this.getEndTime().getTime()
+            - this.getStartTime().getTime();
+        return (int) (difference / DateFunctions.FACTOR_MILLISECONDS_TO_HOURS);
+    }
+
+    @Override
+    public final String toString() {
+        return "UserId: " + userID + " description: " + description //NON-NLS
+            + " allDay: " + allDay + " available: " + availabe //NON-NLS
+            + " startDate: " + startDate + " endDate: " + endDate; //NON-NLS
+    }
+
+    @Override
+    public final int compareTo(final Availability other) {
+
+        if (this.startDate.compareTo(other.startDate) != 0) {
+            return this.startDate.compareTo(other.startDate);
+        } else {
+            return this.endDate.compareTo(other.endDate);
+        }
+
+    }
 }
