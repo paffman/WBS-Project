@@ -1,3 +1,17 @@
+/*
+ * The WBS-Tool is a project management tool combining the Work Breakdown
+ * Structure and Earned Value Analysis Copyright (C) 2013 FH-Bingen This
+ * program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your
+ * option) any later version. This program is distributed in the hope that
+ * it will be useful, but WITHOUT ANY WARRANTY;; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details. You should have received a
+ * copy of the GNU General Public License along with this program. If not,
+ * see <http://www.gnu.org/licenses/>.
+ */
+
 package wpOverview.tabs;
 
 import de.fhbingen.wbs.translation.General;
@@ -16,119 +30,109 @@ import javax.swing.JToggleButton;
 import org.jfree.chart.ChartPanel;
 
 import wpOverview.WPOverview;
+
 /**
- * Studienprojekt:	PSYS WBS 2.0<br/>
- *
- * Kunde:		Pentasys AG, Jens von Gersdorff<br/>
- * Projektmitglieder:<br/>
- *			Michael Anstatt,<br/>
- *			Marc-Eric Baumgärtner,<br/>
- *			Jens Eckes,<br/>
- *			Sven Seckler,<br/>
- *			Lin Yang<br/>
- *
- * WindowBuilder autogeneriert<br/>
- *
- * @author WBS1.0 Team
- * @version 2.0
- */
-/**
- * Studienprojekt:	PSYS WBS 2.0<br/>
- *
- * Kunde:		Pentasys AG, Jens von Gersdorff<br/>
- * Projektmitglieder:<br/>
- *			Michael Anstatt,<br/>
- *			Marc-Eric Baumgärtner,<br/>
- *			Jens Eckes,<br/>
- *			Sven Seckler,<br/>
- *			Lin Yang<br/>
- *
- * GUI des Verguegbarkeitsgraphen<br/>
- *
- * @author Michael Anstatt
- * @version 2.0 - 2012-08-21
+ * GUI of the availability graphs.
  */
 public class AvailabilityGraphGUI extends javax.swing.JPanel {
 
-	private static final long serialVersionUID = 602668733483664542L;
+    /** Constant serialized ID used for compatibility. */
+    private static final long serialVersionUID = 602668733483664542L;
 
-	public AvailabilityGraph function;
+    /** The functionality for the graph. */
+    public AvailabilityGraph function;
 
-	protected ChartPanel pnlGraph;
-	protected JToggleButton[] buttons;
-	protected JButton btnNext;
-	protected JButton btnPrev;
-	protected JToggleButton btnManualAv;
-	/**
-	 *
-	 * @param over WPOverview Funktionalität
-	 * @param parent ParentFrame
-	 */
-	public AvailabilityGraphGUI(WPOverview over, JFrame parent) {
-		super();
-		initGUI();
-		new AvailabilityGraphAction(this, parent);
-		function = new AvailabilityGraph(this, over);
-		buttons[2].doClick();
-	}
-	/**
-	 * Laedt die GUI
-	 */
-	protected void initGUI() {
-		this.setLayout(new BorderLayout());
-		this.add(createOptionPanel(), BorderLayout.NORTH);
+    /** The panel for the GUI. */
+    protected ChartPanel pnlGraph;
 
-		pnlGraph = new ChartPanel(null);
-		JPanel panel = new JPanel();
-		panel.setLayout(new GridBagLayout());
-		GridBagConstraints constraints = new GridBagConstraints();
-		constraints.fill = GridBagConstraints.HORIZONTAL;
-		constraints.weightx = 1;
-		constraints.weighty = 1;
-		constraints.anchor = GridBagConstraints.NORTHWEST;
-		panel.add(pnlGraph, constraints);
-		panel.setBackground(Color.white);
-		this.add(panel, BorderLayout.CENTER);
-	}
+    /** Holds the day/week/month/year buttons. */
+    protected JToggleButton[] buttons;
 
-	/**
-	 * Erstellt das JPanel fuer due GUI
-	 * @return JPanel der GUI
-	 */
-	protected JPanel createOptionPanel() {
-		General generalStrings = LocalizedStrings.getGeneralStrings();
+    /** Next button. */
+    protected JButton btnNext;
 
-		JPanel optionPanel = new JPanel();
+    /** Previous button. */
+    protected JButton btnPrev;
 
-		buttons = new JToggleButton[4];
-		buttons[AvailabilityGraph.DAY] = new JToggleButton(generalStrings.day());
-		buttons[AvailabilityGraph.WEEK] = new JToggleButton(generalStrings
-                .week());
-		buttons[AvailabilityGraph.MONTH] = new JToggleButton(generalStrings
-                .month());
-		buttons[AvailabilityGraph.YEAR] = new JToggleButton(generalStrings
-                .year());
-		for (int i = 0; i < buttons.length; i++) {
-			optionPanel.add(buttons[i]);
-		}
-		optionPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+    /** Toggle to show/hide manual availabilities */
+    protected JToggleButton btnManualAv;
 
-		btnPrev = new JButton("<");
-		optionPanel.add(btnPrev);
+    /**
+     * Constructor.
+     * @param over
+     *            The functionality of the graph.
+     * @param parent
+     *            The parent frame.
+     */
+    public AvailabilityGraphGUI(final WPOverview over, final JFrame parent) {
+        super();
+        initGUI();
+        new AvailabilityGraphAction(this, parent);
+        function = new AvailabilityGraph(this, over);
+        buttons[2].doClick();
+    }
 
-		btnNext = new JButton(">");
-		optionPanel.add(btnNext);
+    /**
+     * Load the GUI.
+     */
+    protected final void initGUI() {
+        this.setLayout(new BorderLayout());
+        this.add(createOptionPanel(), BorderLayout.NORTH);
 
-		btnManualAv = new JToggleButton(LocalizedStrings.getButton().show(LocalizedStrings.getWbs().manualAvailabilities()));
-		optionPanel.add(btnManualAv);
+        pnlGraph = new ChartPanel(null);
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridBagLayout());
+        GridBagConstraints constraints = new GridBagConstraints();
+        constraints.fill = GridBagConstraints.HORIZONTAL;
+        constraints.weightx = 1;
+        constraints.weighty = 1;
+        constraints.anchor = GridBagConstraints.NORTHWEST;
+        panel.add(pnlGraph, constraints);
+        panel.setBackground(Color.white);
+        this.add(panel, BorderLayout.CENTER);
+    }
 
-		return optionPanel;
-	}
-	/**
-	 * Berechnet den Graph neu
-	 */
-	public void reload() {
-		function.remake();
-	}
+    /**
+     * Creates the panel for the GUI.
+     * @return The created panel.
+     */
+    protected final JPanel createOptionPanel() {
+        General generalStrings = LocalizedStrings.getGeneralStrings();
+
+        JPanel optionPanel = new JPanel();
+
+        buttons = new JToggleButton[4];
+        buttons[AvailabilityGraph.DAY] = new JToggleButton(
+            generalStrings.day());
+        buttons[AvailabilityGraph.WEEK] = new JToggleButton(
+            generalStrings.week());
+        buttons[AvailabilityGraph.MONTH] = new JToggleButton(
+            generalStrings.month());
+        buttons[AvailabilityGraph.YEAR] = new JToggleButton(
+            generalStrings.year());
+        for (int i = 0; i < buttons.length; i++) {
+            optionPanel.add(buttons[i]);
+        }
+        optionPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+
+        btnPrev = new JButton("<");
+        optionPanel.add(btnPrev);
+
+        btnNext = new JButton(">");
+        optionPanel.add(btnNext);
+
+        btnManualAv = new JToggleButton(LocalizedStrings.getButton().show(
+            LocalizedStrings.getWbs().manualAvailabilities()));
+        optionPanel.add(btnManualAv);
+
+        return optionPanel;
+    }
+
+    /**
+     * Recalculate the graph.
+     */
+    public final void reload() {
+        function.remake();
+    }
 
 }

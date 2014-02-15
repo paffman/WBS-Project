@@ -1,3 +1,17 @@
+/*
+ * The WBS-Tool is a project management tool combining the Work Breakdown
+ * Structure and Earned Value Analysis Copyright (C) 2013 FH-Bingen This
+ * program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your
+ * option) any later version. This program is distributed in the hope that
+ * it will be useful, but WITHOUT ANY WARRANTY;; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details. You should have received a
+ * copy of the GNU General Public License along with this program. If not,
+ * see <http://www.gnu.org/licenses/>.
+ */
+
 package wpOverview.tabs;
 
 import java.awt.event.MouseAdapter;
@@ -12,55 +26,38 @@ import wpWorker.Worker;
 import wpWorker.WBSUser;
 
 /**
- * Studienprojekt: PSYS WBS 2.0<br/>
- * Kunde: Pentasys AG, Jens von Gersdorff<br/>
- * Projektmitglieder:<br/>
- * Michael Anstatt,<br/>
- * Marc-Eric Baumgärtner,<br/>
- * Jens Eckes,<br/>
- * Sven Seckler,<br/>
- * Lin Yang<br/>
- * Funktionalitaet des WorkerPanel<br/>
- * 
- * @author WBS1.0 Team
- * @version 2.0
+ * The functionality of the WorkerPanel.
  */
 public class WorkerPanelAction {
+
     /**
-     * Konstruktor
-     * 
+     * Constructor.
      * @param gui
-     *            Worker GUI
+     *            The GUI of the worker panel.
      * @param over
-     *            WPOverview Funktionalität
+     *            The functionality of the WPOverview.
      */
     WorkerPanelAction(final WorkerPanel gui, final WPOverview over) {
         gui.tblMitarbeiter.addMouseListener(new MouseAdapter() {
-            public void mouseClicked(MouseEvent e) {
+            public void mouseClicked(final MouseEvent e) {
 
                 if (e.getClickCount() == 2
-                        && gui.tblMitarbeiter.getSelectedRow() >= 0) {
-                    String login =
-                            gui.tblMitarbeiter.getValueAt(
-                                    gui.tblMitarbeiter.getSelectedRow(), 0)
-                                    .toString();
-                    Employee employee =
-                            DBModelManager.getEmployeesModel().getEmployee(
-                                    login);
+                    && gui.tblMitarbeiter.getSelectedRow() >= 0) {
+                    String login = gui.tblMitarbeiter.getValueAt(
+                        gui.tblMitarbeiter.getSelectedRow(), 0).toString();
+                    Employee employee = DBModelManager.getEmployeesModel()
+                        .getEmployee(login);
                     if (employee != null) {
-                        Worker mit =
-                                new Worker(employee.getLogin(), employee
-                                        .getId(), employee.getFirst_name(),
-                                        employee.getLast_name(), employee
-                                                .isProject_leader(), employee
-                                                .getDaily_rate());
+                        Worker mit = new Worker(employee.getLogin(),
+                            employee.getId(), employee.getFirst_name(),
+                            employee.getLast_name(), employee
+                                .isProject_leader(), employee
+                                .getDaily_rate());
                         new WBSUser(mit, over);
                     }
                     over.reload();
                 }
             }
         });
-
-        //
     }
 }
