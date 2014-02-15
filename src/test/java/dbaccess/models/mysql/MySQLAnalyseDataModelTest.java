@@ -52,7 +52,9 @@ public class MySQLAnalyseDataModelTest {
         ad.setPv(5);
         
         adModel.addNewAnalyseData(ad);
-        AnalyseData aData = adModel.getAnalyseData(2);
+        List<AnalyseData> aDatas = adModel.getAnalyseData(2);
+        assertThat(aDatas.size(), equalTo(1));
+        AnalyseData aData = aDatas.get(0);
         assertThat(aData, notNullValue());
         assertThat(aData.getFid_wp(), equalTo(2));
         assertThat(aData.getFid_baseline(), equalTo(1));
@@ -76,7 +78,9 @@ public class MySQLAnalyseDataModelTest {
     @Test
     public final void testGetAnalyseData() {
 
-        AnalyseData aData = adModel.getAnalyseData(1);
+        List<AnalyseData> aDatas = adModel.getAnalyseData(1);
+        assertThat(aDatas.size(), equalTo(1));
+        AnalyseData aData = aDatas.get(0);
         
         assertThat(aData, notNullValue());
         assertThat(aData, notNullValue());
