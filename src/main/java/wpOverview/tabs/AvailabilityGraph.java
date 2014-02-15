@@ -76,8 +76,10 @@ public class AvailabilityGraph {
     /** The end date. */
     private GregorianCalendar actualEnd;
 
+    /** The actual view */
     private int actualView;
 
+    /** Manual Availabilities flag. */
     private boolean showManualAv;
 
     /** A list with all workers. */
@@ -390,6 +392,10 @@ public class AvailabilityGraph {
 
     }
 
+    /**
+     * Creates a data set.
+     * @return The created data set
+     */
     public final IntervalCategoryDataset createDataset() {
 
         if (WPOverview.getUser().getProjLeiter()) {

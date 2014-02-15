@@ -123,8 +123,9 @@ public class TreePanelAction {
 
                 @Override
                 public void actionPerformed(final ActionEvent e) {
-                    DefaultMutableTreeNode selected = (DefaultMutableTreeNode) gui
-                        .getTree().getLastSelectedPathComponent();
+                    DefaultMutableTreeNode selected =
+                            (DefaultMutableTreeNode) gui.getTree()
+                                    .getLastSelectedPathComponent();
                     expand(selected);
                 }
 
@@ -134,8 +135,9 @@ public class TreePanelAction {
 
                 @Override
                 public void actionPerformed(final ActionEvent e) {
-                    DefaultMutableTreeNode selected = (DefaultMutableTreeNode) gui
-                        .getTree().getLastSelectedPathComponent();
+                    DefaultMutableTreeNode selected =
+                            (DefaultMutableTreeNode) gui.getTree()
+                                    .getLastSelectedPathComponent();
                     collapse(selected);
                 }
 

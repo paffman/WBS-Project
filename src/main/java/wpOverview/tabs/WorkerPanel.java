@@ -40,7 +40,10 @@ public class WorkerPanel extends JPanel {
     /** Constant serialized ID used for compatibility. */
     private static final long serialVersionUID = -7083734131909551094L;
 
+    /** Localized wbs string. */
     private final Wbs wbsStrings;
+
+    /** Localized login strings. */
     private final Login loginStrings;
 
     /** A vector which contains the workers. */

@@ -78,15 +78,16 @@ public class APCalendarPanel extends JPanel {
     private static final long serialVersionUID = -4157955530411333945L;
 
     /** Represents the count of levels. */
-    private final static int showLevels = 6;
+    private static final int showLevels = 6;
 
     /** A list with the colors. */
     private List<Integer> colorList;
 
-    IntervalCategoryDataset dataset;
+    /** An interval category dataset. */
+    private IntervalCategoryDataset dataset;
 
     /** The chart. */
-    JFreeChart chart;
+    private JFreeChart chart;
 
     /**
      * Default constructor: initialize the work package calendar inclusive
@@ -118,7 +119,7 @@ public class APCalendarPanel extends JPanel {
 
             @Override
             public void actionPerformed(final ActionEvent arg0) {
-                String dbPath = MDBConnect.pathDB;// TODO warum mdb?
+                String dbPath = MDBConnect.pathDB; // TODO warum mdb?
                 String outfile = dbPath.subSequence(4,
                     dbPath.lastIndexOf("/") + 1)
                     + "chart-" + System.currentTimeMillis() + ".jpg";

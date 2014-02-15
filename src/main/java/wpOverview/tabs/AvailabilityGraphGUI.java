@@ -45,9 +45,16 @@ public class AvailabilityGraphGUI extends javax.swing.JPanel {
     /** The panel for the GUI. */
     protected ChartPanel pnlGraph;
 
+    /** Holds the day/week/month/year buttons. */
     protected JToggleButton[] buttons;
+
+    /** Next button. */
     protected JButton btnNext;
+
+    /** Previous button. */
     protected JButton btnPrev;
+
+    /** Toggle to show/hide manual availabilities */
     protected JToggleButton btnManualAv;
 
     /**

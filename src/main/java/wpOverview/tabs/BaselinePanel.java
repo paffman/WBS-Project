@@ -57,6 +57,7 @@ public class BaselinePanel extends JPanel {
     /** The button to create a chart. */
     JButton btnChart;
 
+    /** The completion button. */
     JButton btnComp;
 
     /** The combo box to choose a baseline. */
@@ -132,11 +133,11 @@ public class BaselinePanel extends JPanel {
             List<Baseline> baselines = DBModelManager.getBaselineModel()
                 .getBaseline();
             for (Baseline b : baselines) {
-                String Beschreibung = b.getDescription();
+                String beschreibung = b.getDescription();
                 Date dte = b.getBl_date();
                 int number = b.getId();
                 cobChooseBaseline.addItem(number + " | " + dte + " | "
-                    + Beschreibung);
+                    + beschreibung);
             }
             cobChooseBaseline.setSelectedIndex(cobChooseBaseline
                 .getItemCount() - 1);
