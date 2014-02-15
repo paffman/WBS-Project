@@ -33,7 +33,7 @@ import wpShow.WPShowGUI;
  * Lin Yang<br/>
  * Diese Klassse zeigt einen JFrame mit Diagramm fuer den CPI-Verlauf eines
  * bestimmten Arbeitspakets an<br/>
- *
+ * 
  * @author Michael Anstatt, Lin Yang
  * @version 2.0 - 2012-08-20
  */
@@ -43,7 +43,7 @@ public class ChartCPIView extends WBSChart {
 
     /**
      * Konstruktor zeigt Projekt-CPIs an
-     *
+     * 
      * @param parent
      *            nur zur mittigen Positionierung des JFrames
      */
@@ -54,7 +54,7 @@ public class ChartCPIView extends WBSChart {
 
     /**
      * Konstruktor zeigt CPI-Verlauf fuer ein bestimmtes Arbeitspaket an
-     *
+     * 
      * @param wp
      *            Arbeitspaket
      * @param parent
@@ -69,7 +69,7 @@ public class ChartCPIView extends WBSChart {
     /**
      * Liest Daten fuer das Projekt aus, die zur Anzeige des CPI-Verlaufs
      * benoetigt werden
-     *
+     * 
      * @return TimeSeriesCollection, anzeigefertig fuer JFreeChart
      */
     protected static TimeSeriesCollection getDBData() {
@@ -100,7 +100,7 @@ public class ChartCPIView extends WBSChart {
     /**
      * Liest Daten fuer ein Arbeitspaket aus, die zur Anzeige des CPI-Verlaufs
      * benoetigt werden
-     *
+     * 
      * @param wp
      *            Arbeitspaket
      * @return TimeSeriesCollection, anzeigefertig fuer JFreeChart
@@ -122,31 +122,30 @@ public class ChartCPIView extends WBSChart {
     /**
      * Liest die durch getDBData() vorbereiteten Arbeitspaket-Daten aus der
      * Datenbank
-     *
+     * 
      * @param wp
      *            aktuell auszulesendes Arbeitspaket
      * @return TimeSeries bereits um von getDBData() in eine Collection gemergt
      *         werden
      */
     protected static TimeSeries getTimeSeries(final Workpackage wp) {
-        AnalyseData rslt =
+        List<AnalyseData> rslt =
                 DBModelManager.getAnalyseDataModel().getAnalyseData(
                         wp.getWpId());
 
         TimeSeries actualTs = new TimeSeries(wp.toString());
         Baseline bl = null;
         GregorianCalendar cal = new GregorianCalendar();
-
-        if (rslt != null) {
+        for (AnalyseData aData : rslt) {
             bl =
                     DBModelManager.getBaselineModel().getBaseline(
-                            rslt.getFid_baseline());
+                            aData.getFid_baseline());
             if (bl != null) {
                 cal.setTime(bl.getBl_date());
                 actualTs.addOrUpdate(
                         new Day(cal.get(Calendar.DATE),
                                 cal.get(Calendar.MONTH) + 1, cal
-                                        .get(Calendar.YEAR)), rslt.getCpi());
+                                        .get(Calendar.YEAR)), aData.getCpi());
             }
         }
         return actualTs;
@@ -158,7 +157,8 @@ public class ChartCPIView extends WBSChart {
         if (plot != null) {
             plot.addRangeMarker(new ValueMarker(1.0, Color.BLACK,
                     new BasicStroke(3.0f)));
-            frame.getChartPanel().getChart().setTitle(LocalizedStrings.getWbs().cpi());
+            frame.getChartPanel().getChart()
+                    .setTitle(LocalizedStrings.getWbs().cpi());
 
             if (this.wp != null) {
                 Marker actualCPI =

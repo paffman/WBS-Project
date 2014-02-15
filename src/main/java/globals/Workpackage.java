@@ -1019,7 +1019,6 @@ public class Workpackage {
         for (int i = 1; i < id.length; i++) {
             parentStringId = parentStringId + "." + id[i].toString();
         }
-        System.out.println(parentStringId); // %%
         System.out.println(DBModelManager.getWorkpackageModel()
                 .getWorkpackage(parentStringId).getId());
         thisWp.setParentID((DBModelManager.getWorkpackageModel()

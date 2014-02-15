@@ -37,7 +37,7 @@ public interface AnalyseDataModel {
      * @param fid Workpackage from which the data comes.
      * @return Returns the data from selected workpackage.
      */
-    public AnalyseData getAnalyseData(int fid);
+    public List<AnalyseData> getAnalyseData(int fid);
     
     /**
      * A method to get the analyse data from the baseline.
