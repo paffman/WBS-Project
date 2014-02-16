@@ -12,7 +12,7 @@
  * see <http://www.gnu.org/licenses/>.
  */
 
-package de.fhbingen.wbs.wpWorker;
+package de.fhbingen.wbs.gui.wpworker;
 
 import de.fhbingen.wbs.globals.FilterJTextField;
 
@@ -40,7 +40,7 @@ import de.fhbingen.wbs.translation.Login;
 import de.fhbingen.wbs.translation.Messages;
 
 /** GUI to change the password. */
-public class ChangePWGUI extends JFrame { // TODO extend JDialog
+public class ChangePwView extends JFrame { // TODO extend JDialog
 
     /** Constant serialized ID used for compatibility. */
     private static final long serialVersionUID = 1L;
@@ -86,7 +86,7 @@ public class ChangePWGUI extends JFrame { // TODO extend JDialog
      * initialized and added to the GridBagLayout.
      * @param delegate
      */
-    public ChangePWGUI(final Delegate delegate) {
+    public ChangePwView(final Delegate delegate) {
         super();
 
         this.delegate = delegate;
