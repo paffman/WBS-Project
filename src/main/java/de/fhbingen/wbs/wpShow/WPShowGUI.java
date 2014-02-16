@@ -1221,7 +1221,9 @@ public class WPShowGUI extends JFrame {
      */
     private void setUAPViews(final boolean isUAP, final boolean leiter) {
         if (!leiter) {
-            this.tblAufwand.removeColumn(this.tblAufwand.getColumn("Name"));
+            //this.tblAufwand.removeColumn(this.tblAufwand.getColumn("Name"));
+            this.tblAufwand.removeColumn(this.tblAufwand.getColumn(
+                    LocalizedStrings.getLogin().user()));
             this.txfBAC.setEnabled(false);
         } else {
 
