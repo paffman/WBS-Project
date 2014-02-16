@@ -21,12 +21,7 @@ package de.fhbingen.wbs.gui.login;
 
 import de.fhbingen.wbs.gui.delegates.SimpleDialogDelegate;
 import de.fhbingen.wbs.translation.LocalizedStrings;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.awt.Toolkit;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.ImageIcon;
@@ -198,7 +193,8 @@ public class LoginGUI extends JFrame {
      * @param delegate Object handling the user actions.
      * @param dataSource Object providing the data to the GUI.
      */
-    public LoginGUI(final ActionsDelegate delegate, final DataSource dataSource) {
+    public LoginGUI(final ActionsDelegate delegate,
+                    final DataSource dataSource) {
         super("Login");
 
         this.actionsDelegate = delegate;
@@ -243,6 +239,13 @@ public class LoginGUI extends JFrame {
         // LocalizedStrings.getDbChooser() and input elements
         JLabel titleLabel =
                 new JLabel(LocalizedStrings.getDbChooser().database() + ":");
+
+        Font oldFont = titleLabel.getFont();
+        Font boldFont = new Font(oldFont.getFontName(), Font.BOLD,
+                oldFont.getSize());
+
+        titleLabel.setFont(boldFont);
+
         JLabel hostLabel =
                 new JLabel(LocalizedStrings.getDbChooser().serverAddress()
                         + ":");
@@ -253,6 +256,7 @@ public class LoginGUI extends JFrame {
                         + ":");
         JLabel titleUserLabel =
                 new JLabel(LocalizedStrings.getDbChooser().user() + ":");
+        titleUserLabel.setFont(boldFont);
         JLabel userLabel =
                 new JLabel(LocalizedStrings.getDbChooser().loginLong() + ":");
         JLabel pwLabel =
@@ -309,6 +313,8 @@ public class LoginGUI extends JFrame {
         }
 
         addActionListeners();
+
+        this.pack();
     }
 
     /**
