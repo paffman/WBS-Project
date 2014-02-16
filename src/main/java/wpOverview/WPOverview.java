@@ -1,3 +1,17 @@
+/*
+ * The WBS-Tool is a project management tool combining the Work Breakdown
+ * Structure and Earned Value Analysis Copyright (C) 2013 FH-Bingen This
+ * program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your
+ * option) any later version. This program is distributed in the hope that
+ * it will be useful, but WITHOUT ANY WARRANTY;; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details. You should have received a
+ * copy of the GNU General Public License along with this program. If not,
+ * see <http://www.gnu.org/licenses/>.
+ */
+
 package wpOverview;
 
 import dbaccess.DBModelManager;
@@ -23,52 +37,50 @@ import wpShow.WPShow;
 import wpWorker.User;
 
 /**
- * Studienprojekt: WBS Kunde: Pentasys AG, Jens von Gersdorff Projektmitglieder:
- * Andre Paffenholz, Peter Lange, Daniel Metzler, Samson von Graevenitz
- * Studienprojekt: PSYS WBS 2.0<br/>
- * Kunde: Pentasys AG, Jens von Gersdorff<br/>
- * Projektmitglieder:<br/>
- * Michael Anstatt,<br/>
- * Marc-Eric Baumgärtner,<br/>
- * Jens Eckes,<br/>
- * Sven Seckler,<br/>
- * Lin Yang<br/>
- * GUI zum auswählen und Anzeigen der Arbeitspakete der User
- *
- * @author Samson von Graevenitz und Daniel Metzler
- * @version 2.0 - 30.11.2010
+ * GUI to select and view the work packages from the users.
  */
 public class WPOverview {
 
+    /** A static variable for the count of the levels. */
     public static int levelCount = getEbenen();
 
+    /** The work package overview GUI. */
     private static WPOverviewGUI gui;
+
+    /** The user from which the work packages are shown. */
     private static User usr;
+
+    /** Translation interface. */
     private final Messages messageStrings;
 
+    /** The selected work package. */
     private Workpackage selectedWorkpackage;
 
     /**
-     * Konstruktor WPOverview() initialisiert die WPOverviewGUI, und beeinhaltet
-     * die Listener der WPOverviewGUI durch die Methode addButtonAction()
+     * Constructor: WPOverview() initialized the WPOverviewGUI and contains
+     * the listener from the WPOverviewGUI in the method addButtonAction.
+     * @param user
+     *            The user from which the work package is shown.
+     * @param parent
+     *            The wished JFrame.
      */
-    public WPOverview(User usr, JFrame parent) {
+    public WPOverview(final User user, final JFrame parent) {
         messageStrings = LocalizedStrings.getMessages();
 
-        WPOverview.usr = usr;
+        WPOverview.usr = user;
 
         gui = new WPOverviewGUI(this, parent);
-        gui.setTitle(LocalizedStrings.getProject().projectOverviewWindowTitle()
-                + ": " + getProjektName());
+        gui.setTitle(LocalizedStrings.getProject()
+            .projectOverviewWindowTitle() + ": " + getProjektName());
         gui.addWindowListener(new WindowAdapter() {
 
             @Override
-            public void windowClosed(WindowEvent arg0) {
+            public void windowClosed(final WindowEvent arg0) {
                 Controller.leaveDB();
             }
 
             @Override
-            public void windowClosing(WindowEvent arg0) {
+            public void windowClosing(final WindowEvent arg0) {
                 Controller.leaveDB();
             }
         });
@@ -80,9 +92,8 @@ public class WPOverview {
     }
 
     /**
-     * Gibt den Namen des Projekts zurück
-     *
-     * @return Projektname
+     * Returns the name of the project.
+     * @return The projects name.
      */
     private String getProjektName() {
         List<Project> proj = DBModelManager.getProjectModel().getProject();
@@ -95,34 +106,41 @@ public class WPOverview {
     }
 
     /**
-     * Liefert einen String zurück mit der Anzahl der passenden Stellen für
-     * LVLxID anhand der definierten Ebenen im Projekt Wird von
-     * generateAnalyse() in der Baseline aufgerufen
-     *
-     * @return String der LVLxID
+     * Returns a String with the count of the fields for LVLxID, based on
+     * the defined levels from the project. This method is called by the
+     * method generateAnalyse() in the class Baseline.
+     * @return String with LVLxID
      */
     public static String generateXEbene() {
-        String Nullen = "0";
-        for (int i = 4; i < levelCount; i++) {
-            Nullen += ".0";
+        String nullen = "0";
+        for (int i = 4; i < levelCount; i++) { //TODO is this still right?
+            nullen += ".0";
         }
-        return Nullen;
+        return nullen;
 
     }
 
-    public Workpackage getSelectedWorkpackage() {
+    /**
+     * Return the selected work package.
+     * @return The selected work package.
+     */
+    public final Workpackage getSelectedWorkpackage() {
         return this.selectedWorkpackage;
     }
 
-    public void setSelectedWorkpackage(Workpackage wp) {
+    /**
+     * Set the selected work package.
+     * @param wp
+     *            The work package which is selected.
+     */
+    public final void setSelectedWorkpackage(final Workpackage wp) {
         this.selectedWorkpackage = wp;
     }
 
     /**
-     * Liefert die Anzahl der Festgelegten Ebenen im Projekt zurück Wird vom
-     * statischen Datenelement ebenen aufgerufen, um dies zu instanziieren
-     *
-     * @return Anzahl der Ebenen in einem Projekt
+     * Return a count of the defined levels from the project. This method
+     * is called by the static field "ebenen" to instantiate it.
+     * @return The count of the levels from the project.
      */
     public static int getEbenen() {
         List<Project> proj = DBModelManager.getProjectModel().getProject();
@@ -133,65 +151,65 @@ public class WPOverview {
         return levelCount;
     }
 
+    /**
+     * Returns the user.
+     * @return The user from the selected work package.
+     */
     public static User getUser() {
         if (usr != null) {
             return usr;
         } else {
-            return new User("Leiter", true); //TODO was tut das?
+            return new User("Leiter", true); // TODO was tut das?
         }
 
     }
 
     /**
-     * Hilfsfunktion zum Erstellen eines neuen APs und zum Erfassen für
-     * Aufwände für bestehende APs Wird aus dem Menü aufgerufen und aus dem
-     * KontextMenü eines Baumeintrags Um Codezeilen zu reduzieren wurde die
-     * Funktionalität in diese Methode gepackt
+     * This method helps to create a new work package. Also it captures the
+     * efforts for existing work packages. This method is called from the
+     * menu and from the context menu from a tree node.
+     * @param isNewAp
+     *            True: the work package is a new work package. False: the
+     *            work package isn't new.
      */
-    public void readAP(boolean isNewAp) {
+    public final void readAP(final boolean isNewAp) {
         if (getSelectedWorkpackage() != null) {
 
             Workpackage selectedAP = getSelectedWorkpackage();
 
-            boolean istOAP = false;
-            istOAP = selectedAP.isIstOAP();
+            boolean istOAP = selectedAP.isIstOAP();
 
-            // Soll ein Neues AP aufgerufen werden
+            // Should a new work package be called?
             if (isNewAp) {
                 if (istOAP) {
                     new WPShow(this, selectedAP, true, gui);
 
                 } else {
                     JOptionPane.showMessageDialog(WPOverview.gui,
-                            messageStrings.selectTopLevelWorkPackage());
+                        messageStrings.selectTopLevelWorkPackage());
                 }
-            }
-            // oder ein bestehendes?
-            else {
+            } else { // or an existing?
                 if (!istOAP) {
                     WPShow wpshow = new WPShow(this, selectedAP, false, gui);
                     new AddAufwand(wpshow, selectedAP);
 
                 } else {
-                    JOptionPane
-                            .showMessageDialog(WPOverview.gui,
-                                    messageStrings
-                                            .noWorkEffortsOnTopLevelWorkPackages());
+                    JOptionPane.showMessageDialog(WPOverview.gui,
+                        messageStrings
+                            .noWorkEffortsOnTopLevelWorkPackages());
                 }
             }
 
         } else {
-            JOptionPane
-                    .showMessageDialog(
-                            WPOverview.gui,
-                            messageStrings.selectWorkPackageToAddNew());
+            JOptionPane.showMessageDialog(WPOverview.gui,
+                messageStrings.selectWorkPackageToAddNew());
         }
     }
 
     /**
-     * Aktualisiert die Haupt-GUI
+     * Update the main GUI.
      */
-    public void reload() {
+    public final void reload() {
         gui.reloadTrees();
         gui.reloadWorkers();
         gui.reloadTimeline();
@@ -199,49 +217,66 @@ public class WPOverview {
         gui.reloadConflicts();
         gui.reloadBaseline();
         gui.repaint();
-        WPOverviewGUI.setStatusText(LocalizedStrings.getButton().refresh
-                (LocalizedStrings.getGeneralStrings().view()));
+        WPOverviewGUI.setStatusText(LocalizedStrings.getButton().refresh(
+            LocalizedStrings.getGeneralStrings().view()));
     }
 
     /**
-     * Erstellt den WP-Baum
-     *
-     * @return RootNode des Baums
+     * Creates the work package tree.
+     * @return The root node from the tree.
      */
     public static DefaultMutableTreeNode createTree() {
-        return createTree(new ArrayList<Workpackage>(WpManager.getAllAp()));
+        return createTree(new ArrayList<>(WpManager.getAllAp()));
     }
 
+    /**
+     * Creates the work package tree.
+     * @param wpList
+     *            A list with work packages which are inserted into the
+     *            tree.
+     * @return The root node from the tree.
+     */
     public static DefaultMutableTreeNode createTree(
-            ArrayList<Workpackage> wpList) {
+        final ArrayList<Workpackage> wpList) {
         return createTree(wpList, wpList);
     }
 
+    /**
+     * Creates the work package tree.
+     * @param wpList
+     *            A list with all work packages which are inserted into the
+     *            tree.
+     * @param onlyThese
+     *              Render only these work packages.
+     * @return The root node from the tree.
+     */
     public static DefaultMutableTreeNode createTree(
-            ArrayList<Workpackage> wpList, List<Workpackage> onlyThese) {
-        wpList = new ArrayList<Workpackage>(wpList);
-        onlyThese = new ArrayList<Workpackage>(onlyThese);
-        if (!wpList.isEmpty()) {
-            Collections.sort(wpList, new APLevelComparator());
+        final ArrayList<Workpackage> wpList, final List<Workpackage>
+            onlyThese) {
+        final ArrayList<Workpackage> wpListCopy = new ArrayList<>(wpList);
+        final ArrayList<Workpackage> onlyTheseCopy = new ArrayList<>(onlyThese);
+        if (!wpListCopy.isEmpty()) {
+            Collections.sort(wpListCopy, new APLevelComparator());
 
             int levels = WpManager.getRootAp().getLvlIDs().length;
             DefaultMutableTreeNode[] parents =
                     new DefaultMutableTreeNode[levels + 1];
 
-            parents[0] = new DefaultMutableTreeNode(wpList.remove(0));
+            parents[0] = new DefaultMutableTreeNode(wpListCopy.remove(0));
 
             int lastRelevantIndex;
-            for (Workpackage actualWP : wpList) {
+            for (Workpackage actualWP : wpListCopy) {
                 lastRelevantIndex = actualWP.getlastRelevantIndex();
-                if (onlyThese.contains(actualWP)) {
+                if (onlyTheseCopy.contains(actualWP)) {
                     try {
-                        parents[lastRelevantIndex] =
-                                new DefaultMutableTreeNode(actualWP);
+                        parents[lastRelevantIndex] = new DefaultMutableTreeNode(
+                            actualWP);
                         parents[lastRelevantIndex - 1].add(parents[actualWP
-                                .getlastRelevantIndex()]);
-                    } catch (ArrayIndexOutOfBoundsException |NullPointerException e) {
+                            .getlastRelevantIndex()]);
+                    } catch (ArrayIndexOutOfBoundsException
+                        | NullPointerException e) {
                         System.err.println(LocalizedStrings.getMessages()
-                                .treeStructureProblemAt(actualWP.toString()));
+                            .treeStructureProblemAt(actualWP.toString()));
                     }
                 }
 
@@ -252,13 +287,12 @@ public class WPOverview {
     }
 
     /**
-     * Fuegt einen Conflict zur Conflicttable und setzt das Icon des
-     * Konflikt-Tabs auf Warning
-     *
+     * Insert a conflict to the conflicts table and set the icon from the
+     * conflict tab to "Warning".
      * @param conflict
-     *            Konflikt der geworfen werden soll
+     *            Conflict which should be thrown.
      */
-    public static void throwConflict(Conflict conflict) {
+    public static void throwConflict(final Conflict conflict) {
         if (gui != null) {
             gui.throwConflict(conflict);
         }
@@ -266,7 +300,7 @@ public class WPOverview {
     }
 
     /**
-     * Setzt das Icon des Konflikt-Tabs auf noWarning
+     * Set the icon from the conflict tab to "No Warning".
      */
     public static void releaseAllConflicts() {
         if (gui != null) {
@@ -275,41 +309,41 @@ public class WPOverview {
     }
 
     /**
-     * Liefert ein Color Objekt mit der dem cpi/ac Entsprechenden Farbwert
-     *
+     * Returns a Color array with the according color from the cpi/ac.
      * @param cpi
-     *            Wert deren Color-Objekt gebraucht wirt
+     *            Value of the cpi.
      * @param ac
-     *            Wert deren Color-Objekt gebraucht wirt
-     * @return Color Objekt mit den Werten Entsprechenden Farbwert
+     *            Value of the ac.
+     * @return A color array with the according color values.
      */
-    public static Color[] getCPIColor(double cpi, double ac) {
+    public static Color[] getCPIColor(final double cpi, final double ac) {
         Color[] colors = new Color[2];
+        //TODO rewrite intervals
         if (ac > 0) {
             if (cpi < 0.97) {
                 colors[0] = Color.black;
-                colors[1] = Color.YELLOW;
+                colors[1] = Legende.LOW_CPI_COLOR;
                 if (cpi < 0.94) {
                     colors[0] = Color.black;
-                    colors[1] = Color.RED;
+                    colors[1] = Legende.VERY_LOW_CPI_COLOR;
                 }
                 if (cpi < 0.6) {
                     colors[0] = Color.white;
-                    colors[1] = new Color(80, 00, 00);
+                    colors[1] = Legende.ULTRA_LOW_CPI_COLOR;
                 }
 
             } else {
                 if (cpi > 1.03) {
                     colors[0] = Color.white;
-                    colors[1] = new Color(00, 80, 00);
+                    colors[1] = Legende.HIGH_CPI_COLOR;
                 } else {
                     colors[0] = Color.black;
-                    colors[1] = Color.GREEN;
+                    colors[1] = Legende.EVEN_CPI_COLOR;
                 }
             }
         } else {
             colors[0] = Color.black;
-            colors[1] = Color.WHITE;
+            colors[1] = Legende.NO_CPI_COLOR;
         }
 
         return colors;
@@ -317,15 +351,14 @@ public class WPOverview {
     }
 
     /**
-     * Liefert ein Color Objekt mit der dem spi/ac Entsprechenden Farbwert
-     *
+     * Returns a Color array with the according color from the spi/ac.
      * @param spi
-     *            Wert deren Color-Objekt gebraucht wirt
+     *            Value of the spi.
      * @param ac
-     *            Wert deren Color-Objekt gebraucht wirt
-     * @return Color Objekt mit den Werten Entsprechenden Farbwert
+     *            Value of the ac.
+     * @return A color array with the according color values.
      */
-    public static Color[] getSPIColor(double spi, double ac) {
+    public static Color[] getSPIColor(final double spi, final double ac) {
         return getCPIColor(spi, ac);
     }
 }

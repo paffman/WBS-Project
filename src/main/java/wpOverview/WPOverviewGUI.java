@@ -1,3 +1,17 @@
+/*
+ * The WBS-Tool is a project management tool combining the Work Breakdown
+ * Structure and Earned Value Analysis Copyright (C) 2013 FH-Bingen This
+ * program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your
+ * option) any later version. This program is distributed in the hope that
+ * it will be useful, but WITHOUT ANY WARRANTY;; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details. You should have received a
+ * copy of the GNU General Public License along with this program. If not,
+ * see <http://www.gnu.org/licenses/>.
+ */
+
 package wpOverview;
 
 import dbServices.ConflictService;
@@ -44,105 +58,190 @@ import wpOverview.tabs.TreePanel;
 import wpOverview.tabs.WorkerPanel;
 
 /**
- * Studienprojekt: WBS Kunde: Pentasys AG, Jens von Gersdorff Projektmitglieder:
- * Andre Paffenholz, Peter Lange, Daniel Metzler, Samson von Graevenitz
- * Studienprojekt: PSYS WBS 2.0<br/>
- * Kunde: Pentasys AG, Jens von Gersdorff<br/>
- * Projektmitglieder:<br/>
- * Michael Anstatt,<br/>
- * Marc-Eric Baumgärtner,<br/>
- * Jens Eckes,<br/>
- * Sven Seckler,<br/>
- * Lin Yang<br/>
- *
- * @author Samson von Graevenitz, Daniel Metzler, Andre Paffenholz, Michael
- *         Anstatt, Marc-Eric Baumgärtner
- * @version 2.0 - <aktuelles Datum> GUI zum auswählen der Arbeitspakete des
- *          User <br />
- *          Die verwendeten Icons stammen von:
- *          http://sublink.ca/icons/sweetieplus/ sowie:
- *          http://p.yusukekamiyamane.com/ Diagona Icons Copyright (C) 2007
- *          Yusuke Kamiyamane. All rights reserved. The icons are licensed under
- *          a Creative Commons Attribution 3.0 license.
- *          <http://creativecommons.org/licenses/by/3.0/> Sweetieplus: Sie
- *          unterliegen der Creative Commons Licence: This licence allows you to
- *          use the icons in any client work, or commercial products such as
- *          WordPress themes or applications.
+ * GUI to select the work packages from the user. The used icons are from:
+ * http://sublink.ca/icons/sweetieplus/ as well as:
+ * http://p.yusukekamiyamane.com/ Diagona Icons Copyright (C) 2007 Yusuke
+ * Kamiyamane. All rights reserved. The icons are licensed under a Creative
+ * Commons Attribution 3.0 license.
+ * <http://creativecommons.org/licenses/by/3.0/> Sweetieplus: It's under
+ * the Creative Commons Licence: This licence allows you to use the icons
+ * in any client work, or commercial products such as WordPress themes or
+ * applications.
  */
 public class WPOverviewGUI extends JFrame {
+    /** The icon for a new work package. */
+    public static final ImageIcon newAp = new ImageIcon(Toolkit
+        .getDefaultToolkit().getImage(
+            WPOverviewGUI.class.getResource("/_icons/newAP.png"))); //NON-NLS
+    /** The icon for delete a work package. */
+    public static final ImageIcon delAP = new ImageIcon(Toolkit
+        .getDefaultToolkit().getImage(
+            WPOverviewGUI.class.getResource("/_icons/delAP.png"))); //NON-NLS
 
-    public static ImageIcon newAp = new ImageIcon(Toolkit.getDefaultToolkit()
-            .getImage(WPOverviewGUI.class.getResource("/_icons/newAP.png")));
-    public static ImageIcon delAP = new ImageIcon(Toolkit.getDefaultToolkit()
-            .getImage(WPOverviewGUI.class.getResource("/_icons/delAP.png")));
-    public static ImageIcon akt = new ImageIcon(Toolkit.getDefaultToolkit()
-            .getImage(
-                    WPOverviewGUI.class
-                            .getResource("/_icons/aktualisieren.png")));
-    public static ImageIcon aktoap = new ImageIcon(Toolkit.getDefaultToolkit()
-            .getImage(
-                    WPOverviewGUI.class
-                            .getResource("/_icons/OAPaktualisieren.png")));
-    public static ImageIcon dbcalc =
-            new ImageIcon(Toolkit.getDefaultToolkit().getImage(
-                    WPOverviewGUI.class.getResource("/_icons/DBberechnen.png")));
-    public static ImageIcon schlies = new ImageIcon(
-            Toolkit.getDefaultToolkit().getImage(
-                    WPOverviewGUI.class.getResource("/_icons/schliessen.png")));
-    public static ImageIcon pw = new ImageIcon(Toolkit.getDefaultToolkit()
-            .getImage(WPOverviewGUI.class.getResource("/_icons/pw.png")));
-    public static ImageIcon abmeld = new ImageIcon(Toolkit.getDefaultToolkit()
-            .getImage(WPOverviewGUI.class.getResource("/_icons/abmeld.png")));
-    public static ImageIcon hilfe = new ImageIcon(Toolkit.getDefaultToolkit()
-            .getImage(WPOverviewGUI.class.getResource("/_icons/hilfe.png")));
-    public static ImageIcon info = new ImageIcon(Toolkit.getDefaultToolkit()
-            .getImage(WPOverviewGUI.class.getResource("/_icons/info.png")));
-    public static ImageIcon aufw = new ImageIcon(Toolkit.getDefaultToolkit()
-            .getImage(WPOverviewGUI.class.getResource("/_icons/aufwand.png")));
-    public static ImageIcon reass = new ImageIcon(Toolkit.getDefaultToolkit()
-            .getImage(WPOverviewGUI.class.getResource("/_icons/reassign.png")));
-    public static ImageIcon childrenOut = new ImageIcon(Toolkit
-            .getDefaultToolkit().getImage(
-                    WPOverviewGUI.class.getResource("/_icons/down.png")));
-    public static ImageIcon childrenIn = new ImageIcon(Toolkit
-            .getDefaultToolkit().getImage(
-                    WPOverviewGUI.class.getResource("/_icons/up.png")));
+    /** The icon to update the work packages. */
+    public static final ImageIcon akt = new ImageIcon(Toolkit.getDefaultToolkit()
+        .getImage(WPOverviewGUI.class.getResource(
+                "/_icons/aktualisieren.png"))); //NON-NLS
+
+    /** The icon to update the upper work package. */
+    public static final ImageIcon aktoap = new ImageIcon(
+        Toolkit.getDefaultToolkit()
+            .getImage(WPOverviewGUI.class.getResource(
+                    "/_icons/OAPaktualisieren.png"))); //NON-NLS
+
+    /** The icon for the data base calculation. */
+    public static final ImageIcon dbcalc = new ImageIcon(Toolkit
+        .getDefaultToolkit().getImage(WPOverviewGUI.class.getResource(
+                    "/_icons/DBberechnen.png"))); //NON-NLS
+
+    /** The icon for closing the tool. */
+    public static final ImageIcon schlies = new ImageIcon(Toolkit
+        .getDefaultToolkit().getImage(
+            WPOverviewGUI.class.getResource(
+                    "/_icons/schliessen.png"))); //NON-NLS
+
+    /** The icon to change the password. */
+    public static final ImageIcon pw = new ImageIcon(Toolkit.getDefaultToolkit()
+        .getImage(WPOverviewGUI.class.getResource("/_icons/pw.png"))); //NON-NLS
+
+    /** The icon to sign out. */
+    public static final ImageIcon abmeld = new ImageIcon(Toolkit
+        .getDefaultToolkit().getImage(WPOverviewGUI.class.getResource(
+                    "/_icons/abmeld.png"))); //NON-NLS
+
+    /** The icon to show the help of the tool. */
+    public static final ImageIcon hilfe = new ImageIcon(Toolkit
+        .getDefaultToolkit().getImage(
+            WPOverviewGUI.class.getResource("/_icons/hilfe.png"))); //NON-NLS
+
+    /** The icon to show the info dialog. */
+    public static final ImageIcon info = new ImageIcon(Toolkit
+        .getDefaultToolkit().getImage(
+            WPOverviewGUI.class.getResource("/_icons/info.png"))); //NON-NLS
+
+    /** The icon to show the work effort. */
+    public static final ImageIcon aufw = new ImageIcon(Toolkit
+        .getDefaultToolkit().getImage(
+            WPOverviewGUI.class.getResource("/_icons/aufwand.png"))); //NON-NLS
+
+    /** The icon to re-assign a work package. */
+    public static final ImageIcon reass = new ImageIcon(Toolkit
+        .getDefaultToolkit().getImage(
+            WPOverviewGUI.class.getResource("/_icons/reassign.png"))); //NON-NLS
+
+    /**
+     * An arrow down icon.
+     */
+    public static final ImageIcon childrenOut = new ImageIcon(Toolkit
+        .getDefaultToolkit().getImage(
+            WPOverviewGUI.class.getResource("/_icons/down.png"))); //NON-NLS
+
+    /**
+     * Default width of the frame.
+     */
+    private static final int DEFAULT_WIDTH = 1024;
+
+    /**
+     * Default height of the frame.
+     */
+    private static final int DEFAULT_HEIGHT = 700;
+
+    /**
+     * Default width for the conflict frame.
+     */
+    private static final int DEFAULT_WIDTH_CONFLICTS = 800;
+
+    /**
+     * Default height for the conflict frame.
+     */
+    private static final int DEFAULT_HEIGHT_CONFLICTS = 600;
+
+    /**
+     * An arrow up icon.
+     */
+    public static final ImageIcon childrenIn = new ImageIcon(Toolkit
+        .getDefaultToolkit().getImage(
+            WPOverviewGUI.class.getResource("/_icons/up.png"))); //NON-NLS
+    /**
+     * Translation interface.
+     */
     private final Wbs wbsStrings;
+
+    /**
+     * Translation interface.
+     */
     private final General generalStrings;
+
+    /**
+     * Translation interface.
+     */
     private final Button buttonStrings;
+
+    /** The icon for the conflict tab. */
     private ImageIcon conflictIcon;
 
+    /** Contains the single tabs. */
     protected JTabbedPane tabs;
+
+    /** The button to close the window. */
     protected JButton btnSchliessen;
+
+    /** The items which are in the menu bar. */
     protected JMenuItem miAktualisieren, miAbmelden, miBeenden, miHilfe,
-            miInfo, miAP, miChangePW, miDelAp, miImportInitial, miCalcDuration;
+        miInfo, miAP, miChangePW, miDelAp, miImportInitial, miCalcDuration;
+
+    /** The tool bar. */
     protected ToolBar toolbar;
 
+    /** The caption of the cpi values. */
     private Legende legende;
+
+    /** The panel which contains all work packages. */
     private TreePanel treeAlle;
+
+    /** The panel which contains all employees. */
     private WorkerPanel workers;
+
+    /** The panel which contains the baselines. */
     private BaselinePanel baseline;
+
+    /** The GUI to show the availability from the single employees. */
     private AvailabilityGraphGUI availability;
+
+    /** The table which shows the conflicts. */
     private ConflictTable conflicts;
+
+    /** The panel which contains the time line. */
     private APCalendarPanel timeline;
+
+    /** The panel which contains the followers. */
     private FollowerPanel follower;
+
+    /** The panel which contains all work packages which are done. */
     private TreePanel treeFertig;
+
+    /** The panel which contains all open work packages. */
     private TreePanel treeOffen;
 
-    private static JLabel lblStatusbar;
 
+
+    /** The label which shows the status bar. */
+    private static JLabel lblStatusbar;
+    /** Constant serialized ID used for compatibility. */
     private static final long serialVersionUID = -374634221909256041L;
 
     /**
-     * Konstuktor DBOverviewGUI() Main-Frame bekommt den Namen "WP-Overview"
-     * zugewiesen es wird das Windows Look and Feel verwendet die verschiedenen
-     * Menüs, Buttons etc. werden initialisiert es wird ein TabbedPane
-     * verwendet um die aktiven und inaktiven Arbeitspaket in verschieden Tabs
-     * anzuzeigen und jedes zu TabbedPane wird das GridBagLayout hinzugefügt
-     *
+     * Constructor: The DBOverviewGUI() main frame get the name
+     * "WP-Overview". The windows look and feel is used. The different
+     * menus, buttons etc. are initialized. A TabbedPane is used to show
+     * the active/inactive work packages in the different tabs. Every tab
+     * uses the GridBagLayout.
      * @param over
+     *            The functionality of the WPOverview.
+     * @param parent
+     *            The wished JFrame.
      */
-    public WPOverviewGUI(WPOverview over, JFrame parent) {
+    public WPOverviewGUI(final WPOverview over, final JFrame parent) {
         super();
 
         wbsStrings = LocalizedStrings.getWbs();
@@ -156,18 +255,14 @@ public class WPOverviewGUI extends JFrame {
         toolbar = new ToolBar(over, this);
         this.add(toolbar, BorderLayout.NORTH);
 
-        ArrayList<Workpackage> allUserWp =
-                new ArrayList<Workpackage>(WpManager.getUserWp(WPOverview
-                        .getUser()));
+        ArrayList<Workpackage> allUserWp = new ArrayList<>(
+            WpManager.getUserWp(WPOverview.getUser()));
         treeAlle = new TreePanel(new ArrayList<Workpackage>(), over, parent);
-        treeOffen =
-                new TreePanel(allUserWp, new ArrayList<Workpackage>(
-                        WpManager.getUserWpOpen(WPOverview.getUser())), over,
-                        parent);
-        treeFertig =
-                new TreePanel(allUserWp, new ArrayList<Workpackage>(
-                        WpManager.getUserWpFinished(WPOverview.getUser())),
-                        over, parent);
+        treeOffen = new TreePanel(allUserWp, new ArrayList<>(
+            WpManager.getUserWpOpen(WPOverview.getUser())), over, parent);
+        treeFertig = new TreePanel(allUserWp, new ArrayList<>(
+            WpManager.getUserWpFinished(WPOverview.getUser())), over,
+            parent);
 
         workers = new WorkerPanel(over);
         baseline = new BaselinePanel(over, parent);
@@ -176,9 +271,8 @@ public class WPOverviewGUI extends JFrame {
         timeline = new APCalendarPanel();
         follower = new FollowerPanel();
 
-        tabs =
-                createTabs(treeAlle, treeOffen, treeFertig, workers, baseline,
-                        availability, conflicts, timeline);
+        tabs = createTabs(treeAlle, treeOffen, treeFertig, workers,
+            baseline, availability, conflicts, timeline);
         this.add(tabs, BorderLayout.CENTER);
 
         legende = new Legende();
@@ -189,8 +283,8 @@ public class WPOverviewGUI extends JFrame {
     }
 
     /**
-     * void initialize() Methode initialize zum erstellen des Layouts Gui ist
-     * 610 Pixel breit und 500 Pixel lang
+     * Creates the layout from the GUI. The width is 610 pixel and the
+     * height is 500 pixel.
      */
     private void initialize() {
         setLayout(new BorderLayout());
@@ -198,31 +292,27 @@ public class WPOverviewGUI extends JFrame {
 
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         // setResizable(false);
-        int width = 1024;
-        int height = 700;
-        // minimale Fenstergröße eintragen
-        setSize(1024, 700);
-        // Fenster mittig platzieren
+        // set the minimal window size.
+        setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
+        // set the window central.
         Toolkit tk = Toolkit.getDefaultToolkit();
         Dimension screenSize = tk.getScreenSize();
-        setLocation((int) (screenSize.getWidth() / 2) - width / 2,
-                (int) (screenSize.getHeight() / 2) - height / 2);
-        // Verhalten beim Maximieren festlegen
-        // setExtendedState(JFrame.MAXIMIZED_BOTH);
+        setLocation((int) (screenSize.getWidth() / 2) - DEFAULT_WIDTH / 2,
+            (int) (screenSize.getHeight() / 2) - DEFAULT_HEIGHT / 2);
 
         try {
-            UIManager
-                    .setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+            UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows."
+                + "WindowsLookAndFeel");
             SwingUtilities.updateComponentTreeUI(this);
         } catch (Exception e) {
-            System.err.println(LocalizedStrings.getErrorMessages().couldNotLoadLookAndFeel());
+            System.err.println(LocalizedStrings.getErrorMessages()
+                .couldNotLoadLookAndFeel());
         }
     }
 
     /**
-     * Erstellt die MenuBar (Datei, Hilfe)
-     *
-     * @return Menubar
+     * Creates the menu bar. (File, Help)
+     * @return The menu bar.
      */
     private JMenuBar createMenu() {
         JMenu mnDatei, mnHilfe;
@@ -232,11 +322,11 @@ public class WPOverviewGUI extends JFrame {
         mnHilfe = new JMenu(buttonStrings.help());
         miAktualisieren = new JMenuItem(buttonStrings.refresh());
         miAktualisieren.setIcon(akt);
-        miCalcDuration = new JMenuItem(buttonStrings.calculate(generalStrings
-                .duration()));
+        miCalcDuration = new JMenuItem(
+            buttonStrings.calculate(generalStrings.duration()));
         miCalcDuration.setIcon(aktoap);
         miChangePW = new JMenuItem(buttonStrings.change(LocalizedStrings
-                .getLogin().password()));
+            .getLogin().password()));
         miChangePW.setIcon(pw);
         miAbmelden = new JMenuItem(buttonStrings.logout());
         miAbmelden.setIcon(abmeld);
@@ -247,14 +337,17 @@ public class WPOverviewGUI extends JFrame {
         miInfo = new JMenuItem(buttonStrings.info());
         miInfo.setIcon(info);
 
-        // Menüeinträge für Projektleiter
+        // menu entries for the project leader.
         if (WPOverview.getUser().getProjLeiter()) {
-            miAP = new JMenuItem(buttonStrings.enter(wbsStrings.workPackage()));
+            miAP = new JMenuItem(buttonStrings.enter(wbsStrings
+                .workPackage()));
             miAP.setIcon(newAp);
-            miDelAp = new JMenuItem(buttonStrings.delete(wbsStrings.workPackage()));
+            miDelAp = new JMenuItem(buttonStrings.delete(wbsStrings
+                .workPackage()));
             miDelAp.setIcon(newAp);
-            miImportInitial = new JMenuItem(buttonStrings.calculate
-                    (LocalizedStrings.getDatabase().importedDatabase()));
+            miImportInitial = new JMenuItem(
+                buttonStrings.calculate(LocalizedStrings.getDatabase()
+                    .importedDatabase()));
             miImportInitial.setIcon(dbcalc);
         }
 
@@ -278,16 +371,15 @@ public class WPOverviewGUI extends JFrame {
     }
 
     /**
-     * Erstellt das Menu mit den Tabs und liefert es zurueck
-     *
+     * Creates the TabbedPane with the single tabs.
      * @param treeAlle
-     *            Tree mit allen APs
+     *            Tree with all work packages.
      * @param treeOffen
-     *            Tree mit offenen APs
+     *            Tree with opened work packages.
      * @param treeFertig
-     *            Tree mit fertigen APs
+     *            Tree with closed work packages.
      * @param workers
-     *            Workerpanel
+     *            The employee panel.
      * @param baseline
      *            BaselinePanel
      * @param availability
@@ -296,43 +388,42 @@ public class WPOverviewGUI extends JFrame {
      *            ConflictTable
      * @param timeline
      *            APCalendarPanel
-     * @return JTabbedPane Komplettes TabMenu
+     * @return The TabbedPane with all tabs.
      */
-    private JTabbedPane createTabs(TreePanel treeAlle, TreePanel treeOffen,
-            TreePanel treeFertig, WorkerPanel workers, BaselinePanel baseline,
-            AvailabilityGraphGUI availability, final ConflictTable conflicts,
-            APCalendarPanel timeline) {
+    private JTabbedPane createTabs(final TreePanel treeAlle,
+        final TreePanel treeOffen, final TreePanel treeFertig,
+        final WorkerPanel workers, final BaselinePanel baseline,
+        final AvailabilityGraphGUI availability,
+        final ConflictTable conflicts, final APCalendarPanel timeline) {
 
         final JTabbedPane tabs = new JTabbedPane();
         tabs.setBorder(new EmptyBorder(3, 3, 3, 3));
         tabs.addTab(wbsStrings.workPackages(generalStrings.all()),
-                createScrollPane(treeAlle));
+            createScrollPane(treeAlle));
         tabs.addTab(wbsStrings.workPackages(generalStrings.open()),
-                createScrollPane(treeOffen));
+            createScrollPane(treeOffen));
         tabs.addTab(wbsStrings.workPackages(generalStrings.finished()),
-                createScrollPane(treeFertig));
+            createScrollPane(treeFertig));
         if (WPOverview.getUser().getProjLeiter()) {
             tabs.addTab(LocalizedStrings.getLogin().user(),
-                    createScrollPane(workers));
+                createScrollPane(workers));
             tabs.addTab(wbsStrings.baseline(), baseline);
         }
         tabs.addTab(generalStrings.availabilities(),
-                createScrollPane(availability));
+            createScrollPane(availability));
         tabs.addTab(wbsStrings.timeLine(), createScrollPane(timeline));
         if (WPOverview.getUser().getProjLeiter()) {
             tabs.addTab(generalStrings.dependencies(),
-                    createScrollPane(follower));
+                createScrollPane(follower));
         }
         if (ConflictService.getAllConflicts().size() == 0) {
-            conflictIcon =
-                    new ImageIcon(
-                            (Toolkit.getDefaultToolkit().getImage(WPOverviewGUI.class
-                                    .getResource("/_icons/noWarning.png"))));
+            conflictIcon = new ImageIcon(
+                (Toolkit.getDefaultToolkit().getImage(WPOverviewGUI.class
+                    .getResource("/_icons/noWarning.png")))); //NON-NLS
         } else {
-            conflictIcon =
-                    new ImageIcon(
-                            (Toolkit.getDefaultToolkit().getImage(WPOverviewGUI.class
-                                    .getResource("/_icons/warning.png"))));
+            conflictIcon = new ImageIcon(
+                (Toolkit.getDefaultToolkit().getImage(WPOverviewGUI.class
+                    .getResource("/_icons/warning.png")))); //NON-NLS
         }
         if (WPOverview.getUser().getProjLeiter()) {
 
@@ -342,25 +433,26 @@ public class WPOverviewGUI extends JFrame {
             tabs.addTab(conflictText, conflictIcon, spConflicts);
             tabs.addMouseListener(new MouseAdapter() {
                 @Override
-                public void mouseClicked(MouseEvent e) {
+                public void mouseClicked(final MouseEvent e) {
                     if (e.getClickCount() == 2) {
-                        if (tabs.getTitleAt(tabs.getSelectedIndex()).equals(
-                                conflictText)) {
+                        if (tabs.getTitleAt(tabs.getSelectedIndex())
+                            .equals(conflictText)) {
                             JFrame conflictFrame = new JFrame();
                             conflictFrame.add(spConflicts);
-                            conflictFrame.setSize(800, 600);
+                            conflictFrame.setSize(DEFAULT_WIDTH_CONFLICTS,
+                                    DEFAULT_HEIGHT_CONFLICTS);
                             Controller.centerComponent(wpOverviewGUI,
-                                    conflictFrame);
+                                conflictFrame);
                             conflictFrame.setVisible(true);
                             conflictFrame
-                                    .addWindowListener(new WindowAdapter() {
-                                        @Override
-                                        public void
-                                                windowClosing(WindowEvent e) {
-                                            tabs.addTab(conflictText,
-                                                    conflictIcon, spConflicts);
-                                        }
-                                    });
+                                .addWindowListener(new WindowAdapter() {
+                                    @Override
+                                    public void windowClosing(
+                                        final WindowEvent e) {
+                                        tabs.addTab(conflictText,
+                                            conflictIcon, spConflicts);
+                                    }
+                                });
                         }
                     }
                 }
@@ -370,15 +462,15 @@ public class WPOverviewGUI extends JFrame {
     }
 
     /**
-     * Erzeugt die Fußzeile des Fensters
-     *
+     * Creates the footer of the window.
      * @param legende
-     *            Legende die die Farben erklaert
+     *            The caption which explains the cpi values.
      * @param lblStatusbar
-     *            JLabel
-     * @return
+     *            The label of the status bar.
+     * @return The footer.
      */
-    private JComponent createFooter(Legende legende, JLabel lblStatusbar) {
+    private JComponent createFooter(final Legende legende,
+        final JLabel lblStatusbar) {
         JPanel south = new JPanel();
         btnSchliessen = new JButton(buttonStrings.close());
         south.setLayout(new GridLayout(3, 1));
@@ -390,13 +482,12 @@ public class WPOverviewGUI extends JFrame {
     }
 
     /**
-     * Erzeugt ein Panel mit Scrollbalken
-     *
+     * Creates a panel with a scroll pane.
      * @param component
-     *            Componente die scrollbar sein soll
-     * @return Liefert ein Panel mit einen Scrollbalken zurueck
+     *            The wished component.
+     * @return A panel with a scroll pane inside.
      */
-    private JPanel createScrollPane(Component component) {
+    private JPanel createScrollPane(final Component component) {
         // JPanel panel = new JPanel();
         //
         // GridBagLayout layout = new GridBagLayout();
@@ -420,109 +511,107 @@ public class WPOverviewGUI extends JFrame {
     }
 
     /**
-     * Deaktiviert/Aktiviert die Legende
-     *
+     * Deactivate/activate the caption.
      * @param show
-     *            Boolean ob an oder abgeschaltet werden soll
+     *            True: activate the caption. False: deactivate the caption
      */
-    public void showLegende(boolean show) {
+    public final void showLegende(final boolean show) {
         legende.setVisible(show);
     }
 
     /**
-     * ändert den Text in der Statusbar
-     *
+     * Change the text in the status bar.
      * @param str
-     *            String zur Anzeige in der Statusbar
+     *            The String which should be shown in the status bar.
      */
-    public static void setStatusText(String str) {
+    public static void setStatusText(final String str) {
         lblStatusbar.setText(str);
     }
 
     /**
-     * Laedt den Baum neu
+     * Reload the tree.
      */
-    protected void reloadTrees() {
-        ArrayList<Workpackage> allUserWp =
-                new ArrayList<Workpackage>(WpManager.getUserWp(WPOverview
-                        .getUser()));
+    protected final void reloadTrees() {
+        ArrayList<Workpackage> allUserWp = new ArrayList<>(
+            WpManager.getUserWp(WPOverview.getUser()));
         treeAlle.setNodes(allUserWp, allUserWp);
         treeAlle.reload();
         treeOffen.setNodes(
-                allUserWp,
-                new ArrayList<Workpackage>(WpManager.getUserWpOpen(WPOverview
-                        .getUser())));
+            allUserWp,
+            new ArrayList<>(WpManager.getUserWpOpen(WPOverview
+                .getUser())));
         treeOffen.reload();
         treeFertig.setNodes(
-                allUserWp,
-                new ArrayList<Workpackage>(WpManager
-                        .getUserWpFinished(WPOverview.getUser())));
+            allUserWp,
+            new ArrayList<>(WpManager
+                .getUserWpFinished(WPOverview.getUser())));
         treeFertig.reload();
         follower.reload();
 
     }
 
     /**
-     * Laedt die Arbeiter neu
+     * Reload the employees.
      */
-    protected void reloadWorkers() {
+    protected final void reloadWorkers() {
         workers.reload();
     }
 
     /**
-     * Laedt die Timeline neu
+     * Reload the time line.
      */
-    public void reloadTimeline() {
+    public final void reloadTimeline() {
         timeline.reload();
     }
 
     /**
-     * Fuegt einen Conflict zur Conflicttable und setzt das Icon des
-     * Konflikt-Tabs auf Warning
-     *
+     * Insert a conflict to the conflicts table and set the icon of the
+     * conflict tab to "Warning".
      * @param conflict
-     *            Konflikt der geworfen werden soll
+     *            Conflict which should be thrown.
      */
-    protected void throwConflict(Conflict conflict) {
+    protected final void throwConflict(final Conflict conflict) {
         conflictIcon.setImage(Toolkit.getDefaultToolkit().getImage(
-                WPOverviewGUI.class.getResource("/_icons/warning.png")));
+            WPOverviewGUI.class.getResource("/_icons/warning.png"))); //NON-NLS
         conflicts.addConflict(conflict);
     }
 
     /**
-     * Setzt das Icon des Konflikt-Tabs auf noWarning
+     * Set the icon of the conflict tab to "No Warning".
      */
-    protected void releaseConflicts() {
+    protected final void releaseConflicts() {
         conflictIcon.setImage(Toolkit.getDefaultToolkit().getImage(
-                WPOverviewGUI.class.getResource("/_icons/noWarning.png")));
+            WPOverviewGUI.class.getResource(
+                    "/_icons/noWarning.png"))); //NON-NLS
     }
 
     /**
-     * Laedt die Verfuegbarkeiten neu
+     * Reload the availabilities.
      */
-    public void reloadAvailabilities() {
+    public final void reloadAvailabilities() {
         availability.reload();
     }
 
     /**
-     * Laedt die Konflikte neu
+     * Reload the conflicts.
      */
-    public void reloadConflicts() {
+    public final void reloadConflicts() {
         if (ConflictService.getAllConflicts().size() == 0) {
             conflictIcon.setImage(Toolkit.getDefaultToolkit().getImage(
-                    WPOverviewGUI.class.getResource("/_icons/noWarning.png")));
+                WPOverviewGUI.class.getResource(
+                        "/_icons/noWarning.png"))); //NON-NLS
         } else {
             conflictIcon.setImage((Toolkit.getDefaultToolkit()
-                    .getImage(WPOverviewGUI.class
-                            .getResource("/_icons/warning.png"))));
+                .getImage(WPOverviewGUI.class
+                    .getResource("/_icons/warning.png")))); //NON-NLS
         }
         conflicts.reload();
     }
 
     /**
-     * Laedt die Baseline neu
+     * Reload the baseline.
      */
-    public void reloadBaseline() {
+    public final void reloadBaseline() {
         baseline.reload();
     }
 }

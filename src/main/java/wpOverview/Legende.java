@@ -1,8 +1,23 @@
+/*
+ * The WBS-Tool is a project management tool combining the Work Breakdown
+ * Structure and Earned Value Analysis Copyright (C) 2013 FH-Bingen This
+ * program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your
+ * option) any later version. This program is distributed in the hope that
+ * it will be useful, but WITHOUT ANY WARRANTY;; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details. You should have received a
+ * copy of the GNU General Public License along with this program. If not,
+ * see <http://www.gnu.org/licenses/>.
+ */
+
 package wpOverview;
 
 import de.fhbingen.wbs.translation.LocalizedStrings;
 import java.awt.Canvas;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 
 import javax.swing.JLabel;
@@ -10,83 +25,110 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 /**
- * Studienprojekt:	WBS
- *
- * Kunde:				Pentasys AG, Jens von Gersdorff
- * Projektmitglieder:	Andre Paffenholz,
- * 						Peter Lange,
- * 						Daniel Metzler,
- * 						Samson von Graevenitz
- *
- * Legende in der Packetuebersicht um die Einteilung der farblichen Aufteilung des CPI zu erklaeren
- *
- * @author Samson von Graevenitz
- * @version 0.3- .12.2010
+ * Caption on the package overview to explain the color disposition of the
+ * cpi.
  */
+public class Legende extends JPanel {
+    /**
+     * Color used in the legend and work package overview for a high cpi.
+     */
+    public static final Color HIGH_CPI_COLOR = new Color(0, 80, 0);
 
-public class Legende extends JPanel{
+    /**
+     * Color used in the legend and work package overview for an even cpi.
+     */
+    public static final Color EVEN_CPI_COLOR = Color.GREEN;
 
-	private static final long serialVersionUID = 1L;
-	private JLabel text;
-	private Canvas color;
+    /**
+     * Color used in the legend and work package overview for a low cpi.
+     */
+    public static final Color LOW_CPI_COLOR = Color.YELLOW;
 
-	/**
-	 * Default-Konstructor:
-	 * Erzeugt ein JPanel mit den verschiedenen CPI-Farben und deren Zahlenwerte
-	 */
-	public Legende(){
-		super();
+    /**
+     * Color used in the legend and work package overview for a very low cpi.
+     */
+    public static final Color VERY_LOW_CPI_COLOR = Color.RED;
 
-		setLayout(new FlowLayout());
+    /**
+     * Color used in the legend and work package overview for an ultra low cpi.
+     */
+    public static final Color ULTRA_LOW_CPI_COLOR = new Color(80, 0, 0);
 
-		add(new JLabel(LocalizedStrings.getWbs().cpiColors() + ":"));
-		text = new JLabel();
-		text.setHorizontalAlignment(SwingConstants.CENTER);
-		text.setOpaque(true);
+    /**
+     * Color used in work package overview when no cpi is calculated.
+     */
+    public static final Color NO_CPI_COLOR = Color.WHITE;
 
-		add(new JLabel());
+    /** Constant serialized ID used for compatibility. */
+    private static final long serialVersionUID = 1L;
 
-		color = new Canvas();
-		color.setBackground(new Color(00, 80, 00));
-		color.setSize(20, 20);
-		add(color);
-		text.setText("1.03 >");
-		add(text);
 
-		color = new Canvas();
-		color.setBackground(Color.GREEN);
-		color.setSize(20, 20);
-		add(color);
-		text = new JLabel("1.03 - 0.97");
-		add(text);
+    /**
+     * Default-Constructor: Creates a JPanel with the different colors of
+     * the cpi and its values.
+     */
+    public Legende() {
+        super();
 
-		color = new Canvas();
-		color.setBackground(Color.YELLOW);
-		color.setSize(20, 20);
-		add(color);
-		text = new JLabel("0.97 - 0.94");
-		add(text);
+        setLayout(new FlowLayout());
 
-		color = new Canvas();
-		color.setBackground(Color.RED);
-		color.setSize(20, 20);
-		add(color);
-		text = new JLabel("0.94 - 0.6");
-		add(text);
+        add(new JLabel(LocalizedStrings.getWbs().cpiColors() + ":"));
+        JLabel text = new JLabel();
+        text.setHorizontalAlignment(SwingConstants.CENTER);
+        text.setOpaque(true);
 
-		color = new Canvas();
-		color.setBackground(new Color(80, 00, 00));
-		color.setSize(20, 20);
-		add(color);
-		text = new JLabel("< 0.6");
-		add(text);
-	}
-	/**
-	 * Umsetzen der Sichtbarkeit der Legende (Legende erscheint in den Paketuebersichten, aber nicht in Mitarbeiterauflistung und Baselineübersicht)
-	 * @param state - true:sichtbar, false:nicht sichtbar
-	 */
-	public void setVisible(boolean state){
-		super.setVisible(state);
-	}
+        add(new JLabel());
+
+        final Dimension canvasSize = new Dimension(20, 20);
+
+
+
+        /* The canvas for the color of the single cpi levels. */
+        Canvas color = new Canvas();
+        color.setBackground(HIGH_CPI_COLOR);
+        color.setSize(canvasSize);
+        add(color);
+        text.setText("1.03 >");
+        add(text);
+
+        color = new Canvas();
+        color.setBackground(EVEN_CPI_COLOR);
+        color.setSize(canvasSize);
+        add(color);
+        text = new JLabel("1.03 - 0.97");
+        add(text);
+
+        color = new Canvas();
+        color.setBackground(LOW_CPI_COLOR);
+        color.setSize(canvasSize);
+        add(color);
+        text = new JLabel("0.97 - 0.94");
+        add(text);
+
+        color = new Canvas();
+        color.setBackground(VERY_LOW_CPI_COLOR);
+        color.setSize(canvasSize);
+        add(color);
+        text = new JLabel("0.94 - 0.6");
+        add(text);
+
+        color = new Canvas();
+        color.setBackground(ULTRA_LOW_CPI_COLOR);
+        color.setSize(canvasSize);
+        add(color);
+        text = new JLabel("< 0.6");
+        add(text);
+    }
+
+    /**
+     * Convert the visibility of the caption. (Caption will shown in the
+     * package overview but will not shown in the employees and baseline
+     * view)
+     * @param state
+     *            - true: visible, false: not visible
+     */
+    public final void setVisible(final boolean state) {
+        super.setVisible(state);
+    }
 
 }
