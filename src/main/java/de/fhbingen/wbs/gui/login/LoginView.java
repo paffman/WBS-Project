@@ -1,12 +1,29 @@
-package de.fhbingen.wbs.chooseDB;
+/*
+ * The WBS-Tool is a project management tool combining the Work Breakdown
+ * Structure and Earned Value Analysis
+ * Copyright (C) 2013 FH-Bingen
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY;; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
 
+package de.fhbingen.wbs.gui.login;
+
+import de.fhbingen.wbs.gui.delegates.SimpleDialogDelegate;
 import de.fhbingen.wbs.translation.LocalizedStrings;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.awt.Toolkit;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -21,34 +38,18 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
 /**
- * Studienprojekt: WBS<br/>
- * Kunde: Pentasys AG, Jens von Gersdorff<br/>
- * Projektmitglieder: Andre Paffenholz, <br/>
- * Peter Lange, <br/>
- * Daniel Metzler,<br/>
- * Samson von Graevenitz<br/>
- * GUI zur Anzeige des MDBAuswahl Fensters Verbindet zu einer gegebenen
- * Microsoft Access Database Datei Studienprojekt: PSYS WBS 2.0<br/>
- * Kunde: Pentasys AG, Jens von Gersdorff<br/>
- * Projektmitglieder: <br/>
- * Michael Anstatt,<br/>
- * Marc-Eric Baumgärtner,<br/>
- * Jens Eckes,<br/>
- * Sven Seckler,<br/>
- * Lin Yang<br/>
+ * The GUI for the Login Screen.
  *
- * @author Samson von Graevenitz, Daniel Metzler, Andre Paffenholz, Lin Yang
- * @version 2.0 - 2012-08-22 Die verwendeten Icons stammen von:
- *          http://sublink.ca/icons/sweetieplus/ sowie:
- *          http://http://p.yusukekamiyamane.com/ Diagona Icons Copyright (C)
- *          2007 Yusuke Kamiyamane. All rights reserved. The icons are licensed
- *          under a Creative Commons Attribution 3.0 license.
- *          <http://creativecommons.org/licenses/by/3.0/> Sweetieplus: Sie
- *          unterliegen der Creative Commons Licence: This licence allows you to
- *          use the icons in any client work, or commercial products such as
- *          WordPress themes or applications.
+ * http://sublink.ca/icons/sweetieplus/ sowie:
+ * http://http://p.yusukekamiyamane.com/ Diagona Icons Copyright (C)
+ * 2007 Yusuke Kamiyamane. All rights reserved. The icons are licensed
+ * under a Creative Commons Attribution 3.0 license.
+ * <http://creativecommons.org/licenses/by/3.0/> Sweetieplus: Sie
+ * unterliegen der Creative Commons Licence: This licence allows you to
+ * use the icons in any client work, or commercial products such as
+ * WordPress themes or applications.
  */
-public class DBChooserGUI extends JFrame {
+public class LoginView extends JFrame {
 
     /**
      * generated serialVersionUID.
@@ -126,17 +127,77 @@ public class DBChooserGUI extends JFrame {
             .getImage(this.getClass().getResource("/_icons/schliessen.png")));
 
     /**
-     * Konstuktor DBChooserGUI() Main-Frame bekommt den Namen "WBS-File"
+     * Responsible for handling all user actions.
+     */
+    private final ActionsDelegate actionsDelegate;
+
+    /**
+     * Interface do define possible user actions to be handled by the
+     * controller.
+     */
+    public interface ActionsDelegate extends SimpleDialogDelegate {
+        /**
+         * The help action is performed.
+         */
+        void helpPerformed();
+
+        /**
+         * The info action is performed.
+         */
+        void infoPerformed();
+
+        /**
+         * The new db action is performed. This will happen when the user tris
+         * to open the project setup assistant.
+         */
+        void newDbPerformed();
+    }
+
+    /**
+     * Defines all methods which need to be implemented by the data source.
+     */
+    public interface DataSource {
+
+        /**
+         * Returns the last database host the user entered in the login screen.
+         * @return The last db host.
+         */
+        String getLastDbHost();
+
+        /**
+         * Returns the last database name the user entered in the login screen.
+         * @return The last db name.
+         */
+        String getLastDbName();
+
+        /**
+         * Returns the last index password the user entered in the login
+         * screen.
+         * @return The last index password.
+         */
+        String getLastDbIndexPw();
+
+        /**
+         * Returns the last username the user entered in the login screen.
+         * @return The last username.
+         */
+        String getLastDbUser();
+    }
+
+    /**
+     * Konstuktor LoginView() Main-Frame bekommt den Namen "WBS-File"
      * zugewiesen es wird das Windows Look and Feel verwendet die verschiedenen
      * Menüs, Buttons etc. werden initialisiert und zu dem GridBagLayout
      * hinzugefügt und angeordnet mittels createGbc
      *
-     * @param dbChooser
-     *            callin dbChooser, used to fill login data with data from last
-     *            used db.
+     * @param delegate Object handling the user actions.
+     * @param dataSource Object providing the data to the GUI.
      */
-    public DBChooserGUI(final DBChooser dbChooser) {
+    public LoginView(final ActionsDelegate delegate, final DataSource dataSource) {
         super("Login");
+
+        this.actionsDelegate = delegate;
+
         try {
             UIManager.setLookAndFeel("com.sun.java.swing."
                     + "plaf.windows.WindowsLookAndFeel");
@@ -177,6 +238,13 @@ public class DBChooserGUI extends JFrame {
         // LocalizedStrings.getDbChooser() and input elements
         JLabel titleLabel =
                 new JLabel(LocalizedStrings.getDbChooser().database() + ":");
+
+        Font oldFont = titleLabel.getFont();
+        Font boldFont = new Font(oldFont.getFontName(), Font.BOLD,
+                oldFont.getSize());
+
+        titleLabel.setFont(boldFont);
+
         JLabel hostLabel =
                 new JLabel(LocalizedStrings.getDbChooser().serverAddress()
                         + ":");
@@ -187,6 +255,7 @@ public class DBChooserGUI extends JFrame {
                         + ":");
         JLabel titleUserLabel =
                 new JLabel(LocalizedStrings.getDbChooser().user() + ":");
+        titleUserLabel.setFont(boldFont);
         JLabel userLabel =
                 new JLabel(LocalizedStrings.getDbChooser().loginLong() + ":");
         JLabel pwLabel =
@@ -202,17 +271,17 @@ public class DBChooserGUI extends JFrame {
         okButton = new JButton(LocalizedStrings.getDbChooser().ok());
 
         // load saved database into fields
-        if (dbChooser.getLastDbHost() != null) {
-            hostField.setText(dbChooser.getLastDbHost());
+        if (dataSource.getLastDbHost() != null) {
+            hostField.setText(dataSource.getLastDbHost());
         }
-        if (dbChooser.getLastDbName() != null) {
-            dbNameField.setText(dbChooser.getLastDbName());
+        if (dataSource.getLastDbName() != null) {
+            dbNameField.setText(dataSource.getLastDbName());
         }
-        if (dbChooser.getLastDbIndexPw() != null) {
-            dbPwPasswordField.setText(dbChooser.getLastDbIndexPw());
+        if (dataSource.getLastDbIndexPw() != null) {
+            dbPwPasswordField.setText(dataSource.getLastDbIndexPw());
         }
-        if (dbChooser.getLastDbUser() != null) {
-            userField.setText(dbChooser.getLastDbUser());
+        if (dataSource.getLastDbUser() != null) {
+            userField.setText(dataSource.getLastDbUser());
         }
 
         // place all elements in the window.
@@ -241,6 +310,10 @@ public class DBChooserGUI extends JFrame {
         if (!hostField.getText().equals("")) {
             pwPasswordField.requestFocus();
         }
+
+        addActionListeners();
+
+        this.pack();
     }
 
     /**
@@ -258,6 +331,54 @@ public class DBChooserGUI extends JFrame {
         setSize(new Dimension(width, height));
         gbl = new GridBagLayout();
         getContentPane().setLayout(gbl);
+    }
+
+
+    /**
+     * Setup actionListeners to call to the delegate interface.
+     */
+    private void addActionListeners() {
+        closeButton.addActionListener(new ActionListener() {
+            public void actionPerformed(final ActionEvent e) {
+                actionsDelegate.cancelPerformed();
+            }
+        });
+
+        okButton.addActionListener(new ActionListener() {
+            public void actionPerformed(final ActionEvent e) {
+                actionsDelegate.confirmPerformed();
+            }
+        });
+
+        okMenuItem.addActionListener(new ActionListener() {
+            public void actionPerformed(final ActionEvent e) {
+                actionsDelegate.confirmPerformed();
+            }
+        });
+
+        closeMenuItem.addActionListener(new ActionListener() {
+            public void actionPerformed(final ActionEvent e) {
+                actionsDelegate.cancelPerformed();
+            }
+        });
+
+        helpMenuItem.addActionListener(new ActionListener() {
+            public void actionPerformed(final ActionEvent arg0) {
+                actionsDelegate.helpPerformed();
+            }
+        });
+
+        infoMenuItem.addActionListener(new ActionListener() {
+            public void actionPerformed(final ActionEvent arg0) {
+                actionsDelegate.infoPerformed();
+            }
+        });
+
+        newDbMenuItem.addActionListener(new ActionListener() {
+            public void actionPerformed(final ActionEvent e) {
+                actionsDelegate.newDbPerformed();
+            }
+        });
     }
 
     /**
@@ -345,6 +466,61 @@ public class DBChooserGUI extends JFrame {
      */
     protected final JMenuItem getNewDbMenuItem() {
         return newDbMenuItem;
+    }
+
+    /**
+     * Returns the value of the host text field.
+     *
+     * @return The host name.
+     */
+    public final String getHost() {
+        return hostField.getText();
+    }
+
+    /**
+     * Returns the value of the database name text field.
+     *
+     * @return The db name.
+     */
+    public final String getDbName() {
+        return dbNameField.getText();
+    }
+
+    /**
+     * Returns the value of the user text field.
+     *
+     * @return The username.
+     */
+    public final String getUsername() {
+        return userField.getText();
+    }
+
+    /**
+     * Returns the entered index password.
+     *
+     * @return The index password.
+     */
+    public final char[] getIndexPassword() {
+        return dbPwPasswordField.getPassword();
+    }
+
+    /**
+     * Returns the entered user password.
+     *
+     * @return The user password.
+     */
+    public final char[] getUserPassword() {
+        return pwPasswordField.getPassword();
+    }
+
+    /**
+     * Returns weather or not the project leader checkbox is checked.
+     *
+     * @return <code>true</code> PL checkbox is checked,
+     *         <code>false</code> otherwise.
+     */
+    public final boolean isProjectLeader() {
+        return plCheckBox.isSelected();
     }
 
     /**

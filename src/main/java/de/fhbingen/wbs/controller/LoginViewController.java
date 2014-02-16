@@ -1,8 +1,29 @@
-package de.fhbingen.wbs.chooseDB;
+/*
+ * The WBS-Tool is a project management tool combining the Work Breakdown
+ * Structure and Earned Value Analysis
+ * Copyright (C) 2013 FH-Bingen
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY;; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+package de.fhbingen.wbs.controller;
 
 import c10n.C10N;
+import de.fhbingen.wbs.gui.login.LoginView;
 import de.fhbingen.wbs.dbaccess.DBModelManager;
 import de.fhbingen.wbs.dbaccess.data.Employee;
+import de.fhbingen.wbs.globals.InfoBox;
 import de.fhbingen.wbs.translation.C10NUseEnglishDefaultConfiguration;
 import de.fhbingen.wbs.translation.LocalizedStrings;
 import de.fhbingen.wbs.functions.WpManager;
@@ -34,18 +55,19 @@ import de.fhbingen.wbs.wpWorker.User;
  * Jens Eckes,<br/>
  * Sven Seckler,<br/>
  * Lin Yang<br/>
- * Ruft die DBChooserGUI auf<br/>
+ * Ruft die LoginView auf<br/>
  * setzt nach der Pfadeingabe den Pfad in der MDBConnect Klasse<br/>
  *
  * @author Samson von Graevenitz, Daniel Metzler, Michael Anstatt
  * @version 2.0 - 2012-08-20
  */
-public class DBChooser {
+public class LoginViewController implements LoginView.ActionsDelegate,
+        LoginView.DataSource {
 
     /**
      * Holds the gui-object.
      */
-    private DBChooserGUI gui;
+    private LoginView gui;
     /**
      * last Host the client was connected to.
      */
@@ -65,12 +87,11 @@ public class DBChooser {
     private String lastDbUser = null;
 
     /**
-     * Constructor initializes the DBChooserGUI and the Listeners for it.
+     * Constructor initializes the LoginView and the Listeners for it.
      */
-    public DBChooser() {
+    public LoginViewController() {
         loadLastDB();
-        gui = new DBChooserGUI(this);
-        new DBChooserButtonAction(this);
+        gui = new LoginView(this, this);
     }
 
     /**
@@ -81,12 +102,12 @@ public class DBChooser {
     public final void next() {
 
         // get input from gui
-        String host = gui.getHostField().getText();
-        String db = gui.getDbNameField().getText();
-        String user = gui.getUserField().getText();
-        char[] indexDbPw = gui.getDbPwPasswordField().getPassword();
-        char[] userPw = gui.getPwPasswordField().getPassword();
-        Boolean pl = gui.getPlCheckBox().isSelected();
+        String host = gui.getHost();
+        String db = gui.getDbName();
+        String user = gui.getUsername();
+        char[] indexDbPw = gui.getIndexPassword();
+        char[] userPw = gui.getUserPassword();
+        Boolean pl = gui.isProjectLeader();
 
         // check input
         if (host.equals("")) {
@@ -124,8 +145,8 @@ public class DBChooser {
             e.printStackTrace();
             if (e.getMessage().contains("Access denied for user")) {
                 JOptionPane.showMessageDialog(gui, LocalizedStrings
-                        .getMessages().loginConnectionFailure() + "\n" +
-                        LocalizedStrings.getMessages().loginCheckUsername());
+                        .getMessages().loginConnectionFailure() + "\n"
+                        + LocalizedStrings.getMessages().loginCheckUsername());
             } else {
                 JOptionPane.showMessageDialog(gui, LocalizedStrings
                         .getMessages().loginConnectionFailure()
@@ -156,7 +177,13 @@ public class DBChooser {
             if (!DBModelManager.getSemaphoreModel().enterSemaphore("pl",
                     employee.getId())) {
                 int answer =
-                        JOptionPane.showConfirmDialog(gui, LocalizedStrings.getMessages().loginPMSemaphoreOccupied(), LocalizedStrings.getDbChooser().projectManagerLogin(), JOptionPane.YES_NO_OPTION);
+                        JOptionPane.showConfirmDialog(gui,
+                                LocalizedStrings.getMessages().
+                                        loginPMSemaphoreOccupied(),
+                                LocalizedStrings.getDbChooser()
+                                        .projectManagerLogin(),
+                                JOptionPane.YES_NO_OPTION);
+
                 if (answer == JOptionPane.YES_OPTION) {
                     if (!DBModelManager.getSemaphoreModel().enterSemaphore(
                             "pl", employee.getId(), true)) {
@@ -311,30 +338,22 @@ public class DBChooser {
         }
     }
 
-    /**
-     * @return the lastDbHost
-     */
+    @Override
     public final String getLastDbHost() {
         return lastDbHost;
     }
 
-    /**
-     * @return the lastDbName
-     */
+    @Override
     public final String getLastDbName() {
         return lastDbName;
     }
 
-    /**
-     * @return the lastDbIndexPw
-     */
+    @Override
     public final String getLastDbIndexPw() {
         return lastDbIndexPw;
     }
 
-    /**
-     * @return the lastDbUser
-     */
+    @Override
     public final String getLastDbUser() {
         return lastDbUser;
     }
@@ -342,21 +361,47 @@ public class DBChooser {
     /**
      * @return the gui
      */
-    public final DBChooserGUI getGui() {
+    public final LoginView getGui() {
         return gui;
     }
 
+    @Override
+    public void cancelPerformed() {
+        System.exit(0);
+    }
+
+    @Override
+    public void confirmPerformed() {
+        this.next();
+    }
+
+    @Override
+    public void helpPerformed() {
+        JOptionPane.showMessageDialog(getGui(),
+                LocalizedStrings.getMessages().loginHelpMsg());
+    }
+
+    @Override
+    public void infoPerformed() {
+        new InfoBox();
+    }
+
+    @Override
+    public void newDbPerformed() {
+        ProjectSetupAssistant.newProject(getGui());
+    }
+
     /**
-     * erstellt ein Objekt von DBChooser() und beginnt somit das Programm durch
-     * Konstruktoraufruf von DBChooser()
+     * erstellt ein Objekt von LoginViewController() und beginnt somit das Programm durch
+     * Konstruktoraufruf von LoginViewController()
      *
      * @param args
      */
     public static void main(String[] args) {
-        //Locale.setDefault(Locale.GERMAN);
         System.out.println(Locale.getDefault().getLanguage().equals(Locale
                 .GERMAN));
         C10N.configure(new C10NUseEnglishDefaultConfiguration());
-        new DBChooser();
+        new LoginViewController();
     }
+
 }

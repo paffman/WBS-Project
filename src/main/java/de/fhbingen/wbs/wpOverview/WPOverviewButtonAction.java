@@ -14,7 +14,7 @@
 
 package de.fhbingen.wbs.wpOverview;
 
-import de.fhbingen.wbs.chooseDB.DBChooser;
+import de.fhbingen.wbs.controller.LoginViewController;
 import de.fhbingen.wbs.dbaccess.DBModelManager;
 import de.fhbingen.wbs.translation.LocalizedStrings;
 import de.fhbingen.wbs.functions.CalcOAPBaseline;
@@ -134,7 +134,7 @@ public class WPOverviewButtonAction {
 
         gui.miAbmelden.addActionListener(new ActionListener() {
             public void actionPerformed(final ActionEvent e) {
-                new DBChooser();
+                new LoginViewController();
                 gui.dispose();
                 Controller.leaveDB();
             }
