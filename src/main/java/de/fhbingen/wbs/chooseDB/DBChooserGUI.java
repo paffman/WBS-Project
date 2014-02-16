@@ -7,6 +7,8 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -21,32 +23,16 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
 /**
- * Studienprojekt: WBS<br/>
- * Kunde: Pentasys AG, Jens von Gersdorff<br/>
- * Projektmitglieder: Andre Paffenholz, <br/>
- * Peter Lange, <br/>
- * Daniel Metzler,<br/>
- * Samson von Graevenitz<br/>
- * GUI zur Anzeige des MDBAuswahl Fensters Verbindet zu einer gegebenen
- * Microsoft Access Database Datei Studienprojekt: PSYS WBS 2.0<br/>
- * Kunde: Pentasys AG, Jens von Gersdorff<br/>
- * Projektmitglieder: <br/>
- * Michael Anstatt,<br/>
- * Marc-Eric Baumgärtner,<br/>
- * Jens Eckes,<br/>
- * Sven Seckler,<br/>
- * Lin Yang<br/>
+ * The GUI for the DBChooser Screen.
  *
- * @author Samson von Graevenitz, Daniel Metzler, Andre Paffenholz, Lin Yang
- * @version 2.0 - 2012-08-22 Die verwendeten Icons stammen von:
- *          http://sublink.ca/icons/sweetieplus/ sowie:
- *          http://http://p.yusukekamiyamane.com/ Diagona Icons Copyright (C)
- *          2007 Yusuke Kamiyamane. All rights reserved. The icons are licensed
- *          under a Creative Commons Attribution 3.0 license.
- *          <http://creativecommons.org/licenses/by/3.0/> Sweetieplus: Sie
- *          unterliegen der Creative Commons Licence: This licence allows you to
- *          use the icons in any client work, or commercial products such as
- *          WordPress themes or applications.
+ * http://sublink.ca/icons/sweetieplus/ sowie:
+ * http://http://p.yusukekamiyamane.com/ Diagona Icons Copyright (C)
+ * 2007 Yusuke Kamiyamane. All rights reserved. The icons are licensed
+ * under a Creative Commons Attribution 3.0 license.
+ * <http://creativecommons.org/licenses/by/3.0/> Sweetieplus: Sie
+ * unterliegen der Creative Commons Licence: This licence allows you to
+ * use the icons in any client work, or commercial products such as
+ * WordPress themes or applications.
  */
 public class DBChooserGUI extends JFrame {
 
@@ -126,17 +112,88 @@ public class DBChooserGUI extends JFrame {
             .getImage(this.getClass().getResource("/_icons/schliessen.png")));
 
     /**
+     * Responsible for handling all user actions.
+     */
+    private final ActionsDelegate actionsDelegate;
+
+    /**
+     * Interface do define possible user actions to be handled by the
+     * controller.
+     */
+    public interface ActionsDelegate {
+        /**
+         * The close actions is performed.
+         */
+        void closePerformed();
+
+        /**
+         * The confirm action is performed.
+         */
+        void confirmPerformed();
+
+        /**
+         * The help action is performed.
+         */
+        void helpPerformed();
+
+        /**
+         * The info action is performed.
+         */
+        void infoPerformed();
+
+        /**
+         * The new db action is performed. This will happen when the user tris
+         * to open the project setup assistant.
+         */
+        void newDbPerformed();
+    }
+
+    /**
+     * Defines all methods which need to be implemented by the data source.
+     */
+    public interface DataSource {
+
+        /**
+         * Returns the last database host the user entered in the login screen.
+         * @return The last db host.
+         */
+        String getLastDbHost();
+
+        /**
+         * Returns the last database name the user entered in the login screen.
+         * @return The last db name.
+         */
+        String getLastDbName();
+
+        /**
+         * Returns the last index password the user entered in the login
+         * screen.
+         * @return The last index password.
+         */
+        String getLastDbIndexPw();
+
+        /**
+         * Returns the last username the user entered in the login screen.
+         * @return The last username.
+         */
+        String getLastDbUser();
+    }
+
+    /**
      * Konstuktor DBChooserGUI() Main-Frame bekommt den Namen "WBS-File"
      * zugewiesen es wird das Windows Look and Feel verwendet die verschiedenen
      * Menüs, Buttons etc. werden initialisiert und zu dem GridBagLayout
      * hinzugefügt und angeordnet mittels createGbc
      *
-     * @param dbChooser
-     *            callin dbChooser, used to fill login data with data from last
-     *            used db.
+     * @param delegate Object handling the user actions.
+     * @param dataSource Object providing the data to the GUI.
      */
-    public DBChooserGUI(final DBChooser dbChooser) {
+    public DBChooserGUI(final ActionsDelegate delegate,
+                        final DataSource dataSource) {
         super("Login");
+
+        this.actionsDelegate = delegate;
+
         try {
             UIManager.setLookAndFeel("com.sun.java.swing."
                     + "plaf.windows.WindowsLookAndFeel");
@@ -202,17 +259,17 @@ public class DBChooserGUI extends JFrame {
         okButton = new JButton(LocalizedStrings.getDbChooser().ok());
 
         // load saved database into fields
-        if (dbChooser.getLastDbHost() != null) {
-            hostField.setText(dbChooser.getLastDbHost());
+        if (dataSource.getLastDbHost() != null) {
+            hostField.setText(dataSource.getLastDbHost());
         }
-        if (dbChooser.getLastDbName() != null) {
-            dbNameField.setText(dbChooser.getLastDbName());
+        if (dataSource.getLastDbName() != null) {
+            dbNameField.setText(dataSource.getLastDbName());
         }
-        if (dbChooser.getLastDbIndexPw() != null) {
-            dbPwPasswordField.setText(dbChooser.getLastDbIndexPw());
+        if (dataSource.getLastDbIndexPw() != null) {
+            dbPwPasswordField.setText(dataSource.getLastDbIndexPw());
         }
-        if (dbChooser.getLastDbUser() != null) {
-            userField.setText(dbChooser.getLastDbUser());
+        if (dataSource.getLastDbUser() != null) {
+            userField.setText(dataSource.getLastDbUser());
         }
 
         // place all elements in the window.
@@ -241,6 +298,8 @@ public class DBChooserGUI extends JFrame {
         if (!hostField.getText().equals("")) {
             pwPasswordField.requestFocus();
         }
+
+        addActionListeners();
     }
 
     /**
@@ -258,6 +317,54 @@ public class DBChooserGUI extends JFrame {
         setSize(new Dimension(width, height));
         gbl = new GridBagLayout();
         getContentPane().setLayout(gbl);
+    }
+
+
+    /**
+     * Setup actionListeners to call to the delegate interface.
+     */
+    private void addActionListeners() {
+        closeButton.addActionListener(new ActionListener() {
+            public void actionPerformed(final ActionEvent e) {
+                actionsDelegate.closePerformed();
+            }
+        });
+
+        okButton.addActionListener(new ActionListener() {
+            public void actionPerformed(final ActionEvent e) {
+                actionsDelegate.confirmPerformed();
+            }
+        });
+
+        okMenuItem.addActionListener(new ActionListener() {
+            public void actionPerformed(final ActionEvent e) {
+                actionsDelegate.confirmPerformed();
+            }
+        });
+
+        closeMenuItem.addActionListener(new ActionListener() {
+            public void actionPerformed(final ActionEvent e) {
+                actionsDelegate.closePerformed();
+            }
+        });
+
+        helpMenuItem.addActionListener(new ActionListener() {
+            public void actionPerformed(final ActionEvent arg0) {
+                actionsDelegate.helpPerformed();
+            }
+        });
+
+        infoMenuItem.addActionListener(new ActionListener() {
+            public void actionPerformed(final ActionEvent arg0) {
+                actionsDelegate.infoPerformed();
+            }
+        });
+
+        newDbMenuItem.addActionListener(new ActionListener() {
+            public void actionPerformed(final ActionEvent e) {
+                actionsDelegate.newDbPerformed();
+            }
+        });
     }
 
     /**

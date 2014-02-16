@@ -1,8 +1,10 @@
 package de.fhbingen.wbs.chooseDB;
 
 import c10n.C10N;
+import de.fhbingen.wbs.controller.ProjectSetupAssistant;
 import de.fhbingen.wbs.dbaccess.DBModelManager;
 import de.fhbingen.wbs.dbaccess.data.Employee;
+import de.fhbingen.wbs.globals.InfoBox;
 import de.fhbingen.wbs.translation.C10NUseEnglishDefaultConfiguration;
 import de.fhbingen.wbs.translation.LocalizedStrings;
 import de.fhbingen.wbs.functions.WpManager;
@@ -40,7 +42,8 @@ import de.fhbingen.wbs.wpWorker.User;
  * @author Samson von Graevenitz, Daniel Metzler, Michael Anstatt
  * @version 2.0 - 2012-08-20
  */
-public class DBChooser {
+public class DBChooser implements DBChooserGUI.ActionsDelegate,
+        DBChooserGUI.DataSource {
 
     /**
      * Holds the gui-object.
@@ -69,8 +72,7 @@ public class DBChooser {
      */
     public DBChooser() {
         loadLastDB();
-        gui = new DBChooserGUI(this);
-        new DBChooserButtonAction(this);
+        gui = new DBChooserGUI(this, this);
     }
 
     /**
@@ -311,30 +313,22 @@ public class DBChooser {
         }
     }
 
-    /**
-     * @return the lastDbHost
-     */
+    @Override
     public final String getLastDbHost() {
         return lastDbHost;
     }
 
-    /**
-     * @return the lastDbName
-     */
+    @Override
     public final String getLastDbName() {
         return lastDbName;
     }
 
-    /**
-     * @return the lastDbIndexPw
-     */
+    @Override
     public final String getLastDbIndexPw() {
         return lastDbIndexPw;
     }
 
-    /**
-     * @return the lastDbUser
-     */
+    @Override
     public final String getLastDbUser() {
         return lastDbUser;
     }
@@ -344,6 +338,32 @@ public class DBChooser {
      */
     public final DBChooserGUI getGui() {
         return gui;
+    }
+
+    @Override
+    public void closePerformed() {
+        System.exit(0);
+    }
+
+    @Override
+    public void confirmPerformed() {
+        this.next();
+    }
+
+    @Override
+    public void helpPerformed() {
+        JOptionPane.showMessageDialog(getGui(),
+                LocalizedStrings.getMessages().loginHelpMsg());
+    }
+
+    @Override
+    public void infoPerformed() {
+        new InfoBox();
+    }
+
+    @Override
+    public void newDbPerformed() {
+        ProjectSetupAssistant.newProject(getGui());
     }
 
     /**
@@ -359,4 +379,5 @@ public class DBChooser {
         C10N.configure(new C10NUseEnglishDefaultConfiguration());
         new DBChooser();
     }
+
 }
