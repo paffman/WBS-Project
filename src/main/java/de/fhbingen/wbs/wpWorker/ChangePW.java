@@ -14,6 +14,7 @@
 
 package de.fhbingen.wbs.wpWorker;
 
+import de.fhbingen.wbs.wpOverview.WPOverviewGUI;
 import javax.swing.JOptionPane;
 
 import de.fhbingen.wbs.jdbcConnection.MySqlConnect;
@@ -28,7 +29,7 @@ import de.fhbingen.wbs.translation.Messages;
  * Functionality for the ChangePWGUI class. Checks all needed conditions to
  * change the password.
  */
-public class ChangePW {
+public class ChangePW implements ChangePWGUI.Delegate {
     /**
      * The GUI to change the password.
      */
@@ -50,8 +51,9 @@ public class ChangePW {
     public ChangePW(final Worker worker) {
         messages = LocalizedStrings.getMessages();
         this.usr = worker;
-        gui = new ChangePWGUI();
-        new ChangePWButtonAction(this);
+        gui = new ChangePWGUI(this);
+
+        getGui().txfUser.setText(getUsr().getName());
     }
 
     /**
@@ -125,5 +127,50 @@ public class ChangePW {
      */
     public final Worker getUsr() {
         return usr;
+    }
+
+    @Override
+    public void confirmPerformed() {
+
+        // Check if all fields are filled.
+        if (checkFieldsFilled()) {
+
+            // Check if the old password is correct.
+            if (checkOldPW()) {
+                if (checkNewPW()) {
+                    if (checkRules()) {
+                        Employee emp = DBModelManager
+                                .getEmployeesModel().getEmployee(
+                                        getUsr().getId());
+                        setNewPassword(emp);
+                        WPOverviewGUI.setStatusText(messages.
+                                passwordChangeConfirm());
+                        getGui().dispose();
+                    } else {
+                        JOptionPane.showMessageDialog(getGui(),
+                                messages.passwordInvalidError() + "\n"
+                                        + messages.guidelinesPassword(),
+                                null, JOptionPane.INFORMATION_MESSAGE);
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(getGui(),
+                            messages.passwordsNotMatchingError(), null,
+                            JOptionPane.INFORMATION_MESSAGE);
+                }
+            } else {
+                JOptionPane.showMessageDialog(getGui(),
+                        messages.passwordOldWrong(), null,
+                        JOptionPane.INFORMATION_MESSAGE);
+            }
+        } else {
+            JOptionPane.showMessageDialog(getGui(),
+                    messages.fillAllFieldsError(), null,
+                    JOptionPane.INFORMATION_MESSAGE);
+        }
+    }
+
+    @Override
+    public void cancelPerformed() {
+        gui.dispose();
     }
 }

@@ -16,6 +16,7 @@ package de.fhbingen.wbs.wpWorker;
 
 import de.fhbingen.wbs.globals.FilterJTextField;
 
+import de.fhbingen.wbs.gui.delegates.SimpleDialogDelegate;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -23,6 +24,8 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Toolkit;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -68,12 +71,25 @@ public class ChangePWGUI extends JFrame { // TODO extend JDialog
     public JButton btnOk, btnCancel;
 
     /**
+     * The delegate object handling the user events.
+     */
+    public final Delegate delegate;
+
+    /**
+     * The delegate interface. In this case its just a simple dialog delegate.
+     */
+    public interface Delegate extends SimpleDialogDelegate { }
+
+    /**
      * The main frame gets the name "Change Password" and uses the
      * "Windows Look and Feel". The single components from the GUI are
      * initialized and added to the GridBagLayout.
+     * @param delegate
      */
-    public ChangePWGUI() {
+    public ChangePWGUI(final Delegate delegate) {
         super();
+
+        this.delegate = delegate;
 
         Login login = LocalizedStrings.getLogin();
         Messages messages = LocalizedStrings.getMessages();
@@ -89,6 +105,7 @@ public class ChangePWGUI extends JFrame { // TODO extend JDialog
         } catch (Exception e) {
             System.err.println(messages.couldNotLoadLookAndFeel());
         }
+
         initialize();
 
         JLabel lblUser = new JLabel(login.currentUser());
@@ -113,6 +130,8 @@ public class ChangePWGUI extends JFrame { // TODO extend JDialog
         createGBC(txfNewPWConfirm, 1, 3, 1, 1);
         createGBC(btnOk, 0, 4, 1, 1);
         createGBC(btnCancel, 1, 4, 1, 1);
+
+        addActionListeners();
     }
 
     /**
@@ -157,5 +176,22 @@ public class ChangePWGUI extends JFrame { // TODO extend JDialog
         gbc.insets = new Insets(1, 1, 1, 1);
         gbl.setConstraints(c, gbc);
         add(c);
+    }
+
+    /**
+     * Setup actionListeners to call to the delegate interface.
+     */
+    private void addActionListeners() {
+        btnOk.addActionListener(new ActionListener() {
+            public void actionPerformed(final ActionEvent e) {
+                delegate.confirmPerformed();
+            }
+        });
+
+        btnCancel.addActionListener(new ActionListener() {
+            public void actionPerformed(final ActionEvent e) {
+                delegate.cancelPerformed();
+            }
+        });
     }
 }
