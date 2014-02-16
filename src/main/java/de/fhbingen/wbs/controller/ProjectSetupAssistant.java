@@ -2,7 +2,7 @@ package de.fhbingen.wbs.controller;
 
 
 import c10n.C10N;
-import dbaccess.ScriptRunner;
+import de.fhbingen.wbs.dbaccess.ScriptRunner;
 import de.fhbingen.wbs.gui.projectsetupassistant.DatabaseAdminLogin;
 import de.fhbingen.wbs.gui.projectsetupassistant.ProjectProperties;
 import de.fhbingen.wbs.translation.Messages;
@@ -731,9 +731,9 @@ public final class ProjectSetupAssistant implements ProjectProperties.Actions,
      * de.fhbingen.wbs.controller.ProjectSetupAssistant}
      *                   package.
      * @throws IOException {@link java.io.FileReader#FileReader(String)} and
-     * {@link dbaccess.ScriptRunner#runScript(java.io.Reader)}
+     * {@link de.fhbingen.wbs.dbaccess.ScriptRunner#runScript(java.io.Reader)}
      * @throws SQLException
-     * {@link dbaccess.ScriptRunner#runScript(java.io.Reader)}
+     * {@link de.fhbingen.wbs.dbaccess.ScriptRunner#runScript(java.io.Reader)}
      */
     private static void runScript(final Connection connection,
                                   final String scriptName) throws IOException,

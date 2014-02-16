@@ -37,7 +37,7 @@ dependencies {
 }
 
 // main application class
-mainClassName = 'chooseDB.DBChooser'
+mainClassName = 'de.fhbingen.wbs.chooseDB.DBChooser'
 
 tasks.withType(JavaCompile) {
     options.encoding = "ISO-8859-1"
@@ -46,12 +46,12 @@ tasks.withType(JavaCompile) {
 // test task configuration
 test {
     // tests in this package are executed via the test suite
-    exclude 'dbaccess/models/mysql/*Test.class'
+    exclude 'de.fhbingen.wbs.dbaccess/models/mysql/*Test.class'
 }
 
 jar {
     manifest {
-        attributes 'Main-Class': 'chooseDB.DBChooser'
+        attributes 'Main-Class': 'de.fhbingen.wbs.chooseDB.DBChooser'
     }
 }
 
