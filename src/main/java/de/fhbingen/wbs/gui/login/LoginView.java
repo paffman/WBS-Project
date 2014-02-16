@@ -38,7 +38,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
 /**
- * The GUI for the LoginController Screen.
+ * The GUI for the Login Screen.
  *
  * http://sublink.ca/icons/sweetieplus/ sowie:
  * http://http://p.yusukekamiyamane.com/ Diagona Icons Copyright (C)
@@ -49,7 +49,7 @@ import javax.swing.UIManager;
  * use the icons in any client work, or commercial products such as
  * WordPress themes or applications.
  */
-public class LoginGUI extends JFrame {
+public class LoginView extends JFrame {
 
     /**
      * generated serialVersionUID.
@@ -185,7 +185,7 @@ public class LoginGUI extends JFrame {
     }
 
     /**
-     * Konstuktor LoginGUI() Main-Frame bekommt den Namen "WBS-File"
+     * Konstuktor LoginView() Main-Frame bekommt den Namen "WBS-File"
      * zugewiesen es wird das Windows Look and Feel verwendet die verschiedenen
      * Menüs, Buttons etc. werden initialisiert und zu dem GridBagLayout
      * hinzugefügt und angeordnet mittels createGbc
@@ -193,8 +193,7 @@ public class LoginGUI extends JFrame {
      * @param delegate Object handling the user actions.
      * @param dataSource Object providing the data to the GUI.
      */
-    public LoginGUI(final ActionsDelegate delegate,
-                    final DataSource dataSource) {
+    public LoginView(final ActionsDelegate delegate, final DataSource dataSource) {
         super("Login");
 
         this.actionsDelegate = delegate;

@@ -37,7 +37,7 @@ dependencies {
 }
 
 // main application class
-mainClassName = 'de.fhbingen.wbs.controller.LoginController'
+mainClassName = 'de.fhbingen.wbs.controller.LoginViewController'
 
 tasks.withType(JavaCompile) {
     options.encoding = "ISO-8859-1"
@@ -51,7 +51,7 @@ test {
 
 jar {
     manifest {
-        attributes 'Main-Class': 'de.fhbingen.wbs.controller.LoginController'
+        attributes 'Main-Class': 'de.fhbingen.wbs.controller.LoginViewController'
     }
 }
 

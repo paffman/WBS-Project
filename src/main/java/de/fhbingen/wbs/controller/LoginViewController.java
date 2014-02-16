@@ -20,7 +20,7 @@
 package de.fhbingen.wbs.controller;
 
 import c10n.C10N;
-import de.fhbingen.wbs.gui.login.LoginGUI;
+import de.fhbingen.wbs.gui.login.LoginView;
 import de.fhbingen.wbs.dbaccess.DBModelManager;
 import de.fhbingen.wbs.dbaccess.data.Employee;
 import de.fhbingen.wbs.globals.InfoBox;
@@ -55,19 +55,19 @@ import de.fhbingen.wbs.wpWorker.User;
  * Jens Eckes,<br/>
  * Sven Seckler,<br/>
  * Lin Yang<br/>
- * Ruft die LoginGUI auf<br/>
+ * Ruft die LoginView auf<br/>
  * setzt nach der Pfadeingabe den Pfad in der MDBConnect Klasse<br/>
  *
  * @author Samson von Graevenitz, Daniel Metzler, Michael Anstatt
  * @version 2.0 - 2012-08-20
  */
-public class LoginController implements LoginGUI.ActionsDelegate,
-        LoginGUI.DataSource {
+public class LoginViewController implements LoginView.ActionsDelegate,
+        LoginView.DataSource {
 
     /**
      * Holds the gui-object.
      */
-    private LoginGUI gui;
+    private LoginView gui;
     /**
      * last Host the client was connected to.
      */
@@ -87,11 +87,11 @@ public class LoginController implements LoginGUI.ActionsDelegate,
     private String lastDbUser = null;
 
     /**
-     * Constructor initializes the LoginGUI and the Listeners for it.
+     * Constructor initializes the LoginView and the Listeners for it.
      */
-    public LoginController() {
+    public LoginViewController() {
         loadLastDB();
-        gui = new LoginGUI(this, this);
+        gui = new LoginView(this, this);
     }
 
     /**
@@ -361,7 +361,7 @@ public class LoginController implements LoginGUI.ActionsDelegate,
     /**
      * @return the gui
      */
-    public final LoginGUI getGui() {
+    public final LoginView getGui() {
         return gui;
     }
 
@@ -392,8 +392,8 @@ public class LoginController implements LoginGUI.ActionsDelegate,
     }
 
     /**
-     * erstellt ein Objekt von LoginController() und beginnt somit das Programm durch
-     * Konstruktoraufruf von LoginController()
+     * erstellt ein Objekt von LoginViewController() und beginnt somit das Programm durch
+     * Konstruktoraufruf von LoginViewController()
      *
      * @param args
      */
@@ -401,7 +401,7 @@ public class LoginController implements LoginGUI.ActionsDelegate,
         System.out.println(Locale.getDefault().getLanguage().equals(Locale
                 .GERMAN));
         C10N.configure(new C10NUseEnglishDefaultConfiguration());
-        new LoginController();
+        new LoginViewController();
     }
 
 }
