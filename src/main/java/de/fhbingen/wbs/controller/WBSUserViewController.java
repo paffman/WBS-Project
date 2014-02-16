@@ -12,11 +12,13 @@
  * see <http://www.gnu.org/licenses/>.
  */
 
-package de.fhbingen.wbs.wpWorker;
+package de.fhbingen.wbs.controller;
 
+import de.fhbingen.wbs.gui.wpworker.WBSUserView;
 import de.fhbingen.wbs.translation.LocalizedStrings;
 import de.fhbingen.wbs.translation.Messages;
 
+import de.fhbingen.wbs.wpWorker.Worker;
 import javax.swing.JOptionPane;
 
 import de.fhbingen.wbs.dbaccess.DBModelManager;
@@ -27,14 +29,14 @@ import de.fhbingen.wbs.wpOverview.WPOverviewGUI;
 /**
  * A class to insert the work effort to the work package.
  */
-public class WBSUser {
+public class WBSUserViewController implements WBSUserView.Delegate {
     /**
      * Translation interface.
      */
     private final Messages messageStrings;
 
     /** The associated GUI to this class. */
-    private WBSUserGUI gui = new WBSUserGUI();
+    private WBSUserView gui = new WBSUserView(this);
 
     /** The employee. */
     private Worker mitarbeiter;
@@ -50,14 +52,14 @@ public class WBSUser {
      *            The functionality of the WPOverviewGUI. It initialize the
      *            text fields with the data from the user.
      */
-    public WBSUser(final Worker mit, final WPOverview wpOverview) {
+    public WBSUserViewController(final Worker mit, final WPOverview wpOverview) {
         this.messageStrings = LocalizedStrings.getMessages();
 
         mitarbeiter = mit;
         this.over = wpOverview;
-        getGui().btnhinzufuegen.setVisible(false);
-        getGui().txfLogin.setEnabled(false);
-        new WBSUserButtonAction(this);
+        //getGui().btnhinzufuegen.setVisible(false);
+        //getGui().txfLogin.setEnabled(false);
+        getGui().setDisplayMode(WBSUserView.EDIT_USER);
         initialize();
         getGui().setTitle(mit.getLogin() + " | " + mit.getName() + ", "
                  + mit.getVorname());
@@ -69,12 +71,12 @@ public class WBSUser {
      *            The functionality of the WPOverviewGUI. It initialize the
      *            text fields with the data from the user.
      */
-    public WBSUser(final WPOverview wpOverview) {
+    public WBSUserViewController(final WPOverview wpOverview) {
         this.messageStrings = LocalizedStrings.getMessages();
         this.over = wpOverview;
-        getGui().btnedit.setVisible(false);
-        getGui().btnPwReset.setVisible(false);
-        new WBSUserButtonAction(this);
+        //getGui().btnedit.setVisible(false);
+        //getGui().btnPwReset.setVisible(false);
+        getGui().setDisplayMode(WBSUserView.NEW_USER);
         getGui().setTitle(LocalizedStrings.getLogin().newUserWindowTitle());
     }
 
@@ -82,14 +84,11 @@ public class WBSUser {
      * Set the text fields in the GUI with the data from the user.
      */
     public final void initialize() {
-        getGui().txfLogin.setText(getMitarbeiter().getLogin());
-        getGui().txfVorname.setText(getMitarbeiter().getVorname());
-        getGui().txfName.setText(getMitarbeiter().getName());
-        getGui().cbBerechtigung
-            .setSelected((getMitarbeiter().getBerechtigung() == 1));
-
-        getGui().txfTagessatz
-            .setText(Double.toString(getMitarbeiter().getTagessatz()));
+        getGui().setLogin(getMitarbeiter().getLogin());
+        getGui().setFirstName(getMitarbeiter().getVorname());
+        getGui().setName(getMitarbeiter().getName());
+        getGui().setPermission((getMitarbeiter().getBerechtigung() == 1));
+        getGui().setDailyRate(getMitarbeiter().getTagessatz());
     }
 
     /**
@@ -98,15 +97,15 @@ public class WBSUser {
      */
     public final boolean check() {
         // Login isn't filled.
-        if (getGui().txfLogin.getText().equals("")) {
+        if (getGui().getLogin().equals("")) {
             JOptionPane.showMessageDialog(getGui(),
                     messageStrings.fillFieldError(LocalizedStrings.getLogin()
                             .login()));
             return false;
         }
         // Name isn't filled.
-        if (getGui().txfName.getText().equals("")
-            || getGui().txfVorname.getText().equals("")) {
+        if (getGui().getName().equals("")
+            || getGui().getFirstName().equals("")) {
             JOptionPane.showMessageDialog(getGui(),
                     messageStrings.fillFieldError(LocalizedStrings.getLogin().
                             firstName()));
@@ -114,8 +113,7 @@ public class WBSUser {
         }
 
         try {
-            if (getGui().txfTagessatz.getText().equals("")
-                || Double.parseDouble(getGui().txfTagessatz.getText()) <= 0) {
+            if (getGui().getDailyRate() <= 0) {
                 JOptionPane.showMessageDialog(getGui(), messageStrings
                     .fillFieldError(LocalizedStrings.getWbs().dailyRate()));
                 return false;
@@ -214,7 +212,7 @@ public class WBSUser {
      *  The associated GUI to this class.
      *  @return Gui instance.
      */
-    public final WBSUserGUI getGui() {
+    public final WBSUserView getGui() {
         return gui;
     }
 
@@ -232,5 +230,51 @@ public class WBSUser {
      */
     public final WPOverview getOver() {
         return over;
+    }
+
+    @Override
+    public void changeEmployeePerformed() {
+        if (this.check()) {
+            int rights;
+            if (this.getGui().getPermission()) {
+                rights = 1;
+            } else {
+                rights = 0;
+            }
+            Worker actualWorker = this.getActualWorker();
+            actualWorker.setName(this.getGui().getName());
+            actualWorker.setVorname(this.getGui().getFirstName());
+            actualWorker.setBerechtigung(rights);
+            actualWorker.setTagessatz(this.getGui().getDailyRate());
+            this.changeMitarbeiter(actualWorker);
+            this.getGui().dispose();
+        }
+    }
+
+    @Override
+    public void addEmployeePerformed() {
+        if (this.check()) {
+            int rights;
+            if (this.getGui().getPermission()) {
+                rights = 1;
+            } else {
+                rights = 0;
+            }
+            this.addMitarbeiter(new Worker(this.getGui().getLogin(),
+                    this.getGui().getFirstName(), this.getGui().getName(),
+                    rights, this.getGui().getDailyRate()));
+            this.getGui().dispose();
+        }
+    }
+
+    @Override
+    public void cancelPerformed() {
+        getGui().dispose();
+    }
+
+    @Override
+    public void resetPasswordPerformed() {
+        this.passwordReset();
+        this.getGui().dispose();
     }
 }
