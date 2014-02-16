@@ -17,6 +17,7 @@ package wpOverview;
 import de.fhbingen.wbs.translation.LocalizedStrings;
 import java.awt.Canvas;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 
 import javax.swing.JLabel;
@@ -28,15 +29,39 @@ import javax.swing.SwingConstants;
  * cpi.
  */
 public class Legende extends JPanel {
+    /**
+     * Color used in the legend and work package overview for a high cpi.
+     */
+    public static final Color HIGH_CPI_COLOR = new Color(0, 80, 0);
+
+    /**
+     * Color used in the legend and work package overview for an even cpi.
+     */
+    public static final Color EVEN_CPI_COLOR = Color.GREEN;
+
+    /**
+     * Color used in the legend and work package overview for a low cpi.
+     */
+    public static final Color LOW_CPI_COLOR = Color.YELLOW;
+
+    /**
+     * Color used in the legend and work package overview for a very low cpi.
+     */
+    public static final Color VERY_LOW_CPI_COLOR = Color.RED;
+
+    /**
+     * Color used in the legend and work package overview for an ultra low cpi.
+     */
+    public static final Color ULTRA_LOW_CPI_COLOR = new Color(80, 0, 0);
+
+    /**
+     * Color used in work package overview when no cpi is calculated.
+     */
+    public static final Color NO_CPI_COLOR = Color.WHITE;
 
     /** Constant serialized ID used for compatibility. */
     private static final long serialVersionUID = 1L;
 
-    /** The panel with the different colors of the cpi. */
-    private JLabel text;
-
-    /** The canvas for the color of the single cpi levels. */
-    private Canvas color;
 
     /**
      * Default-Constructor: Creates a JPanel with the different colors of
@@ -48,43 +73,48 @@ public class Legende extends JPanel {
         setLayout(new FlowLayout());
 
         add(new JLabel(LocalizedStrings.getWbs().cpiColors() + ":"));
-        text = new JLabel();
+        JLabel text = new JLabel();
         text.setHorizontalAlignment(SwingConstants.CENTER);
         text.setOpaque(true);
 
         add(new JLabel());
 
-        color = new Canvas();
-        color.setBackground(new Color(00, 80, 00));
-        color.setSize(20, 20);
+        final Dimension canvasSize = new Dimension(20, 20);
+
+
+
+        /* The canvas for the color of the single cpi levels. */
+        Canvas color = new Canvas();
+        color.setBackground(HIGH_CPI_COLOR);
+        color.setSize(canvasSize);
         add(color);
         text.setText("1.03 >");
         add(text);
 
         color = new Canvas();
-        color.setBackground(Color.GREEN);
-        color.setSize(20, 20);
+        color.setBackground(EVEN_CPI_COLOR);
+        color.setSize(canvasSize);
         add(color);
         text = new JLabel("1.03 - 0.97");
         add(text);
 
         color = new Canvas();
-        color.setBackground(Color.YELLOW);
-        color.setSize(20, 20);
+        color.setBackground(LOW_CPI_COLOR);
+        color.setSize(canvasSize);
         add(color);
         text = new JLabel("0.97 - 0.94");
         add(text);
 
         color = new Canvas();
-        color.setBackground(Color.RED);
-        color.setSize(20, 20);
+        color.setBackground(VERY_LOW_CPI_COLOR);
+        color.setSize(canvasSize);
         add(color);
         text = new JLabel("0.94 - 0.6");
         add(text);
 
         color = new Canvas();
-        color.setBackground(new Color(80, 00, 00));
-        color.setSize(20, 20);
+        color.setBackground(ULTRA_LOW_CPI_COLOR);
+        color.setSize(canvasSize);
         add(color);
         text = new JLabel("< 0.6");
         add(text);

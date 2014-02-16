@@ -45,15 +45,15 @@ public class WPOverviewButtonAction {
 
     /**
      * Constructor.
-     * @param over
+     * @param wpOverview
      *            The functionality of the WPOverview
-     * @param gui
+     * @param wpOverviewGUI
      *            The GUI of the WPOverview
      */
-    public WPOverviewButtonAction(final WPOverview over,
-        final WPOverviewGUI gui) {
-        this.over = over;
-        this.gui = gui;
+    public WPOverviewButtonAction(final WPOverview wpOverview,
+        final WPOverviewGUI wpOverviewGUI) {
+        this.over = wpOverview;
+        this.gui = wpOverviewGUI;
         addButtonAction();
     }
 
@@ -166,10 +166,10 @@ public class WPOverviewButtonAction {
             public void windowClosing(final WindowEvent e) {
                 gui.dispose();
                 if (WPOverview.getUser().getProjLeiter()) {
-                    DBModelManager.getSemaphoreModel().leaveSemaphore("pl",
+                    DBModelManager.getSemaphoreModel().
+                            leaveSemaphore("pl", //NON-NLS
                         WPOverview.getUser().getId());
                 }
-                // System.out.println("Benutzer wurde abgemeldet");
             }
         });
 

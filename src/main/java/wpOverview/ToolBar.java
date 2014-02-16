@@ -37,10 +37,20 @@ import wpWorker.WBSUser;
  * use of the tool.
  */
 public class ToolBar extends JToolBar {
+    /** Duration calculation button in the tool bar. */
+    private JButton calcDuration;
 
-    /** The single buttons in the tool bar. */
-    private JButton aktualisiereTree, calcDuration, neuesAP, delAP,
-        neuerMa, cpiGraph;
+    /** New work package button in the tool bar. */
+    private JButton neuesAP;
+
+    /** Delete work package button in the tool bar. */
+    private JButton delAP;
+
+    /** New user button in the tool bar. */
+    private JButton neuerMa;
+
+    /** Show cpi graph button in the tool bar. */
+    private JButton cpiGraph;
 
     /** Constant serialized ID used for compatibility. */
     private static final long serialVersionUID = 1L;
@@ -59,11 +69,12 @@ public class ToolBar extends JToolBar {
         Button buttonStrings = LocalizedStrings.getButton();
         General generalStrings = LocalizedStrings.getGeneralStrings();
 
-        aktualisiereTree = new JButton();
+        /* The single buttons in the tool bar. */
+        JButton aktualisiereTree = new JButton();
         aktualisiereTree.setIcon(new ImageIcon(getClass().getResource(
-            "/_icons/aktualisieren.png"))); // NON-NLS
-        aktualisiereTree.setToolTipText(buttonStrings
-            .refresh(generalStrings.views()));
+                "/_icons/aktualisieren.png"))); // NON-NLS
+        aktualisiereTree.setToolTipText(
+                buttonStrings.refresh(generalStrings.views()));
         aktualisiereTree.addActionListener(new ActionListener() {
             public void actionPerformed(final ActionEvent e) {
                 over.reload();
@@ -72,7 +83,7 @@ public class ToolBar extends JToolBar {
 
         calcDuration = new JButton();
         calcDuration.setIcon(new ImageIcon(getClass().getResource(
-            "/_icons/OAPaktualisieren_gross.png")));
+            "/_icons/OAPaktualisieren_gross.png"))); //NON-NLS
         calcDuration.setToolTipText(buttonStrings.calculate(generalStrings
             .duration()));
         calcDuration.addActionListener(new ActionListener() {
@@ -96,7 +107,7 @@ public class ToolBar extends JToolBar {
 
         neuesAP = new JButton();
         neuesAP.setIcon(new ImageIcon(getClass().getResource(
-            "/_icons/newAP_gross.png")));
+            "/_icons/newAP_gross.png"))); //NON-NLS
         neuesAP.setToolTipText(buttonStrings.addNewNeutral(wbsStrings
             .workPackage()));
         neuesAP.addActionListener(new ActionListener() {
@@ -107,7 +118,7 @@ public class ToolBar extends JToolBar {
 
         delAP = new JButton();
         delAP.setIcon(new ImageIcon(getClass().getResource(
-            "/_icons/delAP_gross.png")));
+            "/_icons/delAP_gross.png"))); //NON-NLS
         delAP
             .setToolTipText(buttonStrings.delete(wbsStrings.workPackage()));
         delAP.addActionListener(new ActionListener() {
@@ -119,7 +130,7 @@ public class ToolBar extends JToolBar {
 
         neuerMa = new JButton();
         neuerMa.setIcon(new ImageIcon(getClass().getResource(
-            "/_icons/newMa_gross.png")));
+            "/_icons/newMa_gross.png"))); //NON-NLS
         neuerMa.setToolTipText(buttonStrings.addNewNeutral(LocalizedStrings
             .getLogin().user()));
         neuerMa.addActionListener(new ActionListener() {
@@ -130,7 +141,7 @@ public class ToolBar extends JToolBar {
 
         cpiGraph = new JButton();
         cpiGraph.setIcon(new ImageIcon(getClass().getResource(
-            "/_icons/cpiGraph_gross.png")));
+            "/_icons/cpiGraph_gross.png"))); //NON-NLS
         cpiGraph.setToolTipText(wbsStrings.cpiGraph());
         cpiGraph.addActionListener(new ActionListener() {
             public void actionPerformed(final ActionEvent e) {

@@ -40,6 +40,16 @@ public class TreeCellRenderer extends DefaultTreeCellRenderer {
     /** Constant serialized ID used for compatibility. */
     private static final long serialVersionUID = 5446711829460583776L;
 
+    /**
+     * Maximum percentage.
+     */
+    private static final int MAX_PERCENTAGE = 100;
+
+    /**
+     * Font size.
+     */
+    private static final int FONT_SIZE = 12;
+
     /** The single work package icons. */
     private ImageIcon std, std_oap, fertig_oap, fertig_uap;
 
@@ -71,8 +81,8 @@ public class TreeCellRenderer extends DefaultTreeCellRenderer {
 
     /** The standard dependency icon. */
     private ImageIcon std_dep = new ImageIcon(Toolkit.getDefaultToolkit()
-        .getImage(this.getClass().getResource("/_icons/std_dep.png")));
-    // NON-NLS
+        .getImage(this.getClass().getResource(
+                "/_icons/std_dep.png"))); // NON-NLS
 
     /** The dependency icon for upper work packages. */
     private ImageIcon std_oap_dep = new ImageIcon(Toolkit
@@ -82,20 +92,19 @@ public class TreeCellRenderer extends DefaultTreeCellRenderer {
     /** The dependency icon for upper work packages which are already done. */
     private ImageIcon fertig_oap_dep = new ImageIcon(Toolkit
         .getDefaultToolkit().getImage(
-            this.getClass().getResource("/_icons/fertige_oap_dep.png")));
-    // NON-NLS
+            this.getClass().getResource(
+                    "/_icons/fertige_oap_dep.png"))); // NON-NLS
 
     /** The dependency icon for under work packages which are already done. */
     private ImageIcon fertig_uap_dep = new ImageIcon(Toolkit
         .getDefaultToolkit().getImage(
-            this.getClass().getResource("/_icons/fertige_uap_dep.png")));
-    // NON-NLS
+            this.getClass().getResource(
+                    "/_icons/fertige_uap_dep.png"))); // NON-NLS
 
     /** The inactive icon. */
     private ImageIcon inaktiv = new ImageIcon(Toolkit.getDefaultToolkit()
-        .getImage(this.getClass().getResource("/_icons/inaktiv.png")));
-
-    // NON-NLS
+        .getImage(this.getClass().getResource(
+                "/_icons/inaktiv.png"))); // NON-NLS
 
     @Override
     public final Component getTreeCellRendererComponent(final JTree tree,
@@ -150,12 +159,12 @@ public class TreeCellRenderer extends DefaultTreeCellRenderer {
                     // if the package is done, the font is shown bold.
                     if (wp.getLvl1ID() > 0
                         && WpManager.calcPercentComplete(wp.getBac(),
-                            wp.getEtc(), wp.getAc()) == 100
+                            wp.getEtc(), wp.getAc()) == MAX_PERCENTAGE
                         && wp.getAc() > 0) {
                         Font aktFont = getFont();
                         if (aktFont == null) {
                             setFont(new Font(Font.SANS_SERIF, Font.PLAIN,
-                                12));
+                                    FONT_SIZE));
                             aktFont = getFont();
                         }
                         aktFont = aktFont.deriveFont(Font.BOLD);
@@ -200,47 +209,52 @@ public class TreeCellRenderer extends DefaultTreeCellRenderer {
 
                 // Here the tree is colored
                 if (wp.getAc() > 0) {
-                    if (cpi <= 0.97) {
-                        this.setBackgroundNonSelectionColor(Color.yellow);
-                        this.setBackgroundSelectionColor(Color.yellow);
+                    if (cpi <= 0.97) { //TODO Intervals
+                        this.setBackgroundNonSelectionColor(
+                                Legende.LOW_CPI_COLOR);
+                        this.setBackgroundSelectionColor(Legende.LOW_CPI_COLOR);
                         this.setTextSelectionColor(Color.black);
                         this.setTextNonSelectionColor(Color.black);
 
                         if (cpi < 0.94) {
-                            this.setBackgroundNonSelectionColor(Color.red);
-                            this.setBackgroundSelectionColor(Color.red);
+                            this.setBackgroundNonSelectionColor(
+                                    Legende.VERY_LOW_CPI_COLOR);
+                            this.setBackgroundSelectionColor(
+                                    Legende.VERY_LOW_CPI_COLOR);
                             this.setTextSelectionColor(Color.black);
                             this.setTextNonSelectionColor(Color.black);
                         }
 
                         if (cpi < 0.6) {
-                            this.setBackgroundNonSelectionColor(new Color(
-                                80, 00, 00));
-                            this.setBackgroundSelectionColor(new Color(80,
-                                00, 00));
+                            this.setBackgroundNonSelectionColor(
+                                    Legende.ULTRA_LOW_CPI_COLOR);
+                            this.setBackgroundSelectionColor(
+                                    Legende.ULTRA_LOW_CPI_COLOR);
                             this.setTextSelectionColor(Color.white);
                             this.setTextNonSelectionColor(Color.white);
                         }
 
                     } else {
                         if (cpi > 1.03) {
-                            this.setBackgroundNonSelectionColor(new Color(
-                                00, 80, 00));
-                            this.setBackgroundSelectionColor(new Color(00,
-                                80, 00));
+                            this.setBackgroundNonSelectionColor(
+                                    Legende.HIGH_CPI_COLOR);
+                            this.setBackgroundSelectionColor(
+                                    Legende.HIGH_CPI_COLOR);
                             this.setTextSelectionColor(Color.white);
                             this.setForeground(Color.white);
                             this.setTextNonSelectionColor(Color.white);
                         } else {
                             this.setTextSelectionColor(Color.black);
                             this.setTextNonSelectionColor(Color.black);
-                            this.setBackgroundNonSelectionColor(Color.green);
-                            this.setBackgroundSelectionColor(Color.green);
+                            this.setBackgroundNonSelectionColor(
+                                    Legende.EVEN_CPI_COLOR);
+                            this.setBackgroundSelectionColor(
+                                    Legende.EVEN_CPI_COLOR);
                         }
                     }
                 } else {
-                    this.setBackgroundNonSelectionColor(Color.white);
-                    this.setBackgroundSelectionColor(Color.white);
+                    this.setBackgroundNonSelectionColor(Legende.NO_CPI_COLOR);
+                    this.setBackgroundSelectionColor(Legende.NO_CPI_COLOR);
                     this.setTextSelectionColor(Color.black);
                     this.setTextNonSelectionColor(Color.black);
                 }

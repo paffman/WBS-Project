@@ -69,78 +69,112 @@ import wpOverview.tabs.WorkerPanel;
  * applications.
  */
 public class WPOverviewGUI extends JFrame {
-
     /** The icon for a new work package. */
-    public static ImageIcon newAp = new ImageIcon(Toolkit
+    public static final ImageIcon newAp = new ImageIcon(Toolkit
         .getDefaultToolkit().getImage(
-            WPOverviewGUI.class.getResource("/_icons/newAP.png")));
-
+            WPOverviewGUI.class.getResource("/_icons/newAP.png"))); //NON-NLS
     /** The icon for delete a work package. */
-    public static ImageIcon delAP = new ImageIcon(Toolkit
+    public static final ImageIcon delAP = new ImageIcon(Toolkit
         .getDefaultToolkit().getImage(
-            WPOverviewGUI.class.getResource("/_icons/delAP.png")));
+            WPOverviewGUI.class.getResource("/_icons/delAP.png"))); //NON-NLS
 
     /** The icon to update the work packages. */
-    public static ImageIcon akt = new ImageIcon(Toolkit.getDefaultToolkit()
-        .getImage(
-            WPOverviewGUI.class.getResource("/_icons/aktualisieren.png")));
+    public static final ImageIcon akt = new ImageIcon(Toolkit.getDefaultToolkit()
+        .getImage(WPOverviewGUI.class.getResource(
+                "/_icons/aktualisieren.png"))); //NON-NLS
 
     /** The icon to update the upper work package. */
-    public static ImageIcon aktoap = new ImageIcon(
+    public static final ImageIcon aktoap = new ImageIcon(
         Toolkit.getDefaultToolkit()
-            .getImage(
-                WPOverviewGUI.class
-                    .getResource("/_icons/OAPaktualisieren.png")));
+            .getImage(WPOverviewGUI.class.getResource(
+                    "/_icons/OAPaktualisieren.png"))); //NON-NLS
 
     /** The icon for the data base calculation. */
-    public static ImageIcon dbcalc = new ImageIcon(Toolkit
-        .getDefaultToolkit().getImage(
-            WPOverviewGUI.class.getResource("/_icons/DBberechnen.png")));
+    public static final ImageIcon dbcalc = new ImageIcon(Toolkit
+        .getDefaultToolkit().getImage(WPOverviewGUI.class.getResource(
+                    "/_icons/DBberechnen.png"))); //NON-NLS
 
     /** The icon for closing the tool. */
-    public static ImageIcon schlies = new ImageIcon(Toolkit
+    public static final ImageIcon schlies = new ImageIcon(Toolkit
         .getDefaultToolkit().getImage(
-            WPOverviewGUI.class.getResource("/_icons/schliessen.png")));
+            WPOverviewGUI.class.getResource(
+                    "/_icons/schliessen.png"))); //NON-NLS
 
     /** The icon to change the password. */
-    public static ImageIcon pw = new ImageIcon(Toolkit.getDefaultToolkit()
-        .getImage(WPOverviewGUI.class.getResource("/_icons/pw.png")));
+    public static final ImageIcon pw = new ImageIcon(Toolkit.getDefaultToolkit()
+        .getImage(WPOverviewGUI.class.getResource("/_icons/pw.png"))); //NON-NLS
 
     /** The icon to sign out. */
-    public static ImageIcon abmeld = new ImageIcon(Toolkit
-        .getDefaultToolkit().getImage(
-            WPOverviewGUI.class.getResource("/_icons/abmeld.png")));
+    public static final ImageIcon abmeld = new ImageIcon(Toolkit
+        .getDefaultToolkit().getImage(WPOverviewGUI.class.getResource(
+                    "/_icons/abmeld.png"))); //NON-NLS
 
     /** The icon to show the help of the tool. */
-    public static ImageIcon hilfe = new ImageIcon(Toolkit
+    public static final ImageIcon hilfe = new ImageIcon(Toolkit
         .getDefaultToolkit().getImage(
-            WPOverviewGUI.class.getResource("/_icons/hilfe.png")));
+            WPOverviewGUI.class.getResource("/_icons/hilfe.png"))); //NON-NLS
 
     /** The icon to show the info dialog. */
-    public static ImageIcon info = new ImageIcon(Toolkit
+    public static final ImageIcon info = new ImageIcon(Toolkit
         .getDefaultToolkit().getImage(
-            WPOverviewGUI.class.getResource("/_icons/info.png")));
+            WPOverviewGUI.class.getResource("/_icons/info.png"))); //NON-NLS
 
     /** The icon to show the work effort. */
-    public static ImageIcon aufw = new ImageIcon(Toolkit
+    public static final ImageIcon aufw = new ImageIcon(Toolkit
         .getDefaultToolkit().getImage(
-            WPOverviewGUI.class.getResource("/_icons/aufwand.png")));
+            WPOverviewGUI.class.getResource("/_icons/aufwand.png"))); //NON-NLS
 
     /** The icon to re-assign a work package. */
-    public static ImageIcon reass = new ImageIcon(Toolkit
+    public static final ImageIcon reass = new ImageIcon(Toolkit
         .getDefaultToolkit().getImage(
-            WPOverviewGUI.class.getResource("/_icons/reassign.png")));
+            WPOverviewGUI.class.getResource("/_icons/reassign.png"))); //NON-NLS
 
-    public static ImageIcon childrenOut = new ImageIcon(Toolkit
+    /**
+     * An arrow down icon.
+     */
+    public static final ImageIcon childrenOut = new ImageIcon(Toolkit
         .getDefaultToolkit().getImage(
-            WPOverviewGUI.class.getResource("/_icons/down.png")));
+            WPOverviewGUI.class.getResource("/_icons/down.png"))); //NON-NLS
 
-    public static ImageIcon childrenIn = new ImageIcon(Toolkit
+    /**
+     * Default width of the frame.
+     */
+    private static final int DEFAULT_WIDTH = 1024;
+
+    /**
+     * Default height of the frame.
+     */
+    private static final int DEFAULT_HEIGHT = 700;
+
+    /**
+     * Default width for the conflict frame.
+     */
+    private static final int DEFAULT_WIDTH_CONFLICTS = 800;
+
+    /**
+     * Default height for the conflict frame.
+     */
+    private static final int DEFAULT_HEIGHT_CONFLICTS = 600;
+
+    /**
+     * An arrow up icon.
+     */
+    public static final ImageIcon childrenIn = new ImageIcon(Toolkit
         .getDefaultToolkit().getImage(
-            WPOverviewGUI.class.getResource("/_icons/up.png")));
-
+            WPOverviewGUI.class.getResource("/_icons/up.png"))); //NON-NLS
+    /**
+     * Translation interface.
+     */
     private final Wbs wbsStrings;
+
+    /**
+     * Translation interface.
+     */
     private final General generalStrings;
+
+    /**
+     * Translation interface.
+     */
     private final Button buttonStrings;
 
     /** The icon for the conflict tab. */
@@ -189,9 +223,10 @@ public class WPOverviewGUI extends JFrame {
     /** The panel which contains all open work packages. */
     private TreePanel treeOffen;
 
+
+
     /** The label which shows the status bar. */
     private static JLabel lblStatusbar;
-
     /** Constant serialized ID used for compatibility. */
     private static final long serialVersionUID = -374634221909256041L;
 
@@ -220,12 +255,12 @@ public class WPOverviewGUI extends JFrame {
         toolbar = new ToolBar(over, this);
         this.add(toolbar, BorderLayout.NORTH);
 
-        ArrayList<Workpackage> allUserWp = new ArrayList<Workpackage>(
+        ArrayList<Workpackage> allUserWp = new ArrayList<>(
             WpManager.getUserWp(WPOverview.getUser()));
         treeAlle = new TreePanel(new ArrayList<Workpackage>(), over, parent);
-        treeOffen = new TreePanel(allUserWp, new ArrayList<Workpackage>(
+        treeOffen = new TreePanel(allUserWp, new ArrayList<>(
             WpManager.getUserWpOpen(WPOverview.getUser())), over, parent);
-        treeFertig = new TreePanel(allUserWp, new ArrayList<Workpackage>(
+        treeFertig = new TreePanel(allUserWp, new ArrayList<>(
             WpManager.getUserWpFinished(WPOverview.getUser())), over,
             parent);
 
@@ -257,17 +292,13 @@ public class WPOverviewGUI extends JFrame {
 
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         // setResizable(false);
-        int width = 1024;
-        int height = 700;
         // set the minimal window size.
-        setSize(1024, 700);
+        setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
         // set the window central.
         Toolkit tk = Toolkit.getDefaultToolkit();
         Dimension screenSize = tk.getScreenSize();
-        setLocation((int) (screenSize.getWidth() / 2) - width / 2,
-            (int) (screenSize.getHeight() / 2) - height / 2);
-        // Attitude by maximize the window.
-        // setExtendedState(JFrame.MAXIMIZED_BOTH);
+        setLocation((int) (screenSize.getWidth() / 2) - DEFAULT_WIDTH / 2,
+            (int) (screenSize.getHeight() / 2) - DEFAULT_HEIGHT / 2);
 
         try {
             UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows."
@@ -388,11 +419,11 @@ public class WPOverviewGUI extends JFrame {
         if (ConflictService.getAllConflicts().size() == 0) {
             conflictIcon = new ImageIcon(
                 (Toolkit.getDefaultToolkit().getImage(WPOverviewGUI.class
-                    .getResource("/_icons/noWarning.png"))));
+                    .getResource("/_icons/noWarning.png")))); //NON-NLS
         } else {
             conflictIcon = new ImageIcon(
                 (Toolkit.getDefaultToolkit().getImage(WPOverviewGUI.class
-                    .getResource("/_icons/warning.png"))));
+                    .getResource("/_icons/warning.png")))); //NON-NLS
         }
         if (WPOverview.getUser().getProjLeiter()) {
 
@@ -408,7 +439,8 @@ public class WPOverviewGUI extends JFrame {
                             .equals(conflictText)) {
                             JFrame conflictFrame = new JFrame();
                             conflictFrame.add(spConflicts);
-                            conflictFrame.setSize(800, 600);
+                            conflictFrame.setSize(DEFAULT_WIDTH_CONFLICTS,
+                                    DEFAULT_HEIGHT_CONFLICTS);
                             Controller.centerComponent(wpOverviewGUI,
                                 conflictFrame);
                             conflictFrame.setVisible(true);
@@ -500,18 +532,18 @@ public class WPOverviewGUI extends JFrame {
      * Reload the tree.
      */
     protected final void reloadTrees() {
-        ArrayList<Workpackage> allUserWp = new ArrayList<Workpackage>(
+        ArrayList<Workpackage> allUserWp = new ArrayList<>(
             WpManager.getUserWp(WPOverview.getUser()));
         treeAlle.setNodes(allUserWp, allUserWp);
         treeAlle.reload();
         treeOffen.setNodes(
             allUserWp,
-            new ArrayList<Workpackage>(WpManager.getUserWpOpen(WPOverview
+            new ArrayList<>(WpManager.getUserWpOpen(WPOverview
                 .getUser())));
         treeOffen.reload();
         treeFertig.setNodes(
             allUserWp,
-            new ArrayList<Workpackage>(WpManager
+            new ArrayList<>(WpManager
                 .getUserWpFinished(WPOverview.getUser())));
         treeFertig.reload();
         follower.reload();
@@ -540,7 +572,7 @@ public class WPOverviewGUI extends JFrame {
      */
     protected final void throwConflict(final Conflict conflict) {
         conflictIcon.setImage(Toolkit.getDefaultToolkit().getImage(
-            WPOverviewGUI.class.getResource("/_icons/warning.png")));
+            WPOverviewGUI.class.getResource("/_icons/warning.png"))); //NON-NLS
         conflicts.addConflict(conflict);
     }
 
@@ -549,7 +581,8 @@ public class WPOverviewGUI extends JFrame {
      */
     protected final void releaseConflicts() {
         conflictIcon.setImage(Toolkit.getDefaultToolkit().getImage(
-            WPOverviewGUI.class.getResource("/_icons/noWarning.png")));
+            WPOverviewGUI.class.getResource(
+                    "/_icons/noWarning.png"))); //NON-NLS
     }
 
     /**
@@ -565,11 +598,12 @@ public class WPOverviewGUI extends JFrame {
     public final void reloadConflicts() {
         if (ConflictService.getAllConflicts().size() == 0) {
             conflictIcon.setImage(Toolkit.getDefaultToolkit().getImage(
-                WPOverviewGUI.class.getResource("/_icons/noWarning.png")));
+                WPOverviewGUI.class.getResource(
+                        "/_icons/noWarning.png"))); //NON-NLS
         } else {
             conflictIcon.setImage((Toolkit.getDefaultToolkit()
                 .getImage(WPOverviewGUI.class
-                    .getResource("/_icons/warning.png"))));
+                    .getResource("/_icons/warning.png")))); //NON-NLS
         }
         conflicts.reload();
     }

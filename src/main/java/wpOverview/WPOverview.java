@@ -50,6 +50,7 @@ public class WPOverview {
     /** The user from which the work packages are shown. */
     private static User usr;
 
+    /** Translation interface. */
     private final Messages messageStrings;
 
     /** The selected work package. */
@@ -58,15 +59,15 @@ public class WPOverview {
     /**
      * Constructor: WPOverview() initialized the WPOverviewGUI and contains
      * the listener from the WPOverviewGUI in the method addButtonAction.
-     * @param usr
+     * @param user
      *            The user from which the work package is shown.
      * @param parent
      *            The wished JFrame.
      */
-    public WPOverview(final User usr, final JFrame parent) {
+    public WPOverview(final User user, final JFrame parent) {
         messageStrings = LocalizedStrings.getMessages();
 
-        WPOverview.usr = usr;
+        WPOverview.usr = user;
 
         gui = new WPOverviewGUI(this, parent);
         gui.setTitle(LocalizedStrings.getProject()
@@ -111,11 +112,11 @@ public class WPOverview {
      * @return String with LVLxID
      */
     public static String generateXEbene() {
-        String Nullen = "0";
-        for (int i = 4; i < levelCount; i++) {
-            Nullen += ".0";
+        String nullen = "0";
+        for (int i = 4; i < levelCount; i++) { //TODO is this still right?
+            nullen += ".0";
         }
-        return Nullen;
+        return nullen;
 
     }
 
@@ -176,8 +177,7 @@ public class WPOverview {
 
             Workpackage selectedAP = getSelectedWorkpackage();
 
-            boolean istOAP = false;
-            istOAP = selectedAP.isIstOAP();
+            boolean istOAP = selectedAP.isIstOAP();
 
             // Should a new work package be called?
             if (isNewAp) {
@@ -226,7 +226,7 @@ public class WPOverview {
      * @return The root node from the tree.
      */
     public static DefaultMutableTreeNode createTree() {
-        return createTree(new ArrayList<Workpackage>(WpManager.getAllAp()));
+        return createTree(new ArrayList<>(WpManager.getAllAp()));
     }
 
     /**
@@ -247,24 +247,27 @@ public class WPOverview {
      *            A list with all work packages which are inserted into the
      *            tree.
      * @param onlyThese
+     *              Render only these work packages.
      * @return The root node from the tree.
      */
     public static DefaultMutableTreeNode createTree(
-        ArrayList<Workpackage> wpList, List<Workpackage> onlyThese) {
-        wpList = new ArrayList<Workpackage>(wpList);
-        onlyThese = new ArrayList<Workpackage>(onlyThese);
-        if (!wpList.isEmpty()) {
-            Collections.sort(wpList, new APLevelComparator());
+        final ArrayList<Workpackage> wpList, final List<Workpackage>
+            onlyThese) {
+        final ArrayList<Workpackage> wpListCopy = new ArrayList<>(wpList);
+        final ArrayList<Workpackage> onlyTheseCopy = new ArrayList<>(onlyThese);
+        if (!wpListCopy.isEmpty()) {
+            Collections.sort(wpListCopy, new APLevelComparator());
 
             int levels = WpManager.getRootAp().getLvlIDs().length;
-            DefaultMutableTreeNode[] parents = new DefaultMutableTreeNode[levels + 1];
+            DefaultMutableTreeNode[] parents =
+                    new DefaultMutableTreeNode[levels + 1];
 
-            parents[0] = new DefaultMutableTreeNode(wpList.remove(0));
+            parents[0] = new DefaultMutableTreeNode(wpListCopy.remove(0));
 
             int lastRelevantIndex;
-            for (Workpackage actualWP : wpList) {
+            for (Workpackage actualWP : wpListCopy) {
                 lastRelevantIndex = actualWP.getlastRelevantIndex();
-                if (onlyThese.contains(actualWP)) {
+                if (onlyTheseCopy.contains(actualWP)) {
                     try {
                         parents[lastRelevantIndex] = new DefaultMutableTreeNode(
                             actualWP);
@@ -315,31 +318,32 @@ public class WPOverview {
      */
     public static Color[] getCPIColor(final double cpi, final double ac) {
         Color[] colors = new Color[2];
+        //TODO rewrite intervals
         if (ac > 0) {
             if (cpi < 0.97) {
                 colors[0] = Color.black;
-                colors[1] = Color.YELLOW;
+                colors[1] = Legende.LOW_CPI_COLOR;
                 if (cpi < 0.94) {
                     colors[0] = Color.black;
-                    colors[1] = Color.RED;
+                    colors[1] = Legende.VERY_LOW_CPI_COLOR;
                 }
                 if (cpi < 0.6) {
                     colors[0] = Color.white;
-                    colors[1] = new Color(80, 00, 00);
+                    colors[1] = Legende.ULTRA_LOW_CPI_COLOR;
                 }
 
             } else {
                 if (cpi > 1.03) {
                     colors[0] = Color.white;
-                    colors[1] = new Color(00, 80, 00);
+                    colors[1] = Legende.HIGH_CPI_COLOR;
                 } else {
                     colors[0] = Color.black;
-                    colors[1] = Color.GREEN;
+                    colors[1] = Legende.EVEN_CPI_COLOR;
                 }
             }
         } else {
             colors[0] = Color.black;
-            colors[1] = Color.WHITE;
+            colors[1] = Legende.NO_CPI_COLOR;
         }
 
         return colors;
