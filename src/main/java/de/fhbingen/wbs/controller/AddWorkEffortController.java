@@ -11,7 +11,7 @@ import de.fhbingen.wbs.dbServices.WorkerService;
 import de.fhbingen.wbs.dbaccess.DBModelManager;
 import de.fhbingen.wbs.dbaccess.data.WorkEffort;
 import de.fhbingen.wbs.globals.Workpackage;
-import de.fhbingen.wbs.gui.workEffort.AddWorkEffortView;
+import de.fhbingen.wbs.gui.workeffort.AddWorkEffortView;
 import de.fhbingen.wbs.translation.LocalizedStrings;
 import de.fhbingen.wbs.wpShow.WPShow;
 import de.fhbingen.wbs.wpWorker.Worker;
@@ -35,29 +35,22 @@ import de.fhbingen.wbs.wpWorker.Worker;
  * @author Daniel Metzler, Michael Anstatt
  * @version 2.0 2012-08-21
  */
-public class AddWorkEffortController implements AddWorkEffortView.ActionsDelegate{
+public class AddWorkEffortController implements
+        AddWorkEffortView.ActionsDelegate {
 
     /**
      * Variablen für die AddAufwandGui und den SQLExecuter Variablen für den
-     * User, WPID's und WPName
+     * User, WPID's und WPName.
      */
     public AddWorkEffortView gui;
     public WPShow wpshow;
     private Workpackage wp;
 
     /**
-     * Default-Konstruktor
+     * Constructor.
      *
-     * @param workpackage
-     * @param wpID
-     *            ID des Arbeitspakets
-     * @param usr
-     *            Benutzer dessen Aufwand eingetragen werden soll
-     * @param show
-     *            WPSHow GUI zur Referenzierung
-     * @param wpname
-     *            Names des Arbeitspaketes Werte aus der WPShow werden
-     *            übergeben
+     * @param wpshow WPSHow GUI for reference.
+     * @param wp The work package.
      */
     public AddWorkEffortController(WPShow wpshow, Workpackage wp) {
         gui = new AddWorkEffortView(this);
@@ -141,10 +134,12 @@ public class AddWorkEffortController implements AddWorkEffortView.ActionsDelegat
                 tmpDate = gui.getDate().split("\\.");
                 day = Integer.parseInt(tmpDate[0]);
                 month = Integer.parseInt(tmpDate[1]);
-                if (day < 1 || day > 31 || month < 1 || month > 12)
+                if (day < 1 || day > 31 || month < 1 || month > 12) {
                     return false;
-            } else
+                }
+            } else {
                 return false;
+            }
 
             // Datum wird vom Textfeld "Datum" geholt und als SQL Date
             // umgewandelt (nötig für das Reinschreiben in die
@@ -179,12 +174,12 @@ public class AddWorkEffortController implements AddWorkEffortView.ActionsDelegat
 
     @Override
     public void confirmPerformed() {
-        if(checkFieldsFilled()){
+        if (checkFieldsFilled()) {
             try {
-                if(!addAufwand())
+                if (!addAufwand()) {
                     JOptionPane.showMessageDialog(gui,
                             LocalizedStrings.getErrorMessages().checkInputs());
-                else {
+                } else {
                     //berechnet den neuen ETC und schreibt den Wert in das Textfeld ETC der WPShow damit die Werte mit dem neu errechneten ETC berechnet werden
                     double ETC = wpshow.getETCfromGUI() - Double.parseDouble(gui.getWorkEffort());
                     wpshow.updateETCInGUI(ETC);
@@ -197,7 +192,7 @@ public class AddWorkEffortController implements AddWorkEffortView.ActionsDelegat
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }else{
+        } else {
             JOptionPane.showMessageDialog(gui,
                     LocalizedStrings.getMessages().fillAllFieldsError(),null,
                     JOptionPane.INFORMATION_MESSAGE);
@@ -211,19 +206,19 @@ public class AddWorkEffortController implements AddWorkEffortView.ActionsDelegat
     }
 
     @Override
-    public void workEffortPressPerformed(KeyEvent e) {
+    public void workEffortPressPerformed(final KeyEvent e) {
         //Kommas werden direkt durch Punkte ersetzt, damit es zu keine Fehlereingaben kommt
         gui.setWorkEffort(gui.getWorkEffort().replace(",", "."));
     }
 
     @Override
-    public void workEffortReleasePerformed(KeyEvent e) {
+    public void workEffortReleasePerformed(final KeyEvent e) {
       //Es darf nur ein Punkt gesetzt sein, ansonsten wird der letzte Punkt gelöscht
         boolean vorhanden = false;
-        StringBuffer test = new StringBuffer(gui.getWorkEffort());
-        for (int i=0; i<test.length(); i++){
-            if(test.charAt(i) == '.'){
-                if(vorhanden){
+        final StringBuffer test = new StringBuffer(gui.getWorkEffort());
+        for (int i = 0; i < test.length(); i++) {
+            if (test.charAt(i) == '.') {
+                if (vorhanden) {
                     test.deleteCharAt(i);
                 }
                 vorhanden = true;
@@ -233,8 +228,10 @@ public class AddWorkEffortController implements AddWorkEffortView.ActionsDelegat
         gui.setWorkEffort(test.toString());
         char c = e.getKeyChar();
         //es werden nur Ziffern, Kommas und Punkte bei der Eingabe aktzepiert
-        if(!(Character.isDigit(e.getKeyChar()) || c == KeyEvent.VK_COMMA || c== KeyEvent.VK_PERIOD)){
-            gui.setWorkEffort(gui.getWorkEffort().substring(0,gui.getWorkEffort().length()-1));
+        if (!(Character.isDigit(e.getKeyChar()) || c == KeyEvent.VK_COMMA
+                || c== KeyEvent.VK_PERIOD)) {
+            gui.setWorkEffort(gui.getWorkEffort().substring(0,
+                    gui.getWorkEffort().length()-1));
         }
         gui.setWorkEffort(gui.getWorkEffort().replace(",", "."));
     }

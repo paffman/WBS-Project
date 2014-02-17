@@ -1,4 +1,4 @@
-package de.fhbingen.wbs.gui.workEffort;
+package de.fhbingen.wbs.gui.workeffort;
 
 import java.awt.Component;
 import java.awt.Dimension;
@@ -152,9 +152,8 @@ public class AddWorkEffortView extends JFrame {
         createGBC(btnCancel, 1, 6, 1, 1);
 
         addActionListeners();
-        
-        setVisible(true);
 
+        setVisible(true);
     }
 
     /**
@@ -174,10 +173,10 @@ public class AddWorkEffortView extends JFrame {
         });
         
         txfAufwand.addKeyListener(new KeyAdapter() {
-            public void  keyPressed(KeyEvent e) {
+            public void  keyPressed(final KeyEvent e) {
                 actionsDelegate.workEffortPressPerformed(e);
             }
-            public void keyReleased(KeyEvent e){
+            public void keyReleased(final KeyEvent e) {
                 actionsDelegate.workEffortReleasePerformed(e);
             }
 
