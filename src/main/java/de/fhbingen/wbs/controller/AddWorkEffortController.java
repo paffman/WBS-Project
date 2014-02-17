@@ -179,7 +179,6 @@ public class AddWorkEffortController implements AddWorkEffortView.ActionsDelegat
 
     @Override
     public void confirmPerformed() {
-        System.out.println("AUFWAND");
         if(checkFieldsFilled()){
             try {
                 if(!addAufwand())

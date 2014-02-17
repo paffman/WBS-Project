@@ -151,6 +151,8 @@ public class AddWorkEffortView extends JFrame {
         createGBC(btnOk, 0, 6, 1, 1);
         createGBC(btnCancel, 1, 6, 1, 1);
 
+        addActionListeners();
+        
         setVisible(true);
 
     }
