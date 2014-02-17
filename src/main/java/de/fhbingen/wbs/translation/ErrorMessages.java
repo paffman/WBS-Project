@@ -288,6 +288,14 @@ public interface ErrorMessages {
     @En("There are already efforts for this work package, " +
             "" + "therefore it cannot be deleted.")
     String deletePackageEffortError();
+    
+    @De("Das Paket kann nicht gelöscht werden, da noch Konflikte dazu existieren.")
+    @En("The package cannot be deleted, because there are existing conflicts.")
+    String deleteConflictsError();
+    
+    @De("Das Paket konnte nicht gelöscht werden, da die PV-Einträge nicht gelöscht werden konnten.")
+    @En("The package could not be deleted, because there was a failure while deleting the pv-entries.")
+    String deletePVError();
 
     @De("Es sind noch Unterarbeitspakete vorhanden, " + "diese müssen zuerst " +
             "gelöscht werden")
