@@ -14,6 +14,7 @@
 
 package de.fhbingen.wbs.wpOverview.tabs;
 
+import de.fhbingen.wbs.controller.WBSUserViewController;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -21,7 +22,6 @@ import de.fhbingen.wbs.dbaccess.DBModelManager;
 import de.fhbingen.wbs.dbaccess.data.Employee;
 import de.fhbingen.wbs.wpOverview.WPOverview;
 import de.fhbingen.wbs.wpWorker.Worker;
-import de.fhbingen.wbs.wpWorker.WBSUser;
 
 /**
  * The functionality of the WorkerPanel.
@@ -51,7 +51,7 @@ public class WorkerPanelAction {
                             employee.getLast_name(), employee
                                 .isProject_leader(), employee
                                 .getDaily_rate());
-                        new WBSUser(mit, over);
+                        new WBSUserViewController(mit, over);
                     }
                     over.reload();
                 }
