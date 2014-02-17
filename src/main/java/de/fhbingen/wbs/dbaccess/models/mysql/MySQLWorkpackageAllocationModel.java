@@ -232,9 +232,8 @@ public class MySQLWorkpackageAllocationModel implements
 
         try {
             stm = connection.prepareStatement(storedProcedure);
-            stm.setInt(1, workpackageID);
-            stm.setInt(2, employeeID);
-
+            stm.setInt(1, employeeID);
+            stm.setInt(2, workpackageID);
             stm.execute();
             success = true;
         } catch (SQLException e) {

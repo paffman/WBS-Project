@@ -282,7 +282,7 @@ public class WBSUserView extends JFrame {
      */
     public final double getDailyRate() {
         if (txfTagessatz.getText().equals("")) {
-            return 0.0;
+            return Double.MIN_NORMAL;
         }
         return Double.parseDouble(txfTagessatz.getText());
     }

@@ -905,7 +905,7 @@ public final class ProjectSetupAssistant implements ProjectProperties.Actions,
         //create values
         int projectLevels = Integer.parseInt(projectProperties
                 .getProjectLevels());
-        final SimpleDateFormat dateFormat = new SimpleDateFormat("dd.mm.yyyy");
+        final SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
         java.sql.Date startDate = null;
         try {
             startDate = new java.sql.Date(dateFormat.parse(

@@ -113,14 +113,17 @@ public class WBSUserViewController implements WBSUserView.Delegate {
         }
 
         try {
-            if (getGui().getDailyRate() <= 0) {
+            if (getGui().getDailyRate() == Double.MIN_NORMAL) {
                 JOptionPane.showMessageDialog(getGui(), messageStrings
-                    .fillFieldError(LocalizedStrings.getWbs().dailyRate()));
+                        .fillFieldError(LocalizedStrings.getWbs().dailyRate()));
                 return false;
             }
-            JOptionPane.showMessageDialog(getGui(), messageStrings
-                .valueInFieldIsNotANumber(LocalizedStrings.getWbs()
-                    .dailyRate()));
+            if (getGui().getDailyRate() <= 0) {
+                JOptionPane.showMessageDialog(getGui(), messageStrings
+                        .valueInFieldIsNotANumber(LocalizedStrings.getWbs()
+                                .dailyRate()));
+                return false;
+            }
         } catch (NumberFormatException ex) {
             return false;
         }

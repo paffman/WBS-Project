@@ -57,6 +57,7 @@ public class WorkerPanel extends JPanel {
 
     /**
      * Constructor.
+     * 
      * @param over
      *            Functionality of WPOverview.
      */
@@ -74,8 +75,7 @@ public class WorkerPanel extends JPanel {
         colMitarbeiter.add(loginStrings.loginLong());
         colMitarbeiter.add(loginStrings.firstName());
         colMitarbeiter.add(loginStrings.surname());
-        colMitarbeiter.add(LocalizedStrings.getGeneralStrings()
-            .permission());
+        colMitarbeiter.add(LocalizedStrings.getGeneralStrings().permission());
         colMitarbeiter.add(wbsStrings.dailyRate());
         BorderLayout layout = new BorderLayout(2, 2);
         this.setLayout(layout);
@@ -87,8 +87,8 @@ public class WorkerPanel extends JPanel {
                 return false;
             }
         };
-        tblMitarbeiter.setPreferredScrollableViewportSize(new Dimension(
-            500, 300));
+        tblMitarbeiter.setPreferredScrollableViewportSize(new Dimension(500,
+                300));
         tblMitarbeiter.setFillsViewportHeight(true);
 
         // for (int i = 0; i < tblMitarbeiter.getColumnCount(); i++) {
@@ -107,8 +107,7 @@ public class WorkerPanel extends JPanel {
     }
 
     /**
-     * Fills the employee table in the GUI. This method is called by
-     * fillTbls().
+     * Fills the employee table in the GUI. This method is called by fillTbls().
      */
     public final void fillWorkerTable() {
         ArrayList<Worker> allWorkers = WorkerService.getRealWorkers();
@@ -125,14 +124,14 @@ public class WorkerPanel extends JPanel {
             row.addElement(actualWorker.getName());
             int ber = actualWorker.getBerechtigung();
             if (ber == 1) {
-                row.addElement(LocalizedStrings.getProject()
-                    .projectManager());
+                row.addElement(LocalizedStrings.getProject().projectManager());
             } else {
                 row.addElement(wbsStrings.staff());
             }
 
-            row.addElement(decform.format(actualWorker.getTagessatz())
-                .replace(".", ",") + " â‚¬");
+            row.addElement(decform.format(actualWorker.getTagessatz()).replace(
+                    ".", ",")
+                    + LocalizedStrings.getGeneralStrings().currencySymbol());
             rows.add(row);
 
         }

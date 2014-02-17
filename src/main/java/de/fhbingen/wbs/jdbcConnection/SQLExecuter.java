@@ -34,7 +34,7 @@ public final class SQLExecuter {
 
     /**
      * Opens a connection to the DB.
-     *
+     * 
      * @return returns true if connection is established.
      */
     private static boolean openConnection() {
@@ -43,15 +43,14 @@ public final class SQLExecuter {
             // checks if existing connection is still valid.
             if (openConnection != null) {
                 int reconnectTries = 0;
-
-                System.out.println(openConnection.isValid(VALIDITY_CHECK_TIMEOUT));
-                while (!openConnection.isValid(VALIDITY_CHECK_TIMEOUT) &&
-                        reconnectTries < RECONNECT_TRIES) {
+                while (!checkConnection() && reconnectTries < RECONNECT_TRIES) {
                     openConnection = null;
-                    openConnection = MySqlConnect.getConnection();
+                    try {
+                        openConnection = MySqlConnect.getConnection();
+                    } catch (SQLException e) {
+                    }
                     reconnectTries++;
                 }
-
                 if (reconnectTries >= RECONNECT_TRIES) {
                     System.exit(0);
                     return false;
@@ -66,6 +65,24 @@ public final class SQLExecuter {
             System.err.println("no Connection");
         }
         return openConnection != null;
+    }
+
+    /**
+     * Controls if connection still works
+     * 
+     * @return true if connection works, false when otherwise
+     */
+    public static boolean checkConnection() {
+        if (openConnection == null) {
+            return false;
+        }
+        try {
+            Statement stmt = openConnection.createStatement();
+            stmt.executeQuery("call project_select()");
+            return true;
+        } catch (SQLException e) {
+            return false;
+        }
     }
 
     /**
@@ -111,7 +128,7 @@ public final class SQLExecuter {
 
     /**
      * Executes the given query on the database.
-     *
+     * 
      * @param sql
      *            SQL Statement as String
      * @return returns a read only ResultSet
@@ -123,9 +140,10 @@ public final class SQLExecuter {
         Statement stmt;
         ResultSet rs;
         try {
-            stmt = openConnection.createStatement(
-                    ResultSet.TYPE_SCROLL_INSENSITIVE,
-                    ResultSet.CONCUR_READ_ONLY);
+            stmt =
+                    openConnection.createStatement(
+                            ResultSet.TYPE_SCROLL_INSENSITIVE,
+                            ResultSet.CONCUR_READ_ONLY);
             rs = stmt.executeQuery(sql);
             return rs;
         } catch (SQLException e) {
@@ -137,7 +155,7 @@ public final class SQLExecuter {
     /**
      * @return Connection to the database
      */
-    public static Connection getConnection(){
+    public static Connection getConnection() {
         if (!openConnection()) {
             return null;
         }

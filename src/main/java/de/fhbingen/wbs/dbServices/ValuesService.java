@@ -92,8 +92,10 @@ public class ValuesService {
      *            ID des Arbeitsparkets
      * @return double PV des Arbeitsparketes
      */
-    public static double getApPv(int apID) {
+    public static double getApPv(final int apID) {
         Calendar calendar = getNextFriday(new Date(System.currentTimeMillis()));
+        calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH), 0, 0, 0);
         double ergPv =
                 DBModelManager.getPlannedValueModel().getPlannedValue(
                         calendar.getTime(), apID, false);
@@ -103,7 +105,7 @@ public class ValuesService {
                     DBModelManager.getPlannedValueModel().getPlannedValue(
                             calendar.getTime(), apID, true);
         }
-        if ( ergPv == Double.MIN_NORMAL){
+        if (ergPv == Double.MIN_NORMAL) {
             ergPv = 0.0;
         }
         return ergPv;
