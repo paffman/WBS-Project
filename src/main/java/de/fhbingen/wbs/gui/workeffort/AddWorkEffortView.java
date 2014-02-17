@@ -234,6 +234,12 @@ public class AddWorkEffortView extends JFrame {
     public final void setId(String id){
         txfNr.setText(id);
     }
+    
+    /** Sets the name of the work package.
+     * @param name The name of the work package.*/
+    public final void setName(String name){
+        txfName.setText(name);
+    }
 
     /** Returns a combo box with all workers of this work package.
      * @return A combo box with all workers. */

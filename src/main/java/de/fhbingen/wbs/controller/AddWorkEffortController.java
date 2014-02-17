@@ -74,7 +74,7 @@ public class AddWorkEffortController implements
     public void initialize() {
 
         gui.setId(wp.getStringID());
-        gui.setId(wp.getName());
+        gui.setName(wp.getName());
 
         List<Worker> allWorkers = WorkerService.getRealWorkers();
         List<String> workerIDs = wp.getWorkerLogins();
