@@ -42,7 +42,7 @@ import de.fhbingen.wbs.translation.LocalizedStrings;
  * Is used to edit the availabilities. Also this class is the functionality
  * for the class EditAvailabilityGUI.
  */
-public class EditAvailability {
+public class EditAvailability implements EditAvailabilityGUI.Actions{
     /** The GUI of this class. */
     private EditAvailabilityGUI gui;
     /** Represents the availability. */
@@ -215,51 +215,34 @@ public class EditAvailability {
         return new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
-                WPOverview.throwConflict(new Conflict(new Date(System
-                    .currentTimeMillis()), Conflict.CHANGED_RESOURCES,
-                    WPOverview.getUser().getId()));
-                save();
+
             }
         };
     }
 
-    /**
-     * Returns the ActionListener for delete a availability.
-     * @return The ActionListener.
-     */
-    protected final ActionListener getDeleteListener() {
-        return new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                WPOverview.throwConflict(new Conflict(new Date(System
-                    .currentTimeMillis()), Conflict.CHANGED_RESOURCES,
-                    WPOverview.getUser().getId()));
-                delete();
-            }
-        };
+    @Override
+    public final void buttonCancel() {
+        gui.dispose();
     }
 
-    /**
-     * Returns the ActionListener for cancel the changes.
-     * @return The ActionListener.
-     */
-    protected final ActionListener getCancelListener() {
-        return new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                gui.dispose();
-            }
-        };
+    @Override
+    public final void buttonDelete() {
+        WPOverview.throwConflict(new Conflict(new Date(System
+                .currentTimeMillis()), Conflict.CHANGED_RESOURCES,
+                WPOverview.getUser().getId()));
+        delete();
     }
 
-    /** Returns the ItemListener for getting the cb.
-     * @return The ItemListener. */
-    protected final ItemListener getCbAvailableListener() {
-        return new ItemListener() {
-            @Override
-            public void itemStateChanged(final ItemEvent e) {
-                gui.setAvailableView(e.getStateChange() == ItemEvent.SELECTED);
-            }
-        };
+    @Override
+    public final void buttonSave() {
+        WPOverview.throwConflict(new Conflict(new Date(System
+                .currentTimeMillis()), Conflict.CHANGED_RESOURCES,
+                WPOverview.getUser().getId()));
+        save();
+    }
+
+    @Override
+    public final void checkboxChanged(final ItemEvent e) {
+        gui.setAvailableView(e.getStateChange() == ItemEvent.SELECTED);
     }
 }
