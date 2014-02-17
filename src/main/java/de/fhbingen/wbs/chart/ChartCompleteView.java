@@ -109,9 +109,6 @@ public class ChartCompleteView extends WBSChart {
         for (Date actualDate : orderedDates) {
             GregorianCalendar cal = new GregorianCalendar();
             cal.setTime(actualDate);
-            System.out.println("wp: " + wp.getStringID()); //%%
-            System.out.println(ValuesService.getApPv(wp.getWpId(), cal)); //%%
-            System.out.println(ValuesService.getApPv(wp.getWpId(), maxCal)); //%%
             diagonal.add(
                     new Day(cal.get(Calendar.DATE),
                             cal.get(Calendar.MONTH) + 1, cal.get(Calendar.YEAR)),

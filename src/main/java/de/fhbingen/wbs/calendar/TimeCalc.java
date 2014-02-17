@@ -517,11 +517,10 @@ public class TimeCalc {
 
         boolean stillWork = true;
 
-        int allWorkedToday;
-        int possibleWorkToday;
+        int allWorkedToday = 0;
+        int possibleWorkToday = 0;
 
-        Map<Day, Double> pvs = new HashMap<>();
-
+        Map<Day, Double> pvs = new HashMap<Day, Double>();
         while (stillWork) {
 
             if (actualDay.after(new Day(
@@ -648,7 +647,7 @@ public class TimeCalc {
                         avManager.getConsumedDayWork(actualDay).get(
                             AvailabilityGraph.PROJECT_WORKER.getLogin())));
                     stillWork = false;
-
+                    
                     savePV(pvs, uap);
 
                     Controller.showConsoleMessage(
@@ -681,6 +680,7 @@ public class TimeCalc {
                     actualDayCal.setTime(actualDay);
                     pvs.put(nextFriday,
                         ValuesService.getApPv(uap.getWpId(), nextFridayCal));
+
                     actualDayCal.add(Calendar.DATE, 1);
                     actualDayTime = actualDayCal;
                     actualDay = new Day(actualDayCal.getTime());
@@ -769,7 +769,7 @@ public class TimeCalc {
         final Workpackage wp) {
         final String wpID = wp.getStringID();
         final int wpKey = wp.getWpId();
-        List<Day> days = new ArrayList<>(singlePVs.keySet());
+        List<Day> days = new ArrayList<Day>(singlePVs.keySet());
         Collections.sort(days);
         double actualPV = 0.0;
         Calendar cal = new GregorianCalendar();
