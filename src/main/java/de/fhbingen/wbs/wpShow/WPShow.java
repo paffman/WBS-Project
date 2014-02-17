@@ -14,19 +14,6 @@
 
 package de.fhbingen.wbs.wpShow;
 
-import de.fhbingen.wbs.chart.ChartCPIView;
-import de.fhbingen.wbs.chart.ChartCompleteView;
-import de.fhbingen.wbs.dbServices.WorkerService;
-import de.fhbingen.wbs.dbaccess.DBModelManager;
-import de.fhbingen.wbs.dbaccess.data.Employee;
-import de.fhbingen.wbs.dbaccess.data.WorkEffort;
-import de.fhbingen.wbs.translation.LocalizedStrings;
-import de.fhbingen.wbs.translation.Messages;
-import de.fhbingen.wbs.translation.Wbs;
-import de.fhbingen.wbs.functions.CalcOAPBaseline;
-import de.fhbingen.wbs.functions.WpManager;
-import de.fhbingen.wbs.globals.Controller;
-import de.fhbingen.wbs.globals.Workpackage;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -45,11 +32,26 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
-import de.fhbingen.wbs.wpAddAufwand.AddAufwand;
+
+import de.fhbingen.wbs.chart.ChartCPIView;
+import de.fhbingen.wbs.chart.ChartCompleteView;
+import de.fhbingen.wbs.controller.AddWorkEffortController;
+import de.fhbingen.wbs.dbServices.WorkerService;
+import de.fhbingen.wbs.dbaccess.DBModelManager;
+import de.fhbingen.wbs.dbaccess.data.Employee;
+import de.fhbingen.wbs.dbaccess.data.WorkEffort;
+import de.fhbingen.wbs.functions.CalcOAPBaseline;
+import de.fhbingen.wbs.functions.WpManager;
+import de.fhbingen.wbs.globals.Controller;
+import de.fhbingen.wbs.globals.Workpackage;
+import de.fhbingen.wbs.translation.LocalizedStrings;
+import de.fhbingen.wbs.translation.Messages;
+import de.fhbingen.wbs.translation.Wbs;
 import de.fhbingen.wbs.wpConflict.Conflict;
 import de.fhbingen.wbs.wpOverview.WPOverview;
 import de.fhbingen.wbs.wpWorker.Worker;
@@ -822,7 +824,7 @@ public class WPShow {
         return new ActionListener() {
             public void actionPerformed(final ActionEvent arg0) {
                 if (isSaved()) {
-                    new AddAufwand(getThis(), getWorkpackage());
+                    new AddWorkEffortController(getThis(), getWorkpackage());
                 }
             }
         };

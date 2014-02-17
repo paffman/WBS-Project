@@ -14,23 +14,25 @@
 
 package de.fhbingen.wbs.wpOverview;
 
-import de.fhbingen.wbs.dbaccess.DBModelManager;
-import de.fhbingen.wbs.dbaccess.data.Project;
-import de.fhbingen.wbs.translation.LocalizedStrings;
-import de.fhbingen.wbs.translation.Messages;
-import de.fhbingen.wbs.functions.WpManager;
-import de.fhbingen.wbs.globals.Controller;
-import de.fhbingen.wbs.globals.Workpackage;
 import java.awt.Color;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.tree.DefaultMutableTreeNode;
-import de.fhbingen.wbs.wpAddAufwand.AddAufwand;
+
+import de.fhbingen.wbs.controller.AddWorkEffortController;
+import de.fhbingen.wbs.dbaccess.DBModelManager;
+import de.fhbingen.wbs.dbaccess.data.Project;
+import de.fhbingen.wbs.functions.WpManager;
+import de.fhbingen.wbs.globals.Controller;
+import de.fhbingen.wbs.globals.Workpackage;
+import de.fhbingen.wbs.translation.LocalizedStrings;
+import de.fhbingen.wbs.translation.Messages;
 import de.fhbingen.wbs.wpComparators.APLevelComparator;
 import de.fhbingen.wbs.wpConflict.Conflict;
 import de.fhbingen.wbs.wpShow.WPShow;
@@ -191,7 +193,7 @@ public class WPOverview {
             } else { // or an existing?
                 if (!istOAP) {
                     WPShow wpshow = new WPShow(this, selectedAP, false, gui);
-                    new AddAufwand(wpshow, selectedAP);
+                    new AddWorkEffortController(wpshow, selectedAP);
 
                 } else {
                     JOptionPane.showMessageDialog(WPOverview.gui,
