@@ -12,27 +12,29 @@
  * see <http://www.gnu.org/licenses/>.
  */
 
-package de.fhbingen.wbs.wpWorker;
+package de.fhbingen.wbs.controller;
 
+import de.fhbingen.wbs.gui.wpworker.ChangePwView;
+import de.fhbingen.wbs.wpOverview.WPOverviewGUI;
+import de.fhbingen.wbs.wpWorker.Worker;
 import javax.swing.JOptionPane;
 
 import de.fhbingen.wbs.jdbcConnection.MySqlConnect;
 import de.fhbingen.wbs.jdbcConnection.SQLExecuter;
 import de.fhbingen.wbs.dbaccess.DBModelManager;
 import de.fhbingen.wbs.dbaccess.data.Employee;
-import de.fhbingen.wbs.controller.ProjectSetupAssistant;
 import de.fhbingen.wbs.translation.LocalizedStrings;
 import de.fhbingen.wbs.translation.Messages;
 
 /**
- * Functionality for the ChangePWGUI class. Checks all needed conditions to
+ * Functionality for the ChangePwView class. Checks all needed conditions to
  * change the password.
  */
-public class ChangePW {
+public class ChangePwViewController implements ChangePwView.Delegate {
     /**
      * The GUI to change the password.
      */
-    private ChangePWGUI gui;
+    private ChangePwView gui;
 
     /** The user from which the password is changed. */
     private Worker usr;
@@ -47,11 +49,12 @@ public class ChangePW {
      * @param worker
      *            The user from which password is changed.
      */
-    public ChangePW(final Worker worker) {
+    public ChangePwViewController(final Worker worker) {
         messages = LocalizedStrings.getMessages();
         this.usr = worker;
-        gui = new ChangePWGUI();
-        new ChangePWButtonAction(this);
+        gui = new ChangePwView(this);
+
+        getGui().txfUser.setText(getUsr().getName());
     }
 
     /**
@@ -108,15 +111,14 @@ public class ChangePW {
      */
 
     protected final boolean checkRules() {
-        return ProjectSetupAssistant.isPasswordValid(getGui().txfNewPW
-            .getPassword());
+        return ProjectSetupAssistant.isPasswordValid(getGui().txfNewPW.getPassword());
     }
 
     /**
      * The GUI to change the password.
      * @return gui element.
      */
-    public final ChangePWGUI getGui() {
+    public final ChangePwView getGui() {
         return gui;
     }
 
@@ -125,5 +127,50 @@ public class ChangePW {
      */
     public final Worker getUsr() {
         return usr;
+    }
+
+    @Override
+    public void confirmPerformed() {
+
+        // Check if all fields are filled.
+        if (checkFieldsFilled()) {
+
+            // Check if the old password is correct.
+            if (checkOldPW()) {
+                if (checkNewPW()) {
+                    if (checkRules()) {
+                        Employee emp = DBModelManager
+                                .getEmployeesModel().getEmployee(
+                                        getUsr().getId());
+                        setNewPassword(emp);
+                        WPOverviewGUI.setStatusText(messages.
+                                passwordChangeConfirm());
+                        getGui().dispose();
+                    } else {
+                        JOptionPane.showMessageDialog(getGui(),
+                                messages.passwordInvalidError() + "\n"
+                                        + messages.guidelinesPassword(),
+                                null, JOptionPane.INFORMATION_MESSAGE);
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(getGui(),
+                            messages.passwordsNotMatchingError(), null,
+                            JOptionPane.INFORMATION_MESSAGE);
+                }
+            } else {
+                JOptionPane.showMessageDialog(getGui(),
+                        messages.passwordOldWrong(), null,
+                        JOptionPane.INFORMATION_MESSAGE);
+            }
+        } else {
+            JOptionPane.showMessageDialog(getGui(),
+                    messages.fillAllFieldsError(), null,
+                    JOptionPane.INFORMATION_MESSAGE);
+        }
+    }
+
+    @Override
+    public void cancelPerformed() {
+        gui.dispose();
     }
 }

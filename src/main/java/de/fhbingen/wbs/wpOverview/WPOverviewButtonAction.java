@@ -14,6 +14,7 @@
 
 package de.fhbingen.wbs.wpOverview;
 
+import de.fhbingen.wbs.controller.ChangePwViewController;
 import de.fhbingen.wbs.controller.LoginViewController;
 import de.fhbingen.wbs.dbaccess.DBModelManager;
 import de.fhbingen.wbs.translation.LocalizedStrings;
@@ -30,7 +31,6 @@ import java.awt.event.WindowEvent;
 import javax.swing.JOptionPane;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import de.fhbingen.wbs.wpWorker.ChangePW;
 
 /**
  * Manage the button actions from the WPOverviewGUI.
@@ -128,7 +128,7 @@ public class WPOverviewButtonAction {
 
         gui.miChangePW.addActionListener(new ActionListener() {
             public void actionPerformed(final ActionEvent e) {
-                new ChangePW(WPOverview.getUser());
+                new ChangePwViewController(WPOverview.getUser());
             }
         });
 

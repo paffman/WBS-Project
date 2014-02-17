@@ -12,7 +12,7 @@
  * see <http://www.gnu.org/licenses/>.
  */
 
-package de.fhbingen.wbs.wpWorker;
+package de.fhbingen.wbs.gui.wpworker;
 
 import de.fhbingen.wbs.globals.FilterJTextField;
 
@@ -23,6 +23,8 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Toolkit;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
@@ -36,9 +38,18 @@ import de.fhbingen.wbs.translation.LocalizedStrings;
 import de.fhbingen.wbs.translation.Login;
 
 /**
- * GUI to add the work effort to a work package.
+ * GUI to add a new employee or change an existing one.
  */
-public class WBSUserGUI extends JFrame {
+public class WBSUserView extends JFrame {
+
+    /** Mode for editing an existing user. */
+    public static final int EDIT_USER = 0;
+
+    /** Mode for creating a new. */
+    public static final int NEW_USER = 1;
+
+    /** The current display mode. */
+    private int mode;
 
     /** The used layout: GridBagLayout. */
     protected GridBagLayout gbl;
@@ -70,11 +81,42 @@ public class WBSUserGUI extends JFrame {
     private static final int DEFAULT_HEIGHT = 200;
 
     /**
+     * Defines possible user actions to be handled by the controller.
+     */
+    public interface Delegate {
+
+        /**
+         * Information of a current employee should be updated.
+         */
+        void changeEmployeePerformed();
+
+        /**
+         * A new employee should be added.
+         */
+        void addEmployeePerformed();
+
+        /**
+         * The user performed the cancel action.
+         */
+        void cancelPerformed();
+
+        /**
+         * The user wants to reset the password.
+         */
+        void resetPasswordPerformed();
+    }
+
+    /** The delegate object handling user events. */
+    private final Delegate delegate;
+
+    /**
      * Constructor. The GUI components are initialized and added to the
      * layout.
+     * @param aDelegate Object handling the user events.
      */
-    public WBSUserGUI() {
+    public WBSUserView(final Delegate aDelegate) {
         super();
+        this.delegate = aDelegate;
         initialize();
         setResizable(false);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -125,7 +167,133 @@ public class WBSUserGUI extends JFrame {
         createGBC(btnschliessen, 1, 5, 1, 1);
         createGBC(btnPwReset, 0, 6, 1, 1);
 
+        addActionListeners();
+
         setVisible(true);
+    }
+
+    /**
+     * Returns the current display mode.
+     *
+     * @return The current mode.
+     */
+    public final int getDisplayMode() {
+        return mode;
+    }
+
+    /**
+     * Sets the display mode. Possible values are <code>WBSUserView
+     * .EDIT_USER</code> (default) or <code>WBSUserView.NEW_USER</code>.
+     * @param aMode The display mode.
+     */
+    public final void setDisplayMode(final int aMode) {
+        if (aMode == NEW_USER) {
+            this.mode = NEW_USER;
+            btnhinzufuegen.setVisible(true);
+            txfLogin.setEnabled(true);
+            btnedit.setVisible(false);
+            btnPwReset.setVisible(false);
+        } else {
+            this.mode = EDIT_USER;
+            btnhinzufuegen.setVisible(false);
+            txfLogin.setEnabled(false);
+            btnedit.setVisible(true);
+            btnPwReset.setVisible(true);
+        }
+    }
+
+    /**
+     * Returns the login.
+     *
+     * @return The login.
+     */
+    public final String getLogin() {
+        return txfLogin.getText();
+    }
+
+    /**
+     * Sets the login.
+     *
+     * @param aLogin The new login.
+     */
+    public final void setLogin(final String aLogin) {
+        txfLogin.setText(aLogin);
+    }
+
+    /**
+     * Returns the name.
+     *
+     * @return The name.
+     */
+    public final String getName() {
+        return txfName.getText();
+    }
+
+    /**
+     * Sets the name.
+     *
+     * @param aName The new name.
+     */
+    public final void setName(final String aName) {
+        txfName.setText(aName);
+    }
+
+    /**
+     * Returns the first name.
+     *
+     * @return The first name.
+     */
+    public final String getFirstName() {
+        return txfVorname.getText();
+    }
+
+    /**
+     * Sets the first name.
+     *
+     * @param aFirstName The new first name.
+     */
+    public final void setFirstName(final String aFirstName) {
+        txfVorname.setText(aFirstName);
+    }
+
+    /**
+     * Returns the permission.
+     *
+     * @return <code>true</code> if the user should have project leader
+     * permission; <code>false</code> otherwise.
+     */
+    public final boolean getPermission() {
+        return cbBerechtigung.isSelected();
+    }
+
+    /**
+     * Sets the permission.
+     *
+     * @param aPermission The new permission.
+     */
+    public final void setPermission(final boolean aPermission) {
+        cbBerechtigung.setSelected(aPermission);
+    }
+
+    /**
+     * Returns the daily rate.
+     *
+     * @return The daily rate.
+     */
+    public final double getDailyRate() {
+        if (txfTagessatz.getText().equals("")) {
+            return 0.0;
+        }
+        return Double.parseDouble(txfTagessatz.getText());
+    }
+
+    /**
+     * Sets the daily rate.
+     *
+     * @param aRate The new daily rate.
+     */
+    public final void setDailyRate(final double aRate) {
+        txfTagessatz.setText(Double.toString(aRate));
     }
 
     /**
@@ -168,5 +336,34 @@ public class WBSUserGUI extends JFrame {
         gbc.insets = new Insets(1, 1, 1, 1);
         gbl.setConstraints(c, gbc);
         add(c);
+    }
+
+    /**
+     * Setup actionListeners to call to the delegate interface.
+     */
+    private void addActionListeners() {
+        btnedit.addActionListener(new ActionListener() {
+            public void actionPerformed(final ActionEvent e) {
+                delegate.changeEmployeePerformed();
+            }
+        });
+
+        btnhinzufuegen.addActionListener(new ActionListener() {
+            public void actionPerformed(final ActionEvent e) {
+                delegate.addEmployeePerformed();
+            }
+        });
+
+        btnschliessen.addActionListener(new ActionListener() {
+            public void actionPerformed(final ActionEvent e) {
+                delegate.cancelPerformed();
+            }
+        });
+
+        btnPwReset.addActionListener(new ActionListener() {
+            public void actionPerformed(final ActionEvent e) {
+                delegate.resetPasswordPerformed();
+            }
+        });
     }
 }
