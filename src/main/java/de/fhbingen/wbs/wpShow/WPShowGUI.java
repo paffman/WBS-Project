@@ -776,7 +776,7 @@ public class WPShowGUI extends JFrame {
         txfTagessatz.setColumns(10);
 
         lblPvSpi = new JLabel(wbsStrings.pv() + " / " + wbsStrings.spi()
-            + generalStrings.date());
+            + " " + generalStrings.date());
         GridBagConstraints gbc_lblPvSpi = new GridBagConstraints();
         gbc_lblPvSpi.insets = new Insets(0, 0, 5, 5);
         gbc_lblPvSpi.anchor = GridBagConstraints.WEST;
