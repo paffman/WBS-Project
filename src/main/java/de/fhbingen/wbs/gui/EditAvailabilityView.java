@@ -12,7 +12,7 @@
  * see <http://www.gnu.org/licenses/>.
  */
 
-package de.fhbingen.wbs.wpAvailability;
+package de.fhbingen.wbs.gui;
 
 import de.fhbingen.wbs.translation.Button;
 import de.fhbingen.wbs.translation.General;
@@ -49,9 +49,9 @@ import de.fhbingen.wbs.wpWorker.Worker;
 
 /**
  * The GUI to edit the availabilities. The functionality is represent by
- * the class EditAvailability.
+ * the class EditAvailabilityController.
  */
-public class EditAvailabilityGUI extends JDialog {
+public class EditAvailabilityView extends JDialog {
     public interface Actions {
         void buttonCancel();
 
@@ -109,8 +109,8 @@ public class EditAvailabilityGUI extends JDialog {
      * @param delegate
      *          Interface instance to handle actions.
      */
-    EditAvailabilityGUI(final Actions delegate,
-        final String headline, final JFrame parent) {
+    EditAvailabilityView(final Actions delegate, final String headline,
+                         final JFrame parent) {
         super(parent, headline);
         actionHandler = delegate;
         initGUI();
