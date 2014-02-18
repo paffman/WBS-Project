@@ -52,13 +52,29 @@ import de.fhbingen.wbs.wpWorker.Worker;
  * the class EditAvailabilityController.
  */
 public class EditAvailabilityView extends JDialog {
+    /**
+     * Interface to the controller.
+     */
     public interface Actions {
+        /**
+         * Cancel button action.
+         */
         void buttonCancel();
 
+        /**
+         * Delete button action.
+         */
         void buttonDelete();
 
+        /**
+         * Save button action.
+         */
         void buttonSave();
 
+        /**
+         * Checkbox changed action.
+         * @param e the event.
+         */
         void checkboxChanged(final ItemEvent e);
     }
 
@@ -96,12 +112,13 @@ public class EditAvailabilityView extends JDialog {
     /** The button to cancel the changes. */
     private JButton btnAbbrechen;
 
+    /**
+     * Handler responsible for all actions.
+     */
     private final Actions actionHandler;
 
     /**
      * Constructor: Initialize the GUI.
-     * @param function
-     *            The functionality of this class.
      * @param headline
      *            The title of the window.
      * @param parent
@@ -351,7 +368,7 @@ public class EditAvailabilityView extends JDialog {
      *            set.
      */
     protected final void setWorkers(final Worker[] workerArray) {
-        ComboBoxModel<Worker> cmbWorkerModel = new DefaultComboBoxModel<Worker>(
+        ComboBoxModel<Worker> cmbWorkerModel = new DefaultComboBoxModel<>(
             workerArray);
         cmbWorker.setModel(cmbWorkerModel);
     }
@@ -423,32 +440,32 @@ public class EditAvailabilityView extends JDialog {
     private void setupActionListeners() {
         btnSave.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 actionHandler.buttonSave();
             }
         });
         btnDelete.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 actionHandler.buttonDelete();
             }
         });
         cbAvailable.addItemListener(new ItemListener() {
             @Override
-            public void itemStateChanged(ItemEvent e) {
+            public void itemStateChanged(final ItemEvent e) {
                 actionHandler.checkboxChanged(e);
             }
         });
         btnAbbrechen
                 .addActionListener(new ActionListener() {
                     @Override
-                    public void actionPerformed(ActionEvent e) {
+                    public void actionPerformed(final ActionEvent e) {
                         actionHandler.buttonCancel();
                     }
                 });
         addWindowListener(new WindowAdapter() {
             @Override
-            public void windowClosing(WindowEvent e) {
+            public void windowClosing(final WindowEvent e) {
                 super.windowClosing(e);
                 actionHandler.buttonCancel();
             }
