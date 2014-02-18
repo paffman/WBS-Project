@@ -12,7 +12,7 @@
  * see <http://www.gnu.org/licenses/>.
  */
 
-package de.fhbingen.wbs.wpBaseline;
+package de.fhbingen.wbs.gui.wpBaseline;
 
 import java.awt.Component;
 
@@ -25,19 +25,23 @@ import javax.swing.table.TableCellRenderer;
  * basis of the value of the cell. This class is called by the constructor
  * of the class WBSBaseline.
  */
-public class StatusCellRenderer implements TableCellRenderer {
+public class ProgressBarTableCellRenderer implements TableCellRenderer {
     /** The progress bar which is set into the cell. */
     private JProgressBar progress;
+
+    /**
+     * Default constructor.
+     */
+    public ProgressBarTableCellRenderer() {
+        super();
+        progress = new JProgressBar();
+    }
 
     @Override
     public final Component getTableCellRendererComponent(
         final JTable table, final Object value, final boolean isSelected,
         final boolean hasFocus, final int row, final int column) {
         int intValue = Integer.parseInt(value.toString().replace(',', '.'));
-        if (progress == null) {
-            // JProgressBar is created
-            progress = new JProgressBar();
-        }
 
         // JProgressBar is set by the value of the cell.
         progress.setValue(intValue);

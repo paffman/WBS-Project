@@ -12,7 +12,7 @@
  * see <http://www.gnu.org/licenses/>.
  */
 
-package de.fhbingen.wbs.wpBaseline;
+package de.fhbingen.wbs.gui.wpBaseline;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -26,7 +26,7 @@ import de.fhbingen.wbs.wpOverview.WPOverview;
 /**
  * Defines the attributes from the value cells.
  */
-public class ValueCellRenderer extends DefaultTableCellRenderer {
+public class ValueTableCellRenderer extends DefaultTableCellRenderer {
     /** Constant serialized ID used for compatibility. */
     private static final long serialVersionUID = 1L;
 
@@ -47,7 +47,7 @@ public class ValueCellRenderer extends DefaultTableCellRenderer {
      *            Decides if the labels are shown in color or black and
      *            white.
      */
-    public ValueCellRenderer(final boolean right, final boolean colored) {
+    public ValueTableCellRenderer(final boolean right, final boolean colored) {
         this.right = right;
         this.colored = colored;
     }
