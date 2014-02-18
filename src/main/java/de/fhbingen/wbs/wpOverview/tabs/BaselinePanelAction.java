@@ -15,6 +15,7 @@
 package de.fhbingen.wbs.wpOverview.tabs;
 
 import de.fhbingen.wbs.translation.LocalizedStrings;
+import de.fhbingen.wbs.wpBaseline.BaselineViewController;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -27,7 +28,6 @@ import de.fhbingen.wbs.dbServices.ConflictService;
 import de.fhbingen.wbs.functions.CalcOAPBaseline;
 import de.fhbingen.wbs.globals.Loader;
 
-import de.fhbingen.wbs.wpBaseline.BaselineView;
 import de.fhbingen.wbs.wpOverview.WPOverview;
 
 /**
@@ -93,7 +93,7 @@ public class BaselinePanelAction {
                     .getSelectedItem().toString();
                 int pos = selectedBaseline.indexOf("|");
                 String curBaseline = selectedBaseline.substring(0, pos - 1);
-                new BaselineView(Integer.parseInt(curBaseline), parent);
+                new BaselineViewController(Integer.parseInt(curBaseline), parent);
             }
         });
 
