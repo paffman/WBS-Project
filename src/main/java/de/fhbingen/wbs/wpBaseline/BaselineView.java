@@ -23,16 +23,12 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
-import de.fhbingen.wbs.translation.General;
-import de.fhbingen.wbs.translation.LocalizedStrings;
-import de.fhbingen.wbs.translation.Wbs;
-
 /**
  * GUI in which the baselines are shown.
  */
 public class BaselineView extends JFrame {
     /** Constant serialized ID used for compatibility. */
-    private static final long serialVersionUID = -2739030780541939599L;
+    private static final long serialVersionUID = -4987091865137913149L;
 
     /** The table in which the information are shown. */
     private JTable table;
@@ -43,44 +39,8 @@ public class BaselineView extends JFrame {
      *            ParentFrame
      */
     public BaselineView(final JFrame parent) {
-        Wbs wbsStrings = LocalizedStrings.getWbs();
-        General generalStrings = LocalizedStrings.getGeneralStrings();
         table = new JTable();
-        table.setModel(new DefaultTableModel(new Object[][] {{null, null,
-            null, null, null, null, "", null, "", null, null, null, null,
-            null, null }, }, new String[] {wbsStrings.workPackage(),
-            wbsStrings.bac(), wbsStrings.ac(), wbsStrings.etc(),
-            wbsStrings.cpi(),
-            wbsStrings.bac() + " " + generalStrings.costs(),
-            wbsStrings.ac() + " " + generalStrings.costs(),
-            wbsStrings.etc() + " " + generalStrings.costs(),
-            wbsStrings.eac(), wbsStrings.ev(), generalStrings.trend(),
-            wbsStrings.pv(), wbsStrings.sv(), wbsStrings.spi(),
-            generalStrings.status() }) {
-
-            private static final long serialVersionUID = 5624811268311876732L;
-            @SuppressWarnings("rawtypes")
-            // auto generated code from Eclipse
-            private Class[] columnTypes = new Class[] {String.class,
-                String.class, String.class, String.class, String.class,
-                String.class, String.class, String.class, String.class,
-                String.class, String.class, String.class, String.class,
-                String.class, Object.class };
-
-            @SuppressWarnings({"unchecked", "rawtypes" })
-            // auto generated code from Eclipse
-            public Class getColumnClass(final int columnIndex) {
-                return columnTypes[columnIndex];
-            }
-
-            private boolean[] columnEditables = new boolean[] {false,
-                false, false, false, false, false, false, false, false,
-                false, false, false, false, false, false };
-
-            public boolean isCellEditable(final int row, final int column) {
-                return columnEditables[column];
-            }
-        });
+        table.setModel(new BaselineTableModel());
         table.getColumnModel().getColumn(0).setPreferredWidth(283);
         table.getColumnModel().getColumn(1).setPreferredWidth(45);
         table.getColumnModel().getColumn(2).setPreferredWidth(45);
@@ -96,18 +56,18 @@ public class BaselineView extends JFrame {
         table.getColumnModel().getColumn(12).setPreferredWidth(100);
 
         table.getColumnModel().getColumn(0)
-            .setCellRenderer(new ValueCellRenderer(false, false));
+            .setCellRenderer(new ValueTableCellRenderer(false, false));
         for (int i = 1; i < 14; i++) {
             if (i == 4 || i == 13) {
                 table.getColumnModel().getColumn(i)
-                    .setCellRenderer(new ValueCellRenderer(true, true));
+                    .setCellRenderer(new ValueTableCellRenderer(true, true));
             } else {
                 table.getColumnModel().getColumn(i)
-                    .setCellRenderer(new ValueCellRenderer(true, false));
+                    .setCellRenderer(new ValueTableCellRenderer(true, false));
             }
         }
         table.getColumnModel().getColumn(14)
-            .setCellRenderer(new StatusCellRenderer()); // last column
+            .setCellRenderer(new ProgressBarTableCellRenderer()); // last column
 
         getContentPane().add(table, BorderLayout.CENTER);
 
@@ -128,4 +88,5 @@ public class BaselineView extends JFrame {
         DefaultTableModel model = (DefaultTableModel) table.getModel();
         model.addRow(rowData);
     }
+
 }

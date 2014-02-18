@@ -25,7 +25,7 @@ import javax.swing.table.TableCellRenderer;
  * basis of the value of the cell. This class is called by the constructor
  * of the class WBSBaseline.
  */
-public class StatusCellRenderer implements TableCellRenderer {
+public class ProgressBarTableCellRenderer implements TableCellRenderer {
     /** The progress bar which is set into the cell. */
     private JProgressBar progress;
 
