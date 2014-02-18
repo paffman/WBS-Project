@@ -29,6 +29,9 @@ public class ProgressBarTableCellRenderer implements TableCellRenderer {
     /** The progress bar which is set into the cell. */
     private JProgressBar progress;
 
+    /**
+     * Default constructor.
+     */
     public ProgressBarTableCellRenderer() {
         super();
         progress = new JProgressBar();
