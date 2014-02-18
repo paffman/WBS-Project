@@ -46,7 +46,7 @@ tasks.withType(JavaCompile) {
 // test task configuration
 test {
     // tests in this package are executed via the test suite
-    exclude 'de.fhbingen.wbs.dbaccess/models/mysql/*Test.class'
+    exclude 'de/fhbingen/wbs/dbaccess/models/mysql/*Test.class'
 }
 
 jar {
