@@ -189,11 +189,11 @@ public class MySQLWorkpackageAllocationModelTest {
      */
     @Test
     public final void testDeleteWorkpackageAllocation() {
-        wpAllocModel.deleteWorkpackageAllocation(1, 2);
+        wpAllocModel.deleteWorkpackageAllocation(2, 1);
         List<WorkpackageAllocation> wpaList =
                 wpAllocModel.getWorkpackageAllocation(1);
         assertThat(wpaList.size(), equalTo(2));
-        wpAllocModel.deleteWorkpackageAllocation(1, 4);
+        wpAllocModel.deleteWorkpackageAllocation(4, 1);
         wpaList = wpAllocModel.getWorkpackageAllocation(1);
         assertThat(wpaList.size(), equalTo(1));
 
