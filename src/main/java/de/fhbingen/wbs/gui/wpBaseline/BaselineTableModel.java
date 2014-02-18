@@ -1,4 +1,4 @@
-package de.fhbingen.wbs.wpBaseline;
+package de.fhbingen.wbs.gui.wpBaseline;
 
 import de.fhbingen.wbs.translation.LocalizedStrings;
 import javax.swing.table.DefaultTableModel;

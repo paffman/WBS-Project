@@ -15,7 +15,7 @@
 package de.fhbingen.wbs.wpOverview.tabs;
 
 import de.fhbingen.wbs.translation.LocalizedStrings;
-import de.fhbingen.wbs.wpBaseline.BaselineViewController;
+import de.fhbingen.wbs.controller.BaselineViewController;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 

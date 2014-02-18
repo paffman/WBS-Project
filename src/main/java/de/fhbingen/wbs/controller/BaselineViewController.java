@@ -12,7 +12,7 @@
  * see <http://www.gnu.org/licenses/>.
  */
 
-package de.fhbingen.wbs.wpBaseline;
+package de.fhbingen.wbs.controller;
 
 import de.fhbingen.wbs.translation.LocalizedStrings;
 
@@ -20,6 +20,7 @@ import de.fhbingen.wbs.functions.WpManager;
 import de.fhbingen.wbs.globals.Controller;
 import de.fhbingen.wbs.globals.Workpackage;
 
+import de.fhbingen.wbs.gui.wpBaseline.BaselineView;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;

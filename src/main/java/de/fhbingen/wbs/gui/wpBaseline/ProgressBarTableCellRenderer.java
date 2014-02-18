@@ -12,7 +12,7 @@
  * see <http://www.gnu.org/licenses/>.
  */
 
-package de.fhbingen.wbs.wpBaseline;
+package de.fhbingen.wbs.gui.wpBaseline;
 
 import java.awt.Component;
 
