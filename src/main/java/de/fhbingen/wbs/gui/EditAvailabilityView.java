@@ -126,7 +126,7 @@ public class EditAvailabilityView extends JDialog {
      * @param delegate
      *          Interface instance to handle actions.
      */
-    EditAvailabilityView(final Actions delegate, final String headline,
+    public EditAvailabilityView(final Actions delegate, final String headline,
                          final JFrame parent) {
         super(parent, headline);
         actionHandler = delegate;
@@ -279,7 +279,7 @@ public class EditAvailabilityView extends JDialog {
      * Returns the description.
      * @return The description as String.
      */
-    protected final String getDescription() {
+    public final String getDescription() {
         return tfName.getText();
     }
 
@@ -288,7 +288,7 @@ public class EditAvailabilityView extends JDialog {
      * @param desc
      *            The description as String.
      */
-    protected final void setDescription(final String desc) {
+    public final void setDescription(final String desc) {
         tfName.setText(desc);
     }
 
@@ -296,7 +296,7 @@ public class EditAvailabilityView extends JDialog {
      * Returns the selected start date.
      * @return The selected date.
      */
-    protected final Date getStart() {
+    public final Date getStart() {
         return ((SpinnerDateModel) spnStart.getModel()).getDate();
     }
 
@@ -304,7 +304,7 @@ public class EditAvailabilityView extends JDialog {
      * Returns the selected end date.
      * @return The selected date.
      */
-    protected final Date getEnd() {
+    public final Date getEnd() {
         return ((SpinnerDateModel) spnEnd.getModel()).getDate();
     }
 
@@ -312,7 +312,7 @@ public class EditAvailabilityView extends JDialog {
      * Returns the selected worker.
      * @return The selected worker.
      */
-    protected final Worker getWorker() {
+    public final Worker getWorker() {
         return (Worker) cmbWorker.getSelectedItem();
     }
 
@@ -322,7 +322,7 @@ public class EditAvailabilityView extends JDialog {
      * @return boolean If the worker is available/not available the hole
      *         day or only a few hours.
      */
-    protected final boolean getAllDay() {
+    public final boolean getAllDay() {
         return cbAllDay.isSelected();
     }
 
@@ -330,7 +330,7 @@ public class EditAvailabilityView extends JDialog {
      * Checks the availability of the selected worker.
      * @return True: If the selected worker is available. False: Else.
      */
-    protected final boolean getAvailable() {
+    public final boolean getAvailable() {
         return cbAvailable.isSelected();
     }
 
@@ -339,7 +339,7 @@ public class EditAvailabilityView extends JDialog {
      * @param start
      *            The start date.
      */
-    protected final void setStart(final Date start) {
+    public final void setStart(final Date start) {
         spnStart.getModel().setValue(start);
     }
 
@@ -348,7 +348,7 @@ public class EditAvailabilityView extends JDialog {
      * @param end
      *            The end date.
      */
-    protected final void setEnd(final Date end) {
+    public final void setEnd(final Date end) {
         spnEnd.getModel().setValue(end);
     }
 
@@ -357,7 +357,7 @@ public class EditAvailabilityView extends JDialog {
      * @param worker
      *            The worker for which the availability is set.
      */
-    protected final void setWorker(final Worker worker) {
+    public final void setWorker(final Worker worker) {
         cmbWorker.setSelectedItem(worker);
     }
 
@@ -367,7 +367,7 @@ public class EditAvailabilityView extends JDialog {
      *            An array with the workers for which the availability is
      *            set.
      */
-    protected final void setWorkers(final Worker[] workerArray) {
+    public final void setWorkers(final Worker[] workerArray) {
         ComboBoxModel<Worker> cmbWorkerModel = new DefaultComboBoxModel<>(
             workerArray);
         cmbWorker.setModel(cmbWorkerModel);
@@ -380,7 +380,7 @@ public class EditAvailabilityView extends JDialog {
      *            True: If the availability of the worker is set to he hole
      *            day. False: Else.
      */
-    protected final void setAllDay(final boolean allDay) {
+    public final void setAllDay(final boolean allDay) {
         cbAllDay.setSelected(allDay);
     }
 
@@ -390,7 +390,7 @@ public class EditAvailabilityView extends JDialog {
      *            True: If the worker is available. False: If the worker is
      *            not available.
      */
-    protected final void setAvailable(final boolean available) {
+    public final void setAvailable(final boolean available) {
         cbAvailable.setSelected(available);
     }
 
@@ -400,7 +400,7 @@ public class EditAvailabilityView extends JDialog {
      *            True: With hours and minutes. False: Without hours and
      *            minutes.
      */
-    protected final void setAvailableView(final boolean available) {
+    public final void setAvailableView(final boolean available) {
         cbAllDay.setSelected(!available);
         if (available) {
             spnStart.setEditor(new JSpinner.DateEditor(spnStart,
@@ -422,7 +422,7 @@ public class EditAvailabilityView extends JDialog {
      *            True: If the button should be visible. False: If the
      *            button shouldn't be visible.
      */
-    protected final void setNewView(final boolean newView) {
+    public final void setNewView(final boolean newView) {
         btnDelete.setVisible(!newView);
     }
 
