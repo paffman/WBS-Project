@@ -29,15 +29,16 @@ public class ProgressBarTableCellRenderer implements TableCellRenderer {
     /** The progress bar which is set into the cell. */
     private JProgressBar progress;
 
+    public ProgressBarTableCellRenderer() {
+        super();
+        progress = new JProgressBar();
+    }
+
     @Override
     public final Component getTableCellRendererComponent(
         final JTable table, final Object value, final boolean isSelected,
         final boolean hasFocus, final int row, final int column) {
         int intValue = Integer.parseInt(value.toString().replace(',', '.'));
-        if (progress == null) {
-            // JProgressBar is created
-            progress = new JProgressBar();
-        }
 
         // JProgressBar is set by the value of the cell.
         progress.setValue(intValue);
