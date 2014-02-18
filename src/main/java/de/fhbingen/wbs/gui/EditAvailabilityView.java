@@ -12,7 +12,7 @@
  * see <http://www.gnu.org/licenses/>.
  */
 
-package de.fhbingen.wbs.wpAvailability;
+package de.fhbingen.wbs.gui;
 
 import de.fhbingen.wbs.translation.Button;
 import de.fhbingen.wbs.translation.General;
@@ -23,6 +23,12 @@ import de.fhbingen.wbs.globals.FilterJTextField;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.Date;
 
 import javax.swing.BorderFactory;
@@ -31,6 +37,7 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -42,9 +49,35 @@ import de.fhbingen.wbs.wpWorker.Worker;
 
 /**
  * The GUI to edit the availabilities. The functionality is represent by
- * the class EditAvailability.
+ * the class EditAvailabilityController.
  */
-public class EditAvailabilityGUI extends JFrame {
+public class EditAvailabilityView extends JDialog {
+    /**
+     * Interface to the controller.
+     */
+    public interface Actions {
+        /**
+         * Cancel button action.
+         */
+        void buttonCancel();
+
+        /**
+         * Delete button action.
+         */
+        void buttonDelete();
+
+        /**
+         * Save button action.
+         */
+        void buttonSave();
+
+        /**
+         * Checkbox changed action.
+         * @param e the event.
+         */
+        void checkboxChanged(final ItemEvent e);
+    }
+
 
     /** Constant serialized ID used for compatibility. */
     private static final long serialVersionUID = 457946443136567295L;
@@ -70,9 +103,6 @@ public class EditAvailabilityGUI extends JFrame {
     /** A spinner to choose the end of the availability. */
     private JSpinner spnEnd;
 
-    /** Contains the single GUI components. */
-    private JPanel panel_1;
-
     /** The button to save the availability. */
     private JButton btnSave;
 
@@ -83,22 +113,26 @@ public class EditAvailabilityGUI extends JFrame {
     private JButton btnAbbrechen;
 
     /**
+     * Handler responsible for all actions.
+     */
+    private final Actions actionHandler;
+
+    /**
      * Constructor: Initialize the GUI.
-     * @param function
-     *            The functionality of this class.
      * @param headline
      *            The title of the window.
      * @param parent
      *            The parent frame.
+     * @param delegate
+     *          Interface instance to handle actions.
      */
-    EditAvailabilityGUI(final EditAvailability function,
-        final String headline, final JFrame parent) {
-        super(headline);
+    public EditAvailabilityView(final Actions delegate, final String headline,
+                         final JFrame parent) {
+        super(parent, headline);
+        actionHandler = delegate;
         initGUI();
-        btnSave.addActionListener(function.getSaveListener());
-        btnDelete.addActionListener(function.getDeleteListener());
-        cbAvailable.addItemListener(function.getCbAvailableListener());
-        btnAbbrechen.addActionListener(function.getCancelListener());
+        setupActionListeners();
+
         Controller.centerComponent(parent, this);
     }
 
@@ -121,7 +155,7 @@ public class EditAvailabilityGUI extends JFrame {
     private JPanel createPanel() {
         JPanel panel = new JPanel();
         GridBagLayout layout = new GridBagLayout();
-        layout.columnWidths = new int[] {150, 200 };
+        layout.columnWidths = new int[]{150, 200};
         layout.columnWeights = new double[] {0.1, 1.0 };
         layout.rowWeights = new double[] {0.1, 0.1, 0.1, 0.1, 0.1, 0.1,
             0.1, 0.1, 1.0 };
@@ -173,13 +207,15 @@ public class EditAvailabilityGUI extends JFrame {
 
         spnStart = new JSpinner(new SpinnerDateModel());
         spnStart
-            .setEditor(new JSpinner.DateEditor(spnStart, ("dd.MM.yyyy")));
+            .setEditor(new JSpinner.DateEditor(spnStart, (
+                    "dd.MM.yyyy"))); //NON-NLS
         panel.add(spnStart, new GridBagConstraints(1, 5, 1, 1, 0.0, 0.0,
             GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(2,
                 2, 5, 2), 0, 0));
 
         spnEnd = new JSpinner(new SpinnerDateModel());
-        spnEnd.setEditor(new JSpinner.DateEditor(spnEnd, ("dd.MM.yyyy")));
+        spnEnd.setEditor(new JSpinner.DateEditor(spnEnd, (
+                "dd.MM.yyyy"))); //NON-NLS
         panel.add(spnEnd, new GridBagConstraints(1, 6, 1, 1, 0.0, 0.0,
             GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(2,
                 2, 5, 2), 0, 0));
@@ -193,7 +229,8 @@ public class EditAvailabilityGUI extends JFrame {
             GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(2,
                 2, 5, 2), 0, 0));
 
-        panel_1 = new JPanel();
+        /* Contains the single GUI components. */
+        JPanel panel_1 = new JPanel();
         GridBagConstraints gbc_panel_1 = new GridBagConstraints();
         gbc_panel_1.weighty = 1.0;
         gbc_panel_1.gridwidth = 2;
@@ -242,7 +279,7 @@ public class EditAvailabilityGUI extends JFrame {
      * Returns the description.
      * @return The description as String.
      */
-    protected final String getDescription() {
+    public final String getDescription() {
         return tfName.getText();
     }
 
@@ -251,7 +288,7 @@ public class EditAvailabilityGUI extends JFrame {
      * @param desc
      *            The description as String.
      */
-    protected final void setDescription(final String desc) {
+    public final void setDescription(final String desc) {
         tfName.setText(desc);
     }
 
@@ -259,7 +296,7 @@ public class EditAvailabilityGUI extends JFrame {
      * Returns the selected start date.
      * @return The selected date.
      */
-    protected final Date getStart() {
+    public final Date getStart() {
         return ((SpinnerDateModel) spnStart.getModel()).getDate();
     }
 
@@ -267,7 +304,7 @@ public class EditAvailabilityGUI extends JFrame {
      * Returns the selected end date.
      * @return The selected date.
      */
-    protected final Date getEnd() {
+    public final Date getEnd() {
         return ((SpinnerDateModel) spnEnd.getModel()).getDate();
     }
 
@@ -275,7 +312,7 @@ public class EditAvailabilityGUI extends JFrame {
      * Returns the selected worker.
      * @return The selected worker.
      */
-    protected final Worker getWorker() {
+    public final Worker getWorker() {
         return (Worker) cmbWorker.getSelectedItem();
     }
 
@@ -285,7 +322,7 @@ public class EditAvailabilityGUI extends JFrame {
      * @return boolean If the worker is available/not available the hole
      *         day or only a few hours.
      */
-    protected final boolean getAllDay() {
+    public final boolean getAllDay() {
         return cbAllDay.isSelected();
     }
 
@@ -293,7 +330,7 @@ public class EditAvailabilityGUI extends JFrame {
      * Checks the availability of the selected worker.
      * @return True: If the selected worker is available. False: Else.
      */
-    protected final boolean getAvailable() {
+    public final boolean getAvailable() {
         return cbAvailable.isSelected();
     }
 
@@ -302,7 +339,7 @@ public class EditAvailabilityGUI extends JFrame {
      * @param start
      *            The start date.
      */
-    protected final void setStart(final Date start) {
+    public final void setStart(final Date start) {
         spnStart.getModel().setValue(start);
     }
 
@@ -311,7 +348,7 @@ public class EditAvailabilityGUI extends JFrame {
      * @param end
      *            The end date.
      */
-    protected final void setEnd(final Date end) {
+    public final void setEnd(final Date end) {
         spnEnd.getModel().setValue(end);
     }
 
@@ -320,7 +357,7 @@ public class EditAvailabilityGUI extends JFrame {
      * @param worker
      *            The worker for which the availability is set.
      */
-    protected final void setWorker(final Worker worker) {
+    public final void setWorker(final Worker worker) {
         cmbWorker.setSelectedItem(worker);
     }
 
@@ -330,8 +367,8 @@ public class EditAvailabilityGUI extends JFrame {
      *            An array with the workers for which the availability is
      *            set.
      */
-    protected final void setWorkers(final Worker[] workerArray) {
-        ComboBoxModel<Worker> cmbWorkerModel = new DefaultComboBoxModel<Worker>(
+    public final void setWorkers(final Worker[] workerArray) {
+        ComboBoxModel<Worker> cmbWorkerModel = new DefaultComboBoxModel<>(
             workerArray);
         cmbWorker.setModel(cmbWorkerModel);
     }
@@ -343,7 +380,7 @@ public class EditAvailabilityGUI extends JFrame {
      *            True: If the availability of the worker is set to he hole
      *            day. False: Else.
      */
-    protected final void setAllDay(final boolean allDay) {
+    public final void setAllDay(final boolean allDay) {
         cbAllDay.setSelected(allDay);
     }
 
@@ -353,7 +390,7 @@ public class EditAvailabilityGUI extends JFrame {
      *            True: If the worker is available. False: If the worker is
      *            not available.
      */
-    protected final void setAvailable(final boolean available) {
+    public final void setAvailable(final boolean available) {
         cbAvailable.setSelected(available);
     }
 
@@ -363,18 +400,19 @@ public class EditAvailabilityGUI extends JFrame {
      *            True: With hours and minutes. False: Without hours and
      *            minutes.
      */
-    protected final void setAvailableView(final boolean available) {
+    public final void setAvailableView(final boolean available) {
         cbAllDay.setSelected(!available);
         if (available) {
             spnStart.setEditor(new JSpinner.DateEditor(spnStart,
-                ("dd.MM.yyyy HH:mm")));
+                ("dd.MM.yyyy HH:mm"))); //NON-NLS
             spnEnd.setEditor(new JSpinner.DateEditor(spnEnd,
-                ("dd.MM.yyyy HH:mm")));
+                ("dd.MM.yyyy HH:mm"))); //NON-NLS
         } else {
             spnStart.setEditor(new JSpinner.DateEditor(spnStart,
-                ("dd.MM.yyyy")));
+                ("dd.MM.yyyy"))); //NON-NLS
             spnEnd
-                .setEditor(new JSpinner.DateEditor(spnEnd, ("dd.MM.yyyy")));
+                .setEditor(new JSpinner.DateEditor(spnEnd, (
+                        "dd.MM.yyyy"))); //NON-NLS
         }
     }
 
@@ -384,7 +422,7 @@ public class EditAvailabilityGUI extends JFrame {
      *            True: If the button should be visible. False: If the
      *            button shouldn't be visible.
      */
-    protected final void setNewView(final boolean newView) {
+    public final void setNewView(final boolean newView) {
         btnDelete.setVisible(!newView);
     }
 
@@ -393,5 +431,44 @@ public class EditAvailabilityGUI extends JFrame {
      */
     public final void disableWorkerSelection() {
         this.cmbWorker.setEnabled(false);
+    }
+
+    /**
+     * Sets up all actionlisteners to calls to the interface.
+     */
+
+    private void setupActionListeners() {
+        btnSave.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                actionHandler.buttonSave();
+            }
+        });
+        btnDelete.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                actionHandler.buttonDelete();
+            }
+        });
+        cbAvailable.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(final ItemEvent e) {
+                actionHandler.checkboxChanged(e);
+            }
+        });
+        btnAbbrechen
+                .addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(final ActionEvent e) {
+                        actionHandler.buttonCancel();
+                    }
+                });
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(final WindowEvent e) {
+                super.windowClosing(e);
+                actionHandler.buttonCancel();
+            }
+        });
     }
 }

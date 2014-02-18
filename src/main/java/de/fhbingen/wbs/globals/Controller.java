@@ -3,6 +3,7 @@ package de.fhbingen.wbs.globals;
 import de.fhbingen.wbs.dbaccess.DBModelManager;
 import de.fhbingen.wbs.translation.LocalizedStrings;
 
+import java.awt.Window;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -11,7 +12,6 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import de.fhbingen.wbs.jdbcConnection.SQLExecuter;
@@ -197,10 +197,10 @@ public class Controller {
     /**
      * Komponente mittig relativ zu ihrer Parent-Komponente platzieren
      *
-     * @param parent
-     * @param child
+     * @param parent component to place relative to.
+     * @param child component to place.
      */
-    public static void centerComponent(JFrame parent, JFrame child) {
+    public static void centerComponent(Window parent, Window child) {
         child.setLocationRelativeTo(parent);
     }
 }

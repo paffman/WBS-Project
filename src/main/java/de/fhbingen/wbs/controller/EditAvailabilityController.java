@@ -12,13 +12,13 @@
  * see <http://www.gnu.org/licenses/>.
  */
 
-package de.fhbingen.wbs.wpAvailability;
+package de.fhbingen.wbs.controller;
 
+import de.fhbingen.wbs.gui.EditAvailabilityView;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Calendar;
@@ -40,11 +40,11 @@ import de.fhbingen.wbs.translation.LocalizedStrings;
 
 /**
  * Is used to edit the availabilities. Also this class is the functionality
- * for the class EditAvailabilityGUI.
+ * for the class EditAvailabilityView.
  */
-public class EditAvailability {
+public class EditAvailabilityController implements EditAvailabilityView.Actions {
     /** The GUI of this class. */
-    private EditAvailabilityGUI gui;
+    private EditAvailabilityView gui;
     /** Represents the availability. */
     private Availability availability = null;
 
@@ -57,10 +57,11 @@ public class EditAvailability {
      * @param parent
      *            The parent frame.
      */
-    public EditAvailability(final AvailabilityGraph avGraph,
-        final Availability availability, final JFrame parent) {
+    public EditAvailabilityController(final AvailabilityGraph avGraph,
+                                      final Availability availability,
+                                      final JFrame parent) {
         this.availability = availability;
-        gui = new EditAvailabilityGUI(this, LocalizedStrings.getWbs()
+        gui = new EditAvailabilityView(this, LocalizedStrings.getWbs()
             .editAvailability(), parent);
         gui.setNewView(false);
 
@@ -106,10 +107,8 @@ public class EditAvailability {
      * @param parent
      *            The parent frame
      */
-    public EditAvailability(final AvailabilityGraph avGraph,
-        final Worker worker,
-        final Day day, final JFrame parent) {
-        gui = new EditAvailabilityGUI(this, LocalizedStrings.getWbs()
+    public EditAvailabilityController(final AvailabilityGraph avGraph, final Worker worker, final Day day, final JFrame parent) {
+        gui = new EditAvailabilityView(this, LocalizedStrings.getWbs()
             .newAvailability(), parent);
         gui.setNewView(true);
 
@@ -215,51 +214,34 @@ public class EditAvailability {
         return new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
-                WPOverview.throwConflict(new Conflict(new Date(System
-                    .currentTimeMillis()), Conflict.CHANGED_RESOURCES,
-                    WPOverview.getUser().getId()));
-                save();
+
             }
         };
     }
 
-    /**
-     * Returns the ActionListener for delete a availability.
-     * @return The ActionListener.
-     */
-    protected final ActionListener getDeleteListener() {
-        return new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                WPOverview.throwConflict(new Conflict(new Date(System
-                    .currentTimeMillis()), Conflict.CHANGED_RESOURCES,
-                    WPOverview.getUser().getId()));
-                delete();
-            }
-        };
+    @Override
+    public final void buttonCancel() {
+        gui.dispose();
     }
 
-    /**
-     * Returns the ActionListener for cancel the changes.
-     * @return The ActionListener.
-     */
-    protected final ActionListener getCancelListener() {
-        return new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                gui.dispose();
-            }
-        };
+    @Override
+    public final void buttonDelete() {
+        WPOverview.throwConflict(new Conflict(new Date(System
+                .currentTimeMillis()), Conflict.CHANGED_RESOURCES,
+                WPOverview.getUser().getId()));
+        delete();
     }
 
-    /** Returns the ItemListener for getting the cb.
-     * @return The ItemListener. */
-    protected final ItemListener getCbAvailableListener() {
-        return new ItemListener() {
-            @Override
-            public void itemStateChanged(final ItemEvent e) {
-                gui.setAvailableView(e.getStateChange() == ItemEvent.SELECTED);
-            }
-        };
+    @Override
+    public final void buttonSave() {
+        WPOverview.throwConflict(new Conflict(new Date(System
+                .currentTimeMillis()), Conflict.CHANGED_RESOURCES,
+                WPOverview.getUser().getId()));
+        save();
+    }
+
+    @Override
+    public final void checkboxChanged(final ItemEvent e) {
+        gui.setAvailableView(e.getStateChange() == ItemEvent.SELECTED);
     }
 }

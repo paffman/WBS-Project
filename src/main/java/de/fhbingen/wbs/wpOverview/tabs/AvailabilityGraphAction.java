@@ -37,7 +37,7 @@ import org.jfree.chart.entity.PlotEntity;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.ui.RectangleEdge;
-import de.fhbingen.wbs.wpAvailability.EditAvailability;
+import de.fhbingen.wbs.controller.EditAvailabilityController;
 import de.fhbingen.wbs.wpWorker.Worker;
 
 /**
@@ -103,7 +103,7 @@ public class AvailabilityGraphAction {
 
                         if (e.getTrigger().getY() >= catStart
                             && e.getTrigger().getY() < catEnd) {
-                            new EditAvailability(gui.function, gui.function
+                            new EditAvailabilityController(gui.function, gui.function
                                 .getWorkers().get(i), new Day(new Date(
                                 (long) chartY)), parent);
                         }
@@ -145,13 +145,13 @@ public class AvailabilityGraphAction {
                         .toArray(new Availability[1])[0];
 
                     if (foundAv != null) {
-                        new EditAvailability(gui.function, foundAv, parent);
+                        new EditAvailabilityController(gui.function, foundAv, parent);
                     } else {
                         found = CalendarService.getProjectAvailability(
                             startDate, endDate);
                         foundAv = found.toArray(new Availability[1])[0];
                         if (foundAv != null) {
-                            new EditAvailability(gui.function, foundAv,
+                            new EditAvailabilityController(gui.function, foundAv,
                                 parent);
                         } else {
                             JOptionPane.showMessageDialog(new JFrame(
