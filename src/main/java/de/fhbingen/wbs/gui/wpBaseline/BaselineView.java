@@ -84,7 +84,7 @@ public class BaselineView extends JFrame {
      * Insert a row into the table.
      * @param rowData The data which has to insert into the table.
      */
-    protected final void addRow(final String[] rowData) {
+    public final void addRow(final String[] rowData) {
         DefaultTableModel model = (DefaultTableModel) table.getModel();
         model.addRow(rowData);
     }
