@@ -416,8 +416,9 @@ public final class ProjectSetupAssistant implements ProjectProperties.Actions,
               || projectProperties.getProjectName().isEmpty()
               || projectProperties.getProjectLevels().isEmpty()
               || projectProperties.getStartDate().isEmpty()
-              || projectProperties.getUserName().isEmpty())
-              || projectProperties.getDatabaseName().isEmpty();
+              || projectProperties.getUserName().isEmpty()
+              || projectProperties.getDatabaseName().isEmpty()
+        );
     }
 
     /**
