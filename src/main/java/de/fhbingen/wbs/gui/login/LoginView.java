@@ -19,6 +19,7 @@
 
 package de.fhbingen.wbs.gui.login;
 
+import de.fhbingen.wbs.gui.StaticUtilityMethods;
 import de.fhbingen.wbs.gui.delegates.SimpleDialogDelegate;
 import de.fhbingen.wbs.translation.LocalizedStrings;
 import java.awt.*;
@@ -34,8 +35,6 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
 
 /**
  * The GUI for the Login Screen.
@@ -295,6 +294,7 @@ public class LoginView extends JFrame {
         createGBC(okButton, 2, 8, 1, 1);
         createGBC(closeButton, 3, 8, 1, 1);
 
+        StaticUtilityMethods.setNativeLookAndFeel(this);
         // show gui
         setVisible(true);
 
