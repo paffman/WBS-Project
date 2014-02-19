@@ -19,7 +19,7 @@
 
 package de.fhbingen.wbs.gui.login;
 
-import de.fhbingen.wbs.gui.StaticUtilityMethods;
+import de.fhbingen.wbs.gui.SwingUtilityMethods;
 import de.fhbingen.wbs.gui.delegates.SimpleDialogDelegate;
 import de.fhbingen.wbs.translation.LocalizedStrings;
 import java.awt.*;
@@ -294,7 +294,7 @@ public class LoginView extends JFrame {
         createGBC(okButton, 2, 8, 1, 1);
         createGBC(closeButton, 3, 8, 1, 1);
 
-        StaticUtilityMethods.setNativeLookAndFeel(this);
+        SwingUtilityMethods.setNativeLookAndFeel(this);
         // show gui
         setVisible(true);
 

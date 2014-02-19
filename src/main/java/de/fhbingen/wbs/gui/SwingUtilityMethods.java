@@ -11,11 +11,11 @@ import javax.swing.UnsupportedLookAndFeelException;
 /**
  * Static utility methods for general UI tasks.
  */
-public final class StaticUtilityMethods {
+public final class SwingUtilityMethods {
     /**
      * Private constructor to prevent instantiation.
      */
-    private StaticUtilityMethods() {
+    private SwingUtilityMethods() {
 
     }
     /**
@@ -118,7 +118,7 @@ public final class StaticUtilityMethods {
      * Method that sets the look and feel native to the running os.
      * @param toBeUpdated Component tree to reload.
      */
-    public static void setNativeLookAndFeel(Component toBeUpdated) {
+    public static void setNativeLookAndFeel(final Component toBeUpdated) {
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             SwingUtilities.updateComponentTreeUI(toBeUpdated);
