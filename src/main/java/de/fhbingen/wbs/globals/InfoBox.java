@@ -60,12 +60,6 @@ public class InfoBox extends JDialog{
 		setTitle("WBS-Advanced - Version: " + version);
 		setResizable(false);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-		try {
-			UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
-			SwingUtilities.updateComponentTreeUI(this);
-		} catch (Exception e) {
-			System.err.println("Could not load LookAndFeel");
-		}
 
 		int width = 436;
 		int height = 626;

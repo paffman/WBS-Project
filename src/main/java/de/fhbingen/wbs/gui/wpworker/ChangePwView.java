@@ -98,13 +98,7 @@ public class ChangePwView extends JFrame { // TODO extend JDialog
         setTitle(login.changePassword());
         setResizable(false);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        try { // TODO wird das nicht schon woanders gesetzt?
-            UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows."
-                + "WindowsLookAndFeel");
-            SwingUtilities.updateComponentTreeUI(this);
-        } catch (Exception e) {
-            System.err.println(messages.couldNotLoadLookAndFeel());
-        }
+
 
         initialize();
 
