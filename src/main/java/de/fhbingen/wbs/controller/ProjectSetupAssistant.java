@@ -509,7 +509,7 @@ public final class ProjectSetupAssistant implements ProjectProperties.Actions,
      * @return true if valid.
      */
     private boolean isStringValid(final String s) {
-        return (s.length() <= MAX_VARCHAR_LENGTH);
+        return (s.length() > 0 && s.length() <= MAX_VARCHAR_LENGTH);
     }
 
     /**
