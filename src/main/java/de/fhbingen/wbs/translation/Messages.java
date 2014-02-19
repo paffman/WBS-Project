@@ -32,11 +32,11 @@ public interface Messages extends ErrorMessages {
     String guidelinesPassword();
 
     @De("Ein gültiger Benutzername besteht aus:\n" +
-            "- maximal 10 Zeichen\n" +
+            "- maximal 11 Zeichen\n" +
             "- einem Buchstaben am Anfang\n" +
             "- danach nur: Buchstaben, Zahlen, '.' und '-'")
     @En("Your username must match following rules:\n" +
-            "- maximum of 10 characters\n" +
+            "- maximum of 11 characters\n" +
             "- first character is a letter\n" +
             "- next characters consist of only: letters, numbers, '.' and '-'")
     String guidelinesUsername();

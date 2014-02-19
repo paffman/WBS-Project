@@ -4,15 +4,18 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 /**
  * Static utility methods for general UI tasks.
  */
-public final class StaticUtilityMethods {
+public final class SwingUtilityMethods {
     /**
      * Private constructor to prevent instantiation.
      */
-    private StaticUtilityMethods() {
+    private SwingUtilityMethods() {
 
     }
     /**
@@ -109,5 +112,19 @@ public final class StaticUtilityMethods {
         gridBagConstraints.gridy        = gridy;
         gridBagConstraints.fill         = fill;
         container.add(component, gridBagConstraints);
+    }
+
+    /**
+     * Method that sets the look and feel native to the running os.
+     * @param toBeUpdated Component tree to reload.
+     */
+    public static void setNativeLookAndFeel(final Component toBeUpdated) {
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            SwingUtilities.updateComponentTreeUI(toBeUpdated);
+        } catch (ClassNotFoundException | InstantiationException
+                | IllegalAccessException | UnsupportedLookAndFeelException e1) {
+            System.err.println("PLAF Error"); //NON-NLS
+        }
     }
 }

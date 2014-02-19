@@ -64,7 +64,7 @@ public class AddWorkEffortView extends JFrame {
          * insert data into the work effort text field.
          */
         void workEffortPressPerformed(KeyEvent e);
-        
+
         /**
          * The user performed the work effort release action. This happens when
          * insert data into the work effort text field.
@@ -91,14 +91,7 @@ public class AddWorkEffortView extends JFrame {
         initialize();
         setResizable(false);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        try {
-            UIManager
-                .setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
-            SwingUtilities.updateComponentTreeUI(this);
-        } catch (Exception e) {
-            System.err.println(LocalizedStrings.getErrorMessages()
-                .couldNotLoadLookAndFeel());
-        }
+
         Wbs wbsStrings = LocalizedStrings.getWbs();
         Button buttonStrings = LocalizedStrings.getButton();
 
@@ -171,7 +164,7 @@ public class AddWorkEffortView extends JFrame {
                 actionsDelegate.confirmPerformed();
             }
         });
-        
+
         txfAufwand.addKeyListener(new KeyAdapter() {
             public void  keyPressed(final KeyEvent e) {
                 actionsDelegate.workEffortPressPerformed(e);
@@ -228,13 +221,13 @@ public class AddWorkEffortView extends JFrame {
         gbl.setConstraints(c, gbc);
         add(c);
     }
-    
+
     /** Sets the id of the work package.
      * @param id The id of the work package.*/
     public final void setId(String id){
         txfNr.setText(id);
     }
-    
+
     /** Sets the name of the work package.
      * @param name The name of the work package.*/
     public final void setName(String name){
@@ -246,25 +239,25 @@ public class AddWorkEffortView extends JFrame {
     public final JComboBox<Worker> getWorker(){
         return cobUser;
     }
-    
+
     /** Returns the description of the work effort.
      * @return The description of the work effort as String. */
     public final String getDescription(){
         return txfBeschreibung.getText();
     }
-    
+
     /** Sets the work effort.
      * @param id The work effort of the work package.*/
     public final void setWorkEffort(String effort){
         txfAufwand.setText(effort);
     }
-    
+
     /** Returns the work effort.
      * @return The work effort as String. */
     public final String getWorkEffort(){
         return txfAufwand.getText();
     }
-    
+
     /** Returns the date of the work effort.
      * @return The date of the work effort as String. */
     public final String getDate(){

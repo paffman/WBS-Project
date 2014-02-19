@@ -300,14 +300,6 @@ public class WPOverviewGUI extends JFrame {
         setLocation((int) (screenSize.getWidth() / 2) - DEFAULT_WIDTH / 2,
             (int) (screenSize.getHeight() / 2) - DEFAULT_HEIGHT / 2);
 
-        try {
-            UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows." +
-                    "WindowsLookAndFeel");
-            SwingUtilities.updateComponentTreeUI(this);
-        } catch (Exception e) {
-            System.err.println(LocalizedStrings.getErrorMessages()
-                .couldNotLoadLookAndFeel());
-        }
     }
 
     /**

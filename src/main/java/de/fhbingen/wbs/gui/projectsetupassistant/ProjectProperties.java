@@ -1,7 +1,7 @@
 package de.fhbingen.wbs.gui.projectsetupassistant;
 
 import c10n.C10N;
-import de.fhbingen.wbs.gui.StaticUtilityMethods;
+import de.fhbingen.wbs.gui.SwingUtilityMethods;
 import de.fhbingen.wbs.translation.ProjectSetup;
 
 import java.awt.BorderLayout;
@@ -386,98 +386,88 @@ public class ProjectProperties extends JDialog {
         final Insets insetsTextFieldRight = new Insets(10, 5, 5, 40);
         final int textFieldWeightx = 1;
         //left center panel
-        StaticUtilityMethods.
+        SwingUtilityMethods.
                 addWithGridBagConstraints(centerPanelProjectProperties,
-                labelTextFieldProjectName, 0, 0, 0, 0,
-                GridBagConstraints.BOTH, insetsLabelLeft);
-        StaticUtilityMethods.
-                addWithGridBagConstraints(centerPanelProjectProperties,
-                labelTextFieldProjectLevels, 0, 1, 0, 0,
+                        labelTextFieldProjectName, 0, 0, 0, 0,
                         GridBagConstraints.BOTH, insetsLabelLeft);
-        StaticUtilityMethods.
+        SwingUtilityMethods.
                 addWithGridBagConstraints(centerPanelProjectProperties,
-                labelTextFieldStartDate, 0, 2, 0, 0, GridBagConstraints.BOTH,
-                insetsLabelLeft);
-        StaticUtilityMethods.
+                        labelTextFieldProjectLevels, 0, 1, 0, 0,
+                        GridBagConstraints.BOTH, insetsLabelLeft);
+        SwingUtilityMethods.
                 addWithGridBagConstraints(centerPanelProjectProperties,
-                labelTextfieldDatabaseName, 0, 3, 0, 0,
-                        GridBagConstraints.BOTH,
-                insetsLabelLeft);
+                        labelTextFieldStartDate, 0, 2, 0, 0,
+                        GridBagConstraints.BOTH, insetsLabelLeft);
+        SwingUtilityMethods.
+                addWithGridBagConstraints(centerPanelProjectProperties,
+                        labelTextfieldDatabaseName, 0, 3, 0, 0,
+                        GridBagConstraints.BOTH, insetsLabelLeft);
 
-        StaticUtilityMethods.
+        SwingUtilityMethods.
                 addWithGridBagConstraints(centerPanelProjectProperties,
-                textFieldProjectName, 1, 0, textFieldWeightx,
-                0, GridBagConstraints.HORIZONTAL,
-                insetsTextFieldLeft);
-        StaticUtilityMethods.
+                        textFieldProjectName, 1, 0, textFieldWeightx, 0,
+                        GridBagConstraints.HORIZONTAL, insetsTextFieldLeft);
+        SwingUtilityMethods.
                 addWithGridBagConstraints(centerPanelProjectProperties,
-                textFieldProjectLevels, 1, 1, textFieldWeightx,
-                0,
-                GridBagConstraints.HORIZONTAL, insetsTextFieldLeft);
-        StaticUtilityMethods.
+                        textFieldProjectLevels, 1, 1, textFieldWeightx, 0,
+                        GridBagConstraints.HORIZONTAL, insetsTextFieldLeft);
+        SwingUtilityMethods.
                 addWithGridBagConstraints(centerPanelProjectProperties,
-                textFieldStartDate, 1, 2, textFieldWeightx, 0,
-                GridBagConstraints.HORIZONTAL, insetsTextFieldLeft);
-        StaticUtilityMethods.
+                        textFieldStartDate, 1, 2, textFieldWeightx, 0,
+                        GridBagConstraints.HORIZONTAL, insetsTextFieldLeft);
+        SwingUtilityMethods.
                 addWithGridBagConstraints(centerPanelProjectProperties,
-                textFieldDatabaseName, 1, 3, textFieldWeightx, 0,
-                GridBagConstraints.HORIZONTAL, insetsTextFieldLeft);
+                        textFieldDatabaseName, 1, 3, textFieldWeightx, 0,
+                        GridBagConstraints.HORIZONTAL, insetsTextFieldLeft);
 
         //Spacer
-        StaticUtilityMethods.
+        SwingUtilityMethods.
                 addWithAllGridBagConstraints(centerPanelProjectProperties,
-                new JPanel(), 0, 4, 2, 1, 1, 1, GridBagConstraints.CENTER,
-                GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0);
+                        new JPanel(), 0, 4, 2, 1, 1, 1,
+                        GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0);
 
         //right center panel
-        StaticUtilityMethods.
+        SwingUtilityMethods.
                 addWithGridBagConstraints(centerPanelProjectManagerAccount,
-                labelTextFieldFirstName, 0, 0, 0, 0,
-                GridBagConstraints.BOTH, insetsLabelRight);
-        StaticUtilityMethods.
+                        labelTextFieldFirstName, 0, 0, 0, 0, GridBagConstraints.BOTH, insetsLabelRight);
+        SwingUtilityMethods.
                 addWithGridBagConstraints(centerPanelProjectManagerAccount,
-                labelTextFieldSurname, 0, 1, 0, 0, GridBagConstraints.BOTH,
-                insetsLabelRight);
-        StaticUtilityMethods.
+                        labelTextFieldSurname, 0, 1, 0, 0, GridBagConstraints.BOTH, insetsLabelRight);
+        SwingUtilityMethods.
                 addWithGridBagConstraints(centerPanelProjectManagerAccount,
-                labelTextFieldUserName, 0, 2, 0, 0, GridBagConstraints.BOTH,
-                insetsLabelRight);
-        StaticUtilityMethods.
+                        labelTextFieldUserName, 0, 2, 0, 0, GridBagConstraints.BOTH, insetsLabelRight);
+        SwingUtilityMethods.
                 addWithGridBagConstraints(centerPanelProjectManagerAccount,
-                labelTextFieldPassword, 0, 3, 0, 0, GridBagConstraints.BOTH,
-                insetsLabelRight);
-        StaticUtilityMethods.
-                addWithGridBagConstraints(centerPanelProjectManagerAccount,
-                labelTextFieldPassword2, 0, 4, 0, 0, GridBagConstraints.BOTH,
-                insetsLabelRight);
+                        labelTextFieldPassword, 0, 3, 0, 0, GridBagConstraints.BOTH, insetsLabelRight);
 
-        StaticUtilityMethods.
+        SwingUtilityMethods.
                 addWithGridBagConstraints(centerPanelProjectManagerAccount,
-                textFieldFirstName, 1, 0, textFieldWeightx,
-                0, GridBagConstraints.HORIZONTAL,
-                insetsTextFieldRight);
-        StaticUtilityMethods.
+                        labelTextFieldPassword2, 0, 4, 0, 0, GridBagConstraints.BOTH, insetsLabelRight);
+
+        SwingUtilityMethods.
                 addWithGridBagConstraints(centerPanelProjectManagerAccount,
-                textFieldSurname, 1, 1, textFieldWeightx,
-                0,
-                GridBagConstraints.HORIZONTAL, insetsTextFieldRight);
-        StaticUtilityMethods.
+                        textFieldFirstName, 1, 0, textFieldWeightx, 0,
+                        GridBagConstraints.HORIZONTAL, insetsTextFieldRight);
+        SwingUtilityMethods.
                 addWithGridBagConstraints(centerPanelProjectManagerAccount,
-                textFieldUserName, 1, 2, textFieldWeightx, 0,
-                GridBagConstraints.HORIZONTAL, insetsTextFieldRight);
-        StaticUtilityMethods.
+                        textFieldSurname, 1, 1, textFieldWeightx, 0,
+                        GridBagConstraints.HORIZONTAL, insetsTextFieldRight);
+        SwingUtilityMethods.
                 addWithGridBagConstraints(centerPanelProjectManagerAccount,
-                textFieldPassword, 1, 3, textFieldWeightx, 0,
-                GridBagConstraints.HORIZONTAL, insetsTextFieldRight);
-        StaticUtilityMethods.
+                        textFieldUserName, 1, 2, textFieldWeightx, 0,
+                        GridBagConstraints.HORIZONTAL, insetsTextFieldRight);
+        SwingUtilityMethods.
                 addWithGridBagConstraints(centerPanelProjectManagerAccount,
-                textFieldPassword2, 1, 4, textFieldWeightx, 0,
-                GridBagConstraints.HORIZONTAL, insetsTextFieldRight);
+                        textFieldPassword, 1, 3, textFieldWeightx, 0, GridBagConstraints.HORIZONTAL, insetsTextFieldRight);
+        SwingUtilityMethods.
+                addWithGridBagConstraints(centerPanelProjectManagerAccount,
+                        textFieldPassword2, 1, 4, textFieldWeightx, 0,
+                        GridBagConstraints.HORIZONTAL, insetsTextFieldRight);
         //Spacer
-        StaticUtilityMethods.
-                addWithAllGridBagConstraints(centerPanelProjectManagerAccount,
-                new JPanel(), 0, 5, 2, 1, 1, 1, GridBagConstraints.CENTER,
-                GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0);
+        SwingUtilityMethods.
+                addWithAllGridBagConstraints
+                        (centerPanelProjectManagerAccount, new JPanel(), 0,
+                                5, 2, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0);
     }
 
     /**

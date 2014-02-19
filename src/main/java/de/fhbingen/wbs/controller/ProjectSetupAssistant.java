@@ -377,7 +377,7 @@ public final class ProjectSetupAssistant implements ProjectProperties.Actions,
      * @return true if databse name is valid.
      */
     private static boolean isDatabaseNameValid(final String databaseName) {
-        return (databaseName.length() < MAX_DATABASE_NAME_LENGTH)
+        return (databaseName.length() <= MAX_DATABASE_NAME_LENGTH)
                 && REGEX_DATABASE_NAME.matcher(databaseName).matches();
     }
 
@@ -509,7 +509,7 @@ public final class ProjectSetupAssistant implements ProjectProperties.Actions,
      * @return true if valid.
      */
     private boolean isStringValid(final String s) {
-        return (s.length() <= MAX_VARCHAR_LENGTH);
+        return (s.length() > 0 && s.length() <= MAX_VARCHAR_LENGTH);
     }
 
     /**
