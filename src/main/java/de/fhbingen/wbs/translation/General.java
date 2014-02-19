@@ -203,5 +203,12 @@ public interface General {
     @En("EMP")
     String employeeShort();
 
+    @De("Ordner")
+    @En("Folder")
+    String folder();
+
+    @De("JPG Bilder (*.jpg, *.jpeg)")
+    @En("JPG Images (*.jpg, *.jpeg)")
+    String jpgImages();
 }
 

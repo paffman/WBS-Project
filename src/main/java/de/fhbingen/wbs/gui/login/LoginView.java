@@ -19,6 +19,7 @@
 
 package de.fhbingen.wbs.gui.login;
 
+import de.fhbingen.wbs.gui.SwingUtilityMethods;
 import de.fhbingen.wbs.gui.delegates.SimpleDialogDelegate;
 import de.fhbingen.wbs.translation.LocalizedStrings;
 import java.awt.*;
@@ -34,8 +35,6 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
 
 /**
  * The GUI for the Login Screen.
@@ -198,13 +197,6 @@ public class LoginView extends JFrame {
 
         this.actionsDelegate = delegate;
 
-        try {
-            UIManager.setLookAndFeel("com.sun.java.swing."
-                    + "plaf.windows.WindowsLookAndFeel");
-            SwingUtilities.updateComponentTreeUI(this);
-        } catch (Exception e) {
-            System.err.println("Could not load LookAndFeel");
-        }
         initialize();
         setResizable(false);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -302,6 +294,7 @@ public class LoginView extends JFrame {
         createGBC(okButton, 2, 8, 1, 1);
         createGBC(closeButton, 3, 8, 1, 1);
 
+        SwingUtilityMethods.setNativeLookAndFeel(this);
         // show gui
         setVisible(true);
 
