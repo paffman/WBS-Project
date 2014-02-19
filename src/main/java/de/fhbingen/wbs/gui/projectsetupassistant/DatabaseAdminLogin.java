@@ -1,7 +1,7 @@
 package de.fhbingen.wbs.gui.projectsetupassistant;
 
 import c10n.C10N;
-import de.fhbingen.wbs.gui.StaticUtilityMethods;
+import de.fhbingen.wbs.gui.SwingUtilityMethods;
 import de.fhbingen.wbs.translation.ProjectSetup;
 
 import java.awt.BorderLayout;
@@ -204,23 +204,23 @@ public class DatabaseAdminLogin extends JDialog {
                 40);
         final int textFieldWeightx = 1;
         final int textFieldWeighty = 0;
-        StaticUtilityMethods.addWithGridBagConstraints(centerPanel,
+        SwingUtilityMethods.addWithGridBagConstraints(centerPanel,
                 labelTextFieldServerAddress, 0, 0, 0, 0,
                 GridBagConstraints.BOTH, insetsLabel);
-        StaticUtilityMethods.addWithGridBagConstraints(centerPanel,
+        SwingUtilityMethods.addWithGridBagConstraints(centerPanel,
                 labelTextFieldUserName, 0, 1, 0, 0, GridBagConstraints.BOTH,
                 insetsLabel);
-        StaticUtilityMethods.addWithGridBagConstraints(centerPanel,
+        SwingUtilityMethods.addWithGridBagConstraints(centerPanel,
                 labelTextFieldPassword, 0, 2, 0, 0, GridBagConstraints.BOTH,
                 insetsLabel);
-        StaticUtilityMethods.addWithGridBagConstraints(centerPanel,
+        SwingUtilityMethods.addWithGridBagConstraints(centerPanel,
                 textFieldServerAddress, 1, 0, textFieldWeightx,
                 textFieldWeighty, GridBagConstraints.HORIZONTAL,
                 insetsTextField);
-        StaticUtilityMethods.addWithGridBagConstraints(centerPanel,
+        SwingUtilityMethods.addWithGridBagConstraints(centerPanel,
                 textFieldUserName, 1, 1, textFieldWeightx, textFieldWeighty,
                 GridBagConstraints.HORIZONTAL, insetsTextField);
-        StaticUtilityMethods.addWithGridBagConstraints(centerPanel,
+        SwingUtilityMethods.addWithGridBagConstraints(centerPanel,
                 textFieldPassword, 1, 2, textFieldWeightx, textFieldWeighty,
                 GridBagConstraints.HORIZONTAL, insetsTextField);
 
