@@ -14,6 +14,7 @@
 
 package de.fhbingen.wbs.wpOverview.tabs;
 
+import de.fhbingen.wbs.util.ExtensionAndFolderFilter;
 import de.fhbingen.wbs.translation.LocalizedStrings;
 import de.fhbingen.wbs.functions.WpManager;
 import de.fhbingen.wbs.globals.Controller;
@@ -38,10 +39,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import javax.swing.JFileChooser;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
-import de.fhbingen.wbs.jdbcConnection.MDBConnect;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.ChartUtilities;
@@ -90,10 +91,16 @@ public class APCalendarPanel extends JPanel {
     private JFreeChart chart;
 
     /**
+     * Reference to this.
+     */
+    private final APCalendarPanel reference;
+
+    /**
      * Default constructor: initialize the work package calendar inclusive
      * the listeners.
      */
     public APCalendarPanel() {
+        reference = this;
         init();
 
     }
@@ -119,18 +126,29 @@ public class APCalendarPanel extends JPanel {
 
             @Override
             public void actionPerformed(final ActionEvent arg0) {
-                String dbPath = MDBConnect.pathDB; // TODO warum mdb?
-                String outfile = dbPath.subSequence(4,
-                    dbPath.lastIndexOf("/") + 1)
-                    + "chart-" + System.currentTimeMillis() + ".jpg";
-                try {
-                    ChartUtilities.saveChartAsJPEG(new File(outfile),
-                        chart, chartPanel.getWidth(), chartPanel.getWidth());
-                    Controller.showMessage(LocalizedStrings.getMessages()
-                        .timeLineSaved(outfile));
-                } catch (IOException e) {
-                    Controller.showError(LocalizedStrings
-                        .getErrorMessages().timeLineExportError());
+
+
+                JFileChooser chooser = new JFileChooser();
+                chooser.setFileFilter(new ExtensionAndFolderFilter(
+                        "jpg", "jpeg")); //NON-NLS
+                chooser.setSelectedFile(new File("chart-" //NON-NLS
+                        + System.currentTimeMillis()
+                        + ".jpg"));
+                int returnVal = chooser.showSaveDialog(reference);
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    try {
+                        File outfile =
+                                chooser.getSelectedFile();
+                        ChartUtilities.saveChartAsJPEG(outfile,
+                                chart,
+                                chartPanel.getWidth(),
+                                chartPanel.getWidth());
+                        Controller.showMessage(LocalizedStrings.getMessages()
+                            .timeLineSaved(outfile.getCanonicalPath()));
+                    } catch (IOException e) {
+                        Controller.showError(LocalizedStrings
+                            .getErrorMessages().timeLineExportError());
+                    }
                 }
             }
 
@@ -314,4 +332,5 @@ public class APCalendarPanel extends JPanel {
     public final void reload() {
         init();
     }
+
 }
