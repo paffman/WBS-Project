@@ -28,6 +28,7 @@ public interface Database {
     String databaseName();
 
     @De("Importierte DB")
+    @En("Imported DB")
     String importedDatabase();
 
     @En("Index-db password")
