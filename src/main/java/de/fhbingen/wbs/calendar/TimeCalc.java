@@ -22,6 +22,7 @@ import de.fhbingen.wbs.functions.WpManager;
 import de.fhbingen.wbs.globals.Controller;
 import de.fhbingen.wbs.globals.Loader;
 import de.fhbingen.wbs.globals.Workpackage;
+import de.fhbingen.wbs.wpConflict.Conflict;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -36,7 +37,6 @@ import java.util.TreeSet;
 import de.fhbingen.wbs.wpComparators.APBacComparator;
 import de.fhbingen.wbs.wpComparators.APEndDateComparator;
 import de.fhbingen.wbs.wpComparators.APFollowerComparator;
-import de.fhbingen.wbs.wpConflict.ConflictController;
 import de.fhbingen.wbs.wpOverview.WPOverview;
 import de.fhbingen.wbs.wpOverview.tabs.AvailabilityGraph;
 
@@ -156,8 +156,8 @@ public class TimeCalc {
                     && actualWp.getEndDateCalc().after(
                         actualWp.getEndDateHope())) {
                     // The wished end date is not possible.
-                    WPOverview.throwConflict(new ConflictController(new Date(System
-                        .currentTimeMillis()), ConflictController.ENDWISH_FAIL,
+                    WPOverview.throwConflict(new Conflict(new Date(System
+                        .currentTimeMillis()), Conflict.ENDWISH_FAIL,
                         WPOverview.getUser().getId(), actualWp));
                 }
                 Calendar cal = new GregorianCalendar();
@@ -262,9 +262,9 @@ public class TimeCalc {
                     } else if (actualWp.getStartDateCalc() != null
                         && actualWp.getStartDateHope() != null
                         && actualWp.getStartDateCalc().before(startHope)) {
-                        WPOverview.throwConflict(new ConflictController(new Date(
+                        WPOverview.throwConflict(new Conflict(new Date(
                             System.currentTimeMillis()),
-                            ConflictController.STARTWISH_FAIL, WPOverview.getUser()
+                            Conflict.STARTWISH_FAIL, WPOverview.getUser()
                                 .getId(), actualWp));
                     }
 
@@ -360,9 +360,9 @@ public class TimeCalc {
                         && actualUAP.getStartDateCalc().before(
                             avManager.getNextWorkDate(actualUAP
                                 .getStartDateHope()))) {
-                        WPOverview.throwConflict(new ConflictController(new Date(
+                        WPOverview.throwConflict(new Conflict(new Date(
                             System.currentTimeMillis()),
-                            ConflictController.STARTWISH_FAIL, WPOverview.getUser()
+                            Conflict.STARTWISH_FAIL, WPOverview.getUser()
                                 .getId(), actualOAP, actualUAP));
                     }
                 }
@@ -497,8 +497,8 @@ public class TimeCalc {
             startDate = avManager.getNextWorkDate(uap.getStartDateHope());
             uap.setStartDateCalc(startDate);
         } else if (startDate != null && startDate.after(startDate)) {
-            WPOverview.throwConflict(new ConflictController(new Date(System
-                .currentTimeMillis()), ConflictController.STARTWISH_FAIL, WPOverview
+            WPOverview.throwConflict(new Conflict(new Date(System
+                .currentTimeMillis()), Conflict.STARTWISH_FAIL, WPOverview
                 .getUser().getId(), uap));
         }
 

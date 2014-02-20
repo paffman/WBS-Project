@@ -52,27 +52,50 @@ public class ConflictTable extends JTable {
      */
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(
             "dd.MM.yyyy HH:mm");
+
+    /**
+     * Default table model.
+     */
     private DefaultTableModel model;
 
-    private ArrayList<ConflictController> conflicts;
+    /**
+     * All conflicts.
+     */
+    private ArrayList<Conflict> conflicts;
+
+    /**
+     * The context menu.
+     */
     private JPopupMenu contextMenu;
+
+    /**
+     * Number of the last clicked row.
+     */
     private int lastClickedRow;
+
+    /**
+     * WPOverview instance.
+     */
     private WPOverview over;
 
+
+    /**
+     * Translation interface.
+     */
     private final General generalStrings;
 
     /**
-     * Konstruktor
+     * Constructor.
      *
-     * @param over
-     *            WPOverview GUI
+     * @param wpOverview
+     *            WPOverview GUI.
      * @param parent
-     *            ParentFrame
+     *            ParentFrame.
      */
-    public ConflictTable(final WPOverview over, final JFrame parent) {
+    public ConflictTable(final WPOverview wpOverview, final JFrame parent) {
         generalStrings = LocalizedStrings.getGeneralStrings();
         reload();
-        this.over = over;
+        this.over = wpOverview;
         contextMenu = new JPopupMenu();
         JMenuItem miRemove = new JMenuItem(LocalizedStrings.getButton()
                 .delete(LocalizedStrings.getGeneralStrings().conflict()));
@@ -80,7 +103,7 @@ public class ConflictTable extends JTable {
         miRemove.addActionListener(new ActionListener() {
 
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(ActionEvent e) { //TODO MVC that.
                 removeConflict(lastClickedRow);
             }
 
@@ -103,7 +126,7 @@ public class ConflictTable extends JTable {
                                 WpManager.getWorkpackage(conflicts.get(
                                         thisTable.rowAtPoint(e.getPoint()))
                                         .getTriggerApStringId());
-                        new WPShow(over, selected, false, parent);
+                        new WPShow(wpOverview, selected, false, parent);
                     }
 
                 }
@@ -112,12 +135,12 @@ public class ConflictTable extends JTable {
     }
 
     /**
-     * Loescht einen Konflikt aus der DB und von der GUI
-     *
+     * Deleted conflict from UI and Database.
+     * TODO fix conflict deletion.
      * @param row
-     *            Reihe in der der Konflikt steht
+     *          Number of row of the conflict.
      */
-    private void removeConflict(int row) {
+    private void removeConflict(final int row) {
         try {
             ConflictService.deleteConflict(conflicts.remove(row));
             model.removeRow(row);
@@ -128,13 +151,13 @@ public class ConflictTable extends JTable {
     }
 
     /**
-     * Fuegt einen Konflikt der DB und der GUI hinzu
+     * Adds a conflict to the UI and the database.
      *
      * @param conflict
-     *            Konflikt der hinzugefuegt werden soll
+     *            Conflict to be added.
      */
-    public void addConflict(ConflictController conflict) {
-        Set<ConflictController> conflicts = new HashSet<ConflictController>();
+    public void addConflict(final Conflict conflict) {
+        Set<Conflict> conflicts = new HashSet<Conflict>();
         conflicts.add(conflict);
         addConflicts(conflicts);
     }
@@ -145,12 +168,12 @@ public class ConflictTable extends JTable {
      * @param newConflicts
      *            Set von CKnflikten die hinzugefuegt werden sollen
      */
-    public void addConflicts(Set<ConflictController> newConflicts) {
+    public void addConflicts(Set<Conflict> newConflicts) {
         for (int i = 0; i < this.getRowCount(); i++) {
             model.removeRow(i);
         }
-        HashSet<ConflictController> singleConflicts = new HashSet<ConflictController>(conflicts);
-        for (ConflictController actualConflict : newConflicts) {
+        HashSet<Conflict> singleConflicts = new HashSet<Conflict>(conflicts);
+        for (Conflict actualConflict : newConflicts) {
             if (!singleConflicts.contains(actualConflict)) {
                 conflicts.add(actualConflict);
                 model.addRow(createStringArray(actualConflict));
@@ -166,7 +189,7 @@ public class ConflictTable extends JTable {
      * @param c
      * @return
      */
-    private String[] createStringArray(ConflictController c) {
+    private String[] createStringArray(Conflict c) {
         return new String[] {
                 DATE_FORMAT.format(c.getDate()),
                 createReasonString(c),
@@ -181,7 +204,7 @@ public class ConflictTable extends JTable {
      *            deren Beschreibung man will
      * @return
      */
-    private String createReasonString(ConflictController conflict) {
+    private String createReasonString(Conflict conflict) {
         return conflict.getReasonString();
     }
 
@@ -192,7 +215,7 @@ public class ConflictTable extends JTable {
      *            deren betroffene APs man will
      * @return
      */
-    private String createAffectedString(ConflictController conflict) {
+    private String createAffectedString(Conflict conflict) {
         String affectedAPs = "";
         if (conflict.getAffectedApStringId() == null) {
             affectedAPs = conflict.getTriggerApStringId();
@@ -219,9 +242,9 @@ public class ConflictTable extends JTable {
         model.addColumn(generalStrings.causer());
         model.addColumn(LocalizedStrings.getWbs().affectedWorkpackages());
 
-        conflicts = new ArrayList<ConflictController>(ConflictService.getAllConflicts());
+        conflicts = new ArrayList<Conflict>(ConflictService.getAllConflicts());
 
-        for (ConflictController actualConflict : conflicts) {
+        for (Conflict actualConflict : conflicts) {
             model.addRow(createStringArray(actualConflict));
         }
 

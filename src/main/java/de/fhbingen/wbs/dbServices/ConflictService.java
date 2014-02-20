@@ -2,7 +2,7 @@ package de.fhbingen.wbs.dbServices;
 
 import de.fhbingen.wbs.dbaccess.DBModelManager;
 import de.fhbingen.wbs.functions.WpManager;
-import de.fhbingen.wbs.wpConflict.ConflictController;
+import de.fhbingen.wbs.wpConflict.Conflict;
 import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.List;
@@ -30,9 +30,9 @@ public class ConflictService {
      *
      * @return Set<Conflict> alle Konflikte
      */
-    public static Set<ConflictController> getAllConflicts() {
+    public static Set<Conflict> getAllConflicts() {
         try {
-            return fillConflicts(new HashSet<ConflictController>(), DBModelManager
+            return fillConflicts(new HashSet<Conflict>(), DBModelManager
                     .getConflictsModel().getConflicts());
         } catch (SQLException e) {
             e.printStackTrace();
@@ -47,14 +47,14 @@ public class ConflictService {
      *            Conflict der zu speichernde Konflikt
      * @throws SQLException
      */
-    public static boolean setConflict(ConflictController conflict) {
+    public static boolean setConflict(Conflict conflict) {
         String trigger = conflict.getTriggerApStringId();
         if (trigger == null || (trigger != null && trigger.equals(""))) {
             trigger = WpManager.getRootAp().getStringID();
         }
         de.fhbingen.wbs.dbaccess.data.Conflict conf = new de.fhbingen.wbs.dbaccess.data.Conflict();
-        conf.setFid_wp(conflict.getTriggerAp());
-        conf.setFid_wp_affected(conflict.getAffectedAP());
+        conf.setFid_wp(conflict.getTriggerWp());
+        conf.setFid_wp_affected(conflict.getAffectedWp());
         conf.setFid_emp(conflict.getUserId());
         conf.setReason(conflict.getReason());
         conf.setOccurence_date(conflict.getDate());
@@ -69,7 +69,7 @@ public class ConflictService {
      *            Conflict der zu loeschende Konflikt
      * @throws SQLException
      */
-    public static void deleteConflict(ConflictController conflict) throws SQLException {
+    public static void deleteConflict(Conflict conflict) throws SQLException {
         DBModelManager.getConflictsModel().deleteConflict(conflict.getId());
     }
 
@@ -93,10 +93,10 @@ public class ConflictService {
      * @return das gefuellte Set
      * @throws SQLException
      */
-    private static Set<ConflictController> fillConflicts(Set<ConflictController> conSet,
+    private static Set<Conflict> fillConflicts(Set<Conflict> conSet,
             final List<de.fhbingen.wbs.dbaccess.data.Conflict> conflicts) throws SQLException {
         for (de.fhbingen.wbs.dbaccess.data.Conflict conf : conflicts) {
-            conSet.add(new ConflictController(conf.getOccurence_date(), conf.getReason(),
+            conSet.add(new Conflict(conf.getOccurence_date(), conf.getReason(),
                     conf.getFid_emp(), conf.getFid_wp(), conf
                             .getFid_wp_affected()));
         }

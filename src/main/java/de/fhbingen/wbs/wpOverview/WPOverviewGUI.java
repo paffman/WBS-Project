@@ -22,6 +22,7 @@ import de.fhbingen.wbs.translation.Wbs;
 import de.fhbingen.wbs.functions.WpManager;
 import de.fhbingen.wbs.globals.Controller;
 import de.fhbingen.wbs.globals.Workpackage;
+import de.fhbingen.wbs.wpConflict.Conflict;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -46,7 +47,6 @@ import javax.swing.JTabbedPane;
 import javax.swing.WindowConstants;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.EmptyBorder;
-import de.fhbingen.wbs.wpConflict.ConflictController;
 import de.fhbingen.wbs.wpConflict.ConflictTable;
 import de.fhbingen.wbs.wpOverview.tabs.APCalendarPanel;
 import de.fhbingen.wbs.wpOverview.tabs.AvailabilityGraphGUI;
@@ -560,7 +560,7 @@ public class WPOverviewGUI extends JFrame {
      * @param conflict
      *            Conflict which should be thrown.
      */
-    protected final void throwConflict(final ConflictController conflict) {
+    protected final void throwConflict(final Conflict conflict) {
         conflictIcon.setImage(Toolkit.getDefaultToolkit().getImage(
             WPOverviewGUI.class.getResource("/_icons/warning.png"))); //NON-NLS
         conflicts.addConflict(conflict);

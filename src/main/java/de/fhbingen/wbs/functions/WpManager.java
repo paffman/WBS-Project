@@ -7,7 +7,7 @@ import de.fhbingen.wbs.dbaccess.data.WorkEffort;
 import de.fhbingen.wbs.translation.LocalizedStrings;
 import de.fhbingen.wbs.globals.Loader;
 import de.fhbingen.wbs.globals.Workpackage;
-import de.fhbingen.wbs.wpConflict.ConflictController;
+import de.fhbingen.wbs.wpConflict.Conflict;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -85,8 +85,8 @@ public class WpManager {
             insertAncestor(Workpackage anchestor, Workpackage main) {
         if (list.setAncestor(anchestor, main)) {
             WorkpackageService.setAncestor(main.getWpId(), anchestor.getWpId());
-            WPOverview.throwConflict(new ConflictController(new Date(System
-                    .currentTimeMillis()), ConflictController.CHANGED_DEPENDECIES,
+            WPOverview.throwConflict(new Conflict(new Date(System
+                    .currentTimeMillis()), Conflict.CHANGED_DEPENDENCIES,
                     WPOverview.getUser().getId(), main));
             return true;
         } else {
@@ -110,8 +110,8 @@ public class WpManager {
             insertFollower(Workpackage follower, Workpackage main) {
         if (list.setFollower(follower, main)) {
             WorkpackageService.setFollower(main.getWpId(), follower.getWpId());
-            WPOverview.throwConflict(new ConflictController(new Date(System
-                    .currentTimeMillis()), ConflictController.CHANGED_DEPENDECIES,
+            WPOverview.throwConflict(new Conflict(new Date(System
+                    .currentTimeMillis()), Conflict.CHANGED_DEPENDENCIES,
                     WPOverview.getUser().getId(), main));
             return true;
         } else {
@@ -134,8 +134,8 @@ public class WpManager {
         list.removeAncestor(ancestor, main);
         if (WorkpackageService.deleteAncestor(main.getWpId(),
                 ancestor.getWpId())) {
-            WPOverview.throwConflict(new ConflictController(new Date(System
-                    .currentTimeMillis()), ConflictController.CHANGED_DEPENDECIES,
+            WPOverview.throwConflict(new Conflict(new Date(System
+                    .currentTimeMillis()), Conflict.CHANGED_DEPENDENCIES,
                     WPOverview.getUser().getId(), main));
             return true;
         } else {
@@ -161,8 +161,8 @@ public class WpManager {
         list.removeFollower(follower, main);
         if (WorkpackageService.deleteFollower(main.getWpId(),
                 follower.getWpId())) {
-            WPOverview.throwConflict(new ConflictController(new Date(System
-                    .currentTimeMillis()), ConflictController.CHANGED_DEPENDECIES,
+            WPOverview.throwConflict(new Conflict(new Date(System
+                    .currentTimeMillis()), Conflict.CHANGED_DEPENDENCIES,
                     WPOverview.getUser().getId(), main));
             return true;
         } else {
@@ -249,8 +249,8 @@ public class WpManager {
         // delete workapcakge
         if (WorkpackageService.deleteWorkpackage(removeWp)) {
 
-            WPOverview.throwConflict(new ConflictController(new Date(System
-                    .currentTimeMillis()), ConflictController.DELETED_WP, WPOverview
+            WPOverview.throwConflict(new Conflict(new Date(System
+                    .currentTimeMillis()), Conflict.DELETED_WP, WPOverview
                     .getUser().getId(), WpManager.getRootAp()));
             list.removeWp(removeWp);
         } else {
