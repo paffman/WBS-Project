@@ -43,12 +43,10 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.EmptyBorder;
-import de.fhbingen.wbs.wpConflict.Conflict;
+import de.fhbingen.wbs.wpConflict.ConflictController;
 import de.fhbingen.wbs.wpConflict.ConflictTable;
 import de.fhbingen.wbs.wpOverview.tabs.APCalendarPanel;
 import de.fhbingen.wbs.wpOverview.tabs.AvailabilityGraphGUI;
@@ -562,7 +560,7 @@ public class WPOverviewGUI extends JFrame {
      * @param conflict
      *            Conflict which should be thrown.
      */
-    protected final void throwConflict(final Conflict conflict) {
+    protected final void throwConflict(final ConflictController conflict) {
         conflictIcon.setImage(Toolkit.getDefaultToolkit().getImage(
             WPOverviewGUI.class.getResource("/_icons/warning.png"))); //NON-NLS
         conflicts.addConflict(conflict);

@@ -21,7 +21,7 @@ import java.util.Date;
  * @author Michael Anstatt, Marc-Eric Baumgaertner, Jens Eckes, Sven Seckler
  * @version 2.0 - 2012-08-19
  */
-public class Conflict {
+public class ConflictController {
     public static final int STARTWISH_FAIL = 0;
     public static final int ENDWISH_FAIL = 1;
     public static final int CHANGED_RESOURCES = 2;
@@ -61,8 +61,8 @@ public class Conflict {
      * @param affectedAP
      *            Arbeitspaket welches vom Konflikt betroffen ist(optional)
      */
-    public Conflict(Date date, int reason, int userId, Workpackage triggerAP,
-            Workpackage affectedAP) {
+    public ConflictController(Date date, int reason, int userId,
+                              Workpackage triggerAP, Workpackage affectedAP) {
         this.date = date;
         this.reason = reason;
         this.userId = userId;
@@ -85,7 +85,7 @@ public class Conflict {
      * @param triggerAP
      *            Arbeitspaket welches den Konflikt ausgeloest hat
      */
-    public Conflict(Date date, int reason, int userId, Workpackage triggerAP) {
+    public ConflictController(Date date, int reason, int userId, Workpackage triggerAP) {
         this.date = date;
         this.reason = reason;
         this.userId = userId;
@@ -104,7 +104,7 @@ public class Conflict {
      * @param userId
      *            User der den Konflikt ausgeloest hat
      */
-    public Conflict(Date date, int reason, int userId) {
+    public ConflictController(Date date, int reason, int userId) {
         this.date = date;
         this.reason = reason;
         this.userId = userId;
@@ -126,8 +126,8 @@ public class Conflict {
      * @param affectedAP
      *            String ID des Arbeitspaket, welches vom Konflikt betroffen ist
      */
-    public Conflict(Date date, int reason, int userId, int triggerAp,
-            int affectedAP) {
+    public ConflictController(Date date, int reason, int userId,
+                              int triggerAp, int affectedAP) {
         super();
         this.date = date;
         this.reason = reason;
@@ -249,9 +249,9 @@ public class Conflict {
 
         if (obj == null)
             return false;
-        if (!(obj instanceof Conflict))
+        if (!(obj instanceof ConflictController))
             return false;
-        Conflict other = (Conflict) obj;
+        ConflictController other = (ConflictController) obj;
         if (reason < 2) {
             if (this.affectedApStringId != null) {
                 return DateFunctions.equalsDate(this.date, other.date)
@@ -272,7 +272,7 @@ public class Conflict {
     }
 
     /**
-     * Liefert einen String des Conflict Objekts
+     * Liefert einen String des ConflictController Objekts
      *
      * @return String mit Informationen des Objekts
      */

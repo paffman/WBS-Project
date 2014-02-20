@@ -34,7 +34,7 @@ import de.fhbingen.wbs.globals.Workpackage;
 import de.fhbingen.wbs.translation.LocalizedStrings;
 import de.fhbingen.wbs.translation.Messages;
 import de.fhbingen.wbs.wpComparators.APLevelComparator;
-import de.fhbingen.wbs.wpConflict.Conflict;
+import de.fhbingen.wbs.wpConflict.ConflictController;
 import de.fhbingen.wbs.wpShow.WPShow;
 import de.fhbingen.wbs.wpWorker.User;
 
@@ -294,7 +294,7 @@ public class WPOverview {
      * @param conflict
      *            Conflict which should be thrown.
      */
-    public static void throwConflict(final Conflict conflict) {
+    public static void throwConflict(final ConflictController conflict) {
         if (gui != null) {
             gui.throwConflict(conflict);
         }

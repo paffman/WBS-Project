@@ -2,11 +2,11 @@ package de.fhbingen.wbs.dbServices;
 
 import de.fhbingen.wbs.dbaccess.DBModelManager;
 import de.fhbingen.wbs.functions.WpManager;
+import de.fhbingen.wbs.wpConflict.ConflictController;
 import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import de.fhbingen.wbs.wpConflict.Conflict;
 
 /**
  * Studienprojekt: PSYS WBS 2.0<br/>
@@ -30,9 +30,9 @@ public class ConflictService {
      *
      * @return Set<Conflict> alle Konflikte
      */
-    public static Set<Conflict> getAllConflicts() {
+    public static Set<ConflictController> getAllConflicts() {
         try {
-            return fillConflicts(new HashSet<Conflict>(), DBModelManager
+            return fillConflicts(new HashSet<ConflictController>(), DBModelManager
                     .getConflictsModel().getConflicts());
         } catch (SQLException e) {
             e.printStackTrace();
@@ -47,7 +47,7 @@ public class ConflictService {
      *            Conflict der zu speichernde Konflikt
      * @throws SQLException
      */
-    public static boolean setConflict(Conflict conflict) {
+    public static boolean setConflict(ConflictController conflict) {
         String trigger = conflict.getTriggerApStringId();
         if (trigger == null || (trigger != null && trigger.equals(""))) {
             trigger = WpManager.getRootAp().getStringID();
@@ -69,7 +69,7 @@ public class ConflictService {
      *            Conflict der zu loeschende Konflikt
      * @throws SQLException
      */
-    public static void deleteConflict(Conflict conflict) throws SQLException {
+    public static void deleteConflict(ConflictController conflict) throws SQLException {
         DBModelManager.getConflictsModel().deleteConflict(conflict.getId());
     }
 
@@ -93,10 +93,10 @@ public class ConflictService {
      * @return das gefuellte Set
      * @throws SQLException
      */
-    private static Set<Conflict> fillConflicts(Set<Conflict> conSet,
+    private static Set<ConflictController> fillConflicts(Set<ConflictController> conSet,
             final List<de.fhbingen.wbs.dbaccess.data.Conflict> conflicts) throws SQLException {
         for (de.fhbingen.wbs.dbaccess.data.Conflict conf : conflicts) {
-            conSet.add(new Conflict(conf.getOccurence_date(), conf.getReason(),
+            conSet.add(new ConflictController(conf.getOccurence_date(), conf.getReason(),
                     conf.getFid_emp(), conf.getFid_wp(), conf
                             .getFid_wp_affected()));
         }

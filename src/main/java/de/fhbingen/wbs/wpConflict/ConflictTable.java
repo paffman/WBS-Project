@@ -42,12 +42,19 @@ import de.fhbingen.wbs.wpShow.WPShow;
  * @version 2.0 - 20.08.2012
  */
 public class ConflictTable extends JTable {
+    /**
+     * Serialization UID.
+     */
     private static final long serialVersionUID = -6055310228750206338L;
-    private final static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(
+
+    /**
+     * Date Format.
+     */
+    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(
             "dd.MM.yyyy HH:mm");
     private DefaultTableModel model;
 
-    private ArrayList<Conflict> conflicts;
+    private ArrayList<ConflictController> conflicts;
     private JPopupMenu contextMenu;
     private int lastClickedRow;
     private WPOverview over;
@@ -126,8 +133,8 @@ public class ConflictTable extends JTable {
      * @param conflict
      *            Konflikt der hinzugefuegt werden soll
      */
-    public void addConflict(Conflict conflict) {
-        Set<Conflict> conflicts = new HashSet<Conflict>();
+    public void addConflict(ConflictController conflict) {
+        Set<ConflictController> conflicts = new HashSet<ConflictController>();
         conflicts.add(conflict);
         addConflicts(conflicts);
     }
@@ -138,12 +145,12 @@ public class ConflictTable extends JTable {
      * @param newConflicts
      *            Set von CKnflikten die hinzugefuegt werden sollen
      */
-    public void addConflicts(Set<Conflict> newConflicts) {
+    public void addConflicts(Set<ConflictController> newConflicts) {
         for (int i = 0; i < this.getRowCount(); i++) {
             model.removeRow(i);
         }
-        HashSet<Conflict> singleConflicts = new HashSet<Conflict>(conflicts);
-        for (Conflict actualConflict : newConflicts) {
+        HashSet<ConflictController> singleConflicts = new HashSet<ConflictController>(conflicts);
+        for (ConflictController actualConflict : newConflicts) {
             if (!singleConflicts.contains(actualConflict)) {
                 conflicts.add(actualConflict);
                 model.addRow(createStringArray(actualConflict));
@@ -159,7 +166,7 @@ public class ConflictTable extends JTable {
      * @param c
      * @return
      */
-    private String[] createStringArray(Conflict c) {
+    private String[] createStringArray(ConflictController c) {
         return new String[] {
                 DATE_FORMAT.format(c.getDate()),
                 createReasonString(c),
@@ -174,7 +181,7 @@ public class ConflictTable extends JTable {
      *            deren Beschreibung man will
      * @return
      */
-    private String createReasonString(Conflict conflict) {
+    private String createReasonString(ConflictController conflict) {
         return conflict.getReasonString();
     }
 
@@ -185,7 +192,7 @@ public class ConflictTable extends JTable {
      *            deren betroffene APs man will
      * @return
      */
-    private String createAffectedString(Conflict conflict) {
+    private String createAffectedString(ConflictController conflict) {
         String affectedAPs = "";
         if (conflict.getAffectedApStringId() == null) {
             affectedAPs = conflict.getTriggerApStringId();
@@ -212,9 +219,9 @@ public class ConflictTable extends JTable {
         model.addColumn(generalStrings.causer());
         model.addColumn(LocalizedStrings.getWbs().affectedWorkpackages());
 
-        conflicts = new ArrayList<Conflict>(ConflictService.getAllConflicts());
+        conflicts = new ArrayList<ConflictController>(ConflictService.getAllConflicts());
 
-        for (Conflict actualConflict : conflicts) {
+        for (ConflictController actualConflict : conflicts) {
             model.addRow(createStringArray(actualConflict));
         }
 
