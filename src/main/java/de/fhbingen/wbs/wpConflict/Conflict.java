@@ -5,12 +5,19 @@ import de.fhbingen.wbs.dbaccess.DBModelManager;
 import de.fhbingen.wbs.translation.LocalizedStrings;
 import de.fhbingen.wbs.translation.Messages;
 import de.fhbingen.wbs.globals.Workpackage;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
  *  Class that represents a single conflict.
  */
 public class Conflict {
+    /**
+     * Date Format.
+     * TODO find new home for this poor little thing.
+     */
+    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(
+            "dd.MM.yyyy HH:mm");
 
     /**
      * Conflict code for start date can't be achieved.
@@ -141,7 +148,10 @@ public class Conflict {
      * @param conflictTriggeringAP
      *            AP that triggered the conflict.
      */
-    public Conflict(final Date conflictDate, final int conflictReason, final int conflictUserId, final Workpackage conflictTriggeringAP) {
+    public Conflict(final Date conflictDate,
+                    final int conflictReason,
+                    final int conflictUserId,
+                    final Workpackage conflictTriggeringAP) {
         this(conflictDate, conflictReason, conflictUserId, conflictTriggeringAP,
                 null);
     }
@@ -155,7 +165,9 @@ public class Conflict {
      * @param conflictUserId
      *            Id of user that caused the conflict.
      */
-    public Conflict(final Date conflictDate, final int conflictReason, final int conflictUserId) {
+    public Conflict(final Date conflictDate,
+                    final int conflictReason,
+                    final int conflictUserId) {
         this(conflictDate, conflictReason, conflictUserId, null, null);
     }
 
@@ -173,7 +185,11 @@ public class Conflict {
      * @param conflictAffectedWpId
      *            AP that is affected by the conflict.
      */
-    public Conflict(final Date conflictDate, final int conflictReason, final int conflictUserId, final int conflictTriggeringWpId, final int conflictAffectedWpId) {
+    public Conflict(final Date conflictDate,
+                    final int conflictReason,
+                    final int conflictUserId,
+                    final int conflictTriggeringWpId,
+                    final int conflictAffectedWpId) {
         super();
         this.date = conflictDate;
         this.reason = conflictReason;
@@ -354,4 +370,39 @@ public class Conflict {
         return id;
     }
 
+    /**
+     * Lists the triggering and affected work package as a string if
+     * applicable.
+     * This message was moved from ConflictTable and works exactly like the
+     * method that was defined there.
+     *
+     * @return String of affected work packages.
+     */
+    public final String createAffectedString() {
+        String affectedAPs = getTriggerApStringId();
+        if (getAffectedApStringId() != null) {
+            affectedAPs += "; " + getAffectedApStringId();
+        }
+
+        if (affectedAPs != null) {
+            return affectedAPs;
+        }
+        return "";
+    }
+
+    /**
+     * Creates a string array containing all the data relevant to a conflict
+     * for display in the table.
+     * @return A string array containing all the data relevant to a conflict.
+     */
+
+    public final String[] createStringArray() {
+
+        return new String[] {
+        DATE_FORMAT.format(getDate()),
+                getReasonString(),
+                DBModelManager.getEmployeesModel().getEmployee(getUserId())
+                        .getLogin(),
+                createAffectedString() };
+    }
 }

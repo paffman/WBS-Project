@@ -16,6 +16,7 @@ package de.fhbingen.wbs.calendar;
 
 import de.fhbingen.wbs.dbServices.ConflictService;
 import de.fhbingen.wbs.dbServices.ValuesService;
+import de.fhbingen.wbs.dbaccess.DBModelManager;
 import de.fhbingen.wbs.dbaccess.data.Employee;
 import de.fhbingen.wbs.translation.LocalizedStrings;
 import de.fhbingen.wbs.functions.WpManager;
@@ -65,7 +66,8 @@ public class TimeCalc {
      */
     public TimeCalc() {
         Loader.setLoadingText(LocalizedStrings.getStatus().initialize());
-        ConflictService.deleteAll(); // Delete all conflicts => will be
+        DBModelManager.getConflictsModel().deleteConflicts(); // Delete all
+                                    // conflicts => will be
                                      // recalculated
         WPOverview.releaseAllConflicts();
 

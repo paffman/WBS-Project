@@ -26,18 +26,38 @@ import java.util.Set;
 public class ConflictService {
 
     /**
+     * Private Methode zum fuellen eines Sets von Conflicts mit den Daten eines
+     * ResultSets
+     *
+     * @param conSet
+     *            das zu fuellende Set vom Typ Conflict
+     * @param conflicts
+     *            das ResultSet mit den Daten
+     * @return das gefuellte Set
+     */
+    private static Set<Conflict> fillConflicts(Set<Conflict> conSet,
+                                               final List<de.fhbingen.wbs.dbaccess.data.Conflict> conflicts) {
+
+        return conSet;
+    }
+
+    /**
      * s Liefert ein Set mit allen Konflikten des Projekts
      *
      * @return Set<Conflict> alle Konflikte
      */
     public static Set<Conflict> getAllConflicts() {
-        try {
-            return fillConflicts(new HashSet<Conflict>(), DBModelManager
-                    .getConflictsModel().getConflicts());
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return null;
+        HashSet<Conflict> allConflicts = new HashSet<>();
+        List<de.fhbingen.wbs.dbaccess.data.Conflict> conflicts =
+                DBModelManager.getConflictsModel().getConflicts();
+
+        for (de.fhbingen.wbs.dbaccess.data.Conflict conf : conflicts) {
+            allConflicts.add(new Conflict(conf.getOccurence_date(), conf.getReason(),
+                    conf.getFid_emp(), conf.getFid_wp(), conf
+                    .getFid_wp_affected()));
         }
+
+        return allConflicts;
     }
 
     /**
@@ -45,13 +65,9 @@ public class ConflictService {
      *
      * @param conflict
      *            Conflict der zu speichernde Konflikt
-     * @throws SQLException
      */
-    public static boolean setConflict(Conflict conflict) {
-        String trigger = conflict.getTriggerApStringId();
-        if (trigger == null || (trigger != null && trigger.equals(""))) {
-            trigger = WpManager.getRootAp().getStringID();
-        }
+    public static boolean saveConflictToDatabase(final Conflict conflict) {
+
         de.fhbingen.wbs.dbaccess.data.Conflict conf = new de.fhbingen.wbs.dbaccess.data.Conflict();
         conf.setFid_wp(conflict.getTriggerWp());
         conf.setFid_wp_affected(conflict.getAffectedWp());
@@ -64,42 +80,17 @@ public class ConflictService {
 
     /**
      * Loescht einen behobenen Konflikt
-     *
+     * TODO fix behaviour.
      * @param conflict
      *            Conflict der zu loeschende Konflikt
-     * @throws SQLException
      */
-    public static void deleteConflict(Conflict conflict) throws SQLException {
+    public static void deleteConflict(Conflict conflict) {
         DBModelManager.getConflictsModel().deleteConflict(conflict.getId());
     }
 
     /**
-     * Loescht alle Konflikte
-     *
-     * @throws SQLException
+     * Forbid instantiation.
      */
-    public static void deleteAll() {
-        DBModelManager.getConflictsModel().deleteConflicts();
-    }
-
-    /**
-     * Private Methode zum fuellen eines Sets von Conflicts mit den Daten eines
-     * ResultSets
-     *
-     * @param conSet
-     *            das zu fuellende Set vom Typ Conflict
-     * @param resSet
-     *            das ResultSet mit den Daten
-     * @return das gefuellte Set
-     * @throws SQLException
-     */
-    private static Set<Conflict> fillConflicts(Set<Conflict> conSet,
-            final List<de.fhbingen.wbs.dbaccess.data.Conflict> conflicts) throws SQLException {
-        for (de.fhbingen.wbs.dbaccess.data.Conflict conf : conflicts) {
-            conSet.add(new Conflict(conf.getOccurence_date(), conf.getReason(),
-                    conf.getFid_emp(), conf.getFid_wp(), conf
-                            .getFid_wp_affected()));
-        }
-        return conSet;
+    private ConflictService() {
     }
 }
