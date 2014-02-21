@@ -14,14 +14,15 @@
 
 package de.fhbingen.wbs.calendar;
 
-import de.fhbingen.wbs.dbServices.ConflictService;
 import de.fhbingen.wbs.dbServices.ValuesService;
+import de.fhbingen.wbs.dbaccess.DBModelManager;
 import de.fhbingen.wbs.dbaccess.data.Employee;
 import de.fhbingen.wbs.translation.LocalizedStrings;
 import de.fhbingen.wbs.functions.WpManager;
 import de.fhbingen.wbs.globals.Controller;
 import de.fhbingen.wbs.globals.Loader;
 import de.fhbingen.wbs.globals.Workpackage;
+import de.fhbingen.wbs.wpConflict.ConflictCompat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -36,7 +37,6 @@ import java.util.TreeSet;
 import de.fhbingen.wbs.wpComparators.APBacComparator;
 import de.fhbingen.wbs.wpComparators.APEndDateComparator;
 import de.fhbingen.wbs.wpComparators.APFollowerComparator;
-import de.fhbingen.wbs.wpConflict.Conflict;
 import de.fhbingen.wbs.wpOverview.WPOverview;
 import de.fhbingen.wbs.wpOverview.tabs.AvailabilityGraph;
 
@@ -65,7 +65,8 @@ public class TimeCalc {
      */
     public TimeCalc() {
         Loader.setLoadingText(LocalizedStrings.getStatus().initialize());
-        ConflictService.deleteAll(); // Delete all conflicts => will be
+        DBModelManager.getConflictsModel().deleteConflicts(); // Delete all
+                                    // conflicts => will be
                                      // recalculated
         WPOverview.releaseAllConflicts();
 
@@ -156,8 +157,8 @@ public class TimeCalc {
                     && actualWp.getEndDateCalc().after(
                         actualWp.getEndDateHope())) {
                     // The wished end date is not possible.
-                    WPOverview.throwConflict(new Conflict(new Date(System
-                        .currentTimeMillis()), Conflict.ENDWISH_FAIL,
+                    WPOverview.throwConflict(new ConflictCompat(new Date(System
+                        .currentTimeMillis()), ConflictCompat.ENDWISH_FAIL,
                         WPOverview.getUser().getId(), actualWp));
                 }
                 Calendar cal = new GregorianCalendar();
@@ -262,9 +263,9 @@ public class TimeCalc {
                     } else if (actualWp.getStartDateCalc() != null
                         && actualWp.getStartDateHope() != null
                         && actualWp.getStartDateCalc().before(startHope)) {
-                        WPOverview.throwConflict(new Conflict(new Date(
+                        WPOverview.throwConflict(new ConflictCompat(new Date(
                             System.currentTimeMillis()),
-                            Conflict.STARTWISH_FAIL, WPOverview.getUser()
+                            ConflictCompat.STARTWISH_FAIL, WPOverview.getUser()
                                 .getId(), actualWp));
                     }
 
@@ -360,9 +361,9 @@ public class TimeCalc {
                         && actualUAP.getStartDateCalc().before(
                             avManager.getNextWorkDate(actualUAP
                                 .getStartDateHope()))) {
-                        WPOverview.throwConflict(new Conflict(new Date(
+                        WPOverview.throwConflict(new ConflictCompat(new Date(
                             System.currentTimeMillis()),
-                            Conflict.STARTWISH_FAIL, WPOverview.getUser()
+                            ConflictCompat.STARTWISH_FAIL, WPOverview.getUser()
                                 .getId(), actualOAP, actualUAP));
                     }
                 }
@@ -497,8 +498,8 @@ public class TimeCalc {
             startDate = avManager.getNextWorkDate(uap.getStartDateHope());
             uap.setStartDateCalc(startDate);
         } else if (startDate != null && startDate.after(startDate)) {
-            WPOverview.throwConflict(new Conflict(new Date(System
-                .currentTimeMillis()), Conflict.STARTWISH_FAIL, WPOverview
+            WPOverview.throwConflict(new ConflictCompat(new Date(System
+                .currentTimeMillis()), ConflictCompat.STARTWISH_FAIL, WPOverview
                 .getUser().getId(), uap));
         }
 
@@ -647,7 +648,7 @@ public class TimeCalc {
                         avManager.getConsumedDayWork(actualDay).get(
                             AvailabilityGraph.PROJECT_WORKER.getLogin())));
                     stillWork = false;
-                    
+
                     savePV(pvs, uap);
 
                     Controller.showConsoleMessage(

@@ -14,6 +14,7 @@
 
 package de.fhbingen.wbs.wpShow;
 
+import de.fhbingen.wbs.wpConflict.ConflictCompat;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -52,7 +53,6 @@ import de.fhbingen.wbs.globals.Workpackage;
 import de.fhbingen.wbs.translation.LocalizedStrings;
 import de.fhbingen.wbs.translation.Messages;
 import de.fhbingen.wbs.translation.Wbs;
-import de.fhbingen.wbs.wpConflict.Conflict;
 import de.fhbingen.wbs.wpOverview.WPOverview;
 import de.fhbingen.wbs.wpWorker.Worker;
 
@@ -345,27 +345,27 @@ public class WPShow {
     private void checkConflicts() {
 
         if (newWp) {
-            WPOverview.throwConflict(new Conflict(new Date(System
-                .currentTimeMillis()), Conflict.NEW_WP, WPOverview
+            WPOverview.throwConflict(new ConflictCompat(new Date(System
+                .currentTimeMillis()), ConflictCompat.NEW_WP, WPOverview
                 .getUser().getId(), wp));
         }
 
         if (gui.getIsInaktiv() != wp.isIstInaktiv()) {
-            WPOverview.throwConflict(new Conflict(new Date(System
-                .currentTimeMillis()), Conflict.CHANGED_ACTIVESTATE,
+            WPOverview.throwConflict(new ConflictCompat(new Date(System
+                .currentTimeMillis()), ConflictCompat.CHANGED_ACTIVESTATE,
                 WPOverview.getUser().getId(), wp));
         }
 
         try {
             if (!gui.getBAC().equals(wp.getBac())) {
-                WPOverview.throwConflict(new Conflict(new Date(System
-                    .currentTimeMillis()), Conflict.CHANGED_BAC, WPOverview
+                WPOverview.throwConflict(new ConflictCompat(new Date(System
+                    .currentTimeMillis()), ConflictCompat.CHANGED_BAC, WPOverview
                     .getUser().getId(), wp));
             }
             if (gui.getStartHope() != null
                 && !gui.getStartHope().equals(wp.getStartDateHope())) {
-                WPOverview.throwConflict(new Conflict(new Date(System
-                    .currentTimeMillis()), Conflict.CHANGED_WISHDATES,
+                WPOverview.throwConflict(new ConflictCompat(new Date(System
+                    .currentTimeMillis()), ConflictCompat.CHANGED_WISHDATES,
                     WPOverview.getUser().getId(), wp));
             }
         } catch (ParseException e) {
@@ -381,8 +381,8 @@ public class WPShow {
         for (int i = 0; i < wpWorkers.size(); i++) {
             if (guiWorkers.length != wpWorkers.size()
                 || wpWorkers.get(i).equals(guiWorkers[i])) {
-                WPOverview.throwConflict(new Conflict(new Date(System
-                    .currentTimeMillis()), Conflict.CHANGED_RESOURCES,
+                WPOverview.throwConflict(new ConflictCompat(new Date(System
+                    .currentTimeMillis()), ConflictCompat.CHANGED_RESOURCES,
                     WPOverview.getUser().getId(), wp));
             }
         }

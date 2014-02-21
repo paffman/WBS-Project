@@ -16,6 +16,7 @@ package de.fhbingen.wbs.wpOverview.tabs;
 
 import de.fhbingen.wbs.translation.LocalizedStrings;
 import de.fhbingen.wbs.controller.BaselineViewController;
+import de.fhbingen.wbs.wpConflict.ConflictCompat;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -24,7 +25,6 @@ import javax.swing.JOptionPane;
 
 import de.fhbingen.wbs.chart.ChartCPIView;
 import de.fhbingen.wbs.chart.ChartCompleteView;
-import de.fhbingen.wbs.dbServices.ConflictService;
 import de.fhbingen.wbs.functions.CalcOAPBaseline;
 import de.fhbingen.wbs.globals.Loader;
 
@@ -52,7 +52,7 @@ public class BaselinePanelAction {
                     public void run() {
 
                         boolean calc;
-                        if (ConflictService.getAllConflicts().isEmpty()) {
+                        if (ConflictCompat.getAllConflictsFromDatabase().isEmpty()) {
                             calc = true;
                         } else {
                             if (JOptionPane.showConfirmDialog(null,
