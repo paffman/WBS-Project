@@ -8,147 +8,201 @@ import de.fhbingen.wbs.globals.Workpackage;
 import java.util.Date;
 
 /**
- * Studienprojekt: PSYS WBS 2.0<br/>
- * Kunde: Pentasys AG, Jens von Gersdorff<br/>
- * Projektmitglieder:<br/>
- * Michael Anstatt,<br/>
- * Marc-Eric Baumgärtner,<br/>
- * Jens Eckes,<br/>
- * Sven Seckler,<br/>
- * Lin Yang<br/>
- * Diese Klasse wir benutzt um Konflikt-Daten zu handhaben.<br/>
- *
- * @author Michael Anstatt, Marc-Eric Baumgaertner, Jens Eckes, Sven Seckler
- * @version 2.0 - 2012-08-19
+ *  Class that represents a single conflict.
  */
-public class ConflictController {
+public class Conflict {
+
+    /**
+     * Conflict code for start date can't be achieved.
+     */
     public static final int STARTWISH_FAIL = 0;
+
+    /**
+     * Conflict code for end date can't be achieved.
+     */
     public static final int ENDWISH_FAIL = 1;
+
+    /**
+     * Conflict code for changes resources.
+     */
     public static final int CHANGED_RESOURCES = 2;
+
+    /**
+     * Conflict code for changed dates.
+     */
     public static final int CHANGED_WISHDATES = 3;
+
+    /**
+     * Conflict code for new work package.
+     */
     public static final int NEW_WP = 4;
-    public static final int CHANGED_DEPENDECIES = 5;
+
+    /**
+     * Conflict code for changed dependencies.
+     */
+    public static final int CHANGED_DEPENDENCIES = 5;
+
+    /**
+     * Conflict code for changed bac.
+     */
     public static final int CHANGED_BAC = 6;
+
+    /**
+     * Conflict code for deleted work package.
+     */
     public static final int DELETED_WP = 7;
+
+    /**
+     * Conflict code for changed active state.
+     */
     public static final int CHANGED_ACTIVESTATE = 8;
 
-    public static final int TRIGGER = 0;
-    public static final int AFFECTED = 1;
+    /**
+     * Translation interface.
+     */
     private final Messages messageStrings;
 
+    /**
+     * Date when the conflict occured.
+     */
     private Date date;
+
+    /**
+     * Reason id.
+     */
     private int reason;
+
+    /**
+     * Id of user that caused the conflict.
+     */
     private int userId;
-    private int triggerAp;
-    private int affectedAP;
+
+    /**
+     * AP that triggered the conflict.
+     */
+    private int triggerWp;
+
+    /**
+     * AP that is affected by the conflict.
+     */
+    private int affectedWp;
+
+    /**
+     * Conflict id.
+     */
     private int id;
 
+    /**
+     * String Ids of triggering and affected wp.
+     */
     private String triggerApStringId, affectedApStringId;
 
-    // ctor
-
     /**
-     * Konstruktor
+     * Constructor.
      *
-     * @param date
-     *            Datum an dem der Konflikt ausgeloest wurde
-     * @param reason
-     *            Integer Wert des ausgeloesten Konflikts
-     * @param userId
-     *            User der den Konflikt ausgeloest hat
-     * @param triggerAP
-     *            Arbeitspaket welches den Konflikt ausgeloest hat
-     * @param affectedAP
-     *            Arbeitspaket welches vom Konflikt betroffen ist(optional)
+     * @param conflictDate
+     *          Date the conflict occurred.
+     * @param conflictReason
+     *            ID of the reason for the conflict.
+     * @param conflictUserId
+     *            Id of user that caused the conflict.
+     * @param conflictTriggeringWp
+     *            AP that triggered the conflict.
+     * @param conflictAffectedWp
+     *            AP that is affected by the conflict.
      */
-    public ConflictController(Date date, int reason, int userId,
-                              Workpackage triggerAP, Workpackage affectedAP) {
-        this.date = date;
-        this.reason = reason;
-        this.userId = userId;
-        this.triggerAp = triggerAP.getWpId();
-        this.affectedAP = affectedAP.getWpId();
-        this.triggerApStringId = triggerAP.getStringID();
-        this.affectedApStringId = affectedAP.getStringID();
+    public Conflict(final Date conflictDate, final int conflictReason,
+                    final int conflictUserId,
+                    final Workpackage conflictTriggeringWp,
+                    final Workpackage conflictAffectedWp) {
+        this.date = conflictDate;
+        this.reason = conflictReason;
+        this.userId = conflictUserId;
+        if (conflictTriggeringWp != null) {
+            this.triggerWp = conflictTriggeringWp.getWpId();
+            this.triggerApStringId = conflictTriggeringWp.getStringID();
+        }
+        if (conflictAffectedWp != null) {
+            this.affectedWp = conflictAffectedWp.getWpId();
+            this.affectedApStringId = conflictAffectedWp.getStringID();
+        }
         this.messageStrings = LocalizedStrings.getMessages();
     }
 
     /**
-     * Konstruktor
+     * Constructor.
      *
-     * @param date
-     *            Datum an dem der Konflikt ausgeloest wurde
-     * @param reason
-     *            Integer Wert des ausgeloesten Konflikts
-     * @param userId
-     *            User der den Konflikt ausgeloest hat
-     * @param triggerAP
-     *            Arbeitspaket welches den Konflikt ausgeloest hat
+     * @param conflictDate
+     *          Date the conflict occurred.
+     * @param conflictReason
+     *            ID of the reason for the conflict.
+     * @param conflictUserId
+     *            Id of user that caused the conflict.
+     * @param conflictTriggeringAP
+     *            AP that triggered the conflict.
      */
-    public ConflictController(Date date, int reason, int userId, Workpackage triggerAP) {
-        this.date = date;
-        this.reason = reason;
-        this.userId = userId;
-        this.triggerAp = triggerAP.getWpId();
-        this.triggerApStringId = triggerAP.getStringID();
-        this.messageStrings = LocalizedStrings.getMessages();
+    public Conflict(final Date conflictDate, final int conflictReason, final int conflictUserId, final Workpackage conflictTriggeringAP) {
+        this(conflictDate, conflictReason, conflictUserId, conflictTriggeringAP,
+                null);
     }
 
     /**
-     * Konstruktor
+     * Constructor.
      *
-     * @param date
-     *            Datum an dem der Konflikt ausgeloest wurde
-     * @param reason
-     *            Integer Wert des ausgeloesten Konflikts
-     * @param userId
-     *            User der den Konflikt ausgeloest hat
+     * @param conflictDate Date the conflict occurred.
+     * @param conflictReason
+     *            ID of the reason for the conflict.
+     * @param conflictUserId
+     *            Id of user that caused the conflict.
      */
-    public ConflictController(Date date, int reason, int userId) {
-        this.date = date;
-        this.reason = reason;
-        this.userId = userId;
-        this.messageStrings = LocalizedStrings.getMessages();
+    public Conflict(final Date conflictDate, final int conflictReason, final int conflictUserId) {
+        this(conflictDate, conflictReason, conflictUserId, null, null);
     }
 
     /**
-     * Konstruktor
+     * Constructor.
      *
-     * @param date
-     *            Datum an dem der Konflikt ausgeloest wurde
-     * @param reason
-     *            Integer Wert des ausgeloesten Konflikts
-     * @param userId
-     *            User der den Konflikt ausgeloest hat
-     * @param triggerAP
-     *            String ID des Arbeitspaket, welches den Konflikt ausgeloest
-     *            hat
-     * @param affectedAP
-     *            String ID des Arbeitspaket, welches vom Konflikt betroffen ist
+     * @param conflictDate
+     *          Date the conflict occurred.
+     * @param conflictReason
+     *            ID of the reason for the conflict.
+     * @param conflictUserId
+     *            Id of user that caused the conflict.
+     * @param conflictTriggeringWpId
+     *            AP that triggered the conflict.
+     * @param conflictAffectedWpId
+     *            AP that is affected by the conflict.
      */
-    public ConflictController(Date date, int reason, int userId,
-                              int triggerAp, int affectedAP) {
+    public Conflict(final Date conflictDate, final int conflictReason, final int conflictUserId, final int conflictTriggeringWpId, final int conflictAffectedWpId) {
         super();
-        this.date = date;
-        this.reason = reason;
-        this.userId = userId;
-        this.triggerAp = triggerAp;
-        this.affectedAP = affectedAP;
-        this.triggerApStringId =
-                triggerAp <= 0 ? "" : DBModelManager.getWorkpackageModel()
-                        .getWorkpackage(triggerAp).getStringID();
-        this.affectedApStringId =
-                affectedAP <= 0 ? "" : DBModelManager.getWorkpackageModel()
-                        .getWorkpackage(affectedAP).getStringID();
+        this.date = conflictDate;
+        this.reason = conflictReason;
+        this.userId = conflictUserId;
+        this.triggerWp = conflictTriggeringWpId;
+        this.affectedWp = conflictAffectedWpId;
+
+        if (conflictTriggeringWpId <= 0) {
+            this.triggerApStringId = "";
+        } else {
+            this.triggerApStringId = DBModelManager.getWorkpackageModel()
+                    .getWorkpackage(conflictTriggeringWpId).getStringID();
+        }
+
+        if (conflictAffectedWpId <= 0) {
+            this.affectedApStringId = "";
+        } else {
+            this.affectedApStringId = DBModelManager.getWorkpackageModel()
+                    .getWorkpackage(conflictAffectedWpId).getStringID();
+        }
         this.messageStrings = LocalizedStrings.getMessages();
     }
 
     /**
-     * Liefert eine Beschreibung des Konflikts
+     * Description of the conflict reason.
      *
-     * @return String mit Beschreibung
+     * @return Description of the conflict reason.
      */
-    public String getReasonString() {
+    public final String getReasonString() {
         switch (reason) {
         case STARTWISH_FAIL:
             return messageStrings.startDateCanNotBeAchieved();
@@ -163,7 +217,7 @@ public class ConflictController {
         case NEW_WP:
             return messageStrings.newApsWereCreated() + " " + messageStrings
                     .recalculate();
-        case CHANGED_DEPENDECIES:
+        case CHANGED_DEPENDENCIES:
             return messageStrings.dependenciesHaveChanged() + " "
                     + messageStrings.recalculate();
         case CHANGED_BAC:
@@ -180,90 +234,28 @@ public class ConflictController {
         }
     }
 
-    // getter/setter
-
-    /**
-     * Gibt Datum des Konflikts
-     *
-     * @return Datum des Konflikts
-     */
-    public Date getDate() {
-        return date;
-    }
-
-    /**
-     * Setzt das Datum des Konflikts
-     *
-     * @param Datum
-     *            des Konflikts
-     */
-    public void setDate(Date date) {
-        this.date = date;
-    }
-
-    /**
-     * Gibt den Fehlercode zurueck
-     *
-     * @return int des Fehlercodes
-     */
-    public int getReason() {
-        return reason;
-    }
-
-    /**
-     * Setzt den Fehlercode
-     *
-     * @param reason
-     *            int des Fehlercodes
-     */
-    public void setReason(int reason) {
-        this.reason = reason;
-    }
-
-    /**
-     * Liefert die UserID zurueck
-     *
-     * @return String der UserID
-     */
-    public int getUserId() {
-        return userId;
-    }
-
-    /**
-     * Setzt den ausloesenden User
-     *
-     * @param userId
-     *            String ID des User
-     */
-    public void setUserId(int userId) {
-        this.userId = userId;
-    }
-
-    /**
-     * Vergleicht ein Conflictobjekt mit sich selbst
-     *
-     * @return
-     */
     @Override
-    public boolean equals(Object obj) {
+    public final boolean equals(final Object obj) {
 
-        if (obj == null)
+        if (obj == null) {
             return false;
-        if (!(obj instanceof ConflictController))
+        }
+        if (!(obj instanceof Conflict)) {
             return false;
-        ConflictController other = (ConflictController) obj;
+        }
+        Conflict other = (Conflict) obj;
         if (reason < 2) {
             if (this.affectedApStringId != null) {
                 return DateFunctions.equalsDate(this.date, other.date)
                         && this.reason == other.reason
                         && this.userId == other.userId
-                        && this.triggerAp == other.getTriggerAp()
-                        && this.affectedAP == other.getAffectedAP();
+                        && this.triggerWp == other.getTriggerWp()
+                        && this.affectedWp == other.getAffectedWp();
             } else {
                 return DateFunctions.equalsDate(this.date, other.date)
                         && this.reason == other.reason
                         && this.userId == other.userId
-                        && this.triggerAp == other.getTriggerAp();
+                        && this.triggerWp == other.getTriggerWp();
             }
         } else {
             return other.getReason() == this.getReason();
@@ -271,13 +263,9 @@ public class ConflictController {
 
     }
 
-    /**
-     * Liefert einen String des ConflictController Objekts
-     *
-     * @return String mit Informationen des Objekts
-     */
+
     @Override
-    public String toString() {
+    public final String toString() {
         return triggerApStringId
                 + ", "
                 + DBModelManager.getEmployeesModel().getEmployee(userId)
@@ -287,12 +275,12 @@ public class ConflictController {
 
     /**
      * Liefert einen HashCode des Objekts Wenn Reason 1 oder 2 wird ein
-     * richtiger HashCode erstellt sonst einfach die Reason ID zurueckgegeben
+     * richtiger HashCode erstellt sonst einfach die Reason ID zurueckgegeben.
      *
-     * @return
+     * @return Hash code.
      */
     @Override
-    public int hashCode() {
+    public final int hashCode() {
         if (reason < 2) {
             String s =
                     affectedApStringId
@@ -307,77 +295,63 @@ public class ConflictController {
     }
 
     /**
-     * @return the triggerAp
+     * Date the conflict occurred.
+     *
+     * @return Date of the conflict.
      */
-    public final int getTriggerAp() {
-        return triggerAp;
+    public final Date getDate() {
+        return date;
     }
 
     /**
-     * @param triggerAp
-     *            the triggerAp to set
+     * Returns the code for the reason.
+     *
+     * @return int of the reason.
      */
-    public final void setTriggerAp(int triggerAp) {
-        this.triggerAp = triggerAp;
+    public final int getReason() {
+        return reason;
     }
 
     /**
-     * @return the affectedAP
+     * @return The ID of the user that caused the conflict.
      */
-    public final int getAffectedAP() {
-        return affectedAP;
+    public final int getUserId() {
+        return userId;
     }
 
     /**
-     * @param affectedAP
-     *            the affectedAP to set
+     * @return the triggerWp.
      */
-    public final void setAffectedAP(int affectedAP) {
-        this.affectedAP = affectedAP;
+    public final int getTriggerWp() {
+        return triggerWp;
     }
 
     /**
-     * @return the triggerApStringId
+     * @return the affectedWp.
+     */
+    public final int getAffectedWp() {
+        return affectedWp;
+    }
+
+    /**
+     * @return the triggerApStringId.
      */
     public final String getTriggerApStringId() {
         return triggerApStringId;
     }
 
     /**
-     * @param triggerApStringId
-     *            the triggerApStringId to set
-     */
-    public final void setTriggerApStringId(String triggerApStringId) {
-        this.triggerApStringId = triggerApStringId;
-    }
-
-    /**
-     * @return the affectedApStringId
+     * @return the affectedApStringId.
      */
     public final String getAffectedApStringId() {
         return affectedApStringId;
     }
 
     /**
-     * @param affectedApStringId
-     *            the affectedApStringId to set
-     */
-    public final void setAffectedApStringId(String affectedApStringId) {
-        this.affectedApStringId = affectedApStringId;
-    }
-
-    /**
-     * @return the dbId
+     * @return the dbId.
      */
     public final int getId() {
         return id;
     }
 
-    /**
-     * @param dbId
-     *            the dbId to set
-     */
-    public final void setId(int id) {
-        this.id = id;
-    }
 }
