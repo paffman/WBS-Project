@@ -1,5 +1,8 @@
 # WBS-Tool
 
+The WBS-Tool is a project managment tool combining the Work Breakdown
+Structure and Earned Value Analysis.
+
 ## Build
 
 [gradle](http://www.gradle.org/) is used to build, test and deploy the
