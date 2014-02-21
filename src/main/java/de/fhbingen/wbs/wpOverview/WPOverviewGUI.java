@@ -14,7 +14,6 @@
 
 package de.fhbingen.wbs.wpOverview;
 
-import de.fhbingen.wbs.dbServices.ConflictService;
 import de.fhbingen.wbs.translation.Button;
 import de.fhbingen.wbs.translation.General;
 import de.fhbingen.wbs.translation.LocalizedStrings;
@@ -22,7 +21,7 @@ import de.fhbingen.wbs.translation.Wbs;
 import de.fhbingen.wbs.functions.WpManager;
 import de.fhbingen.wbs.globals.Controller;
 import de.fhbingen.wbs.globals.Workpackage;
-import de.fhbingen.wbs.wpConflict.Conflict;
+import de.fhbingen.wbs.wpConflict.ConflictCompat;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -406,7 +405,7 @@ public class WPOverviewGUI extends JFrame {
             tabs.addTab(generalStrings.dependencies(),
                 createScrollPane(follower));
         }
-        if (ConflictService.getAllConflicts().size() == 0) {
+        if (ConflictCompat.getAllConflictsFromDatabase().size() == 0) {
             conflictIcon = new ImageIcon(
                 (Toolkit.getDefaultToolkit().getImage(WPOverviewGUI.class
                     .getResource("/_icons/noWarning.png")))); //NON-NLS
@@ -560,7 +559,7 @@ public class WPOverviewGUI extends JFrame {
      * @param conflict
      *            Conflict which should be thrown.
      */
-    protected final void throwConflict(final Conflict conflict) {
+    protected final void throwConflict(final ConflictCompat conflict) {
         conflictIcon.setImage(Toolkit.getDefaultToolkit().getImage(
             WPOverviewGUI.class.getResource("/_icons/warning.png"))); //NON-NLS
         conflicts.addConflict(conflict);
@@ -586,7 +585,7 @@ public class WPOverviewGUI extends JFrame {
      * Reload the conflicts.
      */
     public final void reloadConflicts() {
-        if (ConflictService.getAllConflicts().size() == 0) {
+        if (ConflictCompat.getAllConflictsFromDatabase().size() == 0) {
             conflictIcon.setImage(Toolkit.getDefaultToolkit().getImage(
                 WPOverviewGUI.class.getResource(
                         "/_icons/noWarning.png"))); //NON-NLS

@@ -2,22 +2,19 @@ package de.fhbingen.wbs.wpConflict;
 
 import de.fhbingen.wbs.calendar.DateFunctions;
 import de.fhbingen.wbs.dbaccess.DBModelManager;
+import de.fhbingen.wbs.dbaccess.data.Conflict;
 import de.fhbingen.wbs.translation.LocalizedStrings;
 import de.fhbingen.wbs.translation.Messages;
 import de.fhbingen.wbs.globals.Workpackage;
-import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  *  Class that represents a single conflict.
  */
-public class Conflict {
-    /**
-     * Date Format.
-     * TODO find new home for this poor little thing.
-     */
-    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(
-            "dd.MM.yyyy HH:mm");
+public class ConflictCompat {
 
     /**
      * Conflict code for start date can't be achieved.
@@ -96,6 +93,7 @@ public class Conflict {
 
     /**
      * Conflict id.
+     * TODO This id is never set.
      */
     private int id;
 
@@ -118,10 +116,10 @@ public class Conflict {
      * @param conflictAffectedWp
      *            AP that is affected by the conflict.
      */
-    public Conflict(final Date conflictDate, final int conflictReason,
-                    final int conflictUserId,
-                    final Workpackage conflictTriggeringWp,
-                    final Workpackage conflictAffectedWp) {
+    public ConflictCompat(final Date conflictDate, final int conflictReason,
+                          final int conflictUserId,
+                          final Workpackage conflictTriggeringWp,
+                          final Workpackage conflictAffectedWp) {
         this.date = conflictDate;
         this.reason = conflictReason;
         this.userId = conflictUserId;
@@ -148,10 +146,9 @@ public class Conflict {
      * @param conflictTriggeringAP
      *            AP that triggered the conflict.
      */
-    public Conflict(final Date conflictDate,
-                    final int conflictReason,
-                    final int conflictUserId,
-                    final Workpackage conflictTriggeringAP) {
+    public ConflictCompat(final Date conflictDate, final int conflictReason,
+                          final int conflictUserId,
+                          final Workpackage conflictTriggeringAP) {
         this(conflictDate, conflictReason, conflictUserId, conflictTriggeringAP,
                 null);
     }
@@ -165,9 +162,8 @@ public class Conflict {
      * @param conflictUserId
      *            Id of user that caused the conflict.
      */
-    public Conflict(final Date conflictDate,
-                    final int conflictReason,
-                    final int conflictUserId) {
+    public ConflictCompat(final Date conflictDate, final int conflictReason,
+                          final int conflictUserId) {
         this(conflictDate, conflictReason, conflictUserId, null, null);
     }
 
@@ -185,11 +181,10 @@ public class Conflict {
      * @param conflictAffectedWpId
      *            AP that is affected by the conflict.
      */
-    public Conflict(final Date conflictDate,
-                    final int conflictReason,
-                    final int conflictUserId,
-                    final int conflictTriggeringWpId,
-                    final int conflictAffectedWpId) {
+    public ConflictCompat(final Date conflictDate, final int conflictReason,
+                          final int conflictUserId,
+                          final int conflictTriggeringWpId,
+                          final int conflictAffectedWpId) {
         super();
         this.date = conflictDate;
         this.reason = conflictReason;
@@ -211,6 +206,51 @@ public class Conflict {
                     .getWorkpackage(conflictAffectedWpId).getStringID();
         }
         this.messageStrings = LocalizedStrings.getMessages();
+    }
+
+    /**
+     * Gets all conflicts from database.
+     *
+     * @return Set of all conflicts.
+     */
+    public static Set<ConflictCompat> getAllConflictsFromDatabase() {
+        HashSet<ConflictCompat> allConflicts = new HashSet<>();
+        List<Conflict> conflicts =
+                DBModelManager.getConflictsModel().getConflicts();
+
+        for (Conflict conf : conflicts) {
+            allConflicts.add(new ConflictCompat(conf.getOccurence_date(),
+                    conf.getReason(),
+                    conf.getFid_emp(), conf.getFid_wp(),
+                    conf.getFid_wp_affected()));
+        }
+
+        return allConflicts;
+    }
+
+    /**
+     * Saves the conflict to database.
+     * @return true if successful.
+     *
+     */
+    public final boolean saveConflictToDatabase() {
+
+        Conflict conf = new Conflict();
+        conf.setFid_wp(getTriggerWp());
+        conf.setFid_wp_affected(getAffectedWp());
+        conf.setFid_emp(getUserId());
+        conf.setReason(getReason());
+        conf.setOccurence_date(getDate());
+        return DBModelManager.getConflictsModel().addNewConflict(conf);
+
+    }
+
+    /**
+     * Deleted conflict from database.
+     * TODO fix behaviour.
+     */
+    public final void deleteConflictFromDatabase() {
+        DBModelManager.getConflictsModel().deleteConflict(getId());
     }
 
     /**
@@ -256,10 +296,10 @@ public class Conflict {
         if (obj == null) {
             return false;
         }
-        if (!(obj instanceof Conflict)) {
+        if (!(obj instanceof ConflictCompat)) {
             return false;
         }
-        Conflict other = (Conflict) obj;
+        ConflictCompat other = (ConflictCompat) obj;
         if (reason < 2) {
             if (this.affectedApStringId != null) {
                 return DateFunctions.equalsDate(this.date, other.date)
@@ -282,11 +322,12 @@ public class Conflict {
 
     @Override
     public final String toString() {
-        return triggerApStringId
-                + ", "
+        return triggerApStringId + ", "
                 + DBModelManager.getEmployeesModel().getEmployee(userId)
-                        .getLogin() + ", " + reason + ", "
-                + DateFunctions.getDateString(date) + ", " + affectedApStringId;
+                        .getLogin() + ", "
+                + reason + ", "
+                + DateFunctions.getDateString(date) + ", "
+                + affectedApStringId;
     }
 
     /**
@@ -399,7 +440,7 @@ public class Conflict {
     public final String[] createStringArray() {
 
         return new String[] {
-        DATE_FORMAT.format(getDate()),
+        DateFunctions.DATE_FORMAT.format(getDate()),
                 getReasonString(),
                 DBModelManager.getEmployeesModel().getEmployee(getUserId())
                         .getLogin(),

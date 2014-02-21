@@ -15,7 +15,7 @@
 package de.fhbingen.wbs.controller;
 
 import de.fhbingen.wbs.gui.EditAvailabilityView;
-import de.fhbingen.wbs.wpConflict.Conflict;
+import de.fhbingen.wbs.wpConflict.ConflictCompat;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -226,16 +226,16 @@ public class EditAvailabilityController implements EditAvailabilityView.Actions 
 
     @Override
     public final void buttonDelete() {
-        WPOverview.throwConflict(new Conflict(new Date(System
-                .currentTimeMillis()), Conflict.CHANGED_RESOURCES,
+        WPOverview.throwConflict(new ConflictCompat(new Date(System
+                .currentTimeMillis()), ConflictCompat.CHANGED_RESOURCES,
                 WPOverview.getUser().getId()));
         delete();
     }
 
     @Override
     public final void buttonSave() {
-        WPOverview.throwConflict(new Conflict(new Date(System
-                .currentTimeMillis()), Conflict.CHANGED_RESOURCES,
+        WPOverview.throwConflict(new ConflictCompat(new Date(System
+                .currentTimeMillis()), ConflictCompat.CHANGED_RESOURCES,
                 WPOverview.getUser().getId()));
         save();
     }

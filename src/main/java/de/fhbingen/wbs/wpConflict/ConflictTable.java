@@ -1,6 +1,5 @@
 package de.fhbingen.wbs.wpConflict;
 
-import de.fhbingen.wbs.dbServices.ConflictService;
 import de.fhbingen.wbs.functions.WpManager;
 import de.fhbingen.wbs.globals.Workpackage;
 import de.fhbingen.wbs.translation.General;
@@ -39,7 +38,7 @@ public class ConflictTable extends JTable {
     /**
      * All conflicts.
      */
-    private ArrayList<Conflict> conflicts;
+    private ArrayList<ConflictCompat> conflicts;
 
     /**
      * The context menu.
@@ -119,7 +118,7 @@ public class ConflictTable extends JTable {
      *          Number of row of the conflict.
      */
     private void removeConflict(final int row) {
-            ConflictService.deleteConflict(conflicts.remove(row));
+            conflicts.remove(row).deleteConflictFromDatabase();
             model.removeRow(row);
             over.reload();
     }
@@ -130,8 +129,8 @@ public class ConflictTable extends JTable {
      * @param conflict
      *            Conflict to be added.
      */
-    public final void addConflict(final Conflict conflict) {
-        Set<Conflict> conflictHashSet = new HashSet<>();
+    public final void addConflict(final ConflictCompat conflict) {
+        Set<ConflictCompat> conflictHashSet = new HashSet<>();
         conflictHashSet.add(conflict);
         addConflicts(conflictHashSet);
     }
@@ -142,16 +141,16 @@ public class ConflictTable extends JTable {
      * @param newConflicts
      *            Conflicts to be added
      */
-    public final void addConflicts(final Set<Conflict> newConflicts) {
+    public final void addConflicts(final Set<ConflictCompat> newConflicts) {
         for (int i = 0; i < this.getRowCount(); i++) {
             model.removeRow(i);
         }
-        HashSet<Conflict> singleConflicts = new HashSet<>(conflicts);
-        for (Conflict actualConflict : newConflicts) {
+        HashSet<ConflictCompat> singleConflicts = new HashSet<>(conflicts);
+        for (ConflictCompat actualConflict : newConflicts) {
             if (!singleConflicts.contains(actualConflict)) {
                 conflicts.add(actualConflict);
                 model.addRow(actualConflict.createStringArray());
-                ConflictService.saveConflictToDatabase(actualConflict);
+                actualConflict.saveConflictToDatabase();
             }
         }
         this.repaint();
@@ -168,9 +167,9 @@ public class ConflictTable extends JTable {
         model.addColumn(generalStrings.causer());
         model.addColumn(LocalizedStrings.getWbs().affectedWorkpackages());
 
-        conflicts = new ArrayList<>(ConflictService.getAllConflicts());
+        conflicts = new ArrayList<>(ConflictCompat.getAllConflictsFromDatabase());
 
-        for (Conflict actualConflict : conflicts) {
+        for (ConflictCompat actualConflict : conflicts) {
             model.addRow(actualConflict.createStringArray());
         }
 

@@ -14,7 +14,7 @@
 
 package de.fhbingen.wbs.wpOverview;
 
-import de.fhbingen.wbs.wpConflict.Conflict;
+import de.fhbingen.wbs.wpConflict.ConflictCompat;
 import java.awt.Color;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -294,7 +294,7 @@ public class WPOverview {
      * @param conflict
      *            Conflict which should be thrown.
      */
-    public static void throwConflict(final Conflict conflict) {
+    public static void throwConflict(final ConflictCompat conflict) {
         if (gui != null) {
             gui.throwConflict(conflict);
         }

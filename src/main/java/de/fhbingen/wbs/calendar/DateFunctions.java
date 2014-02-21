@@ -15,6 +15,7 @@
 package de.fhbingen.wbs.calendar;
 
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -34,6 +35,11 @@ public final class DateFunctions {
      * Value to divide milliseconds by and get hours.
      */
     public static final int FACTOR_MILLISECONDS_TO_HOURS = 3600000;
+    /**
+     * Date Format used throughout the application.
+     */
+    public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(
+            "dd.MM.yyyy HH:mm");
 
     /**
      * Prevent instantiation.
