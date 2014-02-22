@@ -11,9 +11,12 @@ public interface ApplicationMetadata {
     @De("WBS-Advanced")
     String applicationName();
 
-    String shortDescription();
+    @De("Ein Tool zur Projektverwaltung mithilfe einer Work Breakdown<br>" +
+            "Structure und zum Controlling mit Earned Value Analyse.")
+    @En("A project management tool implementing a work breakdown "
+            + "structure<br>and earned value analysis.")
+    String shortDescriptionHTML();
 
-    String author();
-
+    @De("")
     String copyrightHolder();
 }

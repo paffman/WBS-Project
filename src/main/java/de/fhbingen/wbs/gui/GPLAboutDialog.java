@@ -39,6 +39,7 @@ import java.net.URL;
 import javax.swing.AbstractAction;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -425,24 +426,30 @@ public class GPLAboutDialog extends AbstractAction {
         // Open a standard about dialog with the option to
         // view the GPL or just say OK
 
-        String message = name + " v" + version + "\n" + blurb + "\n\n" +
+        String message ="<html>" + name + " <i>(" + version +
+                ")</i><br><br>" +
+                blurb +
+                "<br><br>" +
                 copyright +
-                "\n\nThis program is Open Source software, or more" +
-                "\nspecifically, free software. You can redistribute" +
-                "\nit and/or modify it under the terms of the GNU" +
-                "\nGeneral Public License (GPL) as published by the " +
-                "\nFree Software Foundation; either version 2 of the" +
-                "\nLicense, or (at your option) any later version.\n";
+                "<br><br><br>This program is Open Source software, " +
+                "or more specifically<br>, free software. You can " +
+                "redistribute" +
+                "it and/or modify<br> it under the terms of the GNU" +
+                "<br>General Public License (GPL) as published by the " +
+                "<br>Free Software Foundation; either version 2 of the" +
+                "<br>License, or (at your option) any later version.</html>";
 
+        JLabel messageLabel = new JLabel(message);
+        messageLabel.setFont(messageLabel.getFont().deriveFont(16f));
         int viewGPL;
 
         Object[] optionButtons = {"View GPL", "OK"};
         if (internalFrames) {
-            viewGPL = JOptionPane.showInternalOptionDialog(parent, message,
+            viewGPL = JOptionPane.showInternalOptionDialog(parent, messageLabel,
                     "About " + name, 0, JOptionPane.INFORMATION_MESSAGE,
                     programLogo, optionButtons, optionButtons[1]);
         } else {
-            viewGPL = JOptionPane.showOptionDialog(parent, message,
+            viewGPL = JOptionPane.showOptionDialog(parent, messageLabel,
                     "About " + name, 0, JOptionPane.INFORMATION_MESSAGE,
                     programLogo, optionButtons, optionButtons[1]);
         }
@@ -454,7 +461,7 @@ public class GPLAboutDialog extends AbstractAction {
             JTextArea textArea = new JTextArea(15, 81);
             textArea.setEditable(false);
             textArea.setLineWrap(true);
-            textArea.setFont(new Font("Courier", Font.PLAIN, 10));
+            textArea.setFont(new Font("Courier", Font.PLAIN, 11));
 
             JScrollPane scrollPane = new JScrollPane(textArea);
 

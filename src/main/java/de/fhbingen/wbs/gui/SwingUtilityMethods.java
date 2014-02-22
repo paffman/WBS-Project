@@ -6,8 +6,10 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
-import java.io.File;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -136,17 +138,22 @@ public final class SwingUtilityMethods {
         ApplicationMetadata metadata = LocalizedStrings
                 .getApplicationMetadata();
         return new GPLAboutDialog(parent, metadata.applicationName(),
-                getVersionName(), metadata.shortDescription(),
+                getVersionName(), metadata.shortDescriptionHTML(),
                 metadata.copyrightHolder());
     }
 
     public static String getVersionName() {
-        File f = new File("versions.properties");
+
+        InputStream resource = SwingUtilityMethods.class.getClassLoader()
+                .getResourceAsStream("version");
+        BufferedReader inputFile = new BufferedReader(new InputStreamReader(
+                resource));
         try {
-            System.out.println(f.getCanonicalPath());
-        } catch (IOException e) {
-            e.printStackTrace();
+            return inputFile.readLine();
+        } catch (IOException | NullPointerException e) {
+            System.err.println(
+                    "Version number file could not be read."); //NON-NLS
+            return "";
         }
-        return "";
     }
 }
