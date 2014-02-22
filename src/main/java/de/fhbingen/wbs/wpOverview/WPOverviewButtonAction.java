@@ -17,11 +17,11 @@ package de.fhbingen.wbs.wpOverview;
 import de.fhbingen.wbs.controller.ChangePwViewController;
 import de.fhbingen.wbs.controller.LoginViewController;
 import de.fhbingen.wbs.dbaccess.DBModelManager;
+import de.fhbingen.wbs.gui.SwingUtilityMethods;
 import de.fhbingen.wbs.translation.LocalizedStrings;
 import de.fhbingen.wbs.functions.CalcOAPBaseline;
 import de.fhbingen.wbs.functions.WpManager;
 import de.fhbingen.wbs.globals.Controller;
-import de.fhbingen.wbs.globals.InfoBox;
 import de.fhbingen.wbs.globals.Loader;
 import de.fhbingen.wbs.importPrepare.PrepareImport;
 import java.awt.event.ActionEvent;
@@ -155,11 +155,12 @@ public class WPOverviewButtonAction {
             }
         });
 
-        gui.miInfo.addActionListener(new ActionListener() {
-            public void actionPerformed(final ActionEvent arg0) {
-                new InfoBox();
-            }
-        });
+        //gui.miInfo.addActionListener(new ActionListener() {
+        //    public void actionPerformed(final ActionEvent arg0) {
+        //        new InfoBox();
+        //    }
+        //});
+        gui.miInfo.addActionListener(SwingUtilityMethods.getGplDialog(gui));
 
         // close window
         gui.addWindowListener(new WindowAdapter() {

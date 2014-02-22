@@ -1,9 +1,13 @@
 package de.fhbingen.wbs.gui;
 
+import de.fhbingen.wbs.translation.ApplicationMetadata;
+import de.fhbingen.wbs.translation.LocalizedStrings;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+import java.io.File;
+import java.io.IOException;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -126,5 +130,23 @@ public final class SwingUtilityMethods {
                 | IllegalAccessException | UnsupportedLookAndFeelException e1) {
             System.err.println("PLAF Error"); //NON-NLS
         }
+    }
+
+    public static GPLAboutDialog getGplDialog(final Component parent) {
+        ApplicationMetadata metadata = LocalizedStrings
+                .getApplicationMetadata();
+        return new GPLAboutDialog(parent, metadata.applicationName(),
+                getVersionName(), metadata.shortDescription(),
+                metadata.copyrightHolder());
+    }
+
+    public static String getVersionName() {
+        File f = new File("versions.properties");
+        try {
+            System.out.println(f.getCanonicalPath());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return "";
     }
 }
