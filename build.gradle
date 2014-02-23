@@ -75,3 +75,13 @@ task csReport (dependsOn: [checkstyleMain, checkstyleTest]) << {
 }
 
 check.dependsOn csReport
+
+task(createVersionFile) << {
+    ext.resDir = new File("${rootDir}/src/main/resources")
+    resDir.mkdirs()
+
+    ext.gitTag = "git describe".execute().in.text
+    new File(resDir, "version").text = gitTag
+}
+
+compileJava.dependsOn(createVersionFile)

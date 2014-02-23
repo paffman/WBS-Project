@@ -18,6 +18,14 @@ public final class LocalizedStrings {
     private static Status status = null;
     private static Chart chart = null;
     private static General general = null;
+    private static ApplicationMetadata applicationMetadata = null;
+
+    public static ApplicationMetadata getApplicationMetadata() {
+        if (applicationMetadata == null) {
+            applicationMetadata = C10N.get(ApplicationMetadata.class);
+        }
+        return applicationMetadata;
+    }
 
     public static Button getButton() {
         if (button == null) {

@@ -23,7 +23,6 @@ import c10n.C10N;
 import de.fhbingen.wbs.gui.login.LoginView;
 import de.fhbingen.wbs.dbaccess.DBModelManager;
 import de.fhbingen.wbs.dbaccess.data.Employee;
-import de.fhbingen.wbs.globals.InfoBox;
 import de.fhbingen.wbs.translation.C10NUseEnglishDefaultConfiguration;
 import de.fhbingen.wbs.translation.LocalizedStrings;
 import de.fhbingen.wbs.functions.WpManager;
@@ -379,11 +378,6 @@ public class LoginViewController implements LoginView.ActionsDelegate,
     public void helpPerformed() {
         JOptionPane.showMessageDialog(getGui(),
                 LocalizedStrings.getMessages().loginHelpMsg());
-    }
-
-    @Override
-    public void infoPerformed() {
-        new InfoBox();
     }
 
     @Override

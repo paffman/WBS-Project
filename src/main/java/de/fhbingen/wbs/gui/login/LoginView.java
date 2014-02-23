@@ -19,6 +19,7 @@
 
 package de.fhbingen.wbs.gui.login;
 
+import de.fhbingen.wbs.gui.GPLAboutDialog;
 import de.fhbingen.wbs.gui.SwingUtilityMethods;
 import de.fhbingen.wbs.gui.delegates.SimpleDialogDelegate;
 import de.fhbingen.wbs.translation.LocalizedStrings;
@@ -139,11 +140,6 @@ public class LoginView extends JFrame {
          * The help action is performed.
          */
         void helpPerformed();
-
-        /**
-         * The info action is performed.
-         */
-        void infoPerformed();
 
         /**
          * The new db action is performed. This will happen when the user tris
@@ -361,11 +357,7 @@ public class LoginView extends JFrame {
             }
         });
 
-        infoMenuItem.addActionListener(new ActionListener() {
-            public void actionPerformed(final ActionEvent arg0) {
-                actionsDelegate.infoPerformed();
-            }
-        });
+        infoMenuItem.addActionListener(SwingUtilityMethods.getGplDialog(this));
 
         newDbMenuItem.addActionListener(new ActionListener() {
             public void actionPerformed(final ActionEvent e) {

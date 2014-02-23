@@ -1,9 +1,15 @@
 package de.fhbingen.wbs.gui;
 
+import de.fhbingen.wbs.translation.ApplicationMetadata;
+import de.fhbingen.wbs.translation.LocalizedStrings;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -125,6 +131,29 @@ public final class SwingUtilityMethods {
         } catch (ClassNotFoundException | InstantiationException
                 | IllegalAccessException | UnsupportedLookAndFeelException e1) {
             System.err.println("PLAF Error"); //NON-NLS
+        }
+    }
+
+    public static GPLAboutDialog getGplDialog(final Component parent) {
+        ApplicationMetadata metadata = LocalizedStrings
+                .getApplicationMetadata();
+        return new GPLAboutDialog(parent, metadata.applicationName(),
+                getVersionName(), metadata.shortDescriptionHTML(),
+                metadata.copyrightHolder());
+    }
+
+    public static String getVersionName() {
+
+        InputStream resource = SwingUtilityMethods.class.getClassLoader()
+                .getResourceAsStream("version");
+        BufferedReader inputFile = new BufferedReader(new InputStreamReader(
+                resource));
+        try {
+            return inputFile.readLine();
+        } catch (IOException | NullPointerException e) {
+            System.err.println(
+                    "Version number file could not be read."); //NON-NLS
+            return "";
         }
     }
 }
