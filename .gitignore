@@ -41,6 +41,9 @@ local.properties
 
 .gradle
 
+# generated version file
+src/main/resources/version
+
 #################
 ## Visual Studio
 #################
