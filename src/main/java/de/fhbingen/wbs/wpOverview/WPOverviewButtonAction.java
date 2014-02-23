@@ -114,7 +114,7 @@ public class WPOverviewButtonAction {
                     public void run() {
                         gui.setEnabled(false);
                         Loader loader = new Loader(gui);
-                        new CalcOAPBaseline(true, over);
+                        new CalcOAPBaseline(false, over);
                         loader.dispose();
                         Loader.reset();
                         gui.setEnabled(true);
@@ -126,6 +126,24 @@ public class WPOverviewButtonAction {
             }
         });
 
+        gui.miCalcPvDuration.addActionListener(new ActionListener() {
+            public void actionPerformed(final ActionEvent e) {
+                new Thread() {
+                    public void run() {
+                        gui.setEnabled(false);
+                        Loader loader = new Loader(gui);
+                        new CalcOAPBaseline(true, over);
+                        loader.dispose();
+                        Loader.reset();
+                        gui.setEnabled(true);
+                        gui.requestFocus();
+                    }
+                } .start();
+
+                over.reload();
+            }
+        });
+        
         gui.miChangePW.addActionListener(new ActionListener() {
             public void actionPerformed(final ActionEvent e) {
                 new ChangePwViewController(WPOverview.getUser());

@@ -194,21 +194,22 @@ public class ValuesService {
      * Diese Methode prueft ein Datum ob es ein Freitag ist<br/>
      * wenn ja wir eine Calendar instance mit dem Datum zurueck gegeben<br/>
      * wenn nein wird das Datum auf den naechsten Freitag gesetzt und eine
-     * Calendar instance mit dem Datum zurueck gegeben<br/>
+     * Calendar instance mit dem Datum zurueck gegeben.<br/>
      *
      * @param date
      *            Date wenn null wir der naechste Freitag zurueck geliefert sont
      *            wir das Datum getestet ob es sich um einen Freitag handelt
      * @return Calendar mit dem Datum des naechsten Freitags
+     * @deprecated function disabled
      */
-    public static Calendar getNextFriday(Date date) {
+    public static Calendar getNextFriday(final Date date) {
         Calendar calendar = Calendar.getInstance();
         if (date != null) {
             calendar.setTime(date);
         }
-        while (calendar.get(Calendar.DAY_OF_WEEK) != Calendar.FRIDAY) {
-            calendar.add(Calendar.DATE, 1);
-        }
+       // while (calendar.get(Calendar.DAY_OF_WEEK) != Calendar.FRIDAY) {
+       //     calendar.add(Calendar.DATE, 1);
+       // }
 
         return calendar;
     }
@@ -217,22 +218,23 @@ public class ValuesService {
      * Diese Methode prueft ein Datum ob es ein Freitag ist<br/>
      * wenn ja wir eine Calendar instance mit dem Datum zurueck gegeben<br/>
      * wenn nein wird das Datum auf den naechsten Freitag gesetzt und eine
-     * Calendar instance mit dem Datum zurueck gegeben<br/>
+     * Calendar instance mit dem Datum zurueck gegeben.<br/>
      *
      * @param date
      *            Date wenn null wir der vorherigen Freitag zurueck geliefert
      *            sont wir das Datum getestet ob es sich um einen Freitag
      *            handelt
      * @return Calendar mit dem Datum des vorherigen Freitags
+     * @deprecated function disabled
      */
-    public static Calendar getPreviousFriday(Date date) {
+    public static Calendar getPreviousFriday(final Date date) {
         Calendar calendar = Calendar.getInstance();
         if (date != null) {
             calendar.setTime(date);
         }
-        while (calendar.get(Calendar.DAY_OF_WEEK) != Calendar.FRIDAY) {
-            calendar.add(Calendar.DATE, -1);
-        }
+       // while (calendar.get(Calendar.DAY_OF_WEEK) != Calendar.FRIDAY) {
+       //     calendar.add(Calendar.DATE, -1);
+       // }
         return calendar;
     }
 
