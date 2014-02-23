@@ -672,13 +672,27 @@ public class Workpackage {
      * @return Returns the SPI of the workpackage.
      */
     public final double getSpi() {
+        // if today is before start date of wp, return 1
+        final Date today = new Date(System.currentTimeMillis());
+        Date compare = thisWp.getStartDateCalc();
+        if (compare == null){
+            compare = thisWp.getStartDateWish();
+        }
+        if (today.compareTo(compare) < 0) {
+            return 1;
+        }
+
+        // calculate spi
         final double ev = thisWp.getEv();
         final double pv = getPv();
         if ((int) pv <= 0) {
-            return MAX_SPI;
-        }
-        if (pv != 0) {
-            if (ev != 0) {
+            if ((int) ev != 0) {
+                return MAX_SPI;
+            } else {
+                return 1;
+            }
+        } else {
+            if ((int) ev != 0) {
                 final double spi = ev / pv;
                 if (spi > MAX_SPI) {
                     return MAX_SPI;
@@ -686,10 +700,8 @@ public class Workpackage {
                     return spi;
                 }
             } else {
-                return 1.0;
+                return 0;
             }
-        } else {
-            return 0;
         }
     }
 
@@ -698,23 +710,38 @@ public class Workpackage {
      * @return Returns the SPI of the workpackage.
      */
     public final double getSpi(final Date date) {
-        GregorianCalendar cal = new GregorianCalendar();
-        cal.setTime(date);
-        double pv = ValuesService.getApPv(getWpId(), cal);
-        if ((int) pv <= 0) {
-            return 10;
+        // if date is before start date of wp, return 1
+        Date compare = thisWp.getStartDateCalc();
+        if (compare == null){
+            compare = thisWp.getStartDateWish();
         }
-        final double ev = thisWp.getEv();
-        if (pv != 0) {
-            if (ev != 0) {
-                return ev / pv > 10 ? 10.0 : ev / pv;
-            } else {
-                return 1.0;
-            }
-        } else {
-            return 0;
+        if (date.compareTo(compare) < 0) {
+            return 1;
         }
 
+        // calculate spi
+        GregorianCalendar cal = new GregorianCalendar();
+        cal.setTime(date);
+        final double ev = thisWp.getEv();
+        double pv = ValuesService.getApPv(getWpId(), cal);
+        if ((int) pv <= 0) {
+            if ((int) ev != 0) {
+                return MAX_SPI;
+            } else {
+                return 1;
+            }
+        } else {
+            if ((int) ev != 0) {
+                final double spi = ev / pv;
+                if (spi > MAX_SPI) {
+                    return MAX_SPI;
+                } else {
+                    return spi;
+                }
+            } else {
+                return 0;
+            }
+        }
     }
 
     /**
