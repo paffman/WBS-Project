@@ -3,7 +3,7 @@
  * A generic handler for About events for GPL'd Java programs
  *
  * Written by Erskin L. Cherry (erskin@eldritch.org)
- * Copyright ï¿½ 1999 Eldritch Enterprises
+ * Copyright  1999 Eldritch Enterprises
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -25,6 +25,9 @@
 
 package de.fhbingen.wbs.gui;
 
+import c10n.C10N;
+import c10n.annotations.De;
+import c10n.annotations.En;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -83,6 +86,62 @@ import javax.swing.JTextArea;
  * @version 1.3
  */
 public class GPLAboutDialog extends AbstractAction {
+
+    private static final String LICENSE_FILE_NAME = "LICENSE";
+
+    private interface GplTranslations {
+        @En("<br><br>License:" +
+                "<br>This program is Open Source software, or more specifically," +
+                "<br>free software. You can redistribute it and/or modify it under" +
+                "<br>the terms of the GNU General Public License (GPL) as" +
+                "<br>published by the Free Software Foundation; either" +
+                "<br>version 3 of the License, or (at your option) any later" +
+                "<br>version." +
+                "<br><br>" +
+                "This program is distributed in the hope that it will be" +
+                "<br>useful, but WITHOUT ANY WARRANTY; without even the" +
+                "<br>implied warranty of MERCHANTABILITY or FITNESS FOR A" +
+                "<br>PARTICULAR PURPOSE." +
+                "<br>See the GNU General Public License for more details.")
+
+        @De("<br><br>Lizenz:" +
+                "<br>Dieses Programm ist freie Software. Sie können es unter den" +
+                "<br>Bedingungen der GNU General Public License, wie von der" +
+                "<br>Free Software Foundation veröffentlicht, weitergeben" +
+                "<br>und/oder modifizieren, entweder gemäß Version 3 der" +
+                "<br>Lizenz oder (nach Ihrer Option) jeder späteren Version." +
+                "<br><br>" +
+                "Die Veröffentlichung dieses Programms erfolgt in der Hoffnung," +
+                "<br>dass es Ihnen von Nutzen sein wird, aber OHNE IRGENDEINE" +
+                "<br>GARANTIE, sogar ohne die implizite Garantie der MARKTREIFE" +
+                "<br>oder der VERWENDBARKEIT FÜR EINEN BESTIMMTEN ZWECK." +
+                "<br>Details finden Sie in der GNU General Public License.")
+        String gplTextHTML();
+
+        @De("Zeige GPL")
+        @En("View GPL")
+        String viewGPLButtonText();
+
+        @De("Über ")
+        @En("About ")
+        String about();
+
+        @En("Error reading file {0}")
+        @De("Fehler beim Lesen der Datei {0}")
+        String errorReadingFile(String s);
+
+        @En("Error reading file")
+        @De("Fehler beim Lesen einer Datei")
+        String errorReadingFile();
+
+        @En("Error downloading file")
+        @De("Fehler beim herunterladen einer Datei")
+        String errorDownloadingFile();
+
+        @En("Download a new copy of the GPL from {0}?")
+        @De("Eine Kopie der GPL von {0} laden?")
+        String doYouWantToDownload(String url);
+    }
 
     /**
      * Default parent component
@@ -412,6 +471,8 @@ public class GPLAboutDialog extends AbstractAction {
      * @param e ignored action event
      */
     public void actionPerformed(ActionEvent e) {
+        GplTranslations gpl = C10N.get(GPLAboutDialog.GplTranslations.class);
+
         // We only want to open one About Dialog at a time
         // So if we already have, stop right here
         if (alreadyOpen) {
@@ -424,33 +485,28 @@ public class GPLAboutDialog extends AbstractAction {
         alreadyOpen = true;
 
         // Open a standard about dialog with the option to
-        // view the GPL or just say OK
+        // view the GPL or just say OK TODO externalize
 
         String message ="<html>" + name + " <i>(" + version +
                 ")</i><br><br>" +
                 blurb +
                 "<br><br>" +
                 copyright +
-                "<br><br><br>This program is Open Source software, " +
-                "or more specifically<br>, free software. You can " +
-                "redistribute" +
-                "it and/or modify<br> it under the terms of the GNU" +
-                "<br>General Public License (GPL) as published by the " +
-                "<br>Free Software Foundation; either version 2 of the" +
-                "<br>License, or (at your option) any later version.</html>";
+                gpl.gplTextHTML()+
+                "</html>";
 
         JLabel messageLabel = new JLabel(message);
         messageLabel.setFont(messageLabel.getFont().deriveFont(16f));
         int viewGPL;
 
-        Object[] optionButtons = {"View GPL", "OK"};
+        Object[] optionButtons = {gpl.viewGPLButtonText(), "OK"};
         if (internalFrames) {
             viewGPL = JOptionPane.showInternalOptionDialog(parent, messageLabel,
-                    "About " + name, 0, JOptionPane.INFORMATION_MESSAGE,
+                    gpl.about() + name, 0, JOptionPane.INFORMATION_MESSAGE,
                     programLogo, optionButtons, optionButtons[1]);
         } else {
             viewGPL = JOptionPane.showOptionDialog(parent, messageLabel,
-                    "About " + name, 0, JOptionPane.INFORMATION_MESSAGE,
+                    gpl.about() + name, 0, JOptionPane.INFORMATION_MESSAGE,
                     programLogo, optionButtons, optionButtons[1]);
         }
 
@@ -461,7 +517,7 @@ public class GPLAboutDialog extends AbstractAction {
             JTextArea textArea = new JTextArea(15, 81);
             textArea.setEditable(false);
             textArea.setLineWrap(true);
-            textArea.setFont(new Font("Courier", Font.PLAIN, 11));
+            textArea.setFont(new Font("Courier", Font.PLAIN, 11)); //NON-NLS
 
             JScrollPane scrollPane = new JScrollPane(textArea);
 
@@ -484,8 +540,9 @@ public class GPLAboutDialog extends AbstractAction {
 
                 // Then try and read it locally
                 try {
-                    inGPL = new BufferedReader(new FileReader("license.txt"));
-                    textArea.read(inGPL, "GNU General Public License");
+                    inGPL = new BufferedReader(new FileReader(LICENSE_FILE_NAME)); //NON-NLS
+                    textArea.read(inGPL,
+                            "GNU General Public License"); //NON-NLS
 
                     // I don't close this in the finally statement
                     // because I may need it again before I get there
@@ -498,6 +555,7 @@ public class GPLAboutDialog extends AbstractAction {
                         try {
                             inGPL.close();
                         } catch (IOException closeException) {
+                            //This should not happen.
                         }
                     }
 
@@ -507,20 +565,24 @@ public class GPLAboutDialog extends AbstractAction {
 
                     if (internalFrames) {
                         viewGPL = JOptionPane.showInternalConfirmDialog
-                                (parent, "Error reading file license.txt\n\n" +
+                                (parent, gpl.errorReadingFile
+                                        (LICENSE_FILE_NAME) +
+                                        "\n\n" +
                                 ioException.getLocalizedMessage() +
-                                "\n\nDownload a new copy of the GPL from " +
-                                gplURL.getProtocol() + "://" +
-                                gplURL.getHost() + "?", "Error reading file",
+                                "\n\n" +
+                                        gpl.doYouWantToDownload(gplURL.getProtocol() + "://" +
+                                                gplURL.getHost())
+                                        , gpl.errorReadingFile(),
                                         JOptionPane.YES_NO_OPTION,
                                         JOptionPane.ERROR_MESSAGE);
                     } else {
                         viewGPL = JOptionPane.showConfirmDialog(parent,
-                                "Error reading file license.txt\n\n" +
+                                gpl.errorReadingFile(LICENSE_FILE_NAME) +
+                                        "\n\n" +
                                 ioException.getLocalizedMessage() +
-                                "\n\nDownload a new copy of the GPL from " +
-                                gplURL.getProtocol() + "://" +
-                                gplURL.getHost() + "?", "Error reading file",
+                                "\n\n" +
+                                        gpl.doYouWantToDownload(gplURL.getProtocol() + "://" +
+                                                gplURL.getHost()), gpl.errorReadingFile(),
                                 JOptionPane.YES_NO_OPTION,
                                 JOptionPane.ERROR_MESSAGE);
                     }
@@ -533,7 +595,7 @@ public class GPLAboutDialog extends AbstractAction {
                                     (gplURL.openStream()));
 
                             outGPL = new BufferedWriter(new FileWriter
-                                    ("license.txt"));
+                                    (LICENSE_FILE_NAME));
 
                             String textLine = null;
 
@@ -545,15 +607,17 @@ public class GPLAboutDialog extends AbstractAction {
                             // Tell them if we failed
                             viewGPL = JOptionPane.NO_OPTION;
                             if (internalFrames) {
-                                JOptionPane.showInternalMessageDialog(parent, "Error downloading file " +
+                                JOptionPane.showInternalMessageDialog(parent,
+                                        gpl.errorDownloadingFile() + " " +
                                         gplURL.getProtocol() + "://" +
                                         gplURL.getHost() + gplURL.getRef() +
-                                        "\n\n" + netException.getMessage(), "Error downloading file", JOptionPane.ERROR_MESSAGE);
+                                        "\n\n" + netException.getMessage(), gpl.errorDownloadingFile(), JOptionPane.ERROR_MESSAGE);
                             } else {
-                                JOptionPane.showMessageDialog(parent, "Error downloading file " +
+                                JOptionPane.showMessageDialog(parent, gpl.errorDownloadingFile() + " " +
                                         gplURL.getProtocol() + "://" +
                                         gplURL.getHost() + gplURL.getRef() +
-                                        "\n\n" + netException.getMessage(), "Error downloading file", JOptionPane.ERROR_MESSAGE);
+                                        "\n\n" + netException.getMessage(),
+                                        gpl.errorDownloadingFile(), JOptionPane.ERROR_MESSAGE);
                             }
                         } finally {
                             try {
@@ -574,9 +638,13 @@ public class GPLAboutDialog extends AbstractAction {
             if (loadedGPL == true) {
                 scrollPane.setPreferredSize(textArea.getPreferredScrollableViewportSize());
                 if (internalFrames) {
-                    JOptionPane.showInternalMessageDialog(parent, scrollPane, "GNU General Public License", JOptionPane.INFORMATION_MESSAGE, gnuLogo);
+                    JOptionPane.showInternalMessageDialog(parent, scrollPane,
+                            "GNU General Public License", //NON-NLS
+                            JOptionPane.INFORMATION_MESSAGE, gnuLogo);
                 } else {
-                    JOptionPane.showMessageDialog(parent, scrollPane, "GNU General Public License", JOptionPane.INFORMATION_MESSAGE, gnuLogo);
+                    JOptionPane.showMessageDialog(parent, scrollPane,
+                            "GNU General Public License", //NON-NLS
+                            JOptionPane.INFORMATION_MESSAGE, gnuLogo);
                 }
             }
         }
