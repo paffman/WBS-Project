@@ -40,7 +40,12 @@ public class ProjectProperties extends JDialog {
     /**
      * Default preferred size.
      */
-    private static final Dimension PREFERRED_SIZE = new Dimension(640, 280);
+    private static final Dimension PREFERRED_SIZE = new Dimension(720, 340);
+
+    /**
+     * UID for serialization.
+     */
+    private static final long serialVersionUID = -4124801060447339650L;
     /**
      * Translation message object.
      */
@@ -89,6 +94,11 @@ public class ProjectProperties extends JDialog {
      * Text field for surname of project manager.
      */
     private final JTextField textFieldSurname;
+
+    /**
+     * Text field for daily rate.
+     */
+    private final JTextField textFieldDailyRate;
     /**
      * Text field for user name of the project manager account.
      */
@@ -103,35 +113,34 @@ public class ProjectProperties extends JDialog {
      */
     private final JPasswordField textFieldPassword2;
     /**
-     * Label of the text field {@link de.fhbingen.wbs.gui
-     * .projectsetupassistant.ProjectProperties#textFieldProjectName}.
+     * Label of the text field {@link #textFieldProjectName}.
      */
     private final JLabel labelTextFieldProjectName;
     /**
-     * Label of the text field {@link de.fhbingen.wbs.gui
-     * .projectsetupassistant.ProjectProperties#textFieldProjectLevels}.
+     * Label of the text field {@link #textFieldProjectLevels}.
      */
     private final JLabel labelTextFieldProjectLevels;
     /**
-     * Label of the text field {@link de.fhbingen.wbs.gui
-     * .projectsetupassistant.ProjectProperties#textFieldStartDate}.
+     * Label of the text field {@link #textFieldStartDate}.
      */
     private final JLabel labelTextFieldStartDate;
     /**
-     * Label of the text field {@link de.fhbingen.wbs.gui
-     * .projectsetupassistant.ProjectProperties#textFieldDatabaseName}.
+     * Label of the text field {@link #textFieldDatabaseName}.
      */
     private final JLabel labelTextfieldDatabaseName;
     /**
-     * Label of the text field {@link de.fhbingen.wbs.gui
-     * .projectsetupassistant.ProjectProperties#textFieldFirstName}.
+     * Label of the text field {@link #textFieldFirstName}.
      */
     private final JLabel labelTextFieldFirstName;
     /**
-     * Label of the text field {@link de.fhbingen.wbs.gui
-     * .projectsetupassistant.ProjectProperties#textFieldSurname}.
+     * Label of the text field {@link #textFieldSurname}.
      */
     private final JLabel labelTextFieldSurname;
+
+    /**
+     * Label of the text field {@link #textFieldDailyRate}.
+     */
+    private final JLabel labelTextFieldDailyRate;
     /**
      * Label of the text field {@link de.fhbingen.wbs.gui
      * .projectsetupassistant.ProjectProperties#textFieldUserName}.
@@ -167,11 +176,11 @@ public class ProjectProperties extends JDialog {
     }
 
     /**
-     * Gets value of daily rate field. NYI
+     * Gets value of daily rate field.
      * @return value of daily rate field.
      */
-    public final double getDailyRate() {
-        return 0; //TODO create field and get value of field here.
+    public final String getDailyRate() {
+        return textFieldDailyRate.getText();
     }
 
     /**
@@ -255,6 +264,7 @@ public class ProjectProperties extends JDialog {
         //TextFields Admin Account- right panel
         textFieldFirstName = new JTextField();
         textFieldSurname = new JTextField();
+        textFieldDailyRate = new JTextField();
         textFieldUserName = new JTextField();
         textFieldPassword = new JPasswordField();
         textFieldPassword2 = new JPasswordField();
@@ -273,6 +283,8 @@ public class ProjectProperties extends JDialog {
                 JLabel.RIGHT);
         labelTextFieldSurname = new JLabel(msg.surname() + ":",
                 JLabel.RIGHT);
+        labelTextFieldDailyRate = new JLabel(msg.dailyRate() + ":",
+                JLabel.RIGHT);
         labelTextFieldUserName = new JLabel(msg.loginLong() + ":",
                 JLabel.RIGHT);
         labelTextFieldPassword = new JLabel(msg.password() + ":",
@@ -282,20 +294,20 @@ public class ProjectProperties extends JDialog {
 
 
         //set labelFor() for screen reader compatibility
-        labelTextFieldProjectName.setLabelFor(labelTextFieldProjectName);
-        labelTextFieldProjectLevels.setLabelFor(textFieldProjectLevels);
-        labelTextFieldStartDate.setLabelFor(textFieldStartDate);
-        labelTextFieldFirstName.setLabelFor(textFieldFirstName);
-        labelTextFieldSurname.setLabelFor(textFieldSurname);
-        labelTextFieldUserName.setLabelFor(textFieldUserName);
-        labelTextFieldPassword.setLabelFor(textFieldPassword);
-        labelTextFieldPassword2.setLabelFor(textFieldPassword2);
+        labelTextFieldProjectName   .setLabelFor(textFieldProjectName);
+        labelTextFieldProjectLevels .setLabelFor(textFieldProjectLevels);
+        labelTextFieldStartDate     .setLabelFor(textFieldStartDate);
+        labelTextFieldFirstName     .setLabelFor(textFieldFirstName);
+        labelTextFieldSurname       .setLabelFor(textFieldSurname);
+        labelTextFieldDailyRate     .setLabelFor(textFieldDailyRate);
+        labelTextFieldUserName      .setLabelFor(textFieldUserName);
+        labelTextFieldPassword      .setLabelFor(textFieldPassword);
+        labelTextFieldPassword2     .setLabelFor(textFieldPassword2);
 
         addUiElements();
         addActionListeners();
 
         setupDialogProperties();
-        pack();
     }
 
     /**
@@ -424,25 +436,41 @@ public class ProjectProperties extends JDialog {
         SwingUtilityMethods.
                 addWithAllGridBagConstraints(centerPanelProjectProperties,
                         new JPanel(), 0, 4, 2, 1, 1, 1,
-                        GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0);
+                        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                        new Insets(0, 0, 0, 0), 0, 0);
 
         //right center panel
         SwingUtilityMethods.
                 addWithGridBagConstraints(centerPanelProjectManagerAccount,
-                        labelTextFieldFirstName, 0, 0, 0, 0, GridBagConstraints.BOTH, insetsLabelRight);
+                        labelTextFieldFirstName, 0, 0, 0, 0,
+                        GridBagConstraints.BOTH, insetsLabelRight);
         SwingUtilityMethods.
                 addWithGridBagConstraints(centerPanelProjectManagerAccount,
-                        labelTextFieldSurname, 0, 1, 0, 0, GridBagConstraints.BOTH, insetsLabelRight);
+                        labelTextFieldSurname, 0, 1, 0, 0,
+                        GridBagConstraints.BOTH, insetsLabelRight);
         SwingUtilityMethods.
                 addWithGridBagConstraints(centerPanelProjectManagerAccount,
-                        labelTextFieldUserName, 0, 2, 0, 0, GridBagConstraints.BOTH, insetsLabelRight);
+                        labelTextFieldDailyRate, 0, 2, 0, 0,
+                        GridBagConstraints.BOTH,
+                        insetsLabelRight);
+        SwingUtilityMethods.
+                addWithAllGridBagConstraints(centerPanelProjectManagerAccount,
+                        new JPanel(), 0, 3, 2, 1, 0, 0,
+                        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                        insetsLabelRight, 0, 0);
         SwingUtilityMethods.
                 addWithGridBagConstraints(centerPanelProjectManagerAccount,
-                        labelTextFieldPassword, 0, 3, 0, 0, GridBagConstraints.BOTH, insetsLabelRight);
+                        labelTextFieldUserName, 0, 4, 0, 0,
+                        GridBagConstraints.BOTH, insetsLabelRight);
+        SwingUtilityMethods.
+                addWithGridBagConstraints(centerPanelProjectManagerAccount,
+                        labelTextFieldPassword, 0, 5, 0, 0,
+                        GridBagConstraints.BOTH, insetsLabelRight);
 
         SwingUtilityMethods.
                 addWithGridBagConstraints(centerPanelProjectManagerAccount,
-                        labelTextFieldPassword2, 0, 4, 0, 0, GridBagConstraints.BOTH, insetsLabelRight);
+                        labelTextFieldPassword2, 0, 6, 0, 0,
+                        GridBagConstraints.BOTH, insetsLabelRight);
 
         SwingUtilityMethods.
                 addWithGridBagConstraints(centerPanelProjectManagerAccount,
@@ -454,20 +482,27 @@ public class ProjectProperties extends JDialog {
                         GridBagConstraints.HORIZONTAL, insetsTextFieldRight);
         SwingUtilityMethods.
                 addWithGridBagConstraints(centerPanelProjectManagerAccount,
-                        textFieldUserName, 1, 2, textFieldWeightx, 0,
+                        textFieldDailyRate, 1, 2, textFieldWeightx, 0,
+                        GridBagConstraints.HORIZONTAL, insetsTextFieldRight);
+
+        SwingUtilityMethods.
+                addWithGridBagConstraints(centerPanelProjectManagerAccount,
+                        textFieldUserName, 1, 4, textFieldWeightx, 0,
                         GridBagConstraints.HORIZONTAL, insetsTextFieldRight);
         SwingUtilityMethods.
                 addWithGridBagConstraints(centerPanelProjectManagerAccount,
-                        textFieldPassword, 1, 3, textFieldWeightx, 0, GridBagConstraints.HORIZONTAL, insetsTextFieldRight);
+                        textFieldPassword, 1, 5, textFieldWeightx, 0,
+                        GridBagConstraints.HORIZONTAL, insetsTextFieldRight);
         SwingUtilityMethods.
                 addWithGridBagConstraints(centerPanelProjectManagerAccount,
-                        textFieldPassword2, 1, 4, textFieldWeightx, 0,
+                        textFieldPassword2, 1, 6, textFieldWeightx, 0,
                         GridBagConstraints.HORIZONTAL, insetsTextFieldRight);
         //Spacer
         SwingUtilityMethods.
-                addWithAllGridBagConstraints
-                        (centerPanelProjectManagerAccount, new JPanel(), 0,
-                                5, 2, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0);
+                addWithAllGridBagConstraints(centerPanelProjectManagerAccount,
+                        new JPanel(), 0, 7, 2, 1, 1, 1,
+                        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                        new Insets(0, 0, 0, 0), 0, 0);
     }
 
     /**
@@ -480,9 +515,10 @@ public class ProjectProperties extends JDialog {
         setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
 
         //positioning and size
-        setLocationRelativeTo(getParent());
         setPreferredSize(PREFERRED_SIZE);
         setMinimumSize(PREFERRED_SIZE);
+        pack();
+        setLocationRelativeTo(getParent());
     }
 
     /**

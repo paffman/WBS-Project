@@ -325,30 +325,6 @@ public final class ProjectSetupAssistant implements ProjectProperties.Actions,
             returnValue = false;
             showErrorMessage(messages.fillAllFieldsError());
         }
-        if (returnValue && !isStringValid(projectProperties.getFirstName())) {
-            returnValue = false;
-            showErrorMessage(messages.stringTooLong(labels.firstName()));
-        }
-        if (returnValue && !isStringValid(projectProperties.getSurname())) {
-            returnValue = false;
-            showErrorMessage(messages.stringTooLong(labels.surname()));
-        }
-        if (returnValue && !isUsernameValid(projectProperties.getUserName())) {
-            returnValue = false;
-            showErrorMessage(messages.userNameInvalid() + "\n\n"
-                    + messages.guidelinesUsername());
-        }
-        if (returnValue && !isPasswordValid(projectProperties.getPassword())) {
-            returnValue = false;
-            showErrorMessage(messages.passwordInvalidError() + "\n\n"
-                    + messages.guidelinesPassword());
-        } else {
-            if (!arePasswordsEqual(projectProperties.getPassword(),
-                    projectProperties.getPassword2())) {
-                returnValue &= false;
-                showErrorMessage(messages.passwordsNotMatchingError());
-            }
-        }
         if (returnValue && !isStringValid(projectProperties.getProjectName())) {
             returnValue = false;
             showErrorMessage(messages.stringTooLong(labels.projectName()));
@@ -367,7 +343,51 @@ public final class ProjectSetupAssistant implements ProjectProperties.Actions,
             showErrorMessage(messages.databaseNameInvalid() + "\n\n"
                     + messages.guidelinesDatabaseName());
         }
+        if (returnValue && !isStringValid(projectProperties.getFirstName())) {
+            returnValue = false;
+            showErrorMessage(messages.stringTooLong(labels.firstName()));
+        }
+        if (returnValue && !isStringValid(projectProperties.getSurname())) {
+            returnValue = false;
+            showErrorMessage(messages.stringTooLong(labels.surname()));
+        }
+        if (returnValue && !isDailyRateValid(projectProperties.getDailyRate()
+        )) {
+            returnValue = false;
+            showErrorMessage(
+                    messages.valueInFieldIsNotANumber(labels.dailyRate()));
+        }
+        if (returnValue && !isUsernameValid(projectProperties.getUserName())) {
+            returnValue = false;
+            showErrorMessage(messages.userNameInvalid() + "\n\n"
+                    + messages.guidelinesUsername());
+        }
+        if (returnValue && !isPasswordValid(projectProperties.getPassword())) {
+            returnValue = false;
+            showErrorMessage(messages.passwordInvalidError() + "\n\n"
+                    + messages.guidelinesPassword());
+        } else {
+            if (!arePasswordsEqual(projectProperties.getPassword(),
+                    projectProperties.getPassword2())) {
+                returnValue = false;
+                showErrorMessage(messages.passwordsNotMatchingError());
+            }
+        }
         return returnValue;
+    }
+
+    /**
+     * Checks if daily rate is valid.
+     * @param dailyRate to check.
+     * @return true if daily rate is valid.
+     */
+    private boolean isDailyRateValid(final String dailyRate) {
+        try {
+            double rate = Double.parseDouble(dailyRate);
+            return rate != Double.NaN && rate > 0;
+        } catch (NumberFormatException e) {
+            return false;
+        }
     }
 
     /**
@@ -955,13 +975,12 @@ public final class ProjectSetupAssistant implements ProjectProperties.Actions,
         projectWorkPackageStatement.setDouble(14, 0);
         projectWorkPackageStatement.setDouble(15, 0);
         projectWorkPackageStatement.setDouble(16,
-                projectProperties.getDailyRate());
+                Double.parseDouble(projectProperties.getDailyRate()));
         projectWorkPackageStatement.setNull(17, Types.DATE);
         projectWorkPackageStatement.setBoolean(18, true); //isOAP
         projectWorkPackageStatement.setBoolean(19, false); //isInactive
         projectWorkPackageStatement.setNull(20, Types.DATE);
         projectWorkPackageStatement.setDate(21, startDate);
-        //TODO fix start date
         projectWorkPackageStatement.setNull(22, Types.DATE);
 
         projectWorkPackageStatement.execute();
@@ -989,7 +1008,8 @@ public final class ProjectSetupAssistant implements ProjectProperties.Actions,
         statement.setString(2, projectProperties.getSurname());
         statement.setString(3, projectProperties.getFirstName());
         statement.setBoolean(4, true);
-        statement.setDouble(5, projectProperties.getDailyRate());
+        statement.setDouble(5, Double.parseDouble(projectProperties
+                .getDailyRate()));
         statement.setInt(6, 0); //TODO not yet specified in db-interface
         char[] password = projectProperties.getPassword();
         statement.setString(7, new String(password));

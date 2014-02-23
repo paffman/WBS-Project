@@ -33,6 +33,11 @@ public class DatabaseAdminLogin extends JDialog {
     private static final Dimension PREFERRED_SIZE = new Dimension(450, 200);
 
     /**
+     * UID for serialization.
+     */
+    private static final long serialVersionUID = 2300059179886700170L;
+
+    /**
      * Panel for southern buttons (ok, cancel, back).
      */
     private final JPanel southPanel;
@@ -162,8 +167,6 @@ public class DatabaseAdminLogin extends JDialog {
         addActionListeners();
 
         setupDialogProperties();
-
-        pack();
     }
 
     /**
@@ -237,10 +240,11 @@ public class DatabaseAdminLogin extends JDialog {
         setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
 
         //positioning and size
-        setLocationRelativeTo(getParent());
         setPreferredSize(PREFERRED_SIZE);
         setMinimumSize(PREFERRED_SIZE);
         setMaximumSize(PREFERRED_SIZE);
+        pack();
+        setLocationRelativeTo(getParent());
     }
 
     /**

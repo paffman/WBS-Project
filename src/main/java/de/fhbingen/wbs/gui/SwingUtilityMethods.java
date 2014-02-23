@@ -134,6 +134,12 @@ public final class SwingUtilityMethods {
         }
     }
 
+    /**
+     * Generates the GPL dialog action listener.
+     * @param parent parent to show the dialog on.
+     * @return Actionlistener gpl dialog.
+     */
+
     public static GPLAboutDialog getGplDialog(final Component parent) {
         ApplicationMetadata metadata = LocalizedStrings
                 .getApplicationMetadata();
@@ -142,6 +148,12 @@ public final class SwingUtilityMethods {
                 metadata.copyrightHolder());
     }
 
+    /**
+     * Gets version name from version file. This version file is created by
+     * the gradle task and requires git in your path to get the current
+     * git-tag.
+     * @return String containing the version number.
+     */
     public static String getVersionName() {
 
         InputStream resource = SwingUtilityMethods.class.getClassLoader()
@@ -153,7 +165,7 @@ public final class SwingUtilityMethods {
         } catch (IOException | NullPointerException e) {
             System.err.println(
                     "Version number file could not be read."); //NON-NLS
-            return "";
+            return LocalizedStrings.getApplicationMetadata().undefinedVersion();
         }
     }
 }
