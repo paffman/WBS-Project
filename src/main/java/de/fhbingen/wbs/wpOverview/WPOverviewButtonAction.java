@@ -130,6 +130,17 @@ public class WPOverviewButtonAction {
             public void actionPerformed(final ActionEvent e) {
                 new Thread() {
                     public void run() {
+                        if (JOptionPane.showConfirmDialog(gui, LocalizedStrings
+                                .getMessages().pvChange(),
+                                LocalizedStrings.getButton().calculate(
+                                        LocalizedStrings.getGeneralStrings()
+                                        .duration() + " " + LocalizedStrings
+                                        .getGeneralStrings().and() + " "
+                                        + LocalizedStrings.getWbs().pv()),
+                                JOptionPane.YES_NO_OPTION)
+                                == JOptionPane.NO_OPTION) {
+                            return;
+                        }
                         gui.setEnabled(false);
                         Loader loader = new Loader(gui);
                         new CalcOAPBaseline(true, over);
@@ -143,7 +154,7 @@ public class WPOverviewButtonAction {
                 over.reload();
             }
         });
-        
+
         gui.miChangePW.addActionListener(new ActionListener() {
             public void actionPerformed(final ActionEvent e) {
                 new ChangePwViewController(WPOverview.getUser());

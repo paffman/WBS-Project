@@ -165,4 +165,8 @@ public interface Messages extends ErrorMessages {
     @De("Benutzer wurde an der Datenbank abgemeldet.")
     @En("User was logged out.")
     String logOut();
+    
+    @De("Die Planned Values werden neu berechnet. Wollen sie fortfahren?")
+    @En("The Planned Values will be recalculated. Do you want to continue?")
+    String pvChange();
 }
