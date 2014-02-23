@@ -9,7 +9,7 @@ import c10n.annotations.En;
  * Be sure to encode this file ISO-8859-1, else you will need to use unicode
  * escape characters to prevent encoding issues.
  */
-public interface ProjectSetup extends Button, Database, Project, Login {
+public interface ProjectSetup extends Button, Database, Project, Login, Wbs {
     @De("Projekteinrichtungsassistent")
     @En("Project setup assistant")
     String projectSetupAssistant();

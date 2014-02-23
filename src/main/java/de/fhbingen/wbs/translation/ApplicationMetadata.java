@@ -20,4 +20,8 @@ public interface ApplicationMetadata {
     @De("Projektseite: https://github.com/paffman/WBS-Project/")
     @En("Project repository: https://github.com/paffman/WBS-Project/")
     String copyrightHolder();
+
+    @De("Undefinierte Version")
+    @En("Undefined version")
+    String undefinedVersion();
 }
