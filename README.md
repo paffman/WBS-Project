@@ -10,6 +10,8 @@ application. If you want to learn more about it check out the
 [Documentation](http://www.gradle.org/documentation) or the
 [Learn](http://www.gradle.org/learn) page.
 
+Git is used to generate the version tag to make sure `git` is on your path.
+
 ### Install gradle
 
 Install gradle 1.8 from [http://www.gradle.org/downloads](http://www.gradle.org/downloads).
