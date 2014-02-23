@@ -86,6 +86,12 @@ public class WPOverviewGUI extends JFrame {
             .getImage(WPOverviewGUI.class.getResource(
                     "/_icons/OAPaktualisieren.png"))); //NON-NLS
 
+    /** The icon to update the pvs. */
+    public static final ImageIcon aktpv = new ImageIcon(
+        Toolkit.getDefaultToolkit()
+            .getImage(WPOverviewGUI.class.getResource(
+                    "/_icons/pv_berechnen.png"))); //NON-NLS
+
     /** The icon for the data base calculation. */
     public static final ImageIcon dbcalc = new ImageIcon(Toolkit
         .getDefaultToolkit().getImage(WPOverviewGUI.class.getResource(
@@ -185,7 +191,8 @@ public class WPOverviewGUI extends JFrame {
 
     /** The items which are in the menu bar. */
     protected JMenuItem miAktualisieren, miAbmelden, miBeenden, miHilfe,
-        miInfo, miAP, miChangePW, miDelAp, miImportInitial, miCalcDuration;
+        miInfo, miAP, miChangePW, miDelAp, miImportInitial, 
+        miCalcDuration, miCalcPvDuration;
 
     /** The tool bar. */
     protected ToolBar toolbar;
@@ -314,6 +321,11 @@ public class WPOverviewGUI extends JFrame {
         miCalcDuration = new JMenuItem(
             buttonStrings.calculate(generalStrings.duration()));
         miCalcDuration.setIcon(aktoap);
+        miCalcPvDuration = new JMenuItem(
+                buttonStrings.calculate(generalStrings.duration()
+                        + " " + generalStrings.and() + " "
+                        + LocalizedStrings.getWbs().pv()));
+        miCalcPvDuration.setIcon(aktpv);
         miChangePW = new JMenuItem(buttonStrings.change(LocalizedStrings
             .getLogin().password()));
         miChangePW.setIcon(pw);
@@ -349,6 +361,7 @@ public class WPOverviewGUI extends JFrame {
 
         // mnDatei.add(miAktualisieren);
         mnDatei.add(miCalcDuration);
+        mnDatei.add(miCalcPvDuration);
         mnDatei.add(miChangePW);
         mnDatei.add(miAbmelden);
         mnDatei.addSeparator();

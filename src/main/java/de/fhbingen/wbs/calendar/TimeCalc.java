@@ -784,7 +784,7 @@ public class TimeCalc {
             if (actualDay.after(new Date(System.currentTimeMillis()))) {
                 cal.setTime(actualDay);
                 actualPV += singlePVs.get(actualDay);
-                if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY) {
+                //if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY) {
                     ValuesService.savePv(wpKey, actualDay, actualPV);
                     Controller.showConsoleMessage(
                         LocalizedStrings.getStatus()
@@ -792,11 +792,11 @@ public class TimeCalc {
                                 Controller.DATE_DAY.format(actualDay),
                                 actualPV),
                         Controller.TIME_CALCULATION_DEBUG);
-                }
+                //}
             }
 
         }
-        if (cal.get(Calendar.DAY_OF_WEEK) != Calendar.FRIDAY) {
+        /*if (cal.get(Calendar.DAY_OF_WEEK) != Calendar.FRIDAY) {
             while (cal.get(Calendar.DAY_OF_WEEK) != Calendar.FRIDAY) {
                 cal.add(Calendar.DATE, 1);
             }
@@ -809,7 +809,7 @@ public class TimeCalc {
                 ValuesService.savePv(wpKey, cal.getTime(), actualPV);
             }
 
-        }
+        }*/
 
     }
 }

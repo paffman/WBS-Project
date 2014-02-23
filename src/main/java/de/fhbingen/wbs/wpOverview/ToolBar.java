@@ -19,11 +19,13 @@ import de.fhbingen.wbs.translation.General;
 import de.fhbingen.wbs.translation.LocalizedStrings;
 import de.fhbingen.wbs.translation.Wbs;
 import de.fhbingen.wbs.controller.WBSUserViewController;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import javax.swing.JToolBar;
 
 import de.fhbingen.wbs.chart.ChartCPIView;
@@ -38,6 +40,9 @@ import de.fhbingen.wbs.globals.Loader;
 public class ToolBar extends JToolBar {
     /** Duration calculation button in the tool bar. */
     private JButton calcDuration;
+    
+    /** Duration and PV calculation button in the tool bar. */
+    private JButton calcPvDuration;
 
     /** New work package button in the tool bar. */
     private JButton neuesAP;
@@ -65,8 +70,8 @@ public class ToolBar extends JToolBar {
         super();
 
         Wbs wbsStrings = LocalizedStrings.getWbs();
-        Button buttonStrings = LocalizedStrings.getButton();
-        General generalStrings = LocalizedStrings.getGeneralStrings();
+        final Button buttonStrings = LocalizedStrings.getButton();
+        final General generalStrings = LocalizedStrings.getGeneralStrings();
 
         /* The single buttons in the tool bar. */
         JButton aktualisiereTree = new JButton();
@@ -89,6 +94,40 @@ public class ToolBar extends JToolBar {
             public void actionPerformed(final ActionEvent e) {
                 new Thread() {
                     public void run() {
+                        gui.setEnabled(false);
+                        Loader loader = new Loader(gui);
+                        new CalcOAPBaseline(false, over);
+                        loader.dispose();
+                        Loader.reset();
+                        gui.setEnabled(true);
+                        gui.requestFocus();
+                    }
+                } .start();
+
+                over.reload();
+
+            }
+        });
+
+        calcPvDuration = new JButton();
+        calcPvDuration.setIcon(new ImageIcon(getClass().getResource(
+            "/_icons/pv_berechnen_gross.png"))); //NON-NLS
+        calcPvDuration.setToolTipText(buttonStrings.calculate(generalStrings
+            .duration() + " " + generalStrings.and() + " "
+                + LocalizedStrings.getWbs().pv()));
+        calcPvDuration.addActionListener(new ActionListener() {
+            public void actionPerformed(final ActionEvent e) {
+                new Thread() {
+                    public void run() {
+                        if (JOptionPane.showConfirmDialog(gui, LocalizedStrings
+                                .getMessages().pvChange(), buttonStrings
+                                .calculate(generalStrings.duration() + " "
+                                        + generalStrings.and() + " "
+                                        + LocalizedStrings.getWbs().pv()),
+                                JOptionPane.YES_NO_OPTION)
+                                == JOptionPane.NO_OPTION) {
+                            return;
+                        }
                         gui.setEnabled(false);
                         Loader loader = new Loader(gui);
                         new CalcOAPBaseline(true, over);
@@ -156,6 +195,7 @@ public class ToolBar extends JToolBar {
 
         add(aktualisiereTree);
         add(calcDuration);
+        add(calcPvDuration);
         add(new Separator());
         add(neuesAP);
         add(delAP);

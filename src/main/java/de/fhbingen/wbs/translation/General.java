@@ -210,5 +210,9 @@ public interface General {
     @De("JPG Bilder (*.jpg, *.jpeg)")
     @En("JPG Images (*.jpg, *.jpeg)")
     String jpgImages();
+
+    @De("und")
+    @En("and")
+    String and();
 }
 
