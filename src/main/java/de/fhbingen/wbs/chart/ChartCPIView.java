@@ -155,6 +155,7 @@ public class ChartCPIView extends WBSChart {
     protected void createSpecials() {
 
         if (plot != null) {
+
             plot.addRangeMarker(new ValueMarker(1.0, Color.BLACK,
                     new BasicStroke(3.0f)));
             frame.getChartPanel().getChart()
@@ -167,6 +168,12 @@ public class ChartCPIView extends WBSChart {
                                 Color.GREEN, new BasicStroke(1.5f));
                 plot.addRangeMarker(actualCPI);
 
+                if (this.wp.getWp().getParentID() == 0) {
+                    plot.getRenderer().setSeriesStroke(0,
+                            new BasicStroke(5.0f));
+                }
+            } else {
+                plot.getRenderer().setSeriesStroke(0, new BasicStroke(5.0f));
             }
         }
 
