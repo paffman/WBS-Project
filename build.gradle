@@ -59,6 +59,10 @@ shadow {
     classifier 'dist'
 }
 
+task wrapper(type: Wrapper) {
+    gradleVersion = '1.11'
+}
+
 // checkstyle configurations
 tasks.withType(Checkstyle) {
     ignoreFailures = true
