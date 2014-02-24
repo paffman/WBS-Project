@@ -11,7 +11,7 @@ public interface Button {
     @En("Next")
     String next();
 
-    @De("Zurück")
+    @De("ZurÃ¼ck")
     @En("Back")
     String back();
 
@@ -23,7 +23,7 @@ public interface Button {
     @En("Cancel")
     String cancel();
 
-    @De("Bestätigen")
+    @De("BestÃ¤tigen")
     @En("Confirm")
     String confirm();
 
@@ -31,19 +31,19 @@ public interface Button {
     @En("Exit")
     String exit();
 
-    @De("Schließen")
+    @De("SchlieÃŸen")
     @En("Close")
     String close();
 
-    @De("Löschen")
+    @De("LÃ¶schen")
     @En("Delete")
     String delete();
 
-    @De("{0} löschen")
+    @De("{0} lÃ¶schen")
     @En("Delete {0}")
     String delete(String s);
 
-    @De("Passwort zurücksetzen")
+    @De("Passwort zurÃ¼cksetzen")
     @En("Reset password")
     String passwordReset();
 
@@ -74,7 +74,7 @@ public interface Button {
     @En("Add {0}")
     String add(String s);
 
-    @De("Hinzufügen")
+    @De("HinzufÃ¼gen")
     @En("Add")
     String add();
 
@@ -114,7 +114,7 @@ public interface Button {
     @En("Info")
     String info();
 
-    @De("{0} ändern")
+    @De("{0} Ã¤ndern")
     @En("Change {0}")
     String change(String password);
 
@@ -126,7 +126,7 @@ public interface Button {
     @En("Manage")
     String manage();
 
-    @De("Übernehmen")
+    @De("Ãœbernehmen")
     @En("Apply")
     String apply();
 }

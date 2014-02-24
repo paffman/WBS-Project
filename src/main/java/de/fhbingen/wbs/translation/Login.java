@@ -43,7 +43,7 @@ public interface Login {
     @De("Nachname")
     String surname();
 
-    @De("Passwort ändern")
+    @De("Passwort Ã¤ndern")
     @En("Change password")
     String changePassword();
 

@@ -38,7 +38,7 @@ public interface Project {
     @De("Enddatum")
     String endDate();
 
-    @De("Übersicht Projekt")
+    @De("Ãœbersicht Projekt")
     @En("Project Overview")
     String projectOverviewWindowTitle();
 }

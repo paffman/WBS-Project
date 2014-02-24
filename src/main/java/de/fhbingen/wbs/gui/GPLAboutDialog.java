@@ -105,16 +105,16 @@ public class GPLAboutDialog extends AbstractAction {
                 "<br>See the GNU General Public License for more details.")
 
         @De("<br><br>Lizenz:" +
-                "<br>Dieses Programm ist freie Software. Sie können es unter den" +
+                "<br>Dieses Programm ist freie Software. Sie kÃ¶nnen es unter den" +
                 "<br>Bedingungen der GNU General Public License, wie von der" +
-                "<br>Free Software Foundation veröffentlicht, weitergeben" +
-                "<br>und/oder modifizieren, entweder gemäß Version 3 der" +
-                "<br>Lizenz oder (nach Ihrer Option) jeder späteren Version." +
+                "<br>Free Software Foundation verÃ¶ffentlicht, weitergeben" +
+                "<br>und/oder modifizieren, entweder gemÃ¤ÃŸ Version 3 der" +
+                "<br>Lizenz oder (nach Ihrer Option) jeder spÃ¤teren Version." +
                 "<br><br>" +
-                "Die Veröffentlichung dieses Programms erfolgt in der Hoffnung," +
+                "Die VerÃ¶ffentlichung dieses Programms erfolgt in der Hoffnung," +
                 "<br>dass es Ihnen von Nutzen sein wird, aber OHNE IRGENDEINE" +
                 "<br>GARANTIE, sogar ohne die implizite Garantie der MARKTREIFE" +
-                "<br>oder der VERWENDBARKEIT FÜR EINEN BESTIMMTEN ZWECK." +
+                "<br>oder der VERWENDBARKEIT FÃœR EINEN BESTIMMTEN ZWECK." +
                 "<br>Details finden Sie in der GNU General Public License.")
         String gplTextHTML();
 
@@ -122,7 +122,7 @@ public class GPLAboutDialog extends AbstractAction {
         @En("View GPL")
         String viewGPLButtonText();
 
-        @De("Über ")
+        @De("Ãœber ")
         @En("About ")
         String about();
 

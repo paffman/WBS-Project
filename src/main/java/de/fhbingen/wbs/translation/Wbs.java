@@ -10,7 +10,7 @@ import c10n.annotations.En;
  * escape characters to prevent encoding issues.
  */
 public interface Wbs {
-    @De("Aufwand für ")
+    @De("Aufwand fÃ¼r ")
     @En("Work effort on ")
     String addAufwandWindowTitle();
 
@@ -26,11 +26,11 @@ public interface Wbs {
     @En("Work effort")
     String workEffort();
 
-    @De("Verfügbarkeit bearbeiten")
+    @De("VerfÃ¼gbarkeit bearbeiten")
     @En("Edit availability")
     String editAvailability();
 
-    @De("Neue Verfügbarkeit")
+    @De("Neue VerfÃ¼gbarkeit")
     @En("New availability")
     String newAvailability();
 
@@ -90,7 +90,7 @@ public interface Wbs {
     @En("Timeline")
     String timeLine();
 
-    @De("Manuelle Verfügbarkeiten")
+    @De("Manuelle VerfÃ¼gbarkeiten")
     @En("Manual availabilities")
     String manualAvailabilities();
 
@@ -127,7 +127,7 @@ public interface Wbs {
     @En("CPI-Colors")
     String cpiColors();
 
-    @De("Vorgänger / Nachfolger")
+    @De("VorgÃ¤nger / Nachfolger")
     @En("Edit dependencies")
     String addDependencyWindowTitle();
 
@@ -159,7 +159,7 @@ public interface Wbs {
     @En("Add new work package")
     String addNewWorkPackageWindowTitle();
 
-    @De("Geändertes Datum")
+    @De("GeÃ¤ndertes Datum")
     @En("Date Changed")
     String dateChangedWindowTitle();
 }
