@@ -40,7 +40,7 @@ dependencies {
 mainClassName = 'de.fhbingen.wbs.controller.LoginViewController'
 
 tasks.withType(JavaCompile) {
-    options.encoding = "ISO-8859-1"
+    options.encoding = "utf-8"
 }
 
 // test task configuration

@@ -31,11 +31,11 @@ public interface General {
     @En("End")
     String end();
 
-    @De("Ganztägig")
+    @De("GanztÃ¤gig")
     @En("Full-time")
     String fullTime();
 
-    @De("Verfügbar")
+    @De("VerfÃ¼gbar")
     @En("Available")
     String available();
 
@@ -75,11 +75,11 @@ public interface General {
     @En("Causer")
     String causer();
 
-    @De("Übersicht")
+    @De("Ãœbersicht")
     @En("Overview")
     String overview();
 
-    @De("Projektverfügbarkeit")
+    @De("ProjektverfÃ¼gbarkeit")
     @En("Project availability")
     String projectAvailability();
 
@@ -87,15 +87,15 @@ public interface General {
     @En("WW")
     String calendarWeekAbbreviation();
 
-    @De("Verfügbarkeit")
+    @De("VerfÃ¼gbarkeit")
     @En("Availability")
     String availability();
 
-    @De("Verfügbarkeiten")
+    @De("VerfÃ¼gbarkeiten")
     @En("Availabilities")
     String availabilities();
 
-    @De("Nicht verfügbar")
+    @De("Nicht verfÃ¼gbar")
     @En("Not available")
     String notAvailable();
 
@@ -119,7 +119,7 @@ public interface General {
     @En("Year")
     String year();
 
-    @De("{0} auswählen")
+    @De("{0} auswÃ¤hlen")
     @En("Choose {0}")
     String choose(String s);
 
@@ -139,11 +139,11 @@ public interface General {
     @En("Duration")
     String duration();
 
-    @De("Abhängigkeit")
+    @De("AbhÃ¤ngigkeit")
     @En("Dependency")
     String dependency();
 
-    @De("Abhängigkeiten")
+    @De("AbhÃ¤ngigkeiten")
     @En("Dependencies")
     String dependencies();
 
@@ -159,7 +159,7 @@ public interface General {
     @En("Finished")
     String finished();
 
-    @De("Vorgänger")
+    @De("VorgÃ¤nger")
     @En("Predecessor")
     String predecessor();
 

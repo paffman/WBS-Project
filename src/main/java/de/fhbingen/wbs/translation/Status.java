@@ -16,11 +16,11 @@ public interface Status {
     @En("Calculate sub work packages without predecessors.")
     String calculateSubWpWihoutPredecessors();
 
-    @De("Prüfe Oberarbeitspaket-Ebenen.")
+    @De("PrÃ¼fe Oberarbeitspaket-Ebenen.")
     @En("Check top-level work package levels.")
     String checkTopLevelWorkpackageLevels();
 
-    @De("Prüfe OAP auf Ebene {0}.")
+    @De("PrÃ¼fe OAP auf Ebene {0}.")
     @En("Check top-level work packages on level {0}.")
     String checkTopLevelWorkpackageOnLevel(int level);
 
@@ -45,12 +45,12 @@ public interface Status {
     String wpWasCalculated(String wp);
 
     @De("{0} kann noch nicht berechnet werden, weil noch Unterarbeitspakete "
-            + "oder Vorgänger fehlen.")
+            + "oder VorgÃ¤nger fehlen.")
     @En("{0} could not be calculated yet, because there are missing " +
             "sub work packages or predecessors.")
     String wpCouldNotBeCalculated(String wp);
 
-    @De("Enddatum zum OAP {0} wurde von {1} übernommen ({2}).")
+    @De("Enddatum zum OAP {0} wurde von {1} Ã¼bernommen ({2}).")
     @En("End date of top-level work package {0} was assumed from {1} ({2}).")
     String endDateAssumed(String topWp, String subWp, String date);
 
@@ -78,7 +78,7 @@ public interface Status {
     @En("Calculate sub work package {0}.")
     String calculateSubWp(String wp);
 
-    @De("Aktueller Tag: {0}, heute können zusammen {1} Std. gerabeitet " +
+    @De("Aktueller Tag: {0}, heute kÃ¶nnen zusammen {1} Std. gerabeitet " +
             "werden" + ". BAC: {2}")
     @En("Current day: {0}. Today {1} hours can be worked together. BAC: {2}")
     String worksHoursOnDay(String date, int work, int bac);
@@ -87,13 +87,13 @@ public interface Status {
     @En("{0} has to work {1} hours today.")
     String workerWorkHoursToday(String worker, int hours);
 
-    @De("{0} muss heute zusätzlich {1} Stunden arbeiten (weil ein anderer " +
+    @De("{0} muss heute zusÃ¤tzlich {1} Stunden arbeiten (weil ein anderer " +
             "Mitarbeiter weniger Zeit hat).")
     @En("{0} has to work additional {1} hour today (because another employee has less time).")
     String workerAdditionalWork(String worker, int hours);
 
     @De("Alle Stunden von {0} werden am {1} abgearbeitet, " +
-            "es werden {2} von {3} verfügbaren Stunden an diesem Tag " +
+            "es werden {2} von {3} verfÃ¼gbaren Stunden an diesem Tag " +
             "verbraucht.")
     @En("All hours of {0} will be finished on {1}, " + "{2} of {3} of the " +
             "available hours on this day are used up.")
@@ -105,7 +105,7 @@ public interface Status {
     String lastDayWithPV(String date, double pv);
 
     @De("Aktueller Tag: {0}, liegt in der Vergangenheit, " +
-            "hier darf nichts mehr geändert werden, es werden {1} Stunden " +
+            "hier darf nichts mehr geÃ¤ndert werden, es werden {1} Stunden " +
             "gearbeitet. BAC: {2}")
     @En("Current day: {0}, lies in the past. Nothing may be changed anymore. " +
             "" + "{1} are to be worked. BAC: {2}")

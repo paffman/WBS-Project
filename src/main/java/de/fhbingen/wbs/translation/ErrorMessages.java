@@ -10,7 +10,7 @@ import c10n.annotations.En;
  * escape characters to prevent encoding issues.
  */
 public interface ErrorMessages {
-    @De("Das gewählte Passwort entspricht nicht den Passwortregeln.")
+    @De("Das gewÃ¤hlte Passwort entspricht nicht den Passwortregeln.")
     @En("The supplied password does not match the rules.")
     String passwordInvalidError();
 
@@ -22,11 +22,11 @@ public interface ErrorMessages {
     @En("The supplied password or username is wrong.")
     String loginWrongError();
 
-    @De("Die beiden Passwörter stimmen nicht überein.")
+    @De("Die beiden PasswÃ¶rter stimmen nicht Ã¼berein.")
     @En("The supplied passwords must match.")
     String passwordsNotMatchingError();
 
-    @De("Ein Fehler ist beim ändern des Passworts aufgetreten. Bitte " +
+    @De("Ein Fehler ist beim Ã¤ndern des Passworts aufgetreten. Bitte " +
             "versuchen Sie es erneut.")
     @En("An error occured while changing your password. Please try again.")
     String passwordChangeError();
@@ -35,15 +35,15 @@ public interface ErrorMessages {
     @En("The old password is wrong.")
     String passwordOldWrong();
 
-    @De("Bitte alle Felder ausfüllen.")
+    @De("Bitte alle Felder ausfÃ¼llen.")
     @En("Please complete all fields.")
     String fillAllFieldsError();
 
-    @De("Der eingegebene Benutzername ist ungültig.")
+    @De("Der eingegebene Benutzername ist ungÃ¼ltig.")
     @En("The supplied username is invalid.")
     String userNameInvalid();
 
-    @De("Fehler: Ungültige Eingabe")
+    @De("Fehler: UngÃ¼ltige Eingabe")
     @En("Error: Invalid Input Data")
     String inputErrorWindowTitle();
 
@@ -67,7 +67,7 @@ public interface ErrorMessages {
             "like" + " this:\nexample.com:port")
     String databaseLoginError();
 
-    @De("Der Wert im Projektebenenfeld ist keine gültige Zahl.")
+    @De("Der Wert im Projektebenenfeld ist keine gÃ¼ltige Zahl.")
     @En("The Value in project level field is not a number.")
     String projectPropertiesLevelsNotANumber();
 
@@ -79,15 +79,15 @@ public interface ErrorMessages {
     @En("The value in {0}-field too low.")
     String valueTooLow(String s);
 
-    @De("Das gewählte Datum ist nicht im korrekten Format dd.mm.yyyy")
+    @De("Das gewÃ¤hlte Datum ist nicht im korrekten Format dd.mm.yyyy")
     @En("The supplied date is invalid.")
     String dateInvalid();
 
-    @De("Der gewählte Datenbankname ist bereits belegt.")
+    @De("Der gewÃ¤hlte Datenbankname ist bereits belegt.")
     @En("The supplied database name is already in use.")
     String databaseNameAlreadyExists();
 
-    @De("Der gewählte Datenbankname ist ungültig.")
+    @De("Der gewÃ¤hlte Datenbankname ist ungÃ¼ltig.")
     @En("The supplied database name is invalid.")
     String databaseNameInvalid();
 
@@ -97,7 +97,7 @@ public interface ErrorMessages {
             "again.")
     String projectSetupAssistantFailedToCreateProject();
 
-    @De("Weiterführende Information")
+    @De("WeiterfÃ¼hrende Information")
     @En("More information")
     String moreInformation();
 
@@ -117,7 +117,7 @@ public interface ErrorMessages {
     @En("Connection could not be established!")
     String loginConnectionFailure();
 
-    @De("Überprüfen sie Benutzernamen und Passwort.")
+    @De("ÃœberprÃ¼fen sie Benutzernamen und Passwort.")
     @En("Check your login and password.")
     String loginCheckUsername();
 
@@ -133,15 +133,15 @@ public interface ErrorMessages {
     @En("The login as project manager has failed!")
     String loginPMLoginFailed();
 
-    @De("Es konnte kein Index-Eintrag für die Datanbank gefunden werden.")
+    @De("Es konnte kein Index-Eintrag fÃ¼r die Datanbank gefunden werden.")
     @En("There was no index-entry found within the database.")
     String loginMissingIndex();
 
-    @De("Überprüfen sie das Index-DB Passwort.")
+    @De("ÃœberprÃ¼fen sie das Index-DB Passwort.")
     @En("Check your index-db password.")
     String loginMissingIndexPw();
 
-    @De("Bitte prüfen Sie Ihre Eingaben.")
+    @De("Bitte prÃ¼fen Sie Ihre Eingaben.")
     @En("Please validate your inputs.")
     String checkInputs();
 
@@ -149,19 +149,19 @@ public interface ErrorMessages {
     @En("Error while loading the baseline.")
     String baselineLoadingError();
 
-    @De("Bitte {0}-Feld ausfüllen.")
+    @De("Bitte {0}-Feld ausfÃ¼llen.")
     @En("Please fill out {0}-field.")
     String fillFieldError(String s);
 
-    @De("{0} ist keine gültige Zahl.")
+    @De("{0} ist keine gÃ¼ltige Zahl.")
     @En("{0} is not a valid number")
     String valueInFieldIsNotANumber(String s);
 
-    @De("Das gewünschte Startdatum kann nicht eingehalten werden.")
+    @De("Das gewÃ¼nschte Startdatum kann nicht eingehalten werden.")
     @En("The start date you entered can not be achieved.")
     String startDateCanNotBeAchieved();
 
-    @De("Das gewünschte Enddatum kann nicht eingehalten werden.")
+    @De("Das gewÃ¼nschte Enddatum kann nicht eingehalten werden.")
     @En("The end date you entered can not be achieved.")
     String endDateCanNotBeAchieved();
 
@@ -169,9 +169,9 @@ public interface ErrorMessages {
     @En("Time line could not be exported.")
     String timeLineExportError();
 
-    @De("Diese Verfügbarkeit kann nicht bearbeitet werden, " +
+    @De("Diese VerfÃ¼gbarkeit kann nicht bearbeitet werden, " +
             "" + "da automatisch gesetzt. Bitte verwenden Sie manuelle " +
-            "Verfügbarkeiten.")
+            "VerfÃ¼gbarkeiten.")
     @En("Automatic Availability can not be edited. Please use manual " +
             "Availabilities")
     String availabilityCanNotBeChanged();
@@ -180,11 +180,11 @@ public interface ErrorMessages {
     @En("Please select a top level work package.")
     String selectTopLevelWorkPackage();
 
-    @De("Sie können nur Aufwände zu Arbeitspaketen erfassen, nicht zu OAPs.")
+    @De("Sie kÃ¶nnen nur AufwÃ¤nde zu Arbeitspaketen erfassen, nicht zu OAPs.")
     String noWorkEffortsOnTopLevelWorkPackages();
 
     @De("Bitte markieren Sie erst ein Arbeitspaket, um dann dort ein neues "
-            + "einzufügen.")
+            + "einzufÃ¼gen.")
     @En("To create a new work package, please select another work package " +
             "first.")
     String selectWorkPackageToAddNew();
@@ -193,7 +193,7 @@ public interface ErrorMessages {
     @En("Tree structure is faulty at {0}")
     String treeStructureProblemAt(String s);
 
-    @De("Bitte markieren Sie das Arbeitspaket das gelöscht werden soll.")
+    @De("Bitte markieren Sie das Arbeitspaket das gelÃ¶scht werden soll.")
     @En("Please select the work package you want to delete.")
     String markWorkPackageToDelete();
 
@@ -215,7 +215,7 @@ public interface ErrorMessages {
     @En("Please save the work package to continue.")
     String workPackagePleaseSaveToContinue();
 
-    @De("Das Arbeitspaket muss UAP bleiben, da bereits Aufwände eingetragen "
+    @De("Das Arbeitspaket muss UAP bleiben, da bereits AufwÃ¤nde eingetragen "
             + "wurden.")
     @En("Work package can not be a top level work package, " +
             "" + "since work efforts have been entered.")
@@ -246,15 +246,15 @@ public interface ErrorMessages {
     @En("The project needs a start date.")
     String workPackageRootNeedsDate();
 
-    @De("Gewünschtes Enddatum liegt vor dem gewünschten Startdatum.")
+    @De("GewÃ¼nschtes Enddatum liegt vor dem gewÃ¼nschten Startdatum.")
     @En("Entered end date can not be previous to the start date.")
     String endDateCanNotBeBeforeStartDate();
 
-    @De("Bitte Leiter auswählen.")
+    @De("Bitte Leiter auswÃ¤hlen.")
     @En("Please select a manager")
     String workPackageSelectManager();
 
-    @De("Auf unterster Ebene können keine OAP angelegt werden.")
+    @De("Auf unterster Ebene kÃ¶nnen keine OAP angelegt werden.")
     @En("You are out of levels.")
     String workPackageOutOfLevels();
 
@@ -262,8 +262,8 @@ public interface ErrorMessages {
     @En("{0} must be a positive number.")
     String numberMustBePositive(String s);
 
-    @De("Der gewünschte Nachfolger {0} verursacht eine Schleife\n" + "und " +
-            "wird nicht eingefügt.")
+    @De("Der gewÃ¼nschte Nachfolger {0} verursacht eine Schleife\n" + "und " +
+            "wird nicht eingefÃ¼gt.")
     @En("The selected successor {0} causes a loop and will not be inserted.")
     String successorLoop(String wp);
 
@@ -275,40 +275,40 @@ public interface ErrorMessages {
     @En("Error while creating the baseline.")
     String baselineCreatingError();
 
-    @De("Fehler beim löschen aus der Datenbank.")
+    @De("Fehler beim lÃ¶schen aus der Datenbank.")
     @En("Error while deleting from the database.")
     String deleteFromDbError();
 
-    @De("Paket kann nicht aus der Datenbank gelöscht werden!")
+    @De("Paket kann nicht aus der Datenbank gelÃ¶scht werden!")
     @En("Package cannot be deleted from the database!")
     String deletePackageFromDbError();
 
-    @De("Es sind bereits Aufwände eingegeben worden, AP kann nicht gelöscht "
+    @De("Es sind bereits AufwÃ¤nde eingegeben worden, AP kann nicht gelÃ¶scht "
             + "werden.")
     @En("There are already efforts for this work package, " +
             "" + "therefore it cannot be deleted.")
     String deletePackageEffortError();
 
-    @De("Das Paket kann nicht gelöscht werden, da noch Konflikte dazu existieren.")
+    @De("Das Paket kann nicht gelÃ¶scht werden, da noch Konflikte dazu existieren.")
     @En("The package cannot be deleted, because there are existing conflicts.")
     String deleteConflictsError();
 
-    @De("Das Paket konnte nicht gelöscht werden, da die PV-Einträge nicht gelöscht werden konnten.")
+    @De("Das Paket konnte nicht gelÃ¶scht werden, da die PV-EintrÃ¤ge nicht gelÃ¶scht werden konnten.")
     @En("The package could not be deleted, because there was a failure while deleting the pv-entries.")
     String deletePVError();
 
-    @De("Es sind noch Unterarbeitspakete vorhanden, " + "diese müssen zuerst " +
-            "gelöscht werden")
+    @De("Es sind noch Unterarbeitspakete vorhanden, " + "diese mÃ¼ssen zuerst " +
+            "gelÃ¶scht werden")
     @En("There are still sub work packages existent. These must be deleted "
             + "first.")
     String deletePackageSubwpError();
 
-    @De("Bitte erst alle Vorgänger / Nachfolger-Beziehungen löschen!")
+    @De("Bitte erst alle VorgÃ¤nger / Nachfolger-Beziehungen lÃ¶schen!")
     @En("There are still predecessors and/or successors. These must be " +
             "deleted first.")
     String deletePackageDependencyError();
 
-    @De("Hauptpaket kann nicht gelöscht werden!")
+    @De("Hauptpaket kann nicht gelÃ¶scht werden!")
     @En("Main work package cannot be deleted!")
     String deletePackageMainError();
 

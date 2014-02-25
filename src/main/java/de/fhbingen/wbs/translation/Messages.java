@@ -19,10 +19,10 @@ public interface Messages extends ErrorMessages {
             "- mindestens 6 Zeichen\n" +
             "- mindestens ein Kleinbuchstabe\n" +
             "- mindestens eine Zahl\n" +
-            "- mindestens ein Großbuchstabe oder Sonderzeichen\n" +
-            "- alle Zeichen müssen aus dem US-ASCII Zeichensatz sein " +
-            "(kein ß," +
-            " ä, ö, ü, ?, etc.)")
+            "- mindestens ein GroÃŸbuchstabe oder Sonderzeichen\n" +
+            "- alle Zeichen mÃ¼ssen aus dem US-ASCII Zeichensatz sein " +
+            "(kein ÃŸ," +
+            " Ã¤, Ã¶, Ã¼, ?, etc.)")
     @En("A valid password must match the following rules:\n" +
             "- at least 6 characters length\n" +
             "- at least one lower case letter\n" +
@@ -31,7 +31,7 @@ public interface Messages extends ErrorMessages {
             "- contain only characters of the US-ASCII character set")
     String guidelinesPassword();
 
-    @De("Ein gültiger Benutzername besteht aus:\n" +
+    @De("Ein gÃ¼ltiger Benutzername besteht aus:\n" +
             "- maximal 11 Zeichen\n" +
             "- einem Buchstaben am Anfang\n" +
             "- danach nur: Buchstaben, Zahlen, '.' und '-'")
@@ -41,15 +41,15 @@ public interface Messages extends ErrorMessages {
             "- next characters consist of only: letters, numbers, '.' and '-'")
     String guidelinesUsername();
 
-    @De("Folgende Regeln gelten für Datenbanknamen:\n" +
-            "- Länge: 1-64 Zeichen\n" +
-            "Gültige Zeichen: Buchstaben, Zahlen, '$' und '_'")
+    @De("Folgende Regeln gelten fÃ¼r Datenbanknamen:\n" +
+            "- LÃ¤nge: 1-64 Zeichen\n" +
+            "GÃ¼ltige Zeichen: Buchstaben, Zahlen, '$' und '_'")
     @En("Valid database names consist of:\n" +
             "- 1 to 64 characters in length\n" +
             "- Only consist of: letters, numbers, '$' and '_'")
     String guidelinesDatabaseName();
 
-    @De("Passwort wurde erfolgreich geändert.")
+    @De("Passwort wurde erfolgreich geÃ¤ndert.")
     @En("Password was changed successfully")
     String passwordChangeConfirm();
 
@@ -61,19 +61,19 @@ public interface Messages extends ErrorMessages {
     @En("Your project has been setup successfully.")
     String projectSetupSuccess();
 
-    @De("Benutzer geändert.")
+    @De("Benutzer geÃ¤ndert.")
     @En("User changed.")
     String userChanged();
 
-    @De("Benutzer hinzugefügt.")
+    @De("Benutzer hinzugefÃ¼gt.")
     @En("User added.")
     String userAdded();
 
-    @De("Das Passwort wurde auf \"1234\" zurückgesetzt.")
+    @De("Das Passwort wurde auf \"1234\" zurÃ¼ckgesetzt.")
     @En("The password has been reset to \"1234\".")
     String passwordHasBeenReset();
 
-    @De("Die Ressourcen wurden geändert.")
+    @De("Die Ressourcen wurden geÃ¤ndert.")
     @En("Resources have changed.")
     String resourcesChanged();
 
@@ -81,7 +81,7 @@ public interface Messages extends ErrorMessages {
     @En("Recalculate.")
     String recalculate();
 
-    @De("Ein Wunschdatum wurde geändert.")
+    @De("Ein Wunschdatum wurde geÃ¤ndert.")
     @En("A target date has been changed.")
     String targetDateChanged();
 
@@ -89,15 +89,15 @@ public interface Messages extends ErrorMessages {
     @En("New work packages were created.")
     String newApsWereCreated();
 
-    @De("Abhängigkeiten wurden geändert.")
+    @De("AbhÃ¤ngigkeiten wurden geÃ¤ndert.")
     @En("Dependencies were changed.")
     String dependenciesHaveChanged();
 
-    @De("Der BAC eines APs wurde geändert.")
+    @De("Der BAC eines APs wurde geÃ¤ndert.")
     @En("The BAC of a work package was changed.")
     String bacHasChanged();
 
-    @De("Es wurde ein AP gelöscht.")
+    @De("Es wurde ein AP gelÃ¶scht.")
     @En("A work package was deleted.")
     String apWasDeleted();
 
@@ -123,19 +123,19 @@ public interface Messages extends ErrorMessages {
     @En("The view was refreshed.")
     String viewWasRefreshed();
 
-    @De("Bitte klicken Sie auf das gewünschte Arbeitspaket, um die Details anzuzeigen.")
+    @De("Bitte klicken Sie auf das gewÃ¼nschte Arbeitspaket, um die Details anzuzeigen.")
     @En("Please click on the desired work package to show more information.")
     String clickOnWorkpackageToShowDetails();
 
-    @De("Arbeitspaket {0} wurde als {1} hinzugefügt.")
+    @De("Arbeitspaket {0} wurde als {1} hinzugefÃ¼gt.")
     @En("Work package {0} was added as {1}")
     String workPackageXwasCreatedAsY(String x, String y);
 
-    @De("Arbeitspaket {0} wurde als {1} gelöscht.")
+    @De("Arbeitspaket {0} wurde als {1} gelÃ¶scht.")
     @En("Work package {0} was deleted as {1}")
     String workpackageXwasDeletedAsY(String x, String y);
 
-    @De("Wollen Sie das geänderte {0} in die UAP übernehmen?")
+    @De("Wollen Sie das geÃ¤nderte {0} in die UAP Ã¼bernehmen?")
     @En("Do you want to apply the changed {0} on all sub work packages?")
     String workPackageApplyDateOnSubWorkPackages(String endOrStartDate);
 
@@ -151,14 +151,14 @@ public interface Messages extends ErrorMessages {
     String loginHelpMsg();
 
     @De("Es ist bereits ein Projektleiter eingeloggt.\nWollen sie sich " +
-            "trotzdem einloggen?\nWarnung: Die Daten können inkonsistent " +
+            "trotzdem einloggen?\nWarnung: Die Daten kÃ¶nnen inkonsistent " +
             "werden, wenn mehrere Projektleiter daran arbeiten.")
     @En("There is already a projekt manager logged in.\nDo you want to log in" +
             " regardless?\nWarning: Data may become inconsistent, " +
             "if multiple project managers are working on it.")
     String loginPMSemaphoreOccupied();
 
-    @De("Bitte AP auswählen.")
+    @De("Bitte AP auswÃ¤hlen.")
     @En("Please select a workpackage.")
     String selectWp();
 
