@@ -60,7 +60,7 @@ shadow {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '1.11'
+    gradleVersion = '1.10'
 }
 
 // checkstyle configurations
@@ -80,12 +80,16 @@ task csReport (dependsOn: [checkstyleMain, checkstyleTest]) << {
 
 check.dependsOn csReport
 
-task(createVersionFile) << {
+task(createVersionFile) {
     ext.resDir = new File("${rootDir}/src/main/resources")
     resDir.mkdirs()
+    ext.f = new File(resDir, "version")
+    outputs.file f
 
-    ext.gitTag = "git describe".execute().in.text
-    new File(resDir, "version").text = gitTag
+    doLast {
+        ext.gitTag = "git describe".execute().in.text
+        f.text = gitTag
+    }
 }
 
 compileJava.dependsOn(createVersionFile)
