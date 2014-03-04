@@ -251,6 +251,8 @@ public final class ProjectSetupAssistant implements ProjectProperties.Actions,
                         projectProperties.getFirstName())
                         + newSummaryLine(labels.surname(),
                         projectProperties.getSurname())
+                        + newSummaryLine(labels.dailyRate(),
+                        projectProperties.getDailyRate())
                         + newSummaryLine(labels.loginLong(),
                         projectProperties.getUserName())
                         + "</table><br /><b><i>"//NON-NLS
