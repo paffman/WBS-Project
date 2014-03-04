@@ -33,6 +33,8 @@
               files="LocalizedMessage.java"
               lines="141,148,181,213"/>
 
+    <suppress checks="." files="ScriptRunner.java"/>
+
     <!-- Tone down the checking for test code -->
     <suppress checks="EmptyBlock" files=".*[\\/]src[\\/]test[\\/]java[\\/]"/>
     <suppress checks="ImportControl" files=".*[\\/]src[\\/]test[\\/]java[\\/]"/>
