@@ -245,7 +245,7 @@ public final class ProjectSetupAssistant implements ProjectProperties.Actions,
                         projectProperties.getProjectLevels())
                         + newSummaryLine(labels.startDate(),
                         projectProperties.getStartDate())
-                        + newSummaryLine(labels.databaseName(),
+                        + newSummaryLine(labels.databaseNameWillBeCreated(),
                         projectProperties.getDatabaseName())
                         + newSummaryLine(labels.firstName(),
                         projectProperties.getFirstName())

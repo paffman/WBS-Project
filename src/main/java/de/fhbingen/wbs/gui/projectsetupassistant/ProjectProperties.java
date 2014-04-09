@@ -276,7 +276,7 @@ public class ProjectProperties extends JDialog {
                 JLabel.RIGHT);
         labelTextFieldStartDate = new JLabel(msg.startDate() + ":",
                 JLabel.RIGHT);
-        labelTextfieldDatabaseName = new JLabel(msg.databaseName() + ":",
+        labelTextfieldDatabaseName = new JLabel(msg.databaseNameWillBeCreated() + ":",
                 JLabel.RIGHT);
 
         labelTextFieldFirstName = new JLabel(msg.firstName() + ":",
