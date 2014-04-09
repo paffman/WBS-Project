@@ -1019,12 +1019,12 @@ BEGIN
 	FROM employees
 	WHERE id = in_id;
 	SET username = CONCAT_WS('_', in_db_id, LEFT(username,11));	
-	SET @changePw = CONCAT('SET PASSWORD FOR ',username,'@"','localhost','" = PASSWORD("',in_password,'")');
+	SET @changePw = CONCAT('SET PASSWORD FOR \'',username,'\'@"','localhost','" = PASSWORD("',in_password,'")');
 	PREPARE changePw FROM @changePw;
 	EXECUTE changePw;
 	DEALLOCATE PREPARE changePw;
 	
-	SET @changePw = CONCAT('SET PASSWORD FOR ',username,'@"','%','" = PASSWORD("',in_password,'")');
+	SET @changePw = CONCAT('SET PASSWORD FOR \'',username,'\'@"','%','" = PASSWORD("',in_password,'")');
 	PREPARE changePw FROM @changePw;
 	EXECUTE changePw;
 	DEALLOCATE PREPARE changePw;
