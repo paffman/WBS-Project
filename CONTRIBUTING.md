@@ -6,4 +6,6 @@ To save yourself time, create an issue on this project before you begin developm
 To contribute you need a Github account to fork this repository and clone this new copy. You'd then create a topic branch (e.g. 
 `translation/spanish`) from the current master branch. You can then make your changes and commit them following a *one issue one commit* theme (Protip: Read up on `git rebase -i`). Please make sure your code is valid to the *code conventions* and if writing a ui element compliant to our *MVC design pattern* (see the wiki).
 
+You can also reference issues in your commit message if you write 'fixes #11' (other annotations available; see: https://help.github.com/articles/closing-issues-via-commit-messages).
+
 Push the branch to your fork and start a pull request on Github, referencing the issue you created earlier. We will then look through your changes and merge them if they're working.
