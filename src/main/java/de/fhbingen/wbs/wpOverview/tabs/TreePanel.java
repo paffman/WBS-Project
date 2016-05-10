@@ -166,7 +166,7 @@ public class TreePanel extends JPanel {
         treeAll = new ToolTipTree(root);
 
         // set draggable if user is pm
-        treeAll.setDragEnabled(this.over.getUser().getBerechtigung() == 1);
+        treeAll.setDragEnabled(this.over.getUser().getProjLeiter());
         treeAll.setToolTipText("");
         treeAll.setCellRenderer(renderer);
         treeAll.setModel(new DefaultTreeModel(root));
