@@ -164,6 +164,9 @@ public class TreePanel extends JPanel {
         root = WPOverview.createTree(nodes, onlyThese);
 
         treeAll = new ToolTipTree(root);
+
+        // set draggable if user is pm
+        treeAll.setDragEnabled(this.over.getUser().getBerechtigung() == 1);
         treeAll.setToolTipText("");
         treeAll.setCellRenderer(renderer);
         treeAll.setModel(new DefaultTreeModel(root));
