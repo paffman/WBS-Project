@@ -23,33 +23,16 @@ import de.fhbingen.wbs.globals.Controller;
 import de.fhbingen.wbs.globals.FilterJTextField;
 import de.fhbingen.wbs.globals.Workpackage;
 
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JSplitPane;
+import javax.swing.*;
 
-import java.awt.BorderLayout;
+import java.awt.*;
 
-import javax.swing.JPanel;
-import javax.swing.JTable;
-
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
-
-import javax.swing.JCheckBox;
-import javax.swing.JTextField;
-import javax.swing.JProgressBar;
-import javax.swing.JTextArea;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
+import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import java.awt.FlowLayout;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
@@ -60,15 +43,11 @@ import java.util.Set;
 import java.util.Vector;
 
 import javax.swing.table.DefaultTableModel;
-import javax.swing.JScrollPane;
 
 import de.fhbingen.wbs.dbServices.WorkerService;
 import de.fhbingen.wbs.dbServices.ValuesService;
 import de.fhbingen.wbs.wpOverview.WPOverview;
 import de.fhbingen.wbs.wpWorker.Worker;
-
-import java.awt.GridLayout;
-import java.awt.Font;
 
 /**
  * The GUI to insert work packages.
@@ -129,6 +108,9 @@ public class WPShowGUI extends JFrame {
     /** The text field for the spi. */
     private JTextField txfSPI;
 
+    /** The text field for the testcase. */
+    private JTextField txfTestcase;
+
     /** The button to add an ancestor. */
     private JButton btnAddAncestor;
 
@@ -153,6 +135,9 @@ public class WPShowGUI extends JFrame {
     /** The button to cancel the changes. */
     private JButton btnCancel;
 
+    /** The button to add a testcase. */
+    private JButton btnAddTestcase;
+
     /** The combo box which contains the workers to add them. */
     private JComboBox<Worker> cobAddWorker;
 
@@ -170,6 +155,9 @@ public class WPShowGUI extends JFrame {
 
     /** The button to add a work effort. */
     private JButton btnAddAufwand;
+
+    /** The button to execute the Tests */
+    private JButton btnTestExecute;
 
     /** The combo box which contains the workers which are leader. */
     private JComboBox<Worker> cobLeiter;
@@ -256,18 +244,24 @@ public class WPShowGUI extends JFrame {
         getContentPane().add(splitPane, BorderLayout.CENTER);
 
         JPanel leftPanel = new JPanel();
-        leftPanel.setBorder(new EmptyBorder(5, 5, 5, 3));
+        leftPanel.setLayout(new BorderLayout());
+
+        JPanel leftScrollPanel = new JPanel();
+        leftScrollPanel.setBorder(new EmptyBorder(5, 5, 5, 3));
+        GridBagLayout gbl_leftScrollPanel = new GridBagLayout();
+        gbl_leftScrollPanel.columnWidths = new int[] {0, 0, 0 };
+        gbl_leftScrollPanel.rowHeights = new int[] {0, 0, 0, 40, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+        gbl_leftScrollPanel.columnWeights = new double[] {1.0, 1.0,
+                Double.MIN_VALUE };
+        gbl_leftScrollPanel.rowWeights = new double[] {0.0, 0.0, 0.0, 1.0, 0.0,
+                0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+        leftScrollPanel.setLayout(gbl_leftScrollPanel);
+
+        JScrollPane wpSettingsPane = new JScrollPane(leftScrollPanel, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        wpSettingsPane.setMinimumSize(new Dimension(440,600));
         splitPane.setLeftComponent(leftPanel);
-        GridBagLayout gbl_leftPanel = new GridBagLayout();
-        gbl_leftPanel.columnWidths = new int[] {0, 0, 0 };
-        gbl_leftPanel.rowHeights = new int[] {0, 0, 0, 40, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-        gbl_leftPanel.columnWeights = new double[] {1.0, 1.0,
-            Double.MIN_VALUE };
-        gbl_leftPanel.rowWeights = new double[] {0.0, 0.0, 0.0, 1.0, 0.0,
-            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
-        leftPanel.setLayout(gbl_leftPanel);
 
         JLabel lblNr = new JLabel(wbsStrings.workPackageId());
         GridBagConstraints gbc_lblNr = new GridBagConstraints();
@@ -275,7 +269,7 @@ public class WPShowGUI extends JFrame {
         gbc_lblNr.insets = new Insets(0, 0, 5, 5);
         gbc_lblNr.gridx = 0;
         gbc_lblNr.gridy = 0;
-        leftPanel.add(lblNr, gbc_lblNr);
+        leftScrollPanel.add(lblNr, gbc_lblNr);
 
         txfNr = new FilterJTextField();
         GridBagConstraints gbc_txfNr = new GridBagConstraints();
@@ -283,7 +277,7 @@ public class WPShowGUI extends JFrame {
         gbc_txfNr.insets = new Insets(0, 0, 5, 0);
         gbc_txfNr.gridx = 1;
         gbc_txfNr.gridy = 0;
-        leftPanel.add(txfNr, gbc_txfNr);
+        leftScrollPanel.add(txfNr, gbc_txfNr);
         txfNr.setColumns(10);
 
         JLabel lblName = new JLabel(wbsStrings.workPackage()); // TODO OK?
@@ -293,7 +287,7 @@ public class WPShowGUI extends JFrame {
         gbc_lblName.insets = new Insets(0, 0, 5, 5);
         gbc_lblName.gridx = 0;
         gbc_lblName.gridy = 1;
-        leftPanel.add(lblName, gbc_lblName);
+        leftScrollPanel.add(lblName, gbc_lblName);
 
         txfName = new FilterJTextField();
         GridBagConstraints gbc_txfName = new GridBagConstraints();
@@ -301,7 +295,7 @@ public class WPShowGUI extends JFrame {
         gbc_txfName.insets = new Insets(0, 0, 5, 0);
         gbc_txfName.gridx = 1;
         gbc_txfName.gridy = 1;
-        leftPanel.add(txfName, gbc_txfName);
+        leftScrollPanel.add(txfName, gbc_txfName);
         txfName.setColumns(10);
 
         JPanel panel_5 = new JPanel();
@@ -312,7 +306,7 @@ public class WPShowGUI extends JFrame {
         gbc_panel_5.fill = GridBagConstraints.BOTH;
         gbc_panel_5.gridx = 1;
         gbc_panel_5.gridy = 2;
-        leftPanel.add(panel_5, gbc_panel_5);
+        leftScrollPanel.add(panel_5, gbc_panel_5);
 
         chbOAP = new JCheckBox("OAP");
         panel_5.add(chbOAP);
@@ -326,7 +320,7 @@ public class WPShowGUI extends JFrame {
         gbc_lblBeschreibung.insets = new Insets(0, 0, 5, 5);
         gbc_lblBeschreibung.gridx = 0;
         gbc_lblBeschreibung.gridy = 3;
-        leftPanel.add(lblBeschreibung, gbc_lblBeschreibung);
+        leftScrollPanel.add(lblBeschreibung, gbc_lblBeschreibung);
 
         txfDesc = new JTextArea() {
             private static final long serialVersionUID = -3874181090738553731L;
@@ -344,7 +338,7 @@ public class WPShowGUI extends JFrame {
         gbc_txfDesc.fill = GridBagConstraints.BOTH;
         gbc_txfDesc.gridx = 1;
         gbc_txfDesc.gridy = 3;
-        leftPanel.add(txfDesc, gbc_txfDesc);
+        leftScrollPanel.add(txfDesc, gbc_txfDesc);
 
         lblVorgnger = new JLabel(generalStrings.predecessor());
         GridBagConstraints gbc_lblVorgnger = new GridBagConstraints();
@@ -352,7 +346,7 @@ public class WPShowGUI extends JFrame {
         gbc_lblVorgnger.insets = new Insets(0, 0, 5, 5);
         gbc_lblVorgnger.gridx = 0;
         gbc_lblVorgnger.gridy = 4;
-        leftPanel.add(lblVorgnger, gbc_lblVorgnger);
+        leftScrollPanel.add(lblVorgnger, gbc_lblVorgnger);
 
         JPanel panel_2 = new JPanel();
         GridBagConstraints gbc_panel_2 = new GridBagConstraints();
@@ -360,7 +354,7 @@ public class WPShowGUI extends JFrame {
         gbc_panel_2.fill = GridBagConstraints.BOTH;
         gbc_panel_2.gridx = 1;
         gbc_panel_2.gridy = 4;
-        leftPanel.add(panel_2, gbc_panel_2);
+        leftScrollPanel.add(panel_2, gbc_panel_2);
 
         btnAddAncestor = new JButton(buttonStrings.add());
         btnAddAncestor.addActionListener(new ActionListener() {
@@ -379,7 +373,7 @@ public class WPShowGUI extends JFrame {
         gbc_lblNachfolger.insets = new Insets(0, 0, 5, 5);
         gbc_lblNachfolger.gridx = 0;
         gbc_lblNachfolger.gridy = 5;
-        leftPanel.add(lblNachfolger, gbc_lblNachfolger);
+        leftScrollPanel.add(lblNachfolger, gbc_lblNachfolger);
 
         JPanel panel_3 = new JPanel();
         panel_3.setBorder(null);
@@ -388,7 +382,7 @@ public class WPShowGUI extends JFrame {
         gbc_panel_3.fill = GridBagConstraints.BOTH;
         gbc_panel_3.gridx = 1;
         gbc_panel_3.gridy = 5;
-        leftPanel.add(panel_3, gbc_panel_3);
+        leftScrollPanel.add(panel_3, gbc_panel_3);
         panel_3.setLayout(new GridLayout(0, 2, 5, 0));
 
         btnAddFollower = new JButton(buttonStrings.add());
@@ -404,7 +398,7 @@ public class WPShowGUI extends JFrame {
         gbc_lblVerantwortlicher.insets = new Insets(0, 0, 5, 5);
         gbc_lblVerantwortlicher.gridx = 0;
         gbc_lblVerantwortlicher.gridy = 6;
-        leftPanel.add(lblVerantwortlicher, gbc_lblVerantwortlicher);
+        leftScrollPanel.add(lblVerantwortlicher, gbc_lblVerantwortlicher);
 
         cobLeiter = new JComboBox<Worker>();
         GridBagConstraints gbc_cobLeiter = new GridBagConstraints();
@@ -412,7 +406,7 @@ public class WPShowGUI extends JFrame {
         gbc_cobLeiter.insets = new Insets(0, 0, 5, 0);
         gbc_cobLeiter.gridx = 1;
         gbc_cobLeiter.gridy = 6;
-        leftPanel.add(cobLeiter, gbc_cobLeiter);
+        leftScrollPanel.add(cobLeiter, gbc_cobLeiter);
 
         JLabel lblMitarbeiter = new JLabel(LocalizedStrings.getLogin()
             .user()); // TODO ok? war Mitarbeiter
@@ -421,7 +415,7 @@ public class WPShowGUI extends JFrame {
         gbc_lblMitarbeiter.insets = new Insets(0, 0, 5, 5);
         gbc_lblMitarbeiter.gridx = 0;
         gbc_lblMitarbeiter.gridy = 7;
-        leftPanel.add(lblMitarbeiter, gbc_lblMitarbeiter);
+        leftScrollPanel.add(lblMitarbeiter, gbc_lblMitarbeiter);
 
         txfWorker = new FilterJTextField();
         txfWorker.setEditable(false);
@@ -431,7 +425,7 @@ public class WPShowGUI extends JFrame {
         gbc_txfWorker.insets = new Insets(0, 0, 5, 0);
         gbc_txfWorker.gridx = 1;
         gbc_txfWorker.gridy = 7;
-        leftPanel.add(txfWorker, gbc_txfWorker);
+        leftScrollPanel.add(txfWorker, gbc_txfWorker);
         txfWorker.setColumns(10);
 
         JPanel panel_4 = new JPanel();
@@ -440,7 +434,7 @@ public class WPShowGUI extends JFrame {
         gbc_panel_4.fill = GridBagConstraints.BOTH;
         gbc_panel_4.gridx = 1;
         gbc_panel_4.gridy = 8;
-        leftPanel.add(panel_4, gbc_panel_4);
+        leftScrollPanel.add(panel_4, gbc_panel_4);
         GridBagLayout gbl_panel_4 = new GridBagLayout();
         gbl_panel_4.columnWidths = new int[] {0, 0, 0 };
         gbl_panel_4.rowHeights = new int[] {23, 23, 0 };
@@ -485,7 +479,7 @@ public class WPShowGUI extends JFrame {
         gbc_lblStart.insets = new Insets(0, 0, 5, 5);
         gbc_lblStart.gridx = 0;
         gbc_lblStart.gridy = 9;
-        leftPanel.add(lblStart, gbc_lblStart);
+        leftScrollPanel.add(lblStart, gbc_lblStart);
 
         JPanel panel = new JPanel();
         GridBagConstraints gbc_panel = new GridBagConstraints();
@@ -493,7 +487,7 @@ public class WPShowGUI extends JFrame {
         gbc_panel.fill = GridBagConstraints.BOTH;
         gbc_panel.gridx = 1;
         gbc_panel.gridy = 9;
-        leftPanel.add(panel, gbc_panel);
+        leftScrollPanel.add(panel, gbc_panel);
         panel.setLayout(new GridLayout(0, 2, 5, 0));
 
         txfStartHope = new FilterJTextField();
@@ -512,7 +506,7 @@ public class WPShowGUI extends JFrame {
         gbc_lblEnd.insets = new Insets(0, 0, 5, 5);
         gbc_lblEnd.gridx = 0;
         gbc_lblEnd.gridy = 10;
-        leftPanel.add(lblEnd, gbc_lblEnd);
+        leftScrollPanel.add(lblEnd, gbc_lblEnd);
 
         JPanel panel_1 = new JPanel();
         GridBagConstraints gbc_panel_1 = new GridBagConstraints();
@@ -520,7 +514,7 @@ public class WPShowGUI extends JFrame {
         gbc_panel_1.fill = GridBagConstraints.BOTH;
         gbc_panel_1.gridx = 1;
         gbc_panel_1.gridy = 10;
-        leftPanel.add(panel_1, gbc_panel_1);
+        leftScrollPanel.add(panel_1, gbc_panel_1);
         panel_1.setLayout(new GridLayout(0, 2, 5, 0));
 
         txfEndHope = new FilterJTextField();
@@ -539,7 +533,7 @@ public class WPShowGUI extends JFrame {
         gbc_lblStatus.insets = new Insets(0, 0, 5, 5);
         gbc_lblStatus.gridx = 0;
         gbc_lblStatus.gridy = 11;
-        leftPanel.add(lblStatus, gbc_lblStatus);
+        leftScrollPanel.add(lblStatus, gbc_lblStatus);
 
         barComplete = new JProgressBar();
         GridBagConstraints gbc_barComplete = new GridBagConstraints();
@@ -547,7 +541,7 @@ public class WPShowGUI extends JFrame {
         gbc_barComplete.insets = new Insets(0, 0, 5, 0);
         gbc_barComplete.gridx = 1;
         gbc_barComplete.gridy = 11;
-        leftPanel.add(barComplete, gbc_barComplete);
+        leftScrollPanel.add(barComplete, gbc_barComplete);
 
         JLabel lblCpi = new JLabel(wbsStrings.cpiAndSpi());
         GridBagConstraints gbc_lblCpi = new GridBagConstraints();
@@ -555,7 +549,7 @@ public class WPShowGUI extends JFrame {
         gbc_lblCpi.insets = new Insets(0, 0, 5, 5);
         gbc_lblCpi.gridx = 0;
         gbc_lblCpi.gridy = 12;
-        leftPanel.add(lblCpi, gbc_lblCpi);
+        leftScrollPanel.add(lblCpi, gbc_lblCpi);
 
         JPanel panel_7 = new JPanel();
         GridBagConstraints gbc_panel_7 = new GridBagConstraints();
@@ -563,7 +557,7 @@ public class WPShowGUI extends JFrame {
         gbc_panel_7.fill = GridBagConstraints.BOTH;
         gbc_panel_7.gridx = 1;
         gbc_panel_7.gridy = 12;
-        leftPanel.add(panel_7, gbc_panel_7);
+        leftScrollPanel.add(panel_7, gbc_panel_7);
         panel_7.setLayout(new GridLayout(1, 2, 5, 0));
 
         txfCPI = new FilterJTextField();
@@ -586,7 +580,7 @@ public class WPShowGUI extends JFrame {
         gbc_panel_9.fill = GridBagConstraints.BOTH;
         gbc_panel_9.gridx = 1;
         gbc_panel_9.gridy = 13;
-        leftPanel.add(panel_9, gbc_panel_9);
+        leftScrollPanel.add(panel_9, gbc_panel_9);
         panel_9.setLayout(new GridLayout(1, 2, 5, 0));
 
         btnCPI = new JButton(wbsStrings.graph(wbsStrings.cpi()));
@@ -603,7 +597,7 @@ public class WPShowGUI extends JFrame {
         gbc_lblBac.insets = new Insets(0, 0, 5, 5);
         gbc_lblBac.gridx = 0;
         gbc_lblBac.gridy = 14;
-        leftPanel.add(lblBac, gbc_lblBac);
+        leftScrollPanel.add(lblBac, gbc_lblBac);
 
         panel_10 = new JPanel();
         GridBagConstraints gbc_panel_10 = new GridBagConstraints();
@@ -611,7 +605,7 @@ public class WPShowGUI extends JFrame {
         gbc_panel_10.fill = GridBagConstraints.BOTH;
         gbc_panel_10.gridx = 1;
         gbc_panel_10.gridy = 14;
-        leftPanel.add(panel_10, gbc_panel_10);
+        leftScrollPanel.add(panel_10, gbc_panel_10);
         panel_10.setLayout(new GridLayout(1, 0, 5, 0));
 
         txfBAC = new FilterJTextField();
@@ -635,7 +629,7 @@ public class WPShowGUI extends JFrame {
         gbc_lblPv.insets = new Insets(0, 0, 5, 5);
         gbc_lblPv.gridx = 0;
         gbc_lblPv.gridy = 15;
-        leftPanel.add(lblPv, gbc_lblPv);
+        leftScrollPanel.add(lblPv, gbc_lblPv);
 
         JPanel panel_6 = new JPanel();
         GridBagConstraints gbc_panel_6 = new GridBagConstraints();
@@ -643,7 +637,7 @@ public class WPShowGUI extends JFrame {
         gbc_panel_6.fill = GridBagConstraints.BOTH;
         gbc_panel_6.gridx = 1;
         gbc_panel_6.gridy = 15;
-        leftPanel.add(panel_6, gbc_panel_6);
+        leftScrollPanel.add(panel_6, gbc_panel_6);
         panel_6.setLayout(new GridLayout(0, 2, 5, 0));
 
         txfSV = new FilterJTextField();
@@ -665,7 +659,7 @@ public class WPShowGUI extends JFrame {
         gbc_lblBacKosten.insets = new Insets(0, 0, 5, 5);
         gbc_lblBacKosten.gridx = 0;
         gbc_lblBacKosten.gridy = 16;
-        leftPanel.add(lblBacKosten, gbc_lblBacKosten);
+        leftScrollPanel.add(lblBacKosten, gbc_lblBacKosten);
 
         txfBACCost = new FilterJTextField();
         txfBACCost.setEditable(false);
@@ -675,7 +669,7 @@ public class WPShowGUI extends JFrame {
         gbc_txfBACCost.insets = new Insets(0, 0, 5, 0);
         gbc_txfBACCost.gridx = 1;
         gbc_txfBACCost.gridy = 16;
-        leftPanel.add(txfBACCost, gbc_txfBACCost);
+        leftScrollPanel.add(txfBACCost, gbc_txfBACCost);
         txfBACCost.setColumns(10);
 
         JLabel lblAcKosten = new JLabel(generalStrings.costs(wbsStrings
@@ -685,7 +679,7 @@ public class WPShowGUI extends JFrame {
         gbc_lblAcKosten.insets = new Insets(0, 0, 5, 5);
         gbc_lblAcKosten.gridx = 0;
         gbc_lblAcKosten.gridy = 17;
-        leftPanel.add(lblAcKosten, gbc_lblAcKosten);
+        leftScrollPanel.add(lblAcKosten, gbc_lblAcKosten);
 
         txfACCost = new FilterJTextField();
         txfACCost.setEditable(false);
@@ -695,7 +689,7 @@ public class WPShowGUI extends JFrame {
         gbc_txfACCost.insets = new Insets(0, 0, 5, 0);
         gbc_txfACCost.gridx = 1;
         gbc_txfACCost.gridy = 17;
-        leftPanel.add(txfACCost, gbc_txfACCost);
+        leftScrollPanel.add(txfACCost, gbc_txfACCost);
         txfACCost.setColumns(10);
 
         JLabel lblEv = new JLabel(wbsStrings.ev());
@@ -704,7 +698,7 @@ public class WPShowGUI extends JFrame {
         gbc_lblEv.insets = new Insets(0, 0, 5, 5);
         gbc_lblEv.gridx = 0;
         gbc_lblEv.gridy = 18;
-        leftPanel.add(lblEv, gbc_lblEv);
+        leftScrollPanel.add(lblEv, gbc_lblEv);
 
         txfEV = new FilterJTextField();
         txfEV.setEditable(false);
@@ -714,7 +708,7 @@ public class WPShowGUI extends JFrame {
         gbc_txfEV.insets = new Insets(0, 0, 5, 0);
         gbc_txfEV.gridx = 1;
         gbc_txfEV.gridy = 18;
-        leftPanel.add(txfEV, gbc_txfEV);
+        leftScrollPanel.add(txfEV, gbc_txfEV);
         txfEV.setColumns(10);
 
         JLabel lblEac = new JLabel(wbsStrings.eac());
@@ -723,7 +717,7 @@ public class WPShowGUI extends JFrame {
         gbc_lblEac.insets = new Insets(0, 0, 5, 5);
         gbc_lblEac.gridx = 0;
         gbc_lblEac.gridy = 19;
-        leftPanel.add(lblEac, gbc_lblEac);
+        leftScrollPanel.add(lblEac, gbc_lblEac);
 
         txfEAC = new FilterJTextField();
         txfEAC.setEditable(false);
@@ -733,7 +727,7 @@ public class WPShowGUI extends JFrame {
         gbc_txfEAC.insets = new Insets(0, 0, 5, 0);
         gbc_txfEAC.gridx = 1;
         gbc_txfEAC.gridy = 19;
-        leftPanel.add(txfEAC, gbc_txfEAC);
+        leftScrollPanel.add(txfEAC, gbc_txfEAC);
         txfEAC.setColumns(10);
 
         JLabel lblEtcKosten = new JLabel(generalStrings.costs(wbsStrings
@@ -743,7 +737,7 @@ public class WPShowGUI extends JFrame {
         gbc_lblEtcKosten.insets = new Insets(0, 0, 5, 5);
         gbc_lblEtcKosten.gridx = 0;
         gbc_lblEtcKosten.gridy = 20;
-        leftPanel.add(lblEtcKosten, gbc_lblEtcKosten);
+        leftScrollPanel.add(lblEtcKosten, gbc_lblEtcKosten);
 
         txfETCCost = new FilterJTextField();
         txfETCCost.setEditable(false);
@@ -753,7 +747,7 @@ public class WPShowGUI extends JFrame {
         gbc_txfETCCost.fill = GridBagConstraints.HORIZONTAL;
         gbc_txfETCCost.gridx = 1;
         gbc_txfETCCost.gridy = 20;
-        leftPanel.add(txfETCCost, gbc_txfETCCost);
+        leftScrollPanel.add(txfETCCost, gbc_txfETCCost);
         txfETCCost.setColumns(10);
 
         lblTagessatz = new JLabel(wbsStrings.dailyRate());
@@ -762,7 +756,7 @@ public class WPShowGUI extends JFrame {
         gbc_lblTagessatz.anchor = GridBagConstraints.WEST;
         gbc_lblTagessatz.gridx = 0;
         gbc_lblTagessatz.gridy = 21;
-        leftPanel.add(lblTagessatz, gbc_lblTagessatz);
+        leftScrollPanel.add(lblTagessatz, gbc_lblTagessatz);
 
         txfTagessatz = new FilterJTextField();
         txfTagessatz.setEditable(false);
@@ -772,7 +766,7 @@ public class WPShowGUI extends JFrame {
         gbc_txfTagessatz.fill = GridBagConstraints.HORIZONTAL;
         gbc_txfTagessatz.gridx = 1;
         gbc_txfTagessatz.gridy = 21;
-        leftPanel.add(txfTagessatz, gbc_txfTagessatz);
+        leftScrollPanel.add(txfTagessatz, gbc_txfTagessatz);
         txfTagessatz.setColumns(10);
 
         lblPvSpi = new JLabel(wbsStrings.pv() + " / " + wbsStrings.spi()
@@ -782,7 +776,7 @@ public class WPShowGUI extends JFrame {
         gbc_lblPvSpi.anchor = GridBagConstraints.WEST;
         gbc_lblPvSpi.gridx = 0;
         gbc_lblPvSpi.gridy = 22;
-        leftPanel.add(lblPvSpi, gbc_lblPvSpi);
+        leftScrollPanel.add(lblPvSpi, gbc_lblPvSpi);
 
         panel_11 = new JPanel();
         GridBagConstraints gbc_panel_11 = new GridBagConstraints();
@@ -790,7 +784,7 @@ public class WPShowGUI extends JFrame {
         gbc_panel_11.fill = GridBagConstraints.BOTH;
         gbc_panel_11.gridx = 1;
         gbc_panel_11.gridy = 22;
-        leftPanel.add(panel_11, gbc_panel_11);
+        leftScrollPanel.add(panel_11, gbc_panel_11);
         panel_11.setLayout(new GridLayout(1, 0, 5, 0));
 
         txfDate = new FilterJTextField();
@@ -806,57 +800,65 @@ public class WPShowGUI extends JFrame {
         btnAllPV.addActionListener(function.getBtnAllPVListener());
         panel_11.add(btnAllPV);
 
+        JLabel lblTestcase = new JLabel(generalStrings.testcase());
+        GridBagConstraints gbc_lblTestcase = new GridBagConstraints();
+        gbc_lblTestcase.anchor = GridBagConstraints.WEST;
+        gbc_lblTestcase.insets = new Insets(0, 0, 5, 5);
+        gbc_lblTestcase.gridx = 0;
+        gbc_lblTestcase.gridy = 23;
+        leftScrollPanel.add(lblTestcase, gbc_lblTestcase);
+
+        JPanel panelTestcase = new JPanel();
+        panelTestcase.setLayout(new BorderLayout());
+        GridBagConstraints gbc_panelTestcase = new GridBagConstraints();
+        gbc_panelTestcase.insets = new Insets(0, 0, 5, 0);
+        gbc_panelTestcase.fill = GridBagConstraints.BOTH;
+        gbc_panelTestcase.gridx = 1;
+        gbc_panelTestcase.gridy = 23;
+        leftScrollPanel.add(panelTestcase, gbc_panelTestcase);
+
+        txfTestcase = new FilterJTextField();
+        panelTestcase.add(txfTestcase, BorderLayout.CENTER);
+
+        btnAddTestcase = new JButton("+");
+        panelTestcase.add(btnAddTestcase, BorderLayout.EAST);
+
+        JPanel leftBottomPanel = new JPanel();
+        leftBottomPanel.setBorder(new EmptyBorder(5, 5, 5, 3));
+        leftBottomPanel.setLayout(new GridLayout(2,0));
+
+        JPanel effortTestPanel = new JPanel();
+        effortTestPanel.setLayout(new GridLayout(0,2));
+
         btnAddAufwand = new JButton(wbsStrings.enter(wbsStrings
             .workEffort()));
-        GridBagConstraints gbc_btnAddAufwand = new GridBagConstraints();
-        gbc_btnAddAufwand.fill = GridBagConstraints.HORIZONTAL;
-        gbc_btnAddAufwand.insets = new Insets(0, 0, 5, 0);
-        gbc_btnAddAufwand.gridx = 1;
-        gbc_btnAddAufwand.gridy = 23;
-        leftPanel.add(btnAddAufwand, gbc_btnAddAufwand);
+        effortTestPanel.add(btnAddAufwand);
+
+        btnTestExecute = new JButton(wbsStrings.executeTests());
+        effortTestPanel.add(btnTestExecute);
+
+        leftBottomPanel.add(effortTestPanel);
 
         JPanel panel_8 = new JPanel();
-        GridBagConstraints gbc_panel_8 = new GridBagConstraints();
-        gbc_panel_8.anchor = GridBagConstraints.EAST;
-        gbc_panel_8.gridwidth = 2;
-        gbc_panel_8.fill = GridBagConstraints.VERTICAL;
-        gbc_panel_8.gridx = 0;
-        gbc_panel_8.gridy = 24;
-        leftPanel.add(panel_8, gbc_panel_8);
-        GridBagLayout gbl_panel_8 = new GridBagLayout();
-        gbl_panel_8.columnWidths = new int[] {0, 0, 0, 0 };
-        gbl_panel_8.rowHeights = new int[] {0, 0 };
-        gbl_panel_8.columnWeights = new double[] {1.0, 1.0, 1.0,
-            Double.MIN_VALUE };
-        gbl_panel_8.rowWeights = new double[] {0.0, Double.MIN_VALUE };
-        panel_8.setLayout(gbl_panel_8);
+        panel_8.setLayout(new GridLayout(0,3));
 
         btnOk = new JButton(buttonStrings.ok());
-        GridBagConstraints gbc_btnOk = new GridBagConstraints();
-        gbc_btnOk.fill = GridBagConstraints.HORIZONTAL;
-        gbc_btnOk.insets = new Insets(0, 0, 0, 5);
-        gbc_btnOk.gridx = 0;
-        gbc_btnOk.gridy = 0;
-        panel_8.add(btnOk, gbc_btnOk);
+        panel_8.add(btnOk);
 
         btnSave = new JButton(buttonStrings.apply());
         btnSave.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
             }
         });
-        GridBagConstraints gbc_btnSave = new GridBagConstraints();
-        gbc_btnSave.fill = GridBagConstraints.HORIZONTAL;
-        gbc_btnSave.insets = new Insets(0, 0, 0, 5);
-        gbc_btnSave.gridx = 1;
-        gbc_btnSave.gridy = 0;
-        panel_8.add(btnSave, gbc_btnSave);
+        panel_8.add(btnSave);
 
         btnCancel = new JButton(buttonStrings.cancel());
-        GridBagConstraints gbc_btnCancel = new GridBagConstraints();
-        gbc_btnCancel.fill = GridBagConstraints.HORIZONTAL;
-        gbc_btnCancel.gridx = 2;
-        gbc_btnCancel.gridy = 0;
-        panel_8.add(btnCancel, gbc_btnCancel);
+        panel_8.add(btnCancel);
+
+        leftBottomPanel.add(panel_8);
+
+        leftPanel.add(wpSettingsPane, BorderLayout.CENTER);
+        leftPanel.add(leftBottomPanel, BorderLayout.SOUTH);
 
         JPanel rightPanel = new JPanel();
         rightPanel.setBorder(null);
