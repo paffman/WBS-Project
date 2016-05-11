@@ -214,5 +214,9 @@ public interface General {
     @De("und")
     @En("and")
     String and();
+
+    @De("Testfall")
+    @En("Testcase")
+    String testcase();
 }
 
