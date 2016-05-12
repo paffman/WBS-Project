@@ -162,4 +162,8 @@ public interface Wbs {
     @De("Geändertes Datum")
     @En("Date Changed")
     String dateChangedWindowTitle();
+
+    @De("Tests durchführen")
+    @En("Execute Tests")
+    String executeTests();
 }
