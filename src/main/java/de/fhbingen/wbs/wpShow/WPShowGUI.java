@@ -979,7 +979,6 @@ public class WPShowGUI extends JFrame {
         JPanel rightPanel = new JPanel();
         rightPanel.setBorder(null);
         splitPane.setRightComponent(rightPanel);
-        rightPanel.setLayout(new GridLayout(2, 0));
 
         tblAufwand = new JTable();
         tblAufwand.setRowSelectionAllowed(false);
@@ -1006,7 +1005,14 @@ public class WPShowGUI extends JFrame {
         tblAufwand.getColumnModel().getColumn(2).setMaxWidth(150);
 
         scrollTable = new JScrollPane(tblAufwand);
-        rightPanel.add(scrollTable);
+
+        if(!function.getWorkpackage().isIstOAP()) {
+            rightPanel.setLayout(new GridLayout(2, 0));
+            rightPanel.add(scrollTable);
+        }
+        else{
+            rightPanel.setLayout(new BorderLayout());
+        }
 
         tblTestcase = new JTable();
         tblTestcase.setModel(new DefaultTableModel(new Object[][]{{"", "", "", "", ""},}, new String[]{
@@ -1337,9 +1343,6 @@ public class WPShowGUI extends JFrame {
         this.btnAddFollower.setVisible(leiter);
         this.btnEditAncestor.setVisible(leiter);
         this.btnEditFollower.setVisible(leiter);
-
-        this.pack();
-
     }
 
     /**
@@ -1351,12 +1354,9 @@ public class WPShowGUI extends JFrame {
      */
     private void setUAPViews(final boolean isUAP, final boolean leiter) {
         if (!leiter) {
-            //this.tblAufwand.removeColumn(this.tblAufwand.getColumn("Name"));
             this.tblAufwand.removeColumn(this.tblAufwand.getColumn(
                     LocalizedStrings.getLogin().user()));
             this.txfBAC.setEnabled(false);
-        } else {
-
         }
     }
 
