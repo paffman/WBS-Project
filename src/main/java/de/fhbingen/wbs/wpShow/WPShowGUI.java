@@ -1016,10 +1016,10 @@ public class WPShowGUI extends JFrame {
 
         tblTestcase = new JTable();
         tblTestcase.setModel(new DefaultTableModel(new Object[][]{{"", "", "", "", ""},}, new String[]{
-                wbsStrings.workPackageId(), generalStrings.date(), generalStrings.testcase(),
-                generalStrings.date(), "Tester", "Status"}));
+                wbsStrings.workPackageId(),  generalStrings.testcase(), generalStrings.date(),
+                "Tester", "Status"}));
         tblTestcase.getColumnModel().getColumn(0).setMinWidth(100);
-        tblTestcase.getColumnModel().getColumn(5).setMaxWidth(40);
+        tblTestcase.getColumnModel().getColumn(4).setMaxWidth(40);
 
         scrollTableTestcase = new JScrollPane(tblTestcase);
         rightPanel.add(scrollTableTestcase);
