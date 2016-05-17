@@ -6,4 +6,5 @@ import de.fhbingen.wbs.dbaccess.models.TestCaseModel;
  * MySQL implementation for the TestCaseModel
  */
 public class MySQLTestCaseModel implements TestCaseModel {
+    //TODO implement methods
 }
