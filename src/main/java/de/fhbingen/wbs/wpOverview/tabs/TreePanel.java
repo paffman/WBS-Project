@@ -20,14 +20,12 @@ import de.fhbingen.wbs.translation.Wbs;
 import de.fhbingen.wbs.functions.WpManager;
 import de.fhbingen.wbs.globals.ToolTipTree;
 import de.fhbingen.wbs.globals.Workpackage;
-import java.awt.BorderLayout;
+
+import java.awt.*;
+import java.awt.dnd.*;
 import java.util.ArrayList;
 import java.util.Enumeration;
-import javax.swing.JFrame;
-import javax.swing.JMenuItem;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JTree;
+import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
@@ -166,7 +164,19 @@ public class TreePanel extends JPanel {
         treeAll = new ToolTipTree(root);
 
         // set draggable if user is pm
-        treeAll.setDragEnabled(this.over.getUser().getProjLeiter());
+        if (this.over.getUser().getProjLeiter()) {
+            treeAll.setDragEnabled(true);
+            treeAll.setDropMode(DropMode.ON);
+            //TODO
+            treeAll.setDropTarget(new DropTarget(treeAll, new DropTargetAdapter() {
+                @Override
+                public void drop(DropTargetDropEvent dtde) {
+                    Point location = dtde.getLocation();
+                    System.out.println(treeAll.getPathForLocation(location.x, location.y));
+                }
+            }));
+        }
+
         treeAll.setToolTipText("");
         treeAll.setCellRenderer(renderer);
         treeAll.setModel(new DefaultTreeModel(root));
