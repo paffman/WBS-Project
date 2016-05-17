@@ -218,5 +218,21 @@ public interface General {
     @De("Testfall")
     @En("Testcase")
     String testcase();
+
+    @De("Vorbedingungen")
+    @En("Preconditions")
+    String precondition();
+
+    @De("Erwartetes Ergebnis")
+    @En("Expected result")
+    String expectedResult();
+
+    @De("Bemerkung")
+    @En("Remark")
+    String remark();
+
+    @De("Ergebnis")
+    @En("Result")
+    String result();
 }
 
