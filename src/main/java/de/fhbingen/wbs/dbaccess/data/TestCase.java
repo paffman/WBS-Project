@@ -135,4 +135,21 @@ public class TestCase {
      */
     public void setName(String name) { this.name = name; }
 
+    /**
+     *
+     * @param id
+     * @param workpackageID
+     * @param precondition
+     * @param description
+     * @param expectedResult
+     * @param name
+     */
+    public TestCase(int id, int workpackageID, String precondition, String description, String expectedResult, String name) {
+        this.id = id;
+        this.workpackageID = workpackageID;
+        this.precondition = precondition;
+        this.description = description;
+        this.expectedResult = expectedResult;
+        this.name = name;
+    }
 }
