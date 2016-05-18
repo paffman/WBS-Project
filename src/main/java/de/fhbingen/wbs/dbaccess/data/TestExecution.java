@@ -152,4 +152,22 @@ public class TestExecution {
     public void setTime(Timestamp time) {
         this.time = time;
     }
+
+    /**
+     *
+     * @param id
+     * @param employeeID
+     * @param testcaseID
+     * @param remark
+     * @param status
+     * @param time
+     */
+    public TestExecution(int id, int employeeID, int testcaseID, String remark, String status, Timestamp time) {
+        this.id = id;
+        this.employeeID = employeeID;
+        this.testcaseID = testcaseID;
+        this.remark = remark;
+        this.status = status;
+        this.time = time;
+    }
 }
