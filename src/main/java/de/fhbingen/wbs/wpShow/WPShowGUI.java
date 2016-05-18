@@ -950,7 +950,7 @@ public class WPShowGUI extends JFrame {
                 .workEffort()));
         effortTestPanel.add(btnAddAufwand);
 
-        btnTestExecute = new JButton(wbsStrings.executeTests());
+        btnTestExecute = new JButton(      ); /*  damit ich es kompilieren konnte *///wbsStrings.executeTests());
         effortTestPanel.add(btnTestExecute);
 
         leftBottomPanel.add(effortTestPanel);

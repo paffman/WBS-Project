@@ -153,4 +153,8 @@ public class TestCase {
         this.expectedResult = expectedResult;
         this.name = name;
     }
+
+    public TestCase() {
+
+    }
 }

@@ -170,4 +170,8 @@ public class TestExecution {
         this.status = status;
         this.time = time;
     }
+
+    public TestExecution() {
+
+    }
 }

@@ -1,30 +1,32 @@
 package de.fhbingen.wbs.dbaccess.models.mysql;
 
+import de.fhbingen.wbs.dbaccess.data.Employee;
 import de.fhbingen.wbs.dbaccess.data.TestCase;
-import de.fhbingen.wbs.dbaccess.models.TestCaseModel;
-import de.fhbingen.wbs.globals.Workpackage;
+import de.fhbingen.wbs.dbaccess.data.TestExecution;
+import de.fhbingen.wbs.dbaccess.models.TestExecutionModel;
 import de.fhbingen.wbs.jdbcConnection.SQLExecuter;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * MySQL implementation for the TestCaseModel
+ * Created by morit on 18.05.2016.
  */
-public class MySQLTestCaseModel implements TestCaseModel {
-
+public class MySQLTestExecutionModel implements TestExecutionModel {
 
 
     @Override
-    public final boolean addNewTestCase(TestCase testcase){
-
+    public boolean addNewTestExecution(TestExecution testexec) {
         final Connection connection = SQLExecuter.getConnection();
         final int paramCount = 5;
         PreparedStatement stm = null;
         boolean success = false;
 
-        String storedProcedure = "CALL test_case_new(";
+        String storedProcedure = "CALL test_execution_new(";
 
         for (int i = 1; i < paramCount; i++) {
             storedProcedure += "?,";
@@ -37,11 +39,11 @@ public class MySQLTestCaseModel implements TestCaseModel {
         try {
             stm = connection.prepareStatement(storedProcedure);
 
-            stm.setInt(1, testcase.getWorkpackageID());
-            stm.setString(2, testcase.getName());
-            stm.setString(3, testcase.getDescription());
-            stm.setString(4, testcase.getPrecondition());
-            stm.setString(5, testcase.getExpectedResult());
+            stm.setInt(1, testexec.getTestcaseID());
+            stm.setInt(2, testexec.getEmployeeID());
+            stm.setString(3, testexec.getRemark());
+            stm.setTimestamp(4, testexec.getTime());
+            stm.setString(5, testexec.getStatus());
 
             stm.execute();
             success = true;
@@ -60,16 +62,16 @@ public class MySQLTestCaseModel implements TestCaseModel {
         return success;
     }
 
-
     @Override
-    public List<TestCase> getAllTestCases(Workpackage wp) {
+    public List<TestExecution> getExecutionsForTestCase(TestCase testcase) {
+
         final Connection connection = SQLExecuter.getConnection();
-        List<TestCase> tcList = new ArrayList<TestCase>();
+        List<TestExecution> teList = new ArrayList<TestExecution>();
         int paramCount = 1;
         ResultSet sqlResult = null;
         PreparedStatement stm = null;
 
-        String storedProcedure = "CALL test_case_select_by_wp(";
+        String storedProcedure = "CALL test_execution_select_by_test_case(";
 
         for (int i = 1; i < paramCount; i++) {
             storedProcedure += "?,";
@@ -79,11 +81,11 @@ public class MySQLTestCaseModel implements TestCaseModel {
 
         try {
             stm = connection.prepareStatement(storedProcedure);
-            stm.setInt(1, wp.getWpId());
+            stm.setInt(1, testcase.getId());
             sqlResult = stm.executeQuery();
 
             while (sqlResult.next()) {
-                tcList.add(tcFromResultSet(sqlResult));
+                teList.add(teFromResultSet(sqlResult));
             }
 
         } catch (SQLException e) {
@@ -101,18 +103,36 @@ public class MySQLTestCaseModel implements TestCaseModel {
             }
         }
 
-        return tcList;
+        return teList;
+
+
     }
 
 
+
+
     @Override
-    public boolean updateTestCase(TestCase testcase) {
+    public TestExecution getLastExecution(TestCase testcase) {
+
+        //TODO: implement
+        return null;
+    }
+
+
+
+
+
+
+    @Override
+    public boolean updateTestExecution(TestExecution testexec) {
+
+
         final Connection connection = SQLExecuter.getConnection();
         final int paramCount = 5;
         PreparedStatement stm = null;
         boolean success = false;
 
-        String storedProcedure = "CALL test_case_update_by_id(";
+        String storedProcedure = "CALL test_execution_update_by_id(";
 
         for (int i = 1; i < paramCount; i++) {
             storedProcedure += "?,";
@@ -125,11 +145,11 @@ public class MySQLTestCaseModel implements TestCaseModel {
         try {
             stm = connection.prepareStatement(storedProcedure);
 
-            stm.setInt(1, testcase.getWorkpackageID());
-            stm.setString(2, testcase.getName());
-            stm.setString(3, testcase.getDescription());
-            stm.setString(4, testcase.getPrecondition());
-            stm.setString(5, testcase.getExpectedResult());
+            stm.setInt(1, testexec.getTestcaseID());
+            stm.setInt(2, testexec.getEmployeeID());
+            stm.setString(3, testexec.getRemark());
+            stm.setTimestamp(4, testexec.getTime());
+            stm.setString(5, testexec.getStatus());
 
             stm.execute();
             success = true;
@@ -146,36 +166,37 @@ public class MySQLTestCaseModel implements TestCaseModel {
             }
         }
         return success;
+
     }
-
-
 
 
 
 
     /**
-     * Creates a <code>TestCase</code> based on a <code>ResultSet</code> freshly fetched from the DB.
+     * Creates a <code>TestExecution</code> based on a <code>ResultSet</code> freshly fetched from the DB.
      *
      * @param resSet
      *            The result set containing the data
-     * @return A <code>TestCase</code> object
+     * @return A <code>TestExecution</code> object
      */
-    public static final TestCase tcFromResultSet(final ResultSet resSet) {
-        TestCase tc = new TestCase();
+    public static final TestExecution teFromResultSet(final ResultSet resSet) {
+        TestExecution te = new TestExecution();
 
         try {
-            tc.setWorkpackageID(resSet.getInt("fid_wp"));
-            tc.setDescription(resSet.getString("description"));
-            tc.setExpectedResult(resSet.getString("expected_result"));
-            tc.setName(resSet.getString("name"));
-            tc.setPrecondition(resSet.getString("precondition"));
+            te.setTestcaseID(resSet.getInt("fid_tc"));
+            te.setEmployeeID(resSet.getInt("fid_emp"));
+            te.setRemark(resSet.getString("remark"));
+            te.setStatus(resSet.getString("status")); // should return an enum
+            te.setTime(resSet.getTimestamp("timestamp"));
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        return tc;
+        return te;
     }
+
+
 
 
 }
