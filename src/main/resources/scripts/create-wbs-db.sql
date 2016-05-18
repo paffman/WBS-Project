@@ -236,4 +236,42 @@ CREATE TABLE IF NOT EXISTS planned_value (
 COMMENT 'This table manages planned values for the workpackages.';
 
 -- ---------------------------------------------------------------------
+
+-- test_cases
+-- ---------------------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS test_cases (
+	id int(11) NOT NULL AUTO_INCREMENT COMMENT 'Unique Identifier for test cases.',
+	fid_wp int(11) NOT NULL COMMENT 'Id of the workpackage for which test case is.',
+	name varchar(255) NOT NULL COMMENT 'Name of the test case.',
+	description varchar(255) NOT NULL COMMENT 'Description of the test case.',
+	precondition varchar(255) NOT NULL COMMENT 'Precondition of the test case.',
+	expected_result varchar(255) NOT NULL COMMENT 'Measurable definition of the testcases expected result.',
+	PRIMARY KEY ( id ),
+	FOREIGN KEY ( fid_wp ) REFERENCES workpackage( id )
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1
+COMMENT 'This table manages test cases which belong to exactly one workpackage.';
+
+-- ---------------------------------------------------------------------
+
+
+-- test_executions
+-- ---------------------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS test_executions (
+	id int(10) NOT NULL AUTO_INCREMENT COMMENT 'Unique Identifier for test executions.',
+	fid_tc int(11) NOT NULL COMMENT 'Id of the testcase for which the test case execution is.',
+	fid_emp int(11) NOT NULL COMMENT 'Id of the employee which executed the test execution.',
+	remark varchar(255) COMMENT 'test execution remark',
+	timestamp DATE,
+	status ENUM('failed', 'neutral', 'succeeded'),
+	PRIMARY KEY ( id ),
+	FOREIGN KEY ( fid_emp ) REFERENCES employees( id ),
+	FOREIGN KEY ( fid_tc ) REFERENCES test_cases( id )
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1
+COMMENT 'This table manages test executions which belong to exactly one workpackage and one test case.';
+
+-- ---------------------------------------------------------------------
+
+
 COMMIT;

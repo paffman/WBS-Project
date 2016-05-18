@@ -14,6 +14,7 @@
 
 package de.fhbingen.wbs.wpShow;
 
+import de.fhbingen.wbs.controller.TestCaseController;
 import de.fhbingen.wbs.wpConflict.ConflictCompat;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
@@ -80,6 +81,8 @@ public class WPShow {
     /** A set with all employees which work on the work package. */
     private Set<String> actualWPWorkers;
 
+    private TestCaseController testCaseController;
+
     /**
      * Constructor.
      * @param over
@@ -133,6 +136,8 @@ public class WPShow {
         } else {
             this.saved = true;
         }
+
+        this.testCaseController = new TestCaseController(this.wp);
     }
 
     /**
