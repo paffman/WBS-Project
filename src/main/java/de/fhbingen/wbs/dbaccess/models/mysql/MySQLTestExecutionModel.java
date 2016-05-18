@@ -115,6 +115,7 @@ public class MySQLTestExecutionModel implements TestExecutionModel {
     public TestExecution getLastExecution(TestCase testcase) {
 
         //TODO: implement
+        // wahrscheinlich mit einer zusätzlichen stored procedure am besten zu lösen
         return null;
     }
 
