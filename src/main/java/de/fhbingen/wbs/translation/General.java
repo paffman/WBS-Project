@@ -216,7 +216,7 @@ public interface General {
     String and();
 
     @De("Testfall")
-    @En("Testcase")
+    @En("TestcaseShow")
     String testcase();
 
     @De("Vorbedingungen")
