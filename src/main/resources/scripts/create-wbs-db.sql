@@ -242,7 +242,7 @@ COMMENT 'This table manages planned values for the workpackages.';
 
 CREATE TABLE IF NOT EXISTS test_cases (
 	id int(11) NOT NULL AUTO_INCREMENT COMMENT 'Unique Identifier for test cases.',
-	fid_wp int(11) NOT NULL COMMENT 'Id of the workpackage for which test case is.',
+	fid_wp int(11) NOT NULL COMMENT 'Id of the workpackage for which this test case is.',
 	name varchar(255) NOT NULL COMMENT 'Name of the test case.',
 	description varchar(255) NOT NULL COMMENT 'Description of the test case.',
 	precondition varchar(255) NOT NULL COMMENT 'Precondition of the test case.',
