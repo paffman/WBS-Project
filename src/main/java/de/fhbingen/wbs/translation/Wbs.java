@@ -166,4 +166,12 @@ public interface Wbs {
     @De("{0} durchführen")
     @En("Execute {0}")
     String executeTest(String s);
+
+    @De("erfolgreich")
+    @En("sucessful")
+    String sucessful();
+
+    @De("nicht erfolgreich")
+    @En("unsucessful")
+    String unsucessful();
 }
