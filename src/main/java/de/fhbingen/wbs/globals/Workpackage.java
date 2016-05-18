@@ -1071,4 +1071,14 @@ public class Workpackage {
                 DBModelManager.getWorkpackageModel().getWorkpackage(
                         getStringID());
     }
+
+    /**
+     * changes the parent of this workpackage, updates the string id and updates all calculated values for the new
+     * parent WPs, as well as the old parent WPs
+     *
+     * @param newParent
+     */
+    public void changeParent(Workpackage newParent) {
+
+    }
 }

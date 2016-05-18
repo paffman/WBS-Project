@@ -22,13 +22,20 @@ import de.fhbingen.wbs.globals.ToolTipTree;
 import de.fhbingen.wbs.globals.Workpackage;
 
 import java.awt.*;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.dnd.*;
+import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Enumeration;
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
+import javax.swing.tree.TreeSelectionModel;
+
 import de.fhbingen.wbs.wpOverview.TreeCellRenderer;
 import de.fhbingen.wbs.wpOverview.WPOverview;
 import de.fhbingen.wbs.wpOverview.WPOverviewGUI;
@@ -165,14 +172,44 @@ public class TreePanel extends JPanel {
 
         // set draggable if user is pm
         if (this.over.getUser().getProjLeiter()) {
+            treeAll.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
             treeAll.setDragEnabled(true);
-            treeAll.setDropMode(DropMode.ON);
-            //TODO
+            treeAll.setDropMode(DropMode.USE_SELECTION);
             treeAll.setDropTarget(new DropTarget(treeAll, new DropTargetAdapter() {
                 @Override
                 public void drop(DropTargetDropEvent dtde) {
-                    Point location = dtde.getLocation();
-                    System.out.println(treeAll.getPathForLocation(location.x, location.y));
+                    Point droppedLocation = dtde.getLocation();
+                    TreePath droppedPath = treeAll.getPathForLocation(droppedLocation.x, droppedLocation.y);
+
+                    Workpackage sourceWorkpackage =
+                            (Workpackage) ((DefaultMutableTreeNode)
+                                    treeAll.getSelectionPath().getLastPathComponent()).getUserObject();
+                    Workpackage targetWorkpackage = null;
+
+                    ArrayList<Workpackage> targetParentWorkpackages = new ArrayList<>();
+
+                    if (droppedPath != null) {
+                        for (Object path : droppedPath.getPath()) {
+                            targetParentWorkpackages.add((Workpackage) ((DefaultMutableTreeNode) path).getUserObject());
+                        }
+                    }
+
+                    if (droppedPath != null &&
+                        !(targetWorkpackage = (Workpackage)
+                            ((DefaultMutableTreeNode) droppedPath.getLastPathComponent())
+                                .getUserObject())
+                            .equals(sourceWorkpackage) &&
+                        !targetParentWorkpackages.contains(sourceWorkpackage) &&
+                        !((DefaultMutableTreeNode) treeAll.getSelectionPath().getParentPath().getLastPathComponent()).getUserObject().equals(targetWorkpackage)
+                    ) {
+                        sourceWorkpackage.changeParent(targetWorkpackage);
+
+                        dtde.acceptDrop(dtde.getDropAction());
+                        dtde.dropComplete(true);
+                    } else {
+                        dtde.rejectDrop();
+                        dtde.dropComplete(false);
+                    }
                 }
             }));
         }
