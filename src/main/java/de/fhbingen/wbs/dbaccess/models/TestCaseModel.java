@@ -17,11 +17,12 @@ public interface TestCaseModel {
 
 
     /**
-     * Gets all testcases from the project.
-     *
-     * @return Returns a list with all testcases from the project.
+     * Gets all testcases belonging to a workpackage and all its childs.
+     * @param wp
+     *            The workpackage we want all testcases for.
+     * @return Returns a list with all queried testcases.
      */
-    List<TestCase> getAllTestCases();
+    List<TestCase> getAllTestCases(Workpackage wp);
 
 
 

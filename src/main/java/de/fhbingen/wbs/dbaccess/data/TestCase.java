@@ -24,6 +24,7 @@ package de.fhbingen.wbs.dbaccess.data;
  * database fields in the TestCases table.
  */
 public class TestCase {
+    
 
     /** unique id of the TestCase */
     private int id;

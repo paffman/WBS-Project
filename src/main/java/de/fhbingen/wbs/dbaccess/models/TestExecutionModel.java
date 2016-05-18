@@ -33,22 +33,13 @@ public interface TestExecutionModel {
 
 
     /**
-     * Gets all testexecutions from the project.
+     * Gets the latest testexecution.
      *
-     * @return Returns a list with all testexecutions from the project.
-     */
-    List<TestExecution> getAllTestExecutions();
-
-
-
-    /**
-     * Gets a single testexecution.
-     *
-     * @param id
-     *            The unique id of a testexecution.
+     * @param testcase
+     *            The testcase the latest execution belongs to.
      * @return Returns the selected testexecution.
      */
-    TestExecution getTestExecution(int id);
+    TestExecution getLastExecution(TestCase testcase);
 
 
     /**
