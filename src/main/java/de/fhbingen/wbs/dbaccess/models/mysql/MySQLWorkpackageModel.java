@@ -398,7 +398,29 @@ public class MySQLWorkpackageModel implements WorkpackageModel {
 
     @Override
     public boolean updateStringId(Workpackage wp, String newStringId) {
-        // TODO
-        return false;
+        final Connection connection = SQLExecuter.getConnection();
+        boolean success = false;
+        PreparedStatement stm = null;
+        final String storedProcedure =
+                "CALL workpackage_delete_by_id(?, ?, null)";
+
+        try {
+            stm = connection.prepareStatement(storedProcedure);
+            stm.setInt(1, wp.getId());
+            stm.setString(2, newStringId);
+            stm.execute();
+            success = true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (stm != null) {
+                    stm.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return success;
     }
 }
