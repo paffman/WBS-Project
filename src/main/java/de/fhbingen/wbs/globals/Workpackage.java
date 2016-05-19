@@ -6,11 +6,8 @@ import de.fhbingen.wbs.dbaccess.DBModelManager;
 import de.fhbingen.wbs.dbaccess.data.Employee;
 import de.fhbingen.wbs.translation.LocalizedStrings;
 import de.fhbingen.wbs.functions.WpManager;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.List;
-import java.util.Set;
+
+import java.util.*;
 import javax.swing.JOptionPane;
 
 /**
@@ -1079,6 +1076,119 @@ public class Workpackage {
      * @param newParent
      */
     public void changeParent(Workpackage newParent) {
+        this.thisWp.setParentID(newParent.getWpId());
 
+        this.resetOrderId();
+        this.resetAllStringIds();
+
+        //TODO update parent ev values
+    }
+
+    /**
+     * gets the sibling of this workpackage
+     *
+     * @return list of sibling workpackages
+     */
+    public ArrayList<Workpackage> getSiblings() {
+        return WpManager.getSiblings(this);
+    }
+
+    /**
+     * returns all workpackages which are a direct child to this workpackage
+     *
+     * @return list of child workpackages
+     */
+    public ArrayList<Workpackage> getDirectChildren() {
+        return WpManager.getDirectChildren(this);
+    }
+
+    /**
+     * resets the order id to the first value, which isn't in use yet
+     */
+    private void resetOrderId() {
+        ArrayList<Integer> orderIds = new ArrayList<>();
+
+        ArrayList<Workpackage> siblings = this.getSiblings();
+
+        for (Workpackage workpackage : this.getSiblings()) {
+            orderIds.add(workpackage.getWp().getPositionID());
+        }
+
+        Collections.sort(orderIds);
+
+        Integer freeOrderId = null;
+
+        for (int i = 0; i < orderIds.size() && freeOrderId == null; i++) {
+            if (orderIds.get(i) != i + 1) {
+                freeOrderId = i + 1;
+            }
+        }
+
+        if (freeOrderId == null) {
+            freeOrderId = orderIds.size() + 1;
+        }
+
+        this.thisWp.setPositionID(freeOrderId);
+    }
+
+    /**
+     * reset the string ids of this workpackage, his siblings and all their child workpackages, according to their
+     * parent
+     */
+    public void resetAllStringIds() {
+        ArrayList<Workpackage> children = null;
+        ArrayList<Workpackage> brotherhood = this.getSiblings();
+        brotherhood.add(this);
+
+        for (Workpackage sibling : brotherhood) {
+            sibling.resetStringId();
+
+            if (sibling.isIstOAP() && !(children = sibling.getDirectChildren()).isEmpty()) {
+                children.get(0).resetAllStringIds();
+            }
+        }
+    }
+
+    /**
+     * resets the string id, according to the string id of the parent
+     */
+    private void resetStringId() {
+        boolean finishedIdLookup = false;
+
+        String parentStringId = this.getParent().getStringID();
+        String newStringId = "";
+        char tempChar;
+
+        for (int i = 0; i < parentStringId.length() && !finishedIdLookup; i++) {
+            tempChar = parentStringId.charAt(i);
+
+            if (tempChar != '0') {
+                newStringId += tempChar;
+            } else {
+                finishedIdLookup = true;
+            }
+        }
+
+        newStringId += String.valueOf(this.thisWp.getPositionID());
+
+        int currentNewStringIdLength = newStringId.length();
+
+        for (int i = 0; i < parentStringId.length() - currentNewStringIdLength; i++) {
+            if (i % 2 == 0) {
+                newStringId += '.';
+            } else {
+                newStringId += '0';
+            }
+        }
+
+        this.thisWp.setStringID(newStringId);
+        WpManager.updateAP(this);
+    }
+
+    /**
+     * @return the parent workpackage
+     */
+    public Workpackage getParent() {
+        return WpManager.getWorkpackage(this.thisWp.getParentID());
     }
 }
