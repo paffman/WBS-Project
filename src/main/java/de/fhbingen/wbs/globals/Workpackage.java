@@ -4,6 +4,7 @@ import de.fhbingen.wbs.dbServices.ValuesService;
 import de.fhbingen.wbs.dbServices.WorkpackageService;
 import de.fhbingen.wbs.dbaccess.DBModelManager;
 import de.fhbingen.wbs.dbaccess.data.Employee;
+import de.fhbingen.wbs.dbaccess.data.Project;
 import de.fhbingen.wbs.translation.LocalizedStrings;
 import de.fhbingen.wbs.functions.WpManager;
 
@@ -1253,5 +1254,40 @@ public class Workpackage {
         }
 
         return stringIds.toArray(new Integer[stringIds.size()]);
+    }
+
+    /**
+     * @return the project the workpackage belongs to
+     */
+    public Project getProject() {
+        for (Project project : DBModelManager.getProjectModel().getProject()) {
+            if (project.getId() == this.thisWp.getProjectID()) {
+                return project;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * returns the depth of child workpackages
+     *
+     * @return
+     */
+    public int getChildrenDepth() {
+        if (this.isIstOAP()) {
+            int childDepth = 0;
+            int maxChildDepth = 0;
+
+            for (Workpackage workpackage : this.getDirectChildren()) {
+                if ((childDepth = workpackage.getChildrenDepth()) > maxChildDepth) {
+                    maxChildDepth = childDepth;
+                }
+            }
+
+            return maxChildDepth + 1;
+        } else {
+            return 0;
+        }
     }
 }
