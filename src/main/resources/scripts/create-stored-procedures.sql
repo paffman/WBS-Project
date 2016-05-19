@@ -358,6 +358,25 @@ DELIMITER ;
 -- --------------------------------------------------------
 
 -- --------------------------------------------------------
+-- workpackage_update_by_id
+-- rw
+-- --------------------------------------------------------
+DELIMITER //
+CREATE PROCEDURE workpackage_update_by_pk(
+  IN in_pk int(11),
+	IN in_string_id varchar(255)
+)
+BEGIN
+  UPDATE workpackage
+  SET
+    string_id = in_string_id
+  WHERE
+    id = in_pk;
+END //
+DELIMITER ;
+-- --------------------------------------------------------
+
+-- --------------------------------------------------------
 -- workpackage_delete_by_id( � )
 -- rw
 -- --------------------------------------------------------
