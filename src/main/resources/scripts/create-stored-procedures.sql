@@ -1511,12 +1511,23 @@ DELIMITER //
 CREATE PROCEDURE test_execution_select_by_test_case(
  IN in_fid_tc int(11)
 )
- SELECT *
- FROM test_executions
- WHERE
-	 fid_tc = in_fid_tc
+	SELECT
+		t.fid_tc,
+		t.fid_emp,
+		t.remark,
+		t.timestamp,
+		t.status,
+		e.login
+	FROM
+		test_executions t
+	JOIN
+		employees e
+	WHERE
+		t.fid_tc = in_fid_tc
+		AND
+		t.fid_emp = e.id
 	ORDER BY
-	 timestamp
+		t.timestamp
 	DESC;
 DELIMITER ;
  -- --------------------------------------------------------
