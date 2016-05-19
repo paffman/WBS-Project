@@ -402,7 +402,7 @@ public class MySQLWorkpackageModel implements WorkpackageModel {
         boolean success = false;
         PreparedStatement stm = null;
         final String storedProcedure =
-                "CALL workpackage_delete_by_id(?, ?, null)";
+                "CALL workpackage_update_string_id(?, ?)";
 
         try {
             stm = connection.prepareStatement(storedProcedure);
