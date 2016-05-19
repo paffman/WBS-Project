@@ -5,6 +5,7 @@ import de.fhbingen.wbs.dbServices.WorkpackageService;
 import de.fhbingen.wbs.dbaccess.DBModelManager;
 import de.fhbingen.wbs.dbaccess.data.Employee;
 import de.fhbingen.wbs.dbaccess.data.TestCase;
+import de.fhbingen.wbs.dbaccess.models.mysql.MySQLTestCaseModel;
 import de.fhbingen.wbs.translation.LocalizedStrings;
 import de.fhbingen.wbs.functions.WpManager;
 import java.util.ArrayList;
@@ -1111,7 +1112,8 @@ public class Workpackage {
      * @return list of testcases
      */
     private List<TestCase> getTestCases() {
-        //TODO get testcases from dbmodel
-        return null;
+
+        MySQLTestCaseModel sqltcm = new MySQLTestCaseModel();
+        return sqltcm.getAllTestCases(thisWp);
     }
 }
