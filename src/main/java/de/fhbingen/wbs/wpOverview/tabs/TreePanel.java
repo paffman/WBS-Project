@@ -194,16 +194,23 @@ public class TreePanel extends JPanel {
                         }
                     }
 
-                    if (droppedPath != null &&
+                    if (droppedPath != null
+                        &&
                         !(targetWorkpackage = (Workpackage)
                             ((DefaultMutableTreeNode) droppedPath.getLastPathComponent())
                                 .getUserObject())
-                            .equals(sourceWorkpackage) &&
-                        !targetParentWorkpackages.contains(sourceWorkpackage) &&
-                        !((DefaultMutableTreeNode) treeAll.getSelectionPath().getParentPath().getLastPathComponent()).getUserObject().equals(targetWorkpackage)
+                            .equals(sourceWorkpackage)
+                        &&
+                        !targetParentWorkpackages.contains(sourceWorkpackage)
+                        &&
+                        !((DefaultMutableTreeNode) treeAll.getSelectionPath().getParentPath().getLastPathComponent())
+                                .getUserObject()
+                                .equals(targetWorkpackage)
+                        &&
+                        targetWorkpackage.isIstOAP()
                     ) {
                         sourceWorkpackage.changeParent(targetWorkpackage);
-
+                        System.out.println("accept");
                         dtde.acceptDrop(dtde.getDropAction());
                         dtde.dropComplete(true);
                     } else {
