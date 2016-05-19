@@ -1,8 +1,8 @@
 package de.fhbingen.wbs.dbaccess.models.mysql;
 
 import de.fhbingen.wbs.dbaccess.data.TestCase;
+import de.fhbingen.wbs.dbaccess.data.Workpackage;
 import de.fhbingen.wbs.dbaccess.models.TestCaseModel;
-import de.fhbingen.wbs.globals.Workpackage;
 import de.fhbingen.wbs.jdbcConnection.SQLExecuter;
 
 import java.sql.*;
@@ -79,7 +79,7 @@ public class MySQLTestCaseModel implements TestCaseModel {
 
         try {
             stm = connection.prepareStatement(storedProcedure);
-            stm.setInt(1, wp.getWpId());
+            stm.setInt(1, wp.getId());
             sqlResult = stm.executeQuery();
 
             while (sqlResult.next()) {

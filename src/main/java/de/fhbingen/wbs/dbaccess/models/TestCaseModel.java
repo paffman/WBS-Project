@@ -1,7 +1,7 @@
 package de.fhbingen.wbs.dbaccess.models;
 
 import de.fhbingen.wbs.dbaccess.data.TestCase;
-import de.fhbingen.wbs.globals.Workpackage;
+import de.fhbingen.wbs.dbaccess.data.Workpackage;
 
 import java.util.List;
 

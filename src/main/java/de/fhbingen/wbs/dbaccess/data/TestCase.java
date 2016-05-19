@@ -138,15 +138,14 @@ public class TestCase {
 
     /**
      *
-     * @param id
      * @param workpackageID
      * @param precondition
      * @param description
      * @param expectedResult
      * @param name
      */
-    public TestCase(int id, int workpackageID, String precondition, String description, String expectedResult, String name) {
-        this.id = id;
+    public TestCase(int workpackageID, String precondition, String description, String expectedResult, String name) {
+
         this.workpackageID = workpackageID;
         this.precondition = precondition;
         this.description = description;
