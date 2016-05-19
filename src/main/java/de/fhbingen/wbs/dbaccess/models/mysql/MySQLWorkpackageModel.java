@@ -396,4 +396,9 @@ public class MySQLWorkpackageModel implements WorkpackageModel {
         return success;
     }
 
+    @Override
+    public boolean updateStringId(Workpackage wp, String newStringId) {
+        // TODO
+        return false;
+    }
 }

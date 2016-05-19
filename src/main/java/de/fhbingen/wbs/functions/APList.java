@@ -45,6 +45,13 @@ public class APList {
      * Konstruktor, liest Arbeitspakete und Beziehungsstruktur aus Datenbank aus
      */
     protected APList() {
+        this.initApList();
+    }
+
+    /**
+     * initializes the AP List
+     */
+    protected void initApList() {
         allApMap = new HashMap<String, Workpackage>();
         allApIdToStringIdMap = new HashMap<Integer, String>();
         allAP = WorkpackageService.getAllAp();

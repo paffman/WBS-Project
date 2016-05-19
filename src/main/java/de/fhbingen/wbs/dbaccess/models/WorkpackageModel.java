@@ -115,4 +115,12 @@ public interface WorkpackageModel {
      */
     boolean deleteWorkpackage(int id);
 
+    /**
+     * updates the stringId of the given workpackage
+     *
+     * @param wp workpackage to update
+     * @param newStringId new string id
+     * @return
+     */
+    boolean updateStringId(Workpackage wp, String newStringId);
 }
