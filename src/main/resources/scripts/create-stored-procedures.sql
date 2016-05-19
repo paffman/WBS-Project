@@ -358,11 +358,11 @@ DELIMITER ;
 -- --------------------------------------------------------
 
 -- --------------------------------------------------------
--- workpackage_update_by_id
+-- workpackage_update_string_id
 -- rw
 -- --------------------------------------------------------
 DELIMITER //
-CREATE PROCEDURE workpackage_update_by_pk(
+CREATE PROCEDURE workpackage_update_string_id(
   IN in_pk int(11),
 	IN in_string_id varchar(255)
 )
