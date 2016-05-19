@@ -12,7 +12,9 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -24,6 +26,10 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.text.MaskFormatter;
 
+import de.fhbingen.wbs.dbaccess.data.TestCase;
+import de.fhbingen.wbs.dbaccess.data.Workpackage;
+import de.fhbingen.wbs.dbaccess.models.mysql.MySQLTestCaseModel;
+import de.fhbingen.wbs.dbaccess.models.mysql.MySQLWorkpackageModel;
 import de.fhbingen.wbs.globals.FilterJTextField;
 import de.fhbingen.wbs.gui.delegates.SimpleDialogDelegate;
 import de.fhbingen.wbs.translation.Button;
@@ -147,6 +153,8 @@ public class AddWorkEffortView extends JFrame {
         addActionListeners();
 
         setVisible(true);
+
+
     }
 
     /**
@@ -247,7 +255,7 @@ public class AddWorkEffortView extends JFrame {
     }
 
     /** Sets the work effort.
-     * @param id The work effort of the work package.*/
+     * @param effort The work effort of the work package.*/
     public final void setWorkEffort(String effort){
         txfAufwand.setText(effort);
     }

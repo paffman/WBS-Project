@@ -113,10 +113,13 @@ public class MySQLTestExecutionModel implements TestExecutionModel {
 
     @Override
     public TestExecution getLastExecution(TestCase testcase) {
+        List<TestExecution> execList = getExecutionsForTestCase(testcase);
+        TestExecution latestExec = null;
+        if(execList.size()>0){
+            latestExec = execList.get(0);
+        }
 
-        //TODO: implement
-        // wahrscheinlich mit einer zusätzlichen stored procedure am besten zu lösen
-        return null;
+        return latestExec;
     }
 
 
