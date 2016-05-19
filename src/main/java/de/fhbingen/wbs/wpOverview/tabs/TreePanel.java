@@ -210,7 +210,7 @@ public class TreePanel extends JPanel {
                         targetWorkpackage.isIstOAP()
                     ) {
                         sourceWorkpackage.changeParent(targetWorkpackage);
-                        System.out.println("accept");
+
                         dtde.acceptDrop(dtde.getDropAction());
                         dtde.dropComplete(true);
                     } else {
