@@ -1,5 +1,11 @@
 package de.fhbingen.wbs.dbaccess.models;
 
+import de.fhbingen.wbs.dbaccess.data.Employee;
+import de.fhbingen.wbs.dbaccess.data.TestCase;
+import de.fhbingen.wbs.dbaccess.data.TestExecution;
+
+import java.util.List;
+
 /**
  * interface for all models handling requests regarding TestExecutions
  */
@@ -10,14 +16,10 @@ public interface TestExecutionModel {
      *
      * @param testexec
      *            The Testexecution which is added to the project.
-     * @param testcase
-     *            The testcase this execution belongs to.
-     * @param executor
-     *            The Employee which executed this TestExecution.
      *
      * @return success of the action.
      */
-    boolean addNewTestExecution(TestExecution testexec, TestCase testcase, Employee executor);
+    boolean addNewTestExecution(TestExecution testexec);
 
 
 
@@ -33,22 +35,13 @@ public interface TestExecutionModel {
 
 
     /**
-     * Gets all testexecutions from the project.
+     * Gets the latest testexecution.
      *
-     * @return Returns a list with all testexecutions from the project.
-     */
-    List<TestExecution> getAllTestExecutions();
-
-
-
-    /**
-     * Gets a single testexecution.
-     *
-     * @param id
-     *            The unique id of a testexecution.
+     * @param testcase
+     *            The testcase the latest execution belongs to.
      * @return Returns the selected testexecution.
      */
-    TestExecution getTestExecution(int id);
+    TestExecution getLastExecution(TestCase testcase);
 
 
     /**
@@ -58,7 +51,7 @@ public interface TestExecutionModel {
      *            The testexecution which has to be updated.
      * @return the success of the update.
      */
-    boolean updateTestExecution(TestCase testexec);
+    boolean updateTestExecution(TestExecution testexec);
 
 
 

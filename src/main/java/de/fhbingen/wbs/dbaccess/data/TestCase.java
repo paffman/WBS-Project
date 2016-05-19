@@ -24,6 +24,7 @@ package de.fhbingen.wbs.dbaccess.data;
  * database fields in the TestCases table.
  */
 public class TestCase {
+    
 
     /** unique id of the TestCase */
     private int id;
@@ -135,4 +136,24 @@ public class TestCase {
      */
     public void setName(String name) { this.name = name; }
 
+    /**
+     *
+     * @param workpackageID
+     * @param precondition
+     * @param description
+     * @param expectedResult
+     * @param name
+     */
+    public TestCase(int workpackageID, String precondition, String description, String expectedResult, String name) {
+
+        this.workpackageID = workpackageID;
+        this.precondition = precondition;
+        this.description = description;
+        this.expectedResult = expectedResult;
+        this.name = name;
+    }
+
+    public TestCase() {
+
+    }
 }
