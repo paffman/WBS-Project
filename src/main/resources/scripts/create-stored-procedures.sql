@@ -1380,7 +1380,7 @@ DELIMITER ;
 -- --------------------------------------------------------
 DELIMITER //
 CREATE PROCEDURE test_case_select_by_wp(
-IN in_fid_wp
+IN in_fid_wp int(11)
  )
 BEGIN
 SELECT *
