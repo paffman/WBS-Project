@@ -1208,7 +1208,7 @@ BEGIN
 	THEN
 		SELECT *
 		FROM planned_value
-		WHERE
+		WHERE^
 			pv_date BETWEEN in_from AND in_to
 		ORDER BY pv_date DESC;
 	ELSE
@@ -1514,6 +1514,9 @@ CREATE PROCEDURE test_execution_select_by_test_case(
  SELECT *
  FROM test_executions
  WHERE
-	 fid_tc = in_fid_tc;
+	 fid_tc = in_fid_tc
+	ORDER BY
+	 timestamp
+	DESC;
 DELIMITER ;
  -- --------------------------------------------------------
