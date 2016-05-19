@@ -507,13 +507,13 @@ public class Workpackage {
      * @param xIDs
      * @return
      */
-    private String mergeLvlx(String[] xIDs) {
+    private String mergeLvlx(Integer[] xIDs) {
         String merged = "";
-        for (String s : xIDs) {
+        for (Integer id : xIDs) {
             if (merged.equals("")) {
-                merged += s;
+                merged += String.valueOf(id);
             } else {
-                merged += "." + s;
+                merged += "." + String.valueOf(id);
             }
         }
         return merged;
@@ -1079,7 +1079,14 @@ public class Workpackage {
         this.thisWp.setParentID(newParent.getWpId());
 
         this.resetOrderId();
-        this.resetAllStringIds();
+        this.resetStringId();
+
+        if (this.isIstOAP()) {
+            this.adjustChildrensStringIdsToNewParent();
+        }
+
+        WpManager.loadDB();
+        this.save();
 
         //TODO update parent ev values
     }
@@ -1108,8 +1115,6 @@ public class Workpackage {
     private void resetOrderId() {
         ArrayList<Integer> orderIds = new ArrayList<>();
 
-        ArrayList<Workpackage> siblings = this.getSiblings();
-
         for (Workpackage workpackage : this.getSiblings()) {
             orderIds.add(workpackage.getWp().getPositionID());
         }
@@ -1132,57 +1137,80 @@ public class Workpackage {
     }
 
     /**
-     * reset the string ids of this workpackage, his siblings and all their child workpackages, according to their
-     * parent
+     * adjusts the workpackages childrens stringIds to a new parent
      */
-    public void resetAllStringIds() {
-        ArrayList<Workpackage> children = null;
-        ArrayList<Workpackage> brotherhood = this.getSiblings();
-        brotherhood.add(this);
+    private void adjustChildrensStringIdsToNewParent() {
+        Integer[] newParentStringIds = this.getRelevantLvlIds();
 
-        for (Workpackage sibling : brotherhood) {
-            sibling.resetStringId();
+        for (Workpackage workpackage : this.getDirectChildren()) {
+            workpackage.adjustStringIdToNewParent(newParentStringIds);
 
-            if (sibling.isIstOAP() && !(children = sibling.getDirectChildren()).isEmpty()) {
-                children.get(0).resetAllStringIds();
+            if (workpackage.isIstOAP()) {
+                workpackage.adjustChildrensStringIdsToNewParent();
             }
         }
     }
 
     /**
-     * resets the string id, according to the string id of the parent
+     * adjusts this workpackages stringId to a new parent
+     *
+     * @param newParentStringIds
+     */
+    private void adjustStringIdToNewParent(Integer[] newParentStringIds) {
+        Integer[] stringId = this.getLvlIDs();
+        int relevantStringId = this.getLvlID(this.getlastRelevantIndex());
+
+        for (int i = 0; i < newParentStringIds.length; i++) {
+            stringId[i] = newParentStringIds[i];
+        }
+
+        stringId[newParentStringIds.length] = relevantStringId;
+
+        for (int i = newParentStringIds.length + 1; i < stringId.length; i++) {
+            stringId[i] = 0;
+        }
+
+        this.updateStringId(this.mergeLvlx(stringId));
+    }
+
+    /**
+     * resets the string id, according to the string id of the parent and which id is not in use yet
      */
     private void resetStringId() {
-        boolean finishedIdLookup = false;
+        Workpackage parent = this.getParent();
+        Integer[] parentStringId = parent.getLvlIDs();
+        parentStringId[parent.getRelevantLvlIds().length] = this.findFreeStringId();
 
-        String parentStringId = this.getParent().getStringID();
-        String newStringId = "";
-        char tempChar;
+        this.updateStringId(this.mergeLvlx(parentStringId));
+    }
 
-        for (int i = 0; i < parentStringId.length() && !finishedIdLookup; i++) {
-            tempChar = parentStringId.charAt(i);
+    /**
+     * finds a LvlId which isn't in use yet
+     *
+     * @return Integer LvlId
+     */
+    private Integer findFreeStringId() {
+        ArrayList<Integer> relevantStringIds = new ArrayList<>();
 
-            if (tempChar != '0') {
-                newStringId += tempChar;
-            } else {
-                finishedIdLookup = true;
+        for (Workpackage workpackage : this.getSiblings()) {
+            relevantStringIds.add(workpackage.getLvlID(workpackage.getlastRelevantIndex()));
+        }
+
+        Collections.sort(relevantStringIds);
+
+        Integer freeStringId = null;
+
+        for (int i = 0; i < relevantStringIds.size() && freeStringId == null; i++) {
+            if (relevantStringIds.get(i) != i + 1) {
+                freeStringId = i + 1;
             }
         }
 
-        newStringId += String.valueOf(this.thisWp.getPositionID());
-
-        int currentNewStringIdLength = newStringId.length();
-
-        for (int i = 0; i < parentStringId.length() - currentNewStringIdLength; i++) {
-            if (i % 2 == 0) {
-                newStringId += '.';
-            } else {
-                newStringId += '0';
-            }
+        if (freeStringId == null) {
+            freeStringId = relevantStringIds.size() + 1;
         }
 
-        this.thisWp.setStringID(newStringId);
-        WpManager.updateAP(this);
+        return freeStringId;
     }
 
     /**
@@ -1190,5 +1218,40 @@ public class Workpackage {
      */
     public Workpackage getParent() {
         return WpManager.getWorkpackage(this.thisWp.getParentID());
+    }
+
+    /**
+     * updates the stringId of this workpackage
+     * WARNING: you'll have to reload the DB in the WpManager after updating the stringId, to avoid inconsistent data
+     *
+     * @param newStringId the new stringId
+     */
+    public void updateStringId(String newStringId) {
+        this.thisWp.setStringID(newStringId);
+        WpManager.updateStringId(this, newStringId);
+    }
+
+    /**
+     * saves all changes to this workpackage to the DB
+     */
+    public void save() {
+        WpManager.updateAP(this);
+    }
+
+    public Integer[] getRelevantLvlIds() {
+        boolean relevantIdsFound = false;
+
+        Integer[] allStringIds = this.getLvlIDs();
+        ArrayList<Integer> stringIds = new ArrayList<>();
+
+        for (int i = 0; i < allStringIds.length && !relevantIdsFound; i++) {
+            if (allStringIds[i] == 0) {
+                relevantIdsFound = true;
+            } else {
+                stringIds.add(allStringIds[i]);
+            }
+        }
+
+        return stringIds.toArray(new Integer[stringIds.size()]);
     }
 }

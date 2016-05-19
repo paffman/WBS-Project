@@ -194,6 +194,7 @@ public class TreePanel extends JPanel {
                         }
                     }
 
+                    //TODO check if maxdepth is reached
                     if (droppedPath != null
                         &&
                         !(targetWorkpackage = (Workpackage)
