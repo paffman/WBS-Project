@@ -33,7 +33,7 @@ public class TestCaseController {
 
     /**
      * @param tc
-     *          TestCase for wich we want to fetch the latest execution
+     *          TestCase for which we want to fetch the latest execution
      * @return
      *          latest execution for this Testcase
      */
@@ -93,7 +93,7 @@ public class TestCaseController {
     /**
      *
      * @param te
-     *          Testexecution to Aadd
+     *          TestExecution to add
      * @return
      *          success of this operation
      */
@@ -108,7 +108,7 @@ public class TestCaseController {
     /**
      *
      * @param te
-     *          Testexecution to update
+     *          TestExecution to update
      * @return
      *          success of this operation
      */

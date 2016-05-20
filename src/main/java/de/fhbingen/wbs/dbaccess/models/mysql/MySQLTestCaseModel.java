@@ -20,7 +20,7 @@ public class MySQLTestCaseModel implements TestCaseModel {
     public final boolean addNewTestCase(TestCase testcase){
 
         final Connection connection = SQLExecuter.getConnection();
-        final int paramCount = 5;
+        final int paramCount = 2;
         PreparedStatement stm = null;
         boolean success = false;
 
@@ -39,9 +39,6 @@ public class MySQLTestCaseModel implements TestCaseModel {
 
             stm.setInt(1, testcase.getWorkpackageID());
             stm.setString(2, testcase.getName());
-            stm.setString(3, testcase.getDescription());
-            stm.setString(4, testcase.getPrecondition());
-            stm.setString(5, testcase.getExpectedResult());
 
             stm.execute();
             success = true;
@@ -169,7 +166,7 @@ public class MySQLTestCaseModel implements TestCaseModel {
             tc.setExpectedResult(resSet.getString("expected_result"));
             tc.setName(resSet.getString("name"));
             tc.setPrecondition(resSet.getString("precondition"));
-
+            tc.setWp_stringID(resSet.getString("string_id"));
         } catch (SQLException e) {
             e.printStackTrace();
         }

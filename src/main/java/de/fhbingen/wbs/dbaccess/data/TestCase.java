@@ -32,6 +32,9 @@ public class TestCase {
     /** foreign key of the Workpackage*/
     private int workpackageID;
 
+    /** stringID of the correlated workpackage */
+    private String wp_stringID;
+
     /** a textual description of the precondition for this testcase*/
     private String precondition;
 
@@ -71,6 +74,24 @@ public class TestCase {
      * @param workpackageID the id of the related workpackage
      */
     public void setWorkpackageID(int workpackageID) {this.workpackageID = workpackageID; }
+
+    /**
+     *  Returns the stringID of the related workpackage.
+     *
+     * @return the stringID of the related workpackage
+     */
+    public String getWp_stringID() {
+        return wp_stringID;
+    }
+
+    /**
+     * Sets the stringID of the related workpackage
+     *
+     * @param wp_stringID
+     */
+    public void setWp_stringID(String wp_stringID) {
+        this.wp_stringID = wp_stringID;
+    }
 
     /**
      * Returns the precondition of this testcase.
@@ -158,6 +179,11 @@ public class TestCase {
     }
 
     public TestCase(String name){
+        this.name = name;
+    }
+
+    public TestCase(int workpackageID,  String name){
+        this.workpackageID = workpackageID;
         this.name = name;
     }
 }

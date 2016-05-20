@@ -1383,9 +1383,22 @@ CREATE PROCEDURE test_case_select_by_wp(
 IN in_fid_wp int(11)
  )
 BEGIN
-SELECT *
-FROM test_cases
-WHERE fid_wp = in_fid_wp;
+	SELECT
+		t.id,
+		t.fid_wp,
+		t.name,
+		t.description,
+		t.precondition,
+		t.expected_result,
+		w.string_id
+	FROM
+		test_cases t
+	JOIN
+		workpackage w
+	WHERE
+		t.fid_wp = in_fid_wp
+		AND
+		t.fid_wp = w.id;
 END //
 DELIMITER ;
 -- --------------------------------------------------------
@@ -1397,10 +1410,7 @@ DELIMITER ;
 DELIMITER //
 CREATE PROCEDURE test_case_new(
  IN in_fid_wp int(11),
- IN in_name varchar(255),
- IN in_description varchar(255),
- IN in_precondition varchar(255),
- IN in_expected_result varchar(255)
+ IN in_name varchar(255)
 )
  BEGIN
 	 INSERT INTO test_cases (
@@ -1412,9 +1422,9 @@ CREATE PROCEDURE test_case_new(
 	 VALUES (
 		 in_fid_wp,
 		 in_name,
-		 in_description,
-		 in_precondition,
-		 in_expected_result
+		 "",
+		 "",
+		 ""
 	 );
  END //
 DELIMITER ;

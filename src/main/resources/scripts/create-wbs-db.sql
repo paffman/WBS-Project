@@ -244,9 +244,9 @@ CREATE TABLE IF NOT EXISTS test_cases (
 	id int(11) NOT NULL AUTO_INCREMENT COMMENT 'Unique Identifier for test cases.',
 	fid_wp int(11) NOT NULL COMMENT 'Id of the workpackage for which this test case is.',
 	name varchar(255) NOT NULL COMMENT 'Name of the test case.',
-	description varchar(255) NOT NULL COMMENT 'Description of the test case.',
+	description varchar(255) COMMENT 'Description of the test case.',
 	precondition varchar(255) COMMENT 'Precondition of the test case.',
-	expected_result varchar(255) NOT NULL COMMENT 'Measurable definition of the testcases expected result.',
+	expected_result varchar(255) COMMENT 'Measurable definition of the testcases expected result.',
 	PRIMARY KEY ( id ),
 	FOREIGN KEY ( fid_wp ) REFERENCES workpackage( id )
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1
