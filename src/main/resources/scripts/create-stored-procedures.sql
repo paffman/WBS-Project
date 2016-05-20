@@ -315,7 +315,8 @@ CREATE PROCEDURE workpackage_update_by_id(
 	IN in_is_inactive boolean,
 	IN in_start_date_calc datetime,
 	IN in_start_date_wish datetime,
-	IN in_end_date_calc datetime)
+	IN in_end_date_calc datetime,
+	IN in_fid_parent int(11))
 BEGIN
 	DECLARE chk int(11);
 	SELECT COUNT(*) INTO chk
@@ -347,7 +348,8 @@ BEGIN
 			is_inactive = in_is_inactive,
 			start_date_calc = in_start_date_calc,
 			start_date_wish = in_start_date_wish,
-			end_date_calc = in_end_date_calc
+			end_date_calc = in_end_date_calc,
+			fid_parent = in_fid_parent
 		WHERE
 			string_id = in_string_id
 			AND
