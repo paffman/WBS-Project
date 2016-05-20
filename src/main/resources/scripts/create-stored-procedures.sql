@@ -1523,6 +1523,7 @@ CREATE PROCEDURE test_execution_select_by_test_case(
 )
  BEGIN
 	SELECT
+		t.id,
 		t.fid_tc,
 		t.fid_emp,
 		t.remark,

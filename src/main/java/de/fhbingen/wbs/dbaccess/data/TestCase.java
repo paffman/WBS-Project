@@ -59,7 +59,7 @@ public class TestCase {
      *
      * @param id the id of this testcase.
      */
-    private void setId(int id) { this.id=id;}
+    public void setId(int id) { this.id=id;}
 
     /**
      * Returns the id of the related workpackage.

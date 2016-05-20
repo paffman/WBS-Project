@@ -161,6 +161,7 @@ public class MySQLTestCaseModel implements TestCaseModel {
         TestCase tc = new TestCase();
 
         try {
+            tc.setId(resSet.getInt("id"));
             tc.setWorkpackageID(resSet.getInt("fid_wp"));
             tc.setDescription(resSet.getString("description"));
             tc.setExpectedResult(resSet.getString("expected_result"));

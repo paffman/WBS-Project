@@ -187,6 +187,7 @@ public class MySQLTestExecutionModel implements TestExecutionModel {
         TestExecution te = new TestExecution();
 
         try {
+            te.setId(resSet.getInt("id"));
             te.setTestcaseID(resSet.getInt("fid_tc"));
             te.setEmployeeID(resSet.getInt("fid_emp"));
             te.setRemark(resSet.getString("remark"));
