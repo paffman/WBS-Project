@@ -156,4 +156,8 @@ public class TestCase {
     public TestCase() {
 
     }
+
+    public TestCase(String name){
+        this.name = name;
+    }
 }
