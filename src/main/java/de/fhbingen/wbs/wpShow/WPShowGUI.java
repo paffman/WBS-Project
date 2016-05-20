@@ -14,6 +14,9 @@
 
 package de.fhbingen.wbs.wpShow;
 
+import de.fhbingen.wbs.controller.TestCaseController;
+import de.fhbingen.wbs.dbaccess.data.TestCase;
+import de.fhbingen.wbs.dbaccess.data.TestExecution;
 import de.fhbingen.wbs.translation.Button;
 import de.fhbingen.wbs.translation.General;
 import de.fhbingen.wbs.translation.LocalizedStrings;
@@ -41,6 +44,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.Vector;
+import java.util.logging.Filter;
 
 import javax.swing.table.DefaultTableModel;
 
@@ -152,7 +156,7 @@ public class WPShowGUI extends JFrame {
     /**
      * The text field for the testcase.
      */
-    private JTextField txfTestcase;
+    private FilterJTextField txfTestcase;
 
     /**
      * The button to add an ancestor.
@@ -950,7 +954,7 @@ public class WPShowGUI extends JFrame {
                 .workEffort()));
         effortTestPanel.add(btnAddAufwand);
 
-        btnTestExecute = new JButton(      ); /*  damit ich es kompilieren konnte *///wbsStrings.executeTests());
+        btnTestExecute = new JButton(wbsStrings.executeTest("Test"));
         effortTestPanel.add(btnTestExecute);
 
         leftBottomPanel.add(effortTestPanel);
@@ -1015,9 +1019,16 @@ public class WPShowGUI extends JFrame {
         }
 
         tblTestcase = new JTable();
-        tblTestcase.setModel(new DefaultTableModel(new Object[][]{{"", "", "", "", ""},}, new String[]{
+        tblTestcase.setModel(new DefaultTableModel(null, new String[]{
                 wbsStrings.workPackageId(),  generalStrings.testcase(), generalStrings.date(),
-                "Tester", "Status"}));
+                "Tester", "Status"}){
+
+            //Table not editable
+            @Override
+            public boolean isCellEditable(int row, int column){
+                return false;
+            }
+        });
         tblTestcase.getColumnModel().getColumn(0).setMinWidth(100);
         tblTestcase.getColumnModel().getColumn(4).setMaxWidth(40);
 
@@ -1180,11 +1191,13 @@ public class WPShowGUI extends JFrame {
      * @param aufwaende       A String array with the work efforts.
      * @param allWorkers      A list with all workers.
      * @param actualWPWorkers A set with all workers which currently worked on it.
+     * @param controller      Controller for the testcases.
      */
     protected final void setValues(final Workpackage wp,
                                    final boolean leiter, final String[][] aufwaende,
                                    final ArrayList<Worker> allWorkers,
-                                   final Set<String> actualWPWorkers) {
+                                   final Set<String> actualWPWorkers,
+                                   final TestCaseController controller) {
         this.txfNr.setText(wp.getStringID());
         this.txfName.setText(wp.getName());
         this.chbOAP.setSelected(wp.isIstOAP());
@@ -1277,6 +1290,9 @@ public class WPShowGUI extends JFrame {
                 wp.getAc())[0]);
         txfSPI
                 .setBackground(WPOverview.getSPIColor(wp.getSpi(), wp.getAc())[1]);
+
+        if(tblTestcase.getRowCount() == 0)
+            this.setTestcases(controller.getAllTestCases(), controller);
 
         updateDependencyCount(wp);
 
@@ -1477,6 +1493,7 @@ public class WPShowGUI extends JFrame {
 
         btnSPI.addActionListener(function.getBtnSPIListener());
         btnCPI.addActionListener(function.getBtnCPIListener());
+        btnAddTestcase.addActionListener(function.getBtnAddTestcase());
 
     }
 
@@ -1516,5 +1533,35 @@ public class WPShowGUI extends JFrame {
                 + ancestors + ")");
         btnEditFollower.setText(generalStrings.toManage() + " ("
                 + followers + ")");
+    }
+
+    /**
+     * Set new added Testcase to the testcase table
+     */
+    public void setTestcase(final String testname){
+        ((DefaultTableModel)tblTestcase.getModel()).addRow(new Object[]{function.getWorkpackage().getStringID(), testname, "-", "-", "-"});
+    }
+
+    /**
+     * Set the testcases to the testcase table
+     */
+    public void setTestcases(List<TestCase> testcases, TestCaseController controller){
+        for(TestCase test : testcases){
+            TestExecution execution = controller.getLatestExecutionForTestCase(test);
+            if(execution != null){
+                ((DefaultTableModel)tblTestcase.getModel()).addRow(new Object[]{test.getWp_stringID(), test.getName(),
+                        execution.getTime(), execution.getEmployeeLogin(), execution.getStatus()});
+            }else{
+                ((DefaultTableModel)tblTestcase.getModel()).addRow(new Object[]{test.getWp_stringID(),
+                        test.getName(), "-", "-", "-"});
+            }
+        }
+    }
+
+    /**
+     *
+     */
+    public FilterJTextField getTxfTestTestcase(){
+        return txfTestcase;
     }
 }
