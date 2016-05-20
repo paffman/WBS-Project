@@ -5,8 +5,10 @@ import de.fhbingen.wbs.dbServices.WorkpackageService;
 import de.fhbingen.wbs.dbaccess.DBModelManager;
 import de.fhbingen.wbs.dbaccess.data.Employee;
 import de.fhbingen.wbs.dbaccess.data.Project;
+import de.fhbingen.wbs.functions.CalcOAPBaseline;
 import de.fhbingen.wbs.translation.LocalizedStrings;
 import de.fhbingen.wbs.functions.WpManager;
+import de.fhbingen.wbs.wpOverview.WPOverview;
 
 import java.util.*;
 import javax.swing.JOptionPane;
@@ -1074,9 +1076,11 @@ public class Workpackage {
      * changes the parent of this workpackage, updates the string id and updates all calculated values for the new
      * parent WPs, as well as the old parent WPs
      *
-     * @param newParent
+     * @param newParent the new parent workpackage
      */
     public void changeParent(Workpackage newParent) {
+        Workpackage oldParent = this.getParent();
+
         this.thisWp.setParentID(newParent.getWpId());
         this.resetOrderId();
         this.save();
@@ -1089,7 +1093,8 @@ public class Workpackage {
 
         WpManager.loadDB();
 
-        //TODO update parent ev values
+        new CalcOAPBaseline(this, false, false);
+        new CalcOAPBaseline(oldParent, false, true);
     }
 
     /**
