@@ -1276,18 +1276,24 @@ public class Workpackage {
      */
     public int getChildrenDepth() {
         if (this.isIstOAP()) {
-            int childDepth = 0;
+            int childDepth;
             int maxChildDepth = 0;
 
-            for (Workpackage workpackage : this.getDirectChildren()) {
-                if ((childDepth = workpackage.getChildrenDepth()) > maxChildDepth) {
+            for (Workpackage childWorkpackage : this.getDirectChildren()) {
+                if (childWorkpackage.isIstOAP()) {
+                    childDepth = 1 + childWorkpackage.getChildrenDepth();
+                } else {
+                    childDepth = 1;
+                }
+
+                if (childDepth > maxChildDepth) {
                     maxChildDepth = childDepth;
                 }
             }
 
-            return maxChildDepth + 1;
-        } else {
-            return 0;
+            return maxChildDepth;
         }
+
+        return 0;
     }
 }

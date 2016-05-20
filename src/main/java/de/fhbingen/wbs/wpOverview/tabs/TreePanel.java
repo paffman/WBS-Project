@@ -14,6 +14,7 @@
 
 package de.fhbingen.wbs.wpOverview.tabs;
 
+import de.fhbingen.wbs.dbaccess.DBModelManager;
 import de.fhbingen.wbs.translation.Button;
 import de.fhbingen.wbs.translation.LocalizedStrings;
 import de.fhbingen.wbs.translation.Wbs;
@@ -194,7 +195,6 @@ public class TreePanel extends JPanel {
                         }
                     }
 
-                    //TODO check if maxdepth is reached
                     if (droppedPath != null
                         &&
                         !(targetWorkpackage = (Workpackage)
@@ -209,6 +209,9 @@ public class TreePanel extends JPanel {
                                 .equals(targetWorkpackage)
                         &&
                         targetWorkpackage.isIstOAP()
+                        &&
+                        (sourceWorkpackage.getChildrenDepth() + targetParentWorkpackages.size())
+                                <= sourceWorkpackage.getProject().getLevels()
                     ) {
                         sourceWorkpackage.changeParent(targetWorkpackage);
 
