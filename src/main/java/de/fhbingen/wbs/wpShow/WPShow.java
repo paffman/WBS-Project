@@ -15,6 +15,7 @@
 package de.fhbingen.wbs.wpShow;
 
 import de.fhbingen.wbs.controller.TestCaseController;
+import de.fhbingen.wbs.dbaccess.data.TestCase;
 import de.fhbingen.wbs.wpConflict.ConflictCompat;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
@@ -127,17 +128,18 @@ public class WPShow {
         } else {
             gui.setUAPView(WPOverview.getUser().getProjLeiter());
         }
+
+        this.testCaseController = new TestCaseController(this.wp);
+
         gui.setNewView(newWp);
         gui.setValues(wp, getUser().getProjLeiter(), getAufwandArray(),
-            WorkerService.getRealWorkers(), actualWPWorkers);
+            WorkerService.getRealWorkers(), actualWPWorkers, testCaseController);
 
         if (newWp) {
             this.saved = false;
         } else {
             this.saved = true;
         }
-
-        this.testCaseController = new TestCaseController(this.wp);
     }
 
     /**
@@ -268,7 +270,7 @@ public class WPShow {
     /** Reloads the GUI. */
     protected final void reload() {
         gui.setValues(wp, getUser().getProjLeiter(), getAufwandArray(),
-            WorkerService.getRealWorkers(), actualWPWorkers);
+            WorkerService.getRealWorkers(), actualWPWorkers, testCaseController);
     }
 
     /**
@@ -970,6 +972,24 @@ public class WPShow {
             @Override
             public void actionPerformed(final ActionEvent arg0) {
                 new PVTableGUI(wp);
+            }
+        };
+    }
+
+    /**
+     * Return the action listener for the button to add an testcase
+     * @return The action listener
+     */
+    protected final ActionListener getBtnAddTestcase() {
+        return new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e){
+                String name = gui.getTxfTestTestcase().getText().trim();
+                if(!name.equals("")){
+                    testCaseController.addTestCase(new TestCase(wp.getWpId(), name));
+                    gui.setTestcase(name);
+                }
             }
         };
     }

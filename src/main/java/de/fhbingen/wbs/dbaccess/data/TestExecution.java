@@ -33,8 +33,10 @@ public class TestExecution {
     /** foreign key of the employee who did this testexecution*/
     private int employeeID;
 
-    /** string name of the employee who did this testexecution*/
-    private String employeeName;
+
+    /** name of the employee who did this testexecution*/
+    private String employeeLogin;
+
 
     /** foreign key of the related testcase*/
     private int testcaseID;
@@ -82,6 +84,24 @@ public class TestExecution {
      */
     public void setEmployeeID(int employeeID) {
         this.employeeID = employeeID;
+    }
+
+    /**
+     * Returns the username of the employee for this testexecution.
+     *
+     * @return the username of the employee for this testexecution
+     */
+    public String getEmployeeLogin() {
+        return employeeLogin;
+    }
+
+    /**
+     * Sets the username of the employee for this testexecution
+     *
+     * @param employeeLogin
+     */
+    public void setEmployeeLogin(String employeeLogin) {
+        this.employeeLogin = employeeLogin;
     }
 
     /**
@@ -156,13 +176,7 @@ public class TestExecution {
         this.time = time;
     }
 
-    public String getEmployeeName() {
-        return employeeName;
-    }
 
-    public void setEmployeeName(String employeeName) {
-        this.employeeName = employeeName;
-    }
 
 
     /**
