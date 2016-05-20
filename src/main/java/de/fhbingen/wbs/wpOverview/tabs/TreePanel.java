@@ -217,6 +217,9 @@ public class TreePanel extends JPanel {
 
                         dtde.acceptDrop(dtde.getDropAction());
                         dtde.dropComplete(true);
+
+                        over.reload();
+                        WPOverviewGUI.setStatusText(LocalizedStrings.getMessages().viewWasRefreshed());
                     } else {
                         dtde.rejectDrop();
                         dtde.dropComplete(false);
