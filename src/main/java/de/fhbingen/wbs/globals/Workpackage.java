@@ -1114,18 +1114,16 @@ public class Workpackage {
      * resets the order id to the first value, which isn't in use yet
      */
     private void resetOrderId() {
-        ArrayList<Integer> orderIds = new ArrayList<>();
+        SortedSet<Integer> orderIds = new TreeSet<>();
 
         for (Workpackage workpackage : this.getSiblings()) {
             orderIds.add(workpackage.getWp().getPositionID());
         }
 
-        Collections.sort(orderIds);
-
         Integer freeOrderId = null;
 
         for (int i = 0; i < orderIds.size() && freeOrderId == null; i++) {
-            if (orderIds.get(i) != i + 1) {
+            if (!orderIds.contains(i + 1)) {
                 freeOrderId = i + 1;
             }
         }
@@ -1191,18 +1189,16 @@ public class Workpackage {
      * @return Integer LvlId
      */
     private Integer findFreeStringId() {
-        ArrayList<Integer> relevantStringIds = new ArrayList<>();
+        SortedSet<Integer> relevantStringIds = new TreeSet<>();
 
         for (Workpackage workpackage : this.getSiblings()) {
             relevantStringIds.add(workpackage.getLvlID(workpackage.getlastRelevantIndex()));
         }
 
-        Collections.sort(relevantStringIds);
-
         Integer freeStringId = null;
 
         for (int i = 0; i < relevantStringIds.size() && freeStringId == null; i++) {
-            if (relevantStringIds.get(i) != i + 1) {
+            if (!relevantStringIds.contains(i + 1)) {
                 freeStringId = i + 1;
             }
         }
