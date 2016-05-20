@@ -19,6 +19,7 @@
 
 package de.fhbingen.wbs.dbaccess;
 
+import de.fhbingen.wbs.dbaccess.data.TestExecution;
 import de.fhbingen.wbs.dbaccess.models.*;
 import de.fhbingen.wbs.dbaccess.models.mysql.*;
 
@@ -51,6 +52,7 @@ public class DBModelManager {
     private static WorkpackageModel workpackageModel =
             new MySQLWorkpackageModel();
     private static TestCaseModel testCaseModel = new MySQLTestCaseModel();
+    private static TestExecutionModel testExecutionModel = new MySQLTestExecutionModel();
 
     /**
      * This method provide the analyse data model.
@@ -172,4 +174,6 @@ public class DBModelManager {
     public static TestCaseModel getTestCaseModel() {
         return testCaseModel;
     }
+
+    public static TestExecutionModel getTestExecutionModel() { return testExecutionModel; }
 }
