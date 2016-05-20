@@ -33,6 +33,9 @@ public class TestExecution {
     /** foreign key of the employee who did this testexecution*/
     private int employeeID;
 
+    /** string name of the employee who did this testexecution*/
+    private String employeeName;
+
     /** foreign key of the related testcase*/
     private int testcaseID;
 
@@ -152,6 +155,15 @@ public class TestExecution {
     public void setTime(Timestamp time) {
         this.time = time;
     }
+
+    public String getEmployeeName() {
+        return employeeName;
+    }
+
+    public void setEmployeeName(String employeeName) {
+        this.employeeName = employeeName;
+    }
+
 
     /**
      *

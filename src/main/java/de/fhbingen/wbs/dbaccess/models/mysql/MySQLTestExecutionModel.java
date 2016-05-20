@@ -192,6 +192,7 @@ public class MySQLTestExecutionModel implements TestExecutionModel {
             te.setRemark(resSet.getString("remark"));
             te.setStatus(resSet.getString("status")); // should return an enum
             te.setTime(resSet.getTimestamp("timestamp"));
+            te.setEmployeeName(resSet.getString("login"));
 
         } catch (SQLException e) {
             e.printStackTrace();
