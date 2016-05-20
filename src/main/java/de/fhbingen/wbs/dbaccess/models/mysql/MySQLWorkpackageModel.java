@@ -403,13 +403,12 @@ public class MySQLWorkpackageModel implements WorkpackageModel {
         boolean success = false;
         PreparedStatement stm = null;
         final String storedProcedure =
-                "CALL workpackage_update_string_id(?, ?, ?)";
+                "CALL workpackage_update_string_id(?, ?)";
 
         try {
             stm = connection.prepareStatement(storedProcedure);
             stm.setInt(1, wp.getId());
             stm.setString(2, wp.getStringID());
-            stm.setInt(3, wp.getPositionID());
             stm.execute();
             success = true;
         } catch (SQLException e) {

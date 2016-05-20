@@ -1078,9 +1078,9 @@ public class Workpackage {
      */
     public void changeParent(Workpackage newParent) {
         this.thisWp.setParentID(newParent.getWpId());
+        this.resetOrderId();
         this.save();
 
-        this.resetOrderId();
         this.resetStringId();
 
         if (this.isIstOAP()) {

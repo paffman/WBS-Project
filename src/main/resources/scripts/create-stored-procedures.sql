@@ -367,13 +367,11 @@ DELIMITER //
 CREATE PROCEDURE workpackage_update_string_id(
   IN in_pk int(11),
 	IN in_string_id varchar(255),
-	IN in_position_id varchar(11)
 )
 BEGIN
   UPDATE workpackage
   SET
     string_id = in_string_id,
-    parent_order_id = in_position_id
   WHERE
     id = in_pk;
 END //
