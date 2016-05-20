@@ -195,31 +195,45 @@ public class TreePanel extends JPanel {
                         }
                     }
 
-                    if (droppedPath != null
-                        &&
-                        !(targetWorkpackage = (Workpackage)
+                    boolean dropSuccessful = false;
+
+                    if (droppedPath == null) {
+                        WPOverviewGUI.setStatusText(LocalizedStrings.getMessages().wpMoveNoneSelected());
+                    } else if ((targetWorkpackage = (Workpackage)
                             ((DefaultMutableTreeNode) droppedPath.getLastPathComponent())
                                 .getUserObject())
-                            .equals(sourceWorkpackage)
-                        &&
-                        !targetParentWorkpackages.contains(sourceWorkpackage)
-                        &&
-                        !((DefaultMutableTreeNode) treeAll.getSelectionPath().getParentPath().getLastPathComponent())
-                                .getUserObject()
-                                .equals(targetWorkpackage)
-                        &&
-                        targetWorkpackage.isIstOAP()
-                        &&
-                        (sourceWorkpackage.getChildrenDepth() + targetParentWorkpackages.size())
-                                <= sourceWorkpackage.getProject().getLevels()
-                    ) {
-                        sourceWorkpackage.changeParent(targetWorkpackage);
+                            .equals(sourceWorkpackage)) {
+                        WPOverviewGUI.setStatusText(LocalizedStrings.getMessages().wpMoveWpIsItself());
+                    } else if (targetParentWorkpackages.contains(sourceWorkpackage)) {
+                        WPOverviewGUI.setStatusText(LocalizedStrings.getMessages().wpMoveParentOfTargetWp());
+                    } else if (
+                        ((DefaultMutableTreeNode) treeAll.getSelectionPath().getParentPath().getLastPathComponent())
+                            .getUserObject()
+                            .equals(targetWorkpackage)) {
+                        WPOverviewGUI.setStatusText(LocalizedStrings.getMessages().wpMoveAlreadyIsChild());
+                    } else if (!targetWorkpackage.isIstOAP()) {
+                        WPOverviewGUI.setStatusText(LocalizedStrings.getMessages().wpMoveTargetWpIsNoOAP());
+                    } else if ((sourceWorkpackage.getChildrenDepth() + targetParentWorkpackages.size())
+                                > sourceWorkpackage.getProject().getLevels()) {
+                        WPOverviewGUI.setStatusText(LocalizedStrings.getMessages().wpMoveMaxDepth());
+                    } else {
+                        try {
+                            sourceWorkpackage.changeParent(targetWorkpackage);
+
+                            dropSuccessful = true;
+                            over.reload();
+                        } catch (Exception e) {
+                            dropSuccessful = false;
+
+                            WPOverviewGUI.setStatusText(LocalizedStrings.getMessages().wpMoveError());
+                        }
+                    }
+
+                    if (dropSuccessful) {
+                        WPOverviewGUI.setStatusText(LocalizedStrings.getMessages().wpMoveWpHasBeenMoved());
 
                         dtde.acceptDrop(dtde.getDropAction());
                         dtde.dropComplete(true);
-
-                        over.reload();
-                        WPOverviewGUI.setStatusText(LocalizedStrings.getMessages().viewWasRefreshed());
                     } else {
                         dtde.rejectDrop();
                         dtde.dropComplete(false);
