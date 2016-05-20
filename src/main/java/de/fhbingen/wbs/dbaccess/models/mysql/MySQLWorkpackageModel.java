@@ -234,7 +234,7 @@ public class MySQLWorkpackageModel implements WorkpackageModel {
     @Override
     public final boolean updateWorkpackage(final Workpackage wp) {
         final Connection connection = SQLExecuter.getConnection();
-        final int paramCount = 22;
+        final int paramCount = 23;
         PreparedStatement stm = null;
         boolean success = false;
 
@@ -281,6 +281,7 @@ public class MySQLWorkpackageModel implements WorkpackageModel {
             stm.setTimestamp(21, de.fhbingen.wbs.calendar.DateFunctions.getTimesampOrNull(wp
                     .getEndDateCalc()));
             stm.setInt(22, wp.getParentID());
+            stm.setInt(23, wp.getPositionID());
 
             stm.execute();
             success = true;

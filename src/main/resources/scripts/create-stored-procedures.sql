@@ -316,7 +316,8 @@ CREATE PROCEDURE workpackage_update_by_id(
 	IN in_start_date_calc datetime,
 	IN in_start_date_wish datetime,
 	IN in_end_date_calc datetime,
-	IN in_fid_parent int(11))
+	IN in_fid_parent int(11),
+	IN in_parent_order_id int(11))
 BEGIN
 	DECLARE chk int(11);
 	SELECT COUNT(*) INTO chk
@@ -349,7 +350,8 @@ BEGIN
 			start_date_calc = in_start_date_calc,
 			start_date_wish = in_start_date_wish,
 			end_date_calc = in_end_date_calc,
-			fid_parent = in_fid_parent
+			fid_parent = in_fid_parent,
+			parent_order_id = in_parent_order_id
 		WHERE
 			string_id = in_string_id
 			AND
@@ -366,12 +368,12 @@ DELIMITER ;
 DELIMITER //
 CREATE PROCEDURE workpackage_update_string_id(
   IN in_pk int(11),
-	IN in_string_id varchar(255),
+	IN in_string_id varchar(255)
 )
 BEGIN
   UPDATE workpackage
   SET
-    string_id = in_string_id,
+    string_id = in_string_id
   WHERE
     id = in_pk;
 END //
