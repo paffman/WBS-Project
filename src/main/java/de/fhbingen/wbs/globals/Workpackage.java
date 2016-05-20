@@ -1078,6 +1078,7 @@ public class Workpackage {
      */
     public void changeParent(Workpackage newParent) {
         this.thisWp.setParentID(newParent.getWpId());
+        this.save();
 
         this.resetOrderId();
         this.resetStringId();
@@ -1087,7 +1088,6 @@ public class Workpackage {
         }
 
         WpManager.loadDB();
-        this.save();
 
         //TODO update parent ev values
     }
@@ -1225,7 +1225,7 @@ public class Workpackage {
      */
     public void updateStringId(String newStringId) {
         this.thisWp.setStringID(newStringId);
-        WpManager.updateStringId(this, newStringId);
+        WpManager.updateStringId(this);
     }
 
     /**

@@ -675,12 +675,11 @@ public class WpManager {
     }
 
     /**
-     * updates the stringId of a given workpackage
+     * updates the stringId of a given workpackage in the DB
      *
      * @param wp workpackage to update
-     * @param newStringId new stringId
      */
-    public static boolean updateStringId(Workpackage wp, String newStringId) {
-        return WorkpackageService.updateStringId(wp, newStringId);
+    public static boolean updateStringId(Workpackage wp) {
+        return WorkpackageService.updateStringId(wp);
     }
 }

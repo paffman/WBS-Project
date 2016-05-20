@@ -425,10 +425,9 @@ public class WorkpackageService {
      * updates the stringId of the given workpackage
      *
      * @param wp workpackage to update
-     * @param newStringId new string id
      * @return
      */
-    public static boolean updateStringId(Workpackage wp, String newStringId) {
-        return DBModelManager.getWorkpackageModel().updateStringId(wp.getWp(), newStringId);
+    public static boolean updateStringId(Workpackage wp) {
+        return DBModelManager.getWorkpackageModel().updateStringId(wp.getWp());
     }
 }
