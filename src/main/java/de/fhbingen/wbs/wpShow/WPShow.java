@@ -126,6 +126,7 @@ public class WPShow {
                 + wp.getName(), this, parent);
             wp.setwptagessatz(WpManager.calcTagessatz(wp.getWorkerLogins()));
             actualWPWorkers = new HashSet<String>(wp.getWorkerLogins());
+            gui.getBtnAddTestcase().setEnabled(true);
         }
 
         if (wp.isIstOAP()) {
