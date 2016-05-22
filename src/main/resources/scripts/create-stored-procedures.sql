@@ -1450,7 +1450,7 @@ CREATE PROCEDURE test_case_update_by_id(
 		 name = in_name,
 		 description = in_description,
 		 precondition = in_precondition,
-		 expected_result = expected_result
+		 expected_result = in_expected_result
 	 WHERE id = in_id;
  END //
 DELIMITER ;
@@ -1465,7 +1465,7 @@ CREATE PROCEDURE test_execution_new(
  IN in_fid_tc int(11),
  IN in_fid_emp int(11),
  IN in_remark varchar(255),
- IN in_timestamp date,
+ IN in_timestamp timestamp,
  IN in_status varchar(255)
 )
  BEGIN
