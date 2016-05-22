@@ -174,4 +174,8 @@ public interface Wbs {
     @De("nicht erfolgreich")
     @En("unsucessful")
     String unsucessful();
+
+    @De("Aufwand erfassen")
+    @En("work effort booking")
+    String workEffortTime();
 }

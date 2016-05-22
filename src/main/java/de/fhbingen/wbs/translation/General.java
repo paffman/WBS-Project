@@ -107,6 +107,14 @@ public interface General {
     @En("Day")
     String day();
 
+    @De("Tage")
+    @En("Days")
+    String days();
+
+    @De("Stunden")
+    @En("Hours")
+    String hours();
+
     @De("Woche")
     @En("Week")
     String week();

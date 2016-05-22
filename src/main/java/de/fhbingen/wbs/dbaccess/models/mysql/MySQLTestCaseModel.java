@@ -121,7 +121,6 @@ public class MySQLTestCaseModel implements TestCaseModel {
 
         try {
             stm = connection.prepareStatement(storedProcedure);
-
             stm.setInt(1, testcase.getWorkpackageID());
             stm.setString(2, testcase.getName());
             stm.setString(3, testcase.getDescription());

@@ -1,6 +1,7 @@
 package de.fhbingen.wbs.controller;
 
 import java.awt.event.KeyEvent;
+import java.awt.geom.Arc2D;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +46,7 @@ public class AddWorkEffortController implements
     public AddWorkEffortView gui;
     public WPShow wpshow;
     private Workpackage wp;
-
+    private String myaufwand;
     /**
      * Constructor.
      *
@@ -150,8 +151,7 @@ public class AddWorkEffortController implements
             dte = new java.sql.Date(dt.getTime());
             // Kommas des Textfeldes Aufwand werden durch Punkte ersetzt, damit
             // es zu keinen Fehlern kommt
-            String myaufwand = gui.getWorkEffort().replace(",", ".");
-
+            myaufwand = gui.getWorkEffort().replace(",", ".");
             String login = gui.getWorker().getSelectedItem().toString();
             int loginIndex = login.indexOf("|");
             String userLogin = login.substring(0, loginIndex - 1);
@@ -163,7 +163,13 @@ public class AddWorkEffortController implements
                     (userLogin).getId());
             effort.setRec_date(dte);
             effort.setDescription(gui.getDescription());
+            if(gui.getBookingTime().getSelectedItem().equals(LocalizedStrings.getGeneralStrings().hours())) {
+                myaufwand = String.valueOf(Double.parseDouble(myaufwand)/8);
+                gui.setWorkEffort(myaufwand);
+                gui.getBookingTime().setSelectedItem(LocalizedStrings.getGeneralStrings().days());
+            }
             effort.setEffort(Double.parseDouble(myaufwand));
+
             return DBModelManager.getWorkEffortModel().addNewWorkEffort(effort);
         } catch (Exception e) {
             e.printStackTrace();
