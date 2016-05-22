@@ -234,5 +234,17 @@ public interface General {
     @De("Ergebnis")
     @En("Result")
     String result();
+
+    @De("\"Beschreibung- und Erwatetes Ergebnis\" sind Pflicht!")
+    @En("\"Desciption and expected result field\" must be set!")
+    String descriptionExpectedResultMessage();
+
+    @De("\"Testnamen Feld\" ist Plficht!")
+    @En("\"Testname field\" must be set!")
+    String testnameMessage();
+
+    @De("Es existieren keine Testfälle!")
+    @En("No Testcases exists")
+    String testcaseMessage();
 }
 
