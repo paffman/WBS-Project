@@ -1,17 +1,21 @@
 package de.fhbingen.wbs.testcases;
 
 
+import de.fhbingen.wbs.controller.TestCaseController;
+import de.fhbingen.wbs.dbaccess.data.TestCase;
 import de.fhbingen.wbs.globals.Controller;
 import de.fhbingen.wbs.globals.FilterJTextField;
 import de.fhbingen.wbs.translation.Button;
 import de.fhbingen.wbs.translation.General;
 import de.fhbingen.wbs.translation.LocalizedStrings;
 import de.fhbingen.wbs.translation.Wbs;
+import javafx.scene.control.*;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import java.awt.*;
+import java.awt.TextArea;
 
 /**
  * The GUI for the testcase execution
@@ -93,12 +97,12 @@ public class TestcaseExecutionShowGUI extends JFrame{
     /**
      * The button for an sucessful testcase execution.
      */
-    private JButton btnSucessful;
+    private JButton btnSuccessful;
 
     /**
      * The button for an unsucessful testcase execution.
      */
-    private JButton btnUnsucessful;
+    private JButton btnUnsuccessful;
 
     /**
      * The panel for the content
@@ -141,12 +145,14 @@ public class TestcaseExecutionShowGUI extends JFrame{
     private TestcaseExecutionShow testcaseExecution;
 
     /**
-     * Value for the two different options to execute an testcase or testcases.
-     * True -> guide the user throw the testcases
-     * False -> user only execute one testcase
+     * Controller for the testcase.
      */
-    private boolean allTestcases;
+    private TestCaseController testCaseController;
 
+    /**
+     * TestCase
+     */
+    private TestCase testCase;
 
 
     /**
@@ -154,14 +160,18 @@ public class TestcaseExecutionShowGUI extends JFrame{
      * @param title
      * @param testcaseExecution
      * @param parent
-     * @param allTestcases
+     * @param testCaseController
+     * @param testCase
      */
-    public TestcaseExecutionShowGUI(final String title, final TestcaseExecutionShow testcaseExecution, final JFrame parent, boolean allTestcases){
+    public TestcaseExecutionShowGUI(final String title, final TestcaseExecutionShow testcaseExecution, final JFrame parent,
+                                    TestCaseController testCaseController, TestCase testCase){
         super(title);
 
         this.testcaseExecution = testcaseExecution;
         this.parent = parent;
-        this.allTestcases = allTestcases;
+        this.testCaseController = testCaseController;
+        this.testCase = testCase;
+
 
         generalStrings = LocalizedStrings.getGeneralStrings();
         wbsStrings = LocalizedStrings.getWbs();
@@ -306,19 +316,44 @@ public class TestcaseExecutionShowGUI extends JFrame{
         pnlBottom.setBorder(new LineBorder(Color.gray));
         pnlContent.add(pnlBottom, BorderLayout.SOUTH);
 
-        btnSucessful = new JButton(wbsStrings.sucessful(), sucessfulIcon);
-        pnlBottom.add(btnSucessful);
+        btnSuccessful = new JButton(wbsStrings.sucessful(), sucessfulIcon);
+        pnlBottom.add(btnSuccessful);
 
-        btnUnsucessful = new JButton(wbsStrings.unsucessful(), unsucessfulIcon);
-        pnlBottom.add(btnUnsucessful);
+        btnUnsuccessful = new JButton(wbsStrings.unsucessful(), unsucessfulIcon);
+        pnlBottom.add(btnUnsuccessful);
 
 
         this.pack();
         this.setResizable(false);
         Controller.centerComponent(parent, this);
         this.setVisible(true);
+
+        setValues();
+        addBtnListener();
     }
 
+    /**
+     * Set the values for the testcase excecution.
+     */
+    public void setValues(){
+        txfWPId.setText(testCase.getWp_stringID());
+        txfTestname.setText(testCase.getName());
+        txaPrecondition.setText(testCase.getPrecondition());
+        txaDescription.setText(testCase.getDescription());
+        txaExpectedResult.setText(testCase.getExpectedResult());
+    }
+
+    /**
+     * Add Listener
+     */
+    private void addBtnListener(){
+        btnSuccessful.addActionListener(testcaseExecution.getBtnSuccessfulListener());
+        btnUnsuccessful.addActionListener(testcaseExecution.getBtnUnsuccessfulListener());
+    }
+
+    public JTextArea getTxaRemark(){
+        return txaRemark;
+    }
 
 
 

@@ -105,7 +105,7 @@ public class MySQLTestCaseModel implements TestCaseModel {
     @Override
     public boolean updateTestCase(TestCase testcase) {
         final Connection connection = SQLExecuter.getConnection();
-        final int paramCount = 5;
+        final int paramCount = 6;
         PreparedStatement stm = null;
         boolean success = false;
 
@@ -121,11 +121,13 @@ public class MySQLTestCaseModel implements TestCaseModel {
 
         try {
             stm = connection.prepareStatement(storedProcedure);
-            stm.setInt(1, testcase.getWorkpackageID());
-            stm.setString(2, testcase.getName());
-            stm.setString(3, testcase.getDescription());
-            stm.setString(4, testcase.getPrecondition());
-            stm.setString(5, testcase.getExpectedResult());
+
+            stm.setInt(1, testcase.getId());
+            stm.setInt(2, testcase.getWorkpackageID());
+            stm.setString(3, testcase.getName());
+            stm.setString(4, testcase.getDescription());
+            stm.setString(5, testcase.getPrecondition());
+            stm.setString(6, testcase.getExpectedResult());
 
             stm.execute();
             success = true;

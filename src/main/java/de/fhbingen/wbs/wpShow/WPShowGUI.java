@@ -17,6 +17,7 @@ package de.fhbingen.wbs.wpShow;
 import de.fhbingen.wbs.controller.TestCaseController;
 import de.fhbingen.wbs.dbaccess.data.TestCase;
 import de.fhbingen.wbs.dbaccess.data.TestExecution;
+import de.fhbingen.wbs.testcases.TestcaseShowGUI;
 import de.fhbingen.wbs.translation.Button;
 import de.fhbingen.wbs.translation.General;
 import de.fhbingen.wbs.translation.LocalizedStrings;
@@ -36,6 +37,9 @@ import javax.swing.border.LineBorder;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseListener;
+import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
@@ -46,6 +50,7 @@ import java.util.Set;
 import java.util.Vector;
 import java.util.logging.Filter;
 
+import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 
 import de.fhbingen.wbs.dbServices.WorkerService;
@@ -57,6 +62,8 @@ import de.fhbingen.wbs.wpWorker.Worker;
  * The GUI to insert work packages.
  */
 public class WPShowGUI extends JFrame {
+
+
 
     /**
      * Constant serialized ID used for compatibility.
@@ -1028,9 +1035,21 @@ public class WPShowGUI extends JFrame {
             public boolean isCellEditable(int row, int column){
                 return false;
             }
+
+            Class[] columnTypes = new Class[]{
+                    String.class, String.class, Timestamp.class, String.class, ImageIcon.class
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return columnTypes[columnIndex];
+            }
         });
         tblTestcase.getColumnModel().getColumn(0).setMinWidth(100);
         tblTestcase.getColumnModel().getColumn(4).setMaxWidth(40);
+        tblTestcase.addMouseListener(new MouseAdapter(){
+
+
+        });
 
         scrollTableTestcase = new JScrollPane(tblTestcase);
         rightPanel.add(scrollTableTestcase);
@@ -1291,8 +1310,7 @@ public class WPShowGUI extends JFrame {
         txfSPI
                 .setBackground(WPOverview.getSPIColor(wp.getSpi(), wp.getAc())[1]);
 
-        if(tblTestcase.getRowCount() == 0)
-            this.setTestcases(controller.getAllTestCases(), controller);
+        this.setTestcases(controller);
 
         updateDependencyCount(wp);
 
@@ -1494,6 +1512,8 @@ public class WPShowGUI extends JFrame {
         btnSPI.addActionListener(function.getBtnSPIListener());
         btnCPI.addActionListener(function.getBtnCPIListener());
         btnAddTestcase.addActionListener(function.getBtnAddTestcase());
+        tblTestcase.addMouseListener(function.getTblTestcaseListener());
+        btnTestExecute.addActionListener(function.getBtnTestExecute());
 
     }
 
@@ -1536,32 +1556,59 @@ public class WPShowGUI extends JFrame {
     }
 
     /**
-     * Set new added Testcase to the testcase table
-     */
-    public void setTestcase(final String testname){
-        ((DefaultTableModel)tblTestcase.getModel()).addRow(new Object[]{function.getWorkpackage().getStringID(), testname, "-", "-", "-"});
-    }
-
-    /**
      * Set the testcases to the testcase table
      */
-    public void setTestcases(List<TestCase> testcases, TestCaseController controller){
-        for(TestCase test : testcases){
-            TestExecution execution = controller.getLatestExecutionForTestCase(test);
+    public void setTestcases(TestCaseController testCaseController){
+        tblTestcase.setModel(new DefaultTableModel(null, new String[]{
+                wbsStrings.workPackageId(),  generalStrings.testcase(), generalStrings.date(),
+                "Tester", "Status"}){
+
+            //Table not editable
+            @Override
+            public boolean isCellEditable(int row, int column){
+                return false;
+            }
+
+            Class[] columnTypes = new Class[]{
+                    String.class, String.class, Timestamp.class, String.class, ImageIcon.class
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return columnTypes[columnIndex];
+            }
+        });
+
+        for(TestCase test : testCaseController.getAllTestCases()){
+            TestExecution execution = testCaseController.getLatestExecutionForTestCase(test);
             if(execution != null){
                 ((DefaultTableModel)tblTestcase.getModel()).addRow(new Object[]{test.getWp_stringID(), test.getName(),
-                        execution.getTime(), execution.getEmployeeLogin(), execution.getStatus()});
+                        execution.getTime(), execution.getEmployeeLogin(), (execution.getStatus().equals("failed"))?
+                        TestcaseShowGUI.unsucessfulIcon : ((execution.getStatus().equals("succeeded"))?
+                        TestcaseShowGUI.sucessfulIcon : TestcaseShowGUI.neutralIcon)});
             }else{
                 ((DefaultTableModel)tblTestcase.getModel()).addRow(new Object[]{test.getWp_stringID(),
-                        test.getName(), "-", "-", "-"});
+                        test.getName(), null, "-", TestcaseShowGUI.neutralIcon});
             }
         }
     }
 
     /**
-     *
+     * Get the name for the testcase.
+     * @return The TextField with testcase name.
      */
     public FilterJTextField getTxfTestTestcase(){
         return txfTestcase;
+    }
+
+    /**
+     * Get the Table with testcases.
+     * @return The JTable with testcases.
+     */
+    public JTable getTblTestcase(){
+        return tblTestcase;
+    }
+
+    public void showMessage(String text){
+        JOptionPane.showMessageDialog(this, text);
     }
 }
