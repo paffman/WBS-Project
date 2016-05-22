@@ -1,5 +1,8 @@
 package de.fhbingen.wbs.testcases;
 
+import de.fhbingen.wbs.controller.TestCaseController;
+import de.fhbingen.wbs.dbaccess.data.TestCase;
+import de.fhbingen.wbs.dbaccess.data.TestExecution;
 import de.fhbingen.wbs.globals.Controller;
 import de.fhbingen.wbs.globals.FilterJTextField;
 import de.fhbingen.wbs.translation.*;
@@ -11,11 +14,32 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Timestamp;
+import java.util.logging.Filter;
 
 /**
  * The GUI to execute or modify Testcases.
  */
 public class TestcaseShowGUI extends JFrame {
+
+    /**
+     * The icon for an sucessful testcase execution.
+     */
+    public static final ImageIcon sucessfulIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage
+            (TestcaseShowGUI.class.getResource("/_icons/sucessful.png")));
+
+    /**
+     * The icon for an unsuccessful testcase execution.
+     */
+    public static final ImageIcon unsucessfulIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage
+            (TestcaseShowGUI.class.getResource("/_icons/unsucessful.png")));
+
+    /**
+     * The icon for an not executed testcase.
+     */
+    public static final ImageIcon neutralIcon = new ImageIcon((Toolkit.getDefaultToolkit().getImage(
+            TestcaseShowGUI.class.getResource("/_icons/neutral.png"))));
+
 
     /**
      * The label to describe the workpackage ID.
@@ -120,7 +144,7 @@ public class TestcaseShowGUI extends JFrame {
     /**
      * The testcase for the functionality.
      */
-    private TestcaseShow test;
+    private TestcaseShow testCtrl;
 
     /**
      * The parent frame.
@@ -142,18 +166,31 @@ public class TestcaseShowGUI extends JFrame {
      */
     private Button buttonStrings;
 
+    /**
+     * TestCase
+     */
+    private TestCase testCase;
+
+    /**
+     * Controller for the testcases.
+     */
+    private TestCaseController testCaseController;
+
 
     /**
      *
      * @param title     Title from the frame.
-     * @param test      Functionality from testcase.
+     * @param testCtrl  Functionality from testcase.
      * @param parent    The parent frame.
+     * @param testCase  TestCase
      */
-    public TestcaseShowGUI(final String title, final TestcaseShow test, final JFrame parent){
+    public TestcaseShowGUI(final String title, final TestcaseShow testCtrl, final JFrame parent, TestCase testCase, TestCaseController testCaseController){
         super(title);
 
-        this.test = test;
+        this.testCtrl = testCtrl;
         this.parent = parent;
+        this.testCase = testCase;
+        this.testCaseController = testCaseController;
 
         generalStrings = LocalizedStrings.getGeneralStrings();
         wbsStrings = LocalizedStrings.getWbs();
@@ -305,25 +342,128 @@ public class TestcaseShowGUI extends JFrame {
         pnlContent.add(pnlRight, BorderLayout.CENTER);
 
         tblTestExecutions = new JTable();
-        tblTestExecutions.setModel(new DefaultTableModel(new Object[][]{{"", "", "", ""},}, new String[]{
-                "Tester", generalStrings.date(), generalStrings.remark(), generalStrings.result()
-        }));
+        tblTestExecutions.setModel(new DefaultTableModel(null, new String[]{
+                "Tester", generalStrings.date(), generalStrings.remark(), generalStrings.result()}){
+
+            //Table not editable
+            @Override
+            public boolean isCellEditable(int row, int column){
+                return false;
+            }
+
+            Class[] columnTypes = new Class[]{
+                    String.class, Timestamp.class, String.class, ImageIcon.class
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return columnTypes[columnIndex];
+            }
+        });
         tblTestExecutions.getColumnModel().getColumn(3).setMaxWidth(60);
         JScrollPane scrollTableTestcase = new JScrollPane(tblTestExecutions);
         pnlRight.add(scrollTableTestcase, BorderLayout.CENTER);
 
         btnExecuteTestcase = new JButton(wbsStrings.executeTest("Test"));
-        btnExecuteTestcase.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new TestcaseExecutionShowGUI(wbsStrings.executeTest("Test"), null, null, false);
-            }
-        });
         pnlRight.add(btnExecuteTestcase, BorderLayout.SOUTH);
 
 
         this.pack();
         Controller.centerComponent(parent, this);
         this.setVisible(true);
+
+        setValues();
+        addBtnListener();
     }
+
+    /**
+     * Set Values for the testcases.
+     */
+    public void setValues(){
+
+        txfWPId.setText(testCase.getWp_stringID());
+        txfTestname.setText(testCase.getName());
+        txaPrecondition.setText(testCase.getPrecondition());
+        txaDescription.setText(testCase.getDescription());
+        txaExpectedResult.setText(testCase.getExpectedResult());
+
+        clearTable();
+        for(TestExecution t : testCaseController.getTestExecutionsForTestCase(testCase)){
+            ((DefaultTableModel)tblTestExecutions.getModel()).addRow(new Object[]{t.getEmployeeLogin(), t.getTime(),
+                t.getRemark(), t.getStatus().equals("failed")? unsucessfulIcon: sucessfulIcon});
+        }
+
+    }
+
+    /**
+     * Add Listener
+     */
+    private void addBtnListener(){
+
+        btnSave.addActionListener(testCtrl.getBtnSaveListener());
+        btnCancel.addActionListener(testCtrl.getBtnCancelListener());
+        btnExecuteTestcase.addActionListener(testCtrl.getBtnTestExecuteListener());
+    }
+
+    /**
+     * Return the textarea for the description.
+     * @return Description Textarea
+     */
+    public JTextArea getTxaDescription(){
+        return txaDescription;
+    }
+
+    /**
+     * Return the textarea for the expected result.
+     * @return Expected Result Textarea
+     */
+    public JTextArea getTxaExpectedResult(){
+        return txaExpectedResult;
+    }
+
+    /**
+     * Return the textarea for the precondition.
+     * @return Precondition Textarea
+     */
+    public JTextArea getTxaPrecondition(){
+        return txaPrecondition;
+    }
+
+    /**
+     * Return the testname.
+     * @return Testname Textfield
+     */
+    public FilterJTextField getTxfTestname(){
+        return txfTestname;
+    }
+
+    /**
+     * Show message when description or expected isn´t set.
+     */
+    public void showMessage(String text){
+        JOptionPane.showMessageDialog(this, text);
+    }
+
+    /**
+     * Clear the testexecution table.
+     */
+    private void clearTable(){
+        tblTestExecutions.setModel(new DefaultTableModel(null, new String[]{
+                "Tester", generalStrings.date(), generalStrings.remark(), generalStrings.result()}){
+
+            //Table not editable
+            @Override
+            public boolean isCellEditable(int row, int column){
+                return false;
+            }
+
+            Class[] columnTypes = new Class[]{
+                    String.class, Timestamp.class, String.class, ImageIcon.class
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return columnTypes[columnIndex];
+            }
+        });
+    }
+
 }
