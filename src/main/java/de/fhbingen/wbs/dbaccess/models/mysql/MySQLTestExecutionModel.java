@@ -116,7 +116,7 @@ public class MySQLTestExecutionModel implements TestExecutionModel {
         List<TestExecution> execList = getExecutionsForTestCase(testcase);
         TestExecution latestExec = null;
         if(execList.size()>0){
-            latestExec = execList.get(execList.size() - 1);
+            latestExec = execList.get(0);
         }
 
         return latestExec;
