@@ -263,7 +263,7 @@ CREATE TABLE IF NOT EXISTS test_executions (
 	fid_tc int(11) NOT NULL COMMENT 'Id of the testcase for which the test case execution is.',
 	fid_emp int(11) NOT NULL COMMENT 'Id of the employee which executed the test execution.',
 	remark varchar(255) COMMENT 'test execution remark',
-	timestamp DATE,
+	timestamp TIMESTAMP,
 	status ENUM('failed', 'neutral', 'succeeded'),
 	PRIMARY KEY ( id ),
 	FOREIGN KEY ( fid_emp ) REFERENCES employees( id ),
