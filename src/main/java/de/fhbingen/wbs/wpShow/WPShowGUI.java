@@ -948,6 +948,7 @@ public class WPShowGUI extends JFrame {
         panelTestcase.add(txfTestcase, BorderLayout.CENTER);
 
         btnAddTestcase = new JButton("+");
+        btnAddTestcase.setEnabled(false);
         panelTestcase.add(btnAddTestcase, BorderLayout.EAST);
 
         JPanel leftBottomPanel = new JPanel();
@@ -1610,5 +1611,9 @@ public class WPShowGUI extends JFrame {
 
     public void showMessage(String text){
         JOptionPane.showMessageDialog(this, text);
+    }
+
+    public JButton getBtnAddTestcase(){
+        return btnAddTestcase;
     }
 }
