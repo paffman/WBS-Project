@@ -197,6 +197,22 @@ public class TestExecution {
         this.time = time;
     }
 
+    /**
+     *
+     * @param testcaseID
+     * @param employeeID
+     * @param remark
+     * @param time
+     * @param status
+     */
+    public TestExecution(int testcaseID, int employeeID, String remark, Timestamp time, String status){
+        this.testcaseID = testcaseID;
+        this.employeeID = employeeID;
+        this.remark = remark;
+        this.time = time;
+        this.status = status;
+    }
+
     public TestExecution() {
 
     }
