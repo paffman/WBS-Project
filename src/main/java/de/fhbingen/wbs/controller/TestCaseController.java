@@ -118,5 +118,13 @@ public class TestCaseController {
         return sqlexecm.updateTestExecution(te);
     }
 
+    /**
+     * Get testcases for this workpackage.
+     * @return List of testcases
+     */
+    public List<TestCase> getTestCases(){
+        return this.workpackage.getTestCases();
+    }
+
 
 }
