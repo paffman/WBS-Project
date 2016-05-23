@@ -377,13 +377,8 @@ public class WPShowGUI extends JFrame {
         leftScrollPanel.setBorder(new EmptyBorder(5, 5, 5, 3));
         GridBagLayout gbl_leftScrollPanel = new GridBagLayout();
         gbl_leftScrollPanel.columnWidths = new int[]{0, 0, 0};
-        gbl_leftScrollPanel.rowHeights = new int[]{0, 0, 0, 40, 0, 0, 0, 0, 0,
-                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-        gbl_leftScrollPanel.columnWeights = new double[]{1.0, 1.0,
-                Double.MIN_VALUE};
-        gbl_leftScrollPanel.rowWeights = new double[]{0.0, 0.0, 0.0, 1.0, 0.0,
-                0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+        gbl_leftScrollPanel.rowHeights = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
         leftScrollPanel.setLayout(gbl_leftScrollPanel);
 
         JScrollPane wpSettingsPane = new JScrollPane(leftScrollPanel, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
@@ -449,7 +444,7 @@ public class WPShowGUI extends JFrame {
         gbc_lblBeschreibung.gridy = 3;
         leftScrollPanel.add(lblBeschreibung, gbc_lblBeschreibung);
 
-        txfDesc = new JTextArea() {
+        txfDesc = new JTextArea(6, 1) {
             private static final long serialVersionUID = -3874181090738553731L;
 
             public String getText() {
@@ -459,13 +454,13 @@ public class WPShowGUI extends JFrame {
         };
         txfDesc.setFont(new Font("Tahoma", Font.PLAIN, 11));
         txfDesc.setLineWrap(true);
-        txfDesc.setBorder(new LineBorder(Color.LIGHT_GRAY, 1));
-        GridBagConstraints gbc_txfDesc = new GridBagConstraints();
-        gbc_txfDesc.insets = new Insets(0, 0, 5, 0);
-        gbc_txfDesc.fill = GridBagConstraints.BOTH;
-        gbc_txfDesc.gridx = 1;
-        gbc_txfDesc.gridy = 3;
-        leftScrollPanel.add(txfDesc, gbc_txfDesc);
+        JScrollPane scrollDesc = new JScrollPane(txfDesc);
+        GridBagConstraints gbc_scrollDesc = new GridBagConstraints();
+        gbc_scrollDesc.insets = new Insets(0, 0, 5, 0);
+        gbc_scrollDesc.fill = GridBagConstraints.BOTH;
+        gbc_scrollDesc.gridx = 1;
+        gbc_scrollDesc.gridy = 3;
+        leftScrollPanel.add(scrollDesc, gbc_scrollDesc);
 
         lblVorgnger = new JLabel(generalStrings.predecessor());
         GridBagConstraints gbc_lblVorgnger = new GridBagConstraints();
@@ -950,6 +945,14 @@ public class WPShowGUI extends JFrame {
         btnAddTestcase = new JButton("+");
         btnAddTestcase.setEnabled(false);
         panelTestcase.add(btnAddTestcase, BorderLayout.EAST);
+
+        //empty Label for align the settings on top left
+        GridBagConstraints gbc_empty = new GridBagConstraints();
+        gbc_empty.weightx = 1.0;
+        gbc_empty.weighty = 1.0;
+        gbc_empty.gridx = 0;
+        gbc_empty.gridy = 24;
+        leftScrollPanel.add(new JLabel(""), gbc_empty);
 
         JPanel leftBottomPanel = new JPanel();
         leftBottomPanel.setBorder(new EmptyBorder(5, 5, 5, 3));
@@ -1560,25 +1563,6 @@ public class WPShowGUI extends JFrame {
      * Set the testcases to the testcase table
      */
     public void setTestcases(TestCaseController testCaseController){
-        tblTestcase.setModel(new DefaultTableModel(null, new String[]{
-                wbsStrings.workPackageId(),  generalStrings.testcase(), generalStrings.date(),
-                "Tester", "Status"}){
-
-            //Table not editable
-            @Override
-            public boolean isCellEditable(int row, int column){
-                return false;
-            }
-
-            Class[] columnTypes = new Class[]{
-                    String.class, String.class, Timestamp.class, String.class, ImageIcon.class
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return columnTypes[columnIndex];
-            }
-        });
-
         for(TestCase test : testCaseController.getAllTestCases()){
             TestExecution execution = testCaseController.getLatestExecutionForTestCase(test);
             if(execution != null){
