@@ -176,6 +176,6 @@ public interface Wbs {
     String unsucessful();
 
     @De("Aufwand erfassen")
-    @En("work effort booking")
+    @En("Work effort booking")
     String workEffortTime();
 }
