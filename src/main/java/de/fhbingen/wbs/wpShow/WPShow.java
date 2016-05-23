@@ -993,7 +993,8 @@ public class WPShow {
             public void actionPerformed(ActionEvent e){
                 String name = gui.getTxfTestTestcase().getText().trim();
                 if(!name.equals("")){
-                    testCaseController.addTestCase(new TestCase(wp.getWpId(), name));
+                    TestCase test = new TestCase(wp.getWpId(), name);
+                    testCaseController.addTestCase(test);
                     gui.setTestcases(testCaseController);
                 }
             }
@@ -1109,10 +1110,17 @@ public class WPShow {
     }
 
     public void next(){
-        if(actualTestCaseIndex < testCaseController.getAllTestCases().size() - 1){
-            actualTestCaseIndex++;
-            new TestcaseExecutionShow(testCaseController, testCaseController.getAllTestCases().get(actualTestCaseIndex), gui, true, getOuterClass());
+        if(actualTestCaseIndex < testCaseController.getAllTestCases().size() - 1 ){
+            if(!testCaseController.getAllTestCases().get(actualTestCaseIndex + 1).getDescription().equals("")) {
+                actualTestCaseIndex++;
+                new TestcaseExecutionShow(testCaseController, testCaseController.getAllTestCases().get(actualTestCaseIndex), gui, true, getOuterClass());
+            }
+            else{
+                actualTestCaseIndex++;
+                next();
+            }
         }
+
     }
 
     public WPShowGUI getWPShowGUI(){
