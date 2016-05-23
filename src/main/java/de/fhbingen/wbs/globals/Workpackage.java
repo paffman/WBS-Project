@@ -1111,7 +1111,7 @@ public class Workpackage {
      *
      * @return list of testcases
      */
-    private List<TestCase> getTestCases() {
+    public List<TestCase> getTestCases() {
 
         MySQLTestCaseModel sqltcm = new MySQLTestCaseModel();
         return sqltcm.getAllTestCases(thisWp);
