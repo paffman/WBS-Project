@@ -43,6 +43,7 @@ import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -1041,7 +1042,7 @@ public class WPShowGUI extends JFrame {
             }
 
             Class[] columnTypes = new Class[]{
-                    String.class, String.class, Timestamp.class, String.class, ImageIcon.class
+                    String.class, String.class, String.class, String.class, ImageIcon.class
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -1563,16 +1564,35 @@ public class WPShowGUI extends JFrame {
      * Set the testcases to the testcase table
      */
     public void setTestcases(TestCaseController testCaseController){
+        tblTestcase.setModel(new DefaultTableModel(null, new String[]{
+                wbsStrings.workPackageId(),  generalStrings.testcase(), generalStrings.date(),
+                "Tester", "Status"}){
+
+            //Table not editable
+            @Override
+            public boolean isCellEditable(int row, int column){
+                return false;
+            }
+
+            Class[] columnTypes = new Class[]{
+                    String.class, String.class, String.class, String.class, ImageIcon.class
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return columnTypes[columnIndex];
+            }
+        });
+
         for(TestCase test : testCaseController.getAllTestCases()){
             TestExecution execution = testCaseController.getLatestExecutionForTestCase(test);
             if(execution != null){
                 ((DefaultTableModel)tblTestcase.getModel()).addRow(new Object[]{test.getWp_stringID(), test.getName(),
-                        execution.getTime(), execution.getEmployeeLogin(), (execution.getStatus().equals("failed"))?
+                        new SimpleDateFormat("dd.MM.yy").format(execution.getTime()), execution.getEmployeeLogin(), (execution.getStatus().equals("failed"))?
                         TestcaseShowGUI.unsucessfulIcon : ((execution.getStatus().equals("succeeded"))?
                         TestcaseShowGUI.sucessfulIcon : TestcaseShowGUI.neutralIcon)});
             }else{
                 ((DefaultTableModel)tblTestcase.getModel()).addRow(new Object[]{test.getWp_stringID(),
-                        test.getName(), null, "-", TestcaseShowGUI.neutralIcon});
+                        test.getName(), "-", "-", TestcaseShowGUI.neutralIcon});
             }
         }
     }
