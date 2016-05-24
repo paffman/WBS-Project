@@ -12,18 +12,17 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JFormattedTextField;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
+import javax.swing.*;
 import javax.swing.text.MaskFormatter;
 
+import de.fhbingen.wbs.dbaccess.data.TestCase;
+import de.fhbingen.wbs.dbaccess.data.Workpackage;
+import de.fhbingen.wbs.dbaccess.models.mysql.MySQLTestCaseModel;
+import de.fhbingen.wbs.dbaccess.models.mysql.MySQLWorkpackageModel;
 import de.fhbingen.wbs.globals.FilterJTextField;
 import de.fhbingen.wbs.gui.delegates.SimpleDialogDelegate;
 import de.fhbingen.wbs.translation.Button;
@@ -48,12 +47,13 @@ public class AddWorkEffortView extends JFrame {
     protected GridBagLayout gbl;
 
     private JLabel lblID, lblName, lblUser, lblBeschreibung, lblAufwand,
-        lblDatum;
+        lblDatum, lblAufwandZeit;
     protected JTextField txfNr, txfName, txfBeschreibung, txfAufwand;
     protected JComboBox<Worker> cobUser;
     protected JFormattedTextField txfDatum;
     protected JButton btnOk, btnCancel;
-
+    protected JComboBox<String> cobAufwandZeit;
+    protected String[] strAufwandZeit = new String[]{ LocalizedStrings.getGeneralStrings().days(), LocalizedStrings.getGeneralStrings().hours()};
     /**
      * Interface do define possible user actions to be handled by the
      * controller.
@@ -110,6 +110,9 @@ public class AddWorkEffortView extends JFrame {
             .description());
         txfBeschreibung = new FilterJTextField();
 
+        lblAufwandZeit = new JLabel(wbsStrings.workEffortTime());
+        cobAufwandZeit = new JComboBox<>(strAufwandZeit);
+
         lblAufwand = new JLabel(wbsStrings.workEffort());
         txfAufwand = new FilterJTextField();
 
@@ -137,16 +140,20 @@ public class AddWorkEffortView extends JFrame {
         createGBC(cobUser, 1, 2, 1, 1);
         createGBC(lblBeschreibung, 0, 3, 1, 1);
         createGBC(txfBeschreibung, 1, 3, 1, 1);
-        createGBC(lblAufwand, 0, 4, 1, 1);
-        createGBC(txfAufwand, 1, 4, 1, 1);
-        createGBC(lblDatum, 0, 5, 1, 1);
-        createGBC(txfDatum, 1, 5, 1, 1);
-        createGBC(btnOk, 0, 6, 1, 1);
-        createGBC(btnCancel, 1, 6, 1, 1);
+        createGBC(lblAufwandZeit,0,4,1,1);
+        createGBC(cobAufwandZeit,1,4,1,1);
+        createGBC(lblAufwand, 0, 5, 1, 1);
+        createGBC(txfAufwand, 1, 5, 1, 1);
+        createGBC(lblDatum, 0, 6, 1, 1);
+        createGBC(txfDatum, 1, 6, 1, 1);
+        createGBC(btnOk, 0, 7, 1, 1);
+        createGBC(btnCancel, 1, 7, 1, 1);
 
         addActionListeners();
 
         setVisible(true);
+
+
     }
 
     /**
@@ -247,7 +254,7 @@ public class AddWorkEffortView extends JFrame {
     }
 
     /** Sets the work effort.
-     * @param id The work effort of the work package.*/
+     * @param effort The work effort of the work package.*/
     public final void setWorkEffort(String effort){
         txfAufwand.setText(effort);
     }
@@ -263,4 +270,10 @@ public class AddWorkEffortView extends JFrame {
     public final String getDate(){
         return txfDatum.getText();
     }
+
+    /** Returns a combo box with booking time.
+     * @return A combo box with booking time. */
+    public JComboBox<String> getBookingTime() { return cobAufwandZeit;}
+
+
 }

@@ -162,4 +162,20 @@ public interface Wbs {
     @De("Geändertes Datum")
     @En("Date Changed")
     String dateChangedWindowTitle();
+
+    @De("{0} durchführen")
+    @En("Execute {0}")
+    String executeTest(String s);
+
+    @De("erfolgreich")
+    @En("sucessful")
+    String sucessful();
+
+    @De("nicht erfolgreich")
+    @En("unsucessful")
+    String unsucessful();
+
+    @De("Aufwand erfassen")
+    @En("Work effort booking")
+    String workEffortTime();
 }

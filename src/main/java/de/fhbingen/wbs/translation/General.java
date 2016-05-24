@@ -107,6 +107,14 @@ public interface General {
     @En("Day")
     String day();
 
+    @De("Tage")
+    @En("Days")
+    String days();
+
+    @De("Stunden")
+    @En("Hours")
+    String hours();
+
     @De("Woche")
     @En("Week")
     String week();
@@ -214,5 +222,37 @@ public interface General {
     @De("und")
     @En("and")
     String and();
+
+    @De("Testfall")
+    @En("Testcase")
+    String testcase();
+
+    @De("Vorbedingungen")
+    @En("Preconditions")
+    String precondition();
+
+    @De("Erwartetes Ergebnis")
+    @En("Expected result")
+    String expectedResult();
+
+    @De("Bemerkung")
+    @En("Remark")
+    String remark();
+
+    @De("Ergebnis")
+    @En("Result")
+    String result();
+
+    @De("\"Beschreibung- und Erwatetes Ergebnis\" sind Pflicht!")
+    @En("\"Desciption and expected result field\" must be set!")
+    String descriptionExpectedResultMessage();
+
+    @De("\"Testnamen Feld\" ist Plficht!")
+    @En("\"Testname field\" must be set!")
+    String testnameMessage();
+
+    @De("Es existieren keine Testfälle!")
+    @En("No Testcases exists")
+    String testcaseMessage();
 }
 

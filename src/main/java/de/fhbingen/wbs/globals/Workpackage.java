@@ -4,6 +4,8 @@ import de.fhbingen.wbs.dbServices.ValuesService;
 import de.fhbingen.wbs.dbServices.WorkpackageService;
 import de.fhbingen.wbs.dbaccess.DBModelManager;
 import de.fhbingen.wbs.dbaccess.data.Employee;
+import de.fhbingen.wbs.dbaccess.data.TestCase;
+import de.fhbingen.wbs.dbaccess.models.mysql.MySQLTestCaseModel;
 import de.fhbingen.wbs.translation.LocalizedStrings;
 import de.fhbingen.wbs.functions.WpManager;
 import java.util.ArrayList;
@@ -1070,5 +1072,48 @@ public class Workpackage {
         thisWp =
                 DBModelManager.getWorkpackageModel().getWorkpackage(
                         getStringID());
+    }
+
+    /**
+     * gets all testcases of this WP and all children
+     *
+     * @return list of WPs
+     */
+    public List<TestCase> getAllTestCases() {
+        ArrayList<TestCase> testCases = new ArrayList<>();
+
+        testCases.addAll(this.getTestCases());
+
+        if (this.thisWp.isTopLevel()) {
+            testCases.addAll(this.getChildrensTestCases());
+        }
+
+        return testCases;
+    }
+
+    /**
+     * get testcases of child WPs
+     *
+     * @return list of testcases
+     */
+    private List<TestCase> getChildrensTestCases() {
+        ArrayList<TestCase> testCases = new ArrayList<>();
+
+        for (Workpackage wp : WpManager.getUAPs(this)) {
+            testCases.addAll(wp.getAllTestCases());
+        }
+
+        return testCases;
+    }
+
+    /**
+     * get testcases of this WP
+     *
+     * @return list of testcases
+     */
+    public List<TestCase> getTestCases() {
+
+        MySQLTestCaseModel sqltcm = new MySQLTestCaseModel();
+        return sqltcm.getAllTestCases(thisWp);
     }
 }
