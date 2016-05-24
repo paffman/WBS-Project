@@ -1118,6 +1118,15 @@ public class Workpackage {
     }
 
     /**
+     * returns all child workpackages of this workpackage
+     *
+     * @return list of all child workpackages
+     */
+    public ArrayList<Workpackage> getAllChildren() {
+        return WpManager.getAllChildren(this);
+    }
+
+    /**
      * resets the order id to the first value, which isn't in use yet
      */
     private void resetOrderId() {
@@ -1325,7 +1334,7 @@ public class Workpackage {
     private List<TestCase> getChildrensTestCases() {
         ArrayList<TestCase> testCases = new ArrayList<>();
 
-        for (Workpackage wp : WpManager.getUAPs(this)) {
+        for (Workpackage wp : this.getDirectChildren()) {
             testCases.addAll(wp.getAllTestCases());
         }
 
@@ -1338,7 +1347,6 @@ public class Workpackage {
      * @return list of testcases
      */
     public List<TestCase> getTestCases() {
-
         MySQLTestCaseModel sqltcm = new MySQLTestCaseModel();
         return sqltcm.getAllTestCases(thisWp);
     }

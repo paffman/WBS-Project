@@ -675,6 +675,24 @@ public class WpManager {
     }
 
     /**
+     * returns all children of the given workpackage
+     *
+     * @param parentWorkpackage the workpackage you want to retrieve the children for
+     * @return
+     */
+    public static ArrayList<Workpackage> getAllChildren(Workpackage parentWorkpackage) {
+        ArrayList<Workpackage> children = WpManager.getDirectChildren(parentWorkpackage);
+
+        for (Workpackage child : children) {
+            if (child.isIstOAP()) {
+                children.addAll(WpManager.getAllChildren(child));
+            }
+        }
+
+        return children;
+    }
+
+    /**
      * updates the stringId of a given workpackage in the DB
      *
      * @param wp workpackage to update
