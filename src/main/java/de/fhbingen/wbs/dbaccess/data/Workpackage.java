@@ -19,10 +19,13 @@
 
 package de.fhbingen.wbs.dbaccess.data;
 
+import de.fhbingen.wbs.functions.WpManager;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * A simple container class representing a Workpackge. It mirrors all the

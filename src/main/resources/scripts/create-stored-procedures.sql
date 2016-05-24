@@ -1,4 +1,4 @@
--- --------------------------------------------------------
+ -- --------------------------------------------------------
 -- dependencies_select
 -- r
 -- --------------------------------------------------------
@@ -1396,3 +1396,174 @@ BEGIN
 END //
 DELIMITER ;
 -- --------------------------------------------------------
+
+-- --------------------------------------------------------
+-- test_case_select_by_wp(int wp_id)
+-- r
+-- --------------------------------------------------------
+DELIMITER //
+CREATE PROCEDURE test_case_select_by_wp(
+IN in_fid_wp int(11)
+ )
+BEGIN
+	SELECT
+		t.id,
+		t.fid_wp,
+		t.name,
+		t.description,
+		t.precondition,
+		t.expected_result,
+		w.string_id
+	FROM
+		test_cases t
+	JOIN
+		workpackage w
+	WHERE
+		t.fid_wp = in_fid_wp
+		AND
+		t.fid_wp = w.id;
+END //
+DELIMITER ;
+-- --------------------------------------------------------
+
+-- --------------------------------------------------------
+-- test_case_new(everything except id)
+-- rw
+-- --------------------------------------------------------
+DELIMITER //
+CREATE PROCEDURE test_case_new(
+ IN in_fid_wp int(11),
+ IN in_name varchar(255)
+)
+ BEGIN
+	 INSERT INTO test_cases (
+		 fid_wp,
+		 name,
+		 description,
+		 precondition,
+		 expected_result)
+	 VALUES (
+		 in_fid_wp,
+		 in_name,
+		 "",
+		 "",
+		 ""
+	 );
+ END //
+DELIMITER ;
+-- --------------------------------------------------------
+
+-- --------------------------------------------------------
+-- test_case_update_by_id(everything except id)
+-- rw
+-- --------------------------------------------------------
+DELIMITER //
+CREATE PROCEDURE test_case_update_by_id(
+ IN in_id int(11),
+ IN in_fid_wp int(11),
+ IN in_name varchar(255),
+ IN in_description varchar(255),
+ IN in_precondition varchar(255),
+ IN in_expected_result varchar(255)
+)
+ BEGIN
+	 UPDATE test_cases
+	 SET
+		 fid_wp = in_fid_wp,
+		 name = in_name,
+		 description = in_description,
+		 precondition = in_precondition,
+		 expected_result = in_expected_result
+	 WHERE id = in_id;
+ END //
+DELIMITER ;
+-- --------------------------------------------------------
+
+-- --------------------------------------------------------
+-- test_execution_new(everything except id)
+-- rw
+-- --------------------------------------------------------
+DELIMITER //
+CREATE PROCEDURE test_execution_new(
+ IN in_fid_tc int(11),
+ IN in_fid_emp int(11),
+ IN in_remark varchar(255),
+ IN in_timestamp timestamp,
+ IN in_status varchar(255)
+)
+ BEGIN
+	 INSERT INTO test_executions (
+		 fid_tc,
+		 fid_emp,
+		 remark,
+		 timestamp,
+		 status
+	 )
+	 VALUES (
+		 in_fid_tc,
+		 in_fid_emp,
+		 in_remark,
+		 in_timestamp,
+		 in_status
+	 );
+ END //
+DELIMITER ;
+-- --------------------------------------------------------
+
+-- --------------------------------------------------------
+-- test_execution_update_by_id(everything except id)
+-- rw
+-- --------------------------------------------------------
+DELIMITER //
+CREATE PROCEDURE test_execution_update_by_id(
+ IN in_id int(11),
+ IN in_fid_tc int(11),
+ IN in_fid_emp int(11),
+ IN in_remark varchar(255),
+ IN in_timestamp date,
+ IN in_status varchar(255)
+)
+ BEGIN
+	 UPDATE test_executions
+	 SET
+		 fid_tc = in_fid_tc,
+		 fid_emp = in_fid_emp,
+		 remark = in_remark,
+		 timestamp = in_timestamp,
+		 status = in_status
+	 WHERE id = in_id;
+ END //
+DELIMITER ;
+-- --------------------------------------------------------
+
+-- --------------------------------------------------------
+-- test_execution_select_by_test_case
+-- r
+-- --------------------------------------------------------
+DELIMITER //
+CREATE PROCEDURE test_execution_select_by_test_case(
+ IN in_fid_tc int(11)
+)
+ BEGIN
+	SELECT
+		t.id,
+		t.fid_tc,
+		t.fid_emp,
+		t.remark,
+		t.timestamp,
+		t.status,
+		e.login
+	FROM
+		test_executions t
+	JOIN
+		employees e
+	WHERE
+		t.fid_tc = in_fid_tc
+		AND
+		t.fid_emp = e.id
+	ORDER BY
+		t.timestamp
+	DESC;
+ END //
+DELIMITER ;
+ -- --------------------------------------------------------
