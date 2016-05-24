@@ -19,6 +19,8 @@
 
 package de.fhbingen.wbs.dbaccess.data;
 
+import de.fhbingen.wbs.dbaccess.models.mysql.MySQLTestExecutionModel;
+
 /**
  * A simple container class representing a TestCase. It mirrors all the
  * database fields in the TestCases table.
@@ -185,5 +187,13 @@ public class TestCase {
     public TestCase(int workpackageID,  String name){
         this.workpackageID = workpackageID;
         this.name = name;
+    }
+
+    /**
+     * @return latest execution of this testcase
+     */
+    public TestExecution getLatestExecution(){
+        MySQLTestExecutionModel sqlexecm = new MySQLTestExecutionModel();
+        return sqlexecm.getLastExecution(this);
     }
 }
