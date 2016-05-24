@@ -169,4 +169,36 @@ public interface Messages extends ErrorMessages {
     @De("Die Planned Values werden neu berechnet. Wollen sie fortfahren?")
     @En("The Planned Values will be recalculated. Do you want to continue?")
     String pvChange();
+
+    @De("Das Arbeitspacket wurde erfolgreich umgehängt.")
+    @En("The orkpackage has successfully been moved.")
+    String wpMoveWpHasBeenMoved();
+
+    @De("Beim Umhängen des Arbeitspacketes, ist ein Fehler aufgetreten.")
+    @En("An Error has occured, while moving the workpackage.")
+    String wpMoveError();
+
+    @De("Es wurde kein Zielarbeitspaket ausgewählt. Ziehen Sie das Arbeitspacket auf ein anderes Arbeitspacket.")
+    @En("No target workpackage has been selected. Drag the workpackage on to another workpackage.")
+    String wpMoveNoneSelected();
+
+    @De("Das Zielarbeitspacket ist gleich dem Ausgangsarbeitspacket.")
+    @En("The target workpackage is the same as the source workpackage.")
+    String wpMoveWpIsItself();
+
+    @De("Das Arbeitspacket befindet sich bereits an dieser Position.")
+    @En("The workpackage already is at this position.")
+    String wpMoveParentOfTargetWp();
+
+    @De("Das Arbeitspacket ist bereits ein OAP des Ziel Arbeitspacket.")
+    @En("The workpackage is a parent workpackage of the target workpackage.")
+    String wpMoveAlreadyIsChild();
+
+    @De("Das Zielarbeitspacket ist kein OAP.")
+    @En("The target workpackage is no parent workpackage")
+    String wpMoveTargetWpIsNoOAP();
+
+    @De("Das Verschieben ist nicht möglich, da dabei die maximale Tiefe überschritten werden würde.")
+    @En("Movin this workpackage is not possible, since this would exceed the maximal depth.")
+    String wpMoveMaxDepth();
 }

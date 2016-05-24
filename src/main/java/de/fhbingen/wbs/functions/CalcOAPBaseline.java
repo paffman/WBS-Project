@@ -65,6 +65,32 @@ public class CalcOAPBaseline {
     /**
      * Konstruktor
      *
+     * @param changedWp
+     *            Arbeitspaket, dessen OAP aktualisiert werden muessen
+     * @param withTime
+     *            falls die Zeiten mit berechnet werden sollen
+     * @param calcInitialWp
+     *            also calculates the changedWp
+     */
+    public CalcOAPBaseline(Workpackage changedWp, boolean withTime, boolean calcInitialWp) {
+        this.withTime = withTime;
+        Workpackage actualOAP = changedWp;
+
+        if (calcInitialWp) {
+            calculate(changedWp);
+        }
+
+        do {
+            Loader.setLoadingText(LocalizedStrings.getStatus().calculateLevel(
+                    actualOAP.getlastRelevantIndex()));
+            actualOAP = WpManager.getWorkpackage(actualOAP.getOAPID());
+            calculate(actualOAP);
+        } while (!actualOAP.equals(WpManager.getRootAp()));
+    }
+
+    /**
+     * Konstruktor
+     *
      * @param wpOverview
      *            fuer den Reload wenn fertig
      */

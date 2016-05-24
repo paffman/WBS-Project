@@ -4,15 +4,14 @@ import de.fhbingen.wbs.dbServices.ValuesService;
 import de.fhbingen.wbs.dbServices.WorkpackageService;
 import de.fhbingen.wbs.dbaccess.DBModelManager;
 import de.fhbingen.wbs.dbaccess.data.Employee;
+import de.fhbingen.wbs.dbaccess.data.Project;
+import de.fhbingen.wbs.functions.CalcOAPBaseline;
 import de.fhbingen.wbs.dbaccess.data.TestCase;
 import de.fhbingen.wbs.dbaccess.models.mysql.MySQLTestCaseModel;
 import de.fhbingen.wbs.translation.LocalizedStrings;
 import de.fhbingen.wbs.functions.WpManager;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.List;
-import java.util.Set;
+
+import java.util.*;
 import javax.swing.JOptionPane;
 
 /**
@@ -512,13 +511,13 @@ public class Workpackage {
      * @param xIDs
      * @return
      */
-    private String mergeLvlx(String[] xIDs) {
+    private String mergeLvlx(Integer[] xIDs) {
         String merged = "";
-        for (String s : xIDs) {
+        for (Integer id : xIDs) {
             if (merged.equals("")) {
-                merged += s;
+                merged += String.valueOf(id);
             } else {
-                merged += "." + s;
+                merged += "." + String.valueOf(id);
             }
         }
         return merged;
@@ -1072,6 +1071,232 @@ public class Workpackage {
         thisWp =
                 DBModelManager.getWorkpackageModel().getWorkpackage(
                         getStringID());
+    }
+
+    /**
+     * changes the parent of this workpackage, updates the string id and updates all calculated values for the new
+     * parent WPs, as well as the old parent WPs
+     *
+     * @param newParent the new parent workpackage
+     */
+    public void changeParent(Workpackage newParent) {
+        Workpackage oldParent = this.getParent();
+
+        this.thisWp.setParentID(newParent.getWpId());
+        this.resetOrderId();
+        this.save();
+
+        this.resetStringId();
+
+        if (this.isIstOAP()) {
+            this.adjustChildrensStringIdsToNewParent();
+        }
+
+        WpManager.loadDB();
+
+        new CalcOAPBaseline(this, false, false);
+        new CalcOAPBaseline(oldParent, false, true);
+    }
+
+    /**
+     * gets the sibling of this workpackage
+     *
+     * @return list of sibling workpackages
+     */
+    public ArrayList<Workpackage> getSiblings() {
+        return WpManager.getSiblings(this);
+    }
+
+    /**
+     * returns all workpackages which are a direct child to this workpackage
+     *
+     * @return list of child workpackages
+     */
+    public ArrayList<Workpackage> getDirectChildren() {
+        return WpManager.getDirectChildren(this);
+    }
+
+    /**
+     * resets the order id to the first value, which isn't in use yet
+     */
+    private void resetOrderId() {
+        SortedSet<Integer> orderIds = new TreeSet<>();
+
+        for (Workpackage workpackage : this.getSiblings()) {
+            orderIds.add(workpackage.getWp().getPositionID());
+        }
+
+        Integer freeOrderId = null;
+
+        for (int i = 0; i < orderIds.size() && freeOrderId == null; i++) {
+            if (!orderIds.contains(i + 1)) {
+                freeOrderId = i + 1;
+            }
+        }
+
+        if (freeOrderId == null) {
+            freeOrderId = orderIds.size() + 1;
+        }
+
+        this.thisWp.setPositionID(freeOrderId);
+    }
+
+    /**
+     * adjusts the workpackages childrens stringIds to a new parent
+     */
+    private void adjustChildrensStringIdsToNewParent() {
+        Integer[] newParentStringIds = this.getRelevantLvlIds();
+
+        for (Workpackage workpackage : this.getDirectChildren()) {
+            workpackage.adjustStringIdToNewParent(newParentStringIds);
+
+            if (workpackage.isIstOAP()) {
+                workpackage.adjustChildrensStringIdsToNewParent();
+            }
+        }
+    }
+
+    /**
+     * adjusts this workpackages stringId to a new parent
+     *
+     * @param newParentStringIds
+     */
+    private void adjustStringIdToNewParent(Integer[] newParentStringIds) {
+        Integer[] stringId = this.getLvlIDs();
+        int relevantStringId = this.getLvlID(this.getlastRelevantIndex());
+
+        for (int i = 0; i < newParentStringIds.length; i++) {
+            stringId[i] = newParentStringIds[i];
+        }
+
+        stringId[newParentStringIds.length] = relevantStringId;
+
+        for (int i = newParentStringIds.length + 1; i < stringId.length; i++) {
+            stringId[i] = 0;
+        }
+
+        this.updateStringId(this.mergeLvlx(stringId));
+    }
+
+    /**
+     * resets the string id, according to the string id of the parent and which id is not in use yet
+     */
+    private void resetStringId() {
+        Workpackage parent = this.getParent();
+        Integer[] parentStringId = parent.getLvlIDs();
+        parentStringId[parent.getRelevantLvlIds().length] = this.findFreeStringId();
+
+        this.updateStringId(this.mergeLvlx(parentStringId));
+    }
+
+    /**
+     * finds a LvlId which isn't in use yet
+     *
+     * @return Integer LvlId
+     */
+    private Integer findFreeStringId() {
+        SortedSet<Integer> relevantStringIds = new TreeSet<>();
+
+        for (Workpackage workpackage : this.getSiblings()) {
+            relevantStringIds.add(workpackage.getLvlID(workpackage.getlastRelevantIndex()));
+        }
+
+        Integer freeStringId = null;
+
+        for (int i = 0; i < relevantStringIds.size() && freeStringId == null; i++) {
+            if (!relevantStringIds.contains(i + 1)) {
+                freeStringId = i + 1;
+            }
+        }
+
+        if (freeStringId == null) {
+            freeStringId = relevantStringIds.size() + 1;
+        }
+
+        return freeStringId;
+    }
+
+    /**
+     * @return the parent workpackage
+     */
+    public Workpackage getParent() {
+        return WpManager.getWorkpackage(this.thisWp.getParentID());
+    }
+
+    /**
+     * updates the stringId of this workpackage
+     * WARNING: you'll have to reload the DB in the WpManager after updating the stringId, to avoid inconsistent data
+     *
+     * @param newStringId the new stringId
+     */
+    public void updateStringId(String newStringId) {
+        this.thisWp.setStringID(newStringId);
+        WpManager.updateStringId(this);
+    }
+
+    /**
+     * saves all changes to this workpackage to the DB
+     */
+    public void save() {
+        WpManager.updateAP(this);
+    }
+
+    public Integer[] getRelevantLvlIds() {
+        boolean relevantIdsFound = false;
+
+        Integer[] allStringIds = this.getLvlIDs();
+        ArrayList<Integer> stringIds = new ArrayList<>();
+
+        for (int i = 0; i < allStringIds.length && !relevantIdsFound; i++) {
+            if (allStringIds[i] == 0) {
+                relevantIdsFound = true;
+            } else {
+                stringIds.add(allStringIds[i]);
+            }
+        }
+
+        return stringIds.toArray(new Integer[stringIds.size()]);
+    }
+
+    /**
+     * @return the project the workpackage belongs to
+     */
+    public Project getProject() {
+        for (Project project : DBModelManager.getProjectModel().getProject()) {
+            if (project.getId() == this.thisWp.getProjectID()) {
+                return project;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * returns the depth of child workpackages
+     *
+     * @return
+     */
+    public int getChildrenDepth() {
+        if (this.isIstOAP()) {
+            int childDepth;
+            int maxChildDepth = 0;
+
+            for (Workpackage childWorkpackage : this.getDirectChildren()) {
+                if (childWorkpackage.isIstOAP()) {
+                    childDepth = 1 + childWorkpackage.getChildrenDepth();
+                } else {
+                    childDepth = 1;
+                }
+
+                if (childDepth > maxChildDepth) {
+                    maxChildDepth = childDepth;
+                }
+            }
+
+            return maxChildDepth;
+        }
+
+        return 0;
     }
 
     /**

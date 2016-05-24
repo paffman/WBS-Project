@@ -420,4 +420,14 @@ public class WorkpackageService {
         }
         return workSet;
     }
+
+    /**
+     * updates the stringId of the given workpackage
+     *
+     * @param wp workpackage to update
+     * @return
+     */
+    public static boolean updateStringId(Workpackage wp) {
+        return DBModelManager.getWorkpackageModel().updateStringId(wp.getWp());
+    }
 }

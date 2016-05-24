@@ -634,4 +634,52 @@ public class WpManager {
             return 0;
         }
     }
+
+    /**
+     * gets the siblings of a workpackage
+     *
+     * @param brotherWorkpackage the workpackage to return the siblings for
+     * @return list of sibling workpackages
+     */
+    public static ArrayList<Workpackage> getSiblings(Workpackage brotherWorkpackage) {
+        ArrayList<Workpackage> siblings = new ArrayList<>();
+        int parentId = brotherWorkpackage.getWp().getParentID();
+
+        for (Workpackage workpackage : getAllAp()) {
+            if (workpackage.getWp().getParentID() == parentId
+                    && workpackage.getWpId() != brotherWorkpackage.getWpId()) {
+                siblings.add(workpackage);
+            }
+        }
+
+        return siblings;
+    }
+
+    /**
+     * returns all workpackages which are a direct child to the given workpackage
+     *
+     * @param parentWorkpackage the workpackage you want to find the children for
+     * @return list of child workpackages
+     */
+    public static ArrayList<Workpackage> getDirectChildren(Workpackage parentWorkpackage) {
+        ArrayList<Workpackage> children = new ArrayList<>();
+        int parentId = parentWorkpackage.getWpId();
+
+        for (Workpackage workpackage : getAllAp()) {
+            if (workpackage.getWp().getParentID() == parentId) {
+                children.add(workpackage);
+            }
+        }
+
+        return children;
+    }
+
+    /**
+     * updates the stringId of a given workpackage in the DB
+     *
+     * @param wp workpackage to update
+     */
+    public static boolean updateStringId(Workpackage wp) {
+        return WorkpackageService.updateStringId(wp);
+    }
 }

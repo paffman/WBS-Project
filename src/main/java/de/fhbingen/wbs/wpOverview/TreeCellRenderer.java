@@ -18,6 +18,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.Toolkit;
+import java.util.Set;
 
 import javax.swing.ImageIcon;
 import javax.swing.JTree;
@@ -121,8 +122,11 @@ public class TreeCellRenderer extends DefaultTreeCellRenderer {
             if (userObject instanceof Workpackage) {
                 Workpackage wp = (Workpackage) userObject;
 
-                if (!WpManager.getFollowers(wp).isEmpty()
-                    || !WpManager.getAncestors(wp).isEmpty()) {
+                Set<Workpackage> followers = WpManager.getFollowers(wp);
+                Set<Workpackage> ancestors = WpManager.getAncestors(wp);
+
+                if ((followers != null && !followers.isEmpty())
+                    || (ancestors != null && !ancestors.isEmpty())) {
                     std = std_dep;
                     std_oap = std_oap_dep;
                     fertig_oap = fertig_oap_dep;
