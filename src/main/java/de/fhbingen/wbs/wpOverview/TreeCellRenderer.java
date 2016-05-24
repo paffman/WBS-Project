@@ -160,7 +160,8 @@ public class TreeCellRenderer extends DefaultTreeCellRenderer {
                     if (wp.getLvl1ID() > 0
                         && WpManager.calcPercentComplete(wp.getBac(),
                             wp.getEtc(), wp.getAc()) == MAX_PERCENTAGE
-                        && wp.getAc() > 0) {
+                        && wp.getAc() > 0
+                        && wp.areTestCasesCompleted()) {
                         Font aktFont = getFont();
                         if (aktFont == null) {
                             setFont(new Font(Font.SANS_SERIF, Font.PLAIN,

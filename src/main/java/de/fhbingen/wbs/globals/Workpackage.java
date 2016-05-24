@@ -1124,8 +1124,12 @@ public class Workpackage {
      * @return whether test cases are complete or not
      */
     public boolean areTestCasesCompleted() {
+        TestExecution latestExecution = null;
+
         for (TestCase testCase : this.getAllTestCases()) {
-            if (!testCase.getLatestExecution().getStatus().equals(TestExecution.Status.SUCCEEDED)) {
+            latestExecution = testCase.getLatestExecution();
+
+            if (latestExecution == null || !latestExecution.getStatus().equals(TestExecution.Status.SUCCEEDED)) {
                 return false;
             }
         }
