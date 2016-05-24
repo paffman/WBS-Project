@@ -236,7 +236,6 @@ CREATE TABLE IF NOT EXISTS planned_value (
 COMMENT 'This table manages planned values for the workpackages.';
 
 -- ---------------------------------------------------------------------
-
 -- test_cases
 -- ---------------------------------------------------------------------
 
@@ -253,8 +252,6 @@ CREATE TABLE IF NOT EXISTS test_cases (
 COMMENT 'This table manages test cases which belong to exactly one workpackage.';
 
 -- ---------------------------------------------------------------------
-
-
 -- test_executions
 -- ---------------------------------------------------------------------
 
