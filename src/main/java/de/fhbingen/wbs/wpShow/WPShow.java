@@ -1110,17 +1110,11 @@ public class WPShow {
     }
 
     public void next(){
-        if(actualTestCaseIndex < testCaseController.getAllTestCases().size() - 1 ){
-            if(!testCaseController.getAllTestCases().get(actualTestCaseIndex + 1).getDescription().equals("")) {
-                actualTestCaseIndex++;
-                new TestcaseExecutionShow(testCaseController, testCaseController.getAllTestCases().get(actualTestCaseIndex), gui, true, getOuterClass());
-            }
-            else{
-                actualTestCaseIndex++;
-                next();
-            }
+        if(actualTestCaseIndex < testCaseController.getAllTestCases().size() - 1) {
+            actualTestCaseIndex++;
+            new TestcaseExecutionShow(testCaseController, testCaseController.getAllTestCases().get(actualTestCaseIndex),
+                    gui, true, getOuterClass());
         }
-
     }
 
     public WPShowGUI getWPShowGUI(){
