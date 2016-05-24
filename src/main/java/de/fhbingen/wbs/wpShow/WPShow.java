@@ -132,7 +132,7 @@ public class WPShow {
         if (wp.isIstOAP()) {
             gui.setOAPView(WPOverview.getUser().getProjLeiter());
         } else {
-            gui.setUAPView(WPOverview.getUser().getProjLeiter());
+            gui.setUAPView(WPOverview.getUser().getProjLeiter(), true);
         }
 
         this.testCaseController = new TestCaseController(this.wp);

@@ -1340,8 +1340,21 @@ public class WPShowGUI extends JFrame {
      * @param leiter True: If the worker is a leader. False: Else.
      */
     public final void setUAPView(final boolean leiter) {
+        this.setUAPView(leiter, false);
+    }
+
+    /**
+     * Sets the under work package view.
+     *
+     * @param leiter True: If the worker is a leader. False: Else.
+     * @param firstLoad is this called while window is first loaded
+     */
+    public final void setUAPView(final boolean leiter, final boolean firstLoad) {
         setOAPViews(false, leiter);
-        setUAPViews(true, leiter);
+
+        if (firstLoad) {
+            setUAPViews(true, leiter);
+        }
     }
 
     /**
