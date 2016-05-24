@@ -39,8 +39,7 @@ public class TestCaseController {
      */
 
     public TestExecution getLatestExecutionForTestCase(TestCase tc){
-        MySQLTestExecutionModel sqlexecm = new MySQLTestExecutionModel();
-        return sqlexecm.getLastExecution(tc);
+        return tc.getLatestExecution();
     }
 
 

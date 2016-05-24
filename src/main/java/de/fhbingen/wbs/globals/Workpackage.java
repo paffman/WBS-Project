@@ -7,6 +7,7 @@ import de.fhbingen.wbs.dbaccess.data.Employee;
 import de.fhbingen.wbs.dbaccess.data.Project;
 import de.fhbingen.wbs.functions.CalcOAPBaseline;
 import de.fhbingen.wbs.dbaccess.data.TestCase;
+import de.fhbingen.wbs.dbaccess.data.TestExecution;
 import de.fhbingen.wbs.dbaccess.models.mysql.MySQLTestCaseModel;
 import de.fhbingen.wbs.translation.LocalizedStrings;
 import de.fhbingen.wbs.functions.WpManager;
@@ -1340,5 +1341,24 @@ public class Workpackage {
 
         MySQLTestCaseModel sqltcm = new MySQLTestCaseModel();
         return sqltcm.getAllTestCases(thisWp);
+    }
+
+    /**
+     * returns whether the latest test executions of this workpackages testcases have been successfull
+     *
+     * @return whether test cases are complete or not
+     */
+    public boolean areTestCasesCompleted() {
+        TestExecution latestExecution = null;
+
+        for (TestCase testCase : this.getAllTestCases()) {
+            latestExecution = testCase.getLatestExecution();
+
+            if (latestExecution == null || !latestExecution.getStatus().equals(TestExecution.Status.SUCCEEDED)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

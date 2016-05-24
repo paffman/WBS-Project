@@ -26,6 +26,11 @@ import java.sql.Timestamp;
  * database fields in the TestExecutions table.
  */
 public class TestExecution {
+    public static class Status {
+        public static final String FAILED = "failed";
+        public static final String NEUTRAL = "neutral";
+        public static final String SUCCEEDED = "succeeded";
+    }
 
     /** unique id of this testexecution */
     private int id;
