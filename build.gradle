@@ -51,8 +51,13 @@ test {
 
 jar {
     manifest {
-        attributes 'Main-Class': 'de.fhbingen.wbs.controller.LoginViewController'
+
+        attributes 'Implementation-Title': 'WBS-Tool',
+                'Implementation-Version': version,
+                'Main-Class': 'de.fhbingen.wbs.controller.LoginViewController'
     }
+
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
 }
 
 shadow {
