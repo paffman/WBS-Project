@@ -129,4 +129,8 @@ public interface Button {
     @De("Übernehmen")
     @En("Apply")
     String apply();
+
+    @De("Editieren")
+    @En("Edit")
+    String edit();
 }

@@ -212,6 +212,11 @@ public class WPShowGUI extends JFrame {
     private JButton btnAddTestcase;
 
     /**
+     * The button to edit the description.
+     */
+    private JButton btnEditDesc;
+
+    /**
      * The combo box which contains the workers to add them.
      */
     private JComboBox<Worker> cobAddWorker;
@@ -437,13 +442,20 @@ public class WPShowGUI extends JFrame {
         chbInaktiv = new JCheckBox(generalStrings.inactive());
         panel_5.add(chbInaktiv);
 
+        JPanel pnlDesc = new JPanel();
+        pnlDesc.setLayout(new BorderLayout());
+        GridBagConstraints gbc_pnlDesc = new GridBagConstraints();
+        gbc_pnlDesc.anchor = GridBagConstraints.WEST;
+        gbc_pnlDesc.insets = new Insets(0, 0, 5, 5);
+        gbc_pnlDesc.gridx = 0;
+        gbc_pnlDesc.gridy = 3;
+        leftScrollPanel.add(pnlDesc, gbc_pnlDesc);
+
         JLabel lblBeschreibung = new JLabel(generalStrings.description());
-        GridBagConstraints gbc_lblBeschreibung = new GridBagConstraints();
-        gbc_lblBeschreibung.anchor = GridBagConstraints.WEST;
-        gbc_lblBeschreibung.insets = new Insets(0, 0, 5, 5);
-        gbc_lblBeschreibung.gridx = 0;
-        gbc_lblBeschreibung.gridy = 3;
-        leftScrollPanel.add(lblBeschreibung, gbc_lblBeschreibung);
+        pnlDesc.add(lblBeschreibung, BorderLayout.NORTH);
+
+        btnEditDesc = new JButton("Edit");
+        pnlDesc.add(btnEditDesc, BorderLayout.SOUTH);
 
         txfDesc = new JTextArea(6, 1) {
             private static final long serialVersionUID = -3874181090738553731L;
@@ -1532,6 +1544,7 @@ public class WPShowGUI extends JFrame {
         btnAddTestcase.addActionListener(function.getBtnAddTestcase());
         tblTestcase.addMouseListener(function.getTblTestcaseListener());
         btnTestExecute.addActionListener(function.getBtnTestExecute());
+        btnEditDesc.addActionListener(function.getBtnEditDescListener());
 
     }
 
@@ -1632,5 +1645,9 @@ public class WPShowGUI extends JFrame {
 
     public JButton getBtnAddTestcase(){
         return btnAddTestcase;
+    }
+
+    public JTextArea getTxfDesc(){
+        return txfDesc;
     }
 }
