@@ -363,4 +363,8 @@ public class WPOverview {
     public static Color[] getSPIColor(final double spi, final double ac) {
         return getCPIColor(spi, ac);
     }
+
+    public static WPOverviewGUI getGui() {
+        return gui;
+    }
 }

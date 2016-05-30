@@ -217,15 +217,21 @@ public class TreePanel extends JPanel {
                                 > sourceWorkpackage.getProject().getLevels()) {
                         WPOverviewGUI.setStatusText(LocalizedStrings.getMessages().wpMoveMaxDepth());
                     } else {
-                        try {
-                            sourceWorkpackage.changeParent(targetWorkpackage);
+                        if (JOptionPane.showConfirmDialog(WPOverview.getGui(),
+                                LocalizedStrings.getGeneralStrings().confirmMovingWP(),
+                                LocalizedStrings.getGeneralStrings().warning(),
+                                JOptionPane.YES_NO_OPTION)
+                                == JOptionPane.YES_OPTION) {
+                            try {
+                                sourceWorkpackage.changeParent(targetWorkpackage);
 
-                            dropSuccessful = true;
-                            over.reload();
-                        } catch (Exception e) {
-                            dropSuccessful = false;
+                                dropSuccessful = true;
+                                over.reload();
+                            } catch (Exception e) {
+                                dropSuccessful = false;
 
-                            WPOverviewGUI.setStatusText(LocalizedStrings.getMessages().wpMoveError());
+                                WPOverviewGUI.setStatusText(LocalizedStrings.getMessages().wpMoveError());
+                            }
                         }
                     }
 
