@@ -234,6 +234,19 @@ public class ConflictCompat {
     }
 
     /**
+     * deletes all conflicts which have been raised, while moving a workpackage
+     */
+    public static void deleteWpMovedConflicts() {
+        List<Conflict> conflicts = DBModelManager.getConflictsModel().getConflicts();
+
+        for (Conflict conflict : conflicts) {
+            if (conflict.getReason() == WP_MOVED) {
+                DBModelManager.getConflictsModel().deleteConflict(conflict.getId());
+            }
+        }
+    }
+
+    /**
      * Saves the conflict to database.
      * @return true if successful.
      *
