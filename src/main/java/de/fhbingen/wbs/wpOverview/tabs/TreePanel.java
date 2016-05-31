@@ -15,6 +15,7 @@
 package de.fhbingen.wbs.wpOverview.tabs;
 
 import de.fhbingen.wbs.dbaccess.DBModelManager;
+import de.fhbingen.wbs.globals.Loader;
 import de.fhbingen.wbs.translation.Button;
 import de.fhbingen.wbs.translation.LocalizedStrings;
 import de.fhbingen.wbs.translation.Wbs;
@@ -222,15 +223,20 @@ public class TreePanel extends JPanel {
                                 LocalizedStrings.getGeneralStrings().warning(),
                                 JOptionPane.YES_NO_OPTION)
                                 == JOptionPane.YES_OPTION) {
+                            Loader.setLoadingText(LocalizedStrings.getStatus().recalcWps());
+                            Loader loader = new Loader(WPOverview.getGui());
+
                             try {
                                 sourceWorkpackage.changeParent(targetWorkpackage);
-
                                 dropSuccessful = true;
                                 over.reload();
                             } catch (Exception e) {
                                 dropSuccessful = false;
 
                                 WPOverviewGUI.setStatusText(LocalizedStrings.getMessages().wpMoveError());
+                            } finally {
+                                loader.dispose();
+                                Loader.reset();
                             }
                         }
                     }

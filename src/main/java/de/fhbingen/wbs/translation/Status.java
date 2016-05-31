@@ -136,4 +136,8 @@ public interface Status {
     @De("Lade Beziehungen...")
     @En("Load dependencies...")
     String loadDependencies();
+
+    @De("Arbeitspakete werden neu berechnet...")
+    @En("Workpackages are being recalculated...")
+    String recalcWps();
 }
