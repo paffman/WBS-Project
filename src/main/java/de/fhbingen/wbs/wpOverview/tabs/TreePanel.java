@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Enumeration;
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -38,6 +39,7 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
+import de.fhbingen.wbs.wpConflict.ConflictCompat;
 import de.fhbingen.wbs.wpOverview.TreeCellRenderer;
 import de.fhbingen.wbs.wpOverview.WPOverview;
 import de.fhbingen.wbs.wpOverview.WPOverviewGUI;
@@ -229,6 +231,7 @@ public class TreePanel extends JPanel {
                             try {
                                 sourceWorkpackage.changeParent(targetWorkpackage);
                                 dropSuccessful = true;
+
                                 over.reload();
                             } catch (Exception e) {
                                 dropSuccessful = false;
@@ -243,6 +246,11 @@ public class TreePanel extends JPanel {
 
                     if (dropSuccessful) {
                         WPOverviewGUI.setStatusText(LocalizedStrings.getMessages().wpMoveWpHasBeenMoved());
+
+                        WPOverview.throwConflict(new ConflictCompat(new Date(
+                                System.currentTimeMillis()),
+                                ConflictCompat.WP_MOVED, WPOverview.getUser()
+                                .getId(), sourceWorkpackage));
 
                         dtde.acceptDrop(dtde.getDropAction());
                         dtde.dropComplete(true);

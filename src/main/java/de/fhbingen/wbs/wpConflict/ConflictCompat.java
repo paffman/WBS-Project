@@ -62,6 +62,11 @@ public class ConflictCompat {
     public static final int CHANGED_ACTIVESTATE = 8;
 
     /**
+     * Conflict code for changed active state.
+     */
+    public static final int WP_MOVED = 9;
+
+    /**
      * Translation interface.
      */
     private final Messages messageStrings;
@@ -285,6 +290,8 @@ public class ConflictCompat {
         case CHANGED_ACTIVESTATE:
             return messageStrings.apActiveStateChanged() + " "
                     + messageStrings.recalculate();
+        case WP_MOVED:
+            return messageStrings.wpMoveRecalcBaseline();
         default:
             return null;
         }
@@ -300,7 +307,7 @@ public class ConflictCompat {
             return false;
         }
         ConflictCompat other = (ConflictCompat) obj;
-        if (reason < 2) {
+        if (reason < 2 || reason == WP_MOVED) {
             if (this.affectedApStringId != null) {
                 return DateFunctions.equalsDate(this.date, other.date)
                         && this.reason == other.reason

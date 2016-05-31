@@ -199,6 +199,10 @@ public interface Messages extends ErrorMessages {
     String wpMoveTargetWpIsNoOAP();
 
     @De("Das Verschieben ist nicht möglich, da dabei die maximale Tiefe überschritten werden würde.")
-    @En("Movin this workpackage is not possible, since this would exceed the maximal depth.")
+    @En("Moving this workpackage is not possible, since this would exceed the maximal depth.")
     String wpMoveMaxDepth();
+
+    @De("Arbeitspacket wurde verschoeben. Legen Sie eine neue Baseline an!")
+    @En("Workpackage has been moved. Create a new baseline!")
+    String wpMoveRecalcBaseline();
 }
