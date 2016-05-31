@@ -15,6 +15,7 @@
 package de.fhbingen.wbs.wpOverview.tabs;
 
 import de.fhbingen.wbs.dbaccess.DBModelManager;
+import de.fhbingen.wbs.globals.Loader;
 import de.fhbingen.wbs.translation.Button;
 import de.fhbingen.wbs.translation.LocalizedStrings;
 import de.fhbingen.wbs.translation.Wbs;
@@ -30,6 +31,7 @@ import java.io.IOException;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Enumeration;
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -37,6 +39,7 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
+import de.fhbingen.wbs.wpConflict.ConflictCompat;
 import de.fhbingen.wbs.wpOverview.TreeCellRenderer;
 import de.fhbingen.wbs.wpOverview.WPOverview;
 import de.fhbingen.wbs.wpOverview.WPOverviewGUI;
@@ -217,20 +220,37 @@ public class TreePanel extends JPanel {
                                 > sourceWorkpackage.getProject().getLevels()) {
                         WPOverviewGUI.setStatusText(LocalizedStrings.getMessages().wpMoveMaxDepth());
                     } else {
-                        try {
-                            sourceWorkpackage.changeParent(targetWorkpackage);
+                        if (JOptionPane.showConfirmDialog(WPOverview.getGui(),
+                                LocalizedStrings.getGeneralStrings().confirmMovingWP(),
+                                LocalizedStrings.getGeneralStrings().warning(),
+                                JOptionPane.YES_NO_OPTION)
+                                == JOptionPane.YES_OPTION) {
+                            Loader.setLoadingText(LocalizedStrings.getStatus().recalcWps());
+                            Loader loader = new Loader(WPOverview.getGui());
 
-                            dropSuccessful = true;
-                            over.reload();
-                        } catch (Exception e) {
-                            dropSuccessful = false;
+                            try {
+                                sourceWorkpackage.changeParent(targetWorkpackage);
+                                dropSuccessful = true;
 
-                            WPOverviewGUI.setStatusText(LocalizedStrings.getMessages().wpMoveError());
+                                over.reload();
+                            } catch (Exception e) {
+                                dropSuccessful = false;
+
+                                WPOverviewGUI.setStatusText(LocalizedStrings.getMessages().wpMoveError());
+                            } finally {
+                                loader.dispose();
+                                Loader.reset();
+                            }
                         }
                     }
 
                     if (dropSuccessful) {
                         WPOverviewGUI.setStatusText(LocalizedStrings.getMessages().wpMoveWpHasBeenMoved());
+
+                        WPOverview.throwConflict(new ConflictCompat(new Date(
+                                System.currentTimeMillis()),
+                                ConflictCompat.WP_MOVED, WPOverview.getUser()
+                                .getId(), sourceWorkpackage));
 
                         dtde.acceptDrop(dtde.getDropAction());
                         dtde.dropComplete(true);

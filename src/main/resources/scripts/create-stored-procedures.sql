@@ -695,7 +695,8 @@ DELIMITER //
 CREATE PROCEDURE conflicts_delete()
 BEGIN
 	DELETE
-	FROM conflicts;
+	FROM conflicts
+	WHERE reason != 9;
 END //
 DELIMITER ;
 -- --------------------------------------------------------
