@@ -18,7 +18,6 @@ import java.util.List;
  */
 public class MySQLTestExecutionModel implements TestExecutionModel {
 
-
     @Override
     public boolean addNewTestExecution(TestExecution testexec) {
         final Connection connection = SQLExecuter.getConnection();
@@ -108,9 +107,6 @@ public class MySQLTestExecutionModel implements TestExecutionModel {
 
     }
 
-
-
-
     @Override
     public TestExecution getLastExecution(TestCase testcase) {
         List<TestExecution> execList = getExecutionsForTestCase(testcase);
@@ -121,11 +117,6 @@ public class MySQLTestExecutionModel implements TestExecutionModel {
 
         return latestExec;
     }
-
-
-
-
-
 
     @Override
     public boolean updateTestExecution(TestExecution testexec) {
@@ -173,9 +164,6 @@ public class MySQLTestExecutionModel implements TestExecutionModel {
 
     }
 
-
-
-
     /**
      * Creates a <code>TestExecution</code> based on a <code>ResultSet</code> freshly fetched from the DB.
      *
@@ -202,8 +190,4 @@ public class MySQLTestExecutionModel implements TestExecutionModel {
 
         return te;
     }
-
-
-
-
 }

@@ -175,5 +175,7 @@ public class DBModelManager {
         return testCaseModel;
     }
 
-    public static TestExecutionModel getTestExecutionModel() { return testExecutionModel; }
+    public static TestExecutionModel getTestExecutionModel() {
+        return testExecutionModel;
+    }
 }
