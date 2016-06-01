@@ -55,7 +55,37 @@ public class MySQLTestCaseModel implements TestCaseModel {
 
     @Override
     public List<TestCase> getAllTestCases() {
-        return null;
+        final Connection connection = SQLExecuter.getConnection();
+        List<TestCase> tcList = new ArrayList<TestCase>();
+        ResultSet sqlResult = null;
+        PreparedStatement stm = null;
+
+        String storedProcedure = "CALL test_case_select_by_wp()";
+
+        try {
+            stm = connection.prepareStatement(storedProcedure);
+            sqlResult = stm.executeQuery();
+
+            while (sqlResult.next()) {
+                tcList.add(tcFromResultSet(sqlResult));
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (sqlResult != null) {
+                    sqlResult.close();
+                }
+                if (stm != null) {
+                    stm.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return tcList;
     }
 
     @Override

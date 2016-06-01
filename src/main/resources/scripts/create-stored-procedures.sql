@@ -1567,4 +1567,27 @@ CREATE PROCEDURE test_execution_select_by_test_case(
 	DESC;
  END //
 DELIMITER ;
- -- --------------------------------------------------------
+-- --------------------------------------------------------
+
+-- --------------------------------------------------------
+-- test_case_select()
+-- r
+-- --------------------------------------------------------
+DELIMITER //
+CREATE PROCEDURE test_case_select()
+ BEGIN
+	 SELECT
+		 t.id,
+		 t.fid_wp,
+		 t.name,
+		 t.description,
+		 t.precondition,
+		 t.expected_result,
+		 w.string_id
+	 FROM
+		 test_cases t
+		 JOIN
+		 workpackage w;
+ END //
+DELIMITER ;
+-- --------------------------------------------------------
