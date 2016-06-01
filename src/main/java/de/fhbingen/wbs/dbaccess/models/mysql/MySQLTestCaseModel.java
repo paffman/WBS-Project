@@ -14,8 +14,6 @@ import java.util.List;
  */
 public class MySQLTestCaseModel implements TestCaseModel {
 
-
-
     @Override
     public final boolean addNewTestCase(TestCase testcase){
 
@@ -31,8 +29,6 @@ public class MySQLTestCaseModel implements TestCaseModel {
         }
 
         storedProcedure += "?)";
-
-        //System.out.println(storedProcedure);
 
         try {
             stm = connection.prepareStatement(storedProcedure);
@@ -57,6 +53,10 @@ public class MySQLTestCaseModel implements TestCaseModel {
         return success;
     }
 
+    @Override
+    public List<TestCase> getAllTestCases() {
+        return null;
+    }
 
     @Override
     public List<TestCase> getAllTestCases(Workpackage wp) {
@@ -100,7 +100,6 @@ public class MySQLTestCaseModel implements TestCaseModel {
 
         return tcList;
     }
-
 
     @Override
     public boolean updateTestCase(TestCase testcase) {
@@ -146,11 +145,6 @@ public class MySQLTestCaseModel implements TestCaseModel {
         return success;
     }
 
-
-
-
-
-
     /**
      * Creates a <code>TestCase</code> based on a <code>ResultSet</code> freshly fetched from the DB.
      *
@@ -175,6 +169,4 @@ public class MySQLTestCaseModel implements TestCaseModel {
 
         return tc;
     }
-
-
 }
