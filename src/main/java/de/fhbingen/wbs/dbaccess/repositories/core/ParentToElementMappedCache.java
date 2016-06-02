@@ -30,7 +30,13 @@ public abstract class ParentToElementMappedCache<T> {
     }
 
     public List<T> getAllByParentElement(Integer parentElementId) {
-        return new ArrayList<>(this.parentPkToElementPkMap.get(parentElementId).values());
+        Map<Integer, T> elements = this.getParentPkToElementPkMap().get(parentElementId);
+
+        if (elements != null) {
+            return new ArrayList<>(elements.values());
+        }
+
+        return new ArrayList<>();
     }
 
     public Map<Integer, Map<Integer, T>> getParentPkToElementPkMap() {

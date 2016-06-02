@@ -29,8 +29,8 @@ public class TestCaseExecutionRepository {
 
     private TestCaseExecutionRepository() {}
 
-    public static List<TestExecution> getAllTestCaseExecutions(TestExecution testExecution) {
-        return getTestCaseExecutionMap().getAllByParentElement(testExecution.getId());
+    public static List<TestExecution> getAllTestCaseExecutions(TestCase testCase) {
+        return getTestCaseExecutionMap().getAllByParentElement(testCase.getId());
     }
 
     public static TestCaseExecutionParentToElementMappedCache getTestCaseExecutionMap() {
