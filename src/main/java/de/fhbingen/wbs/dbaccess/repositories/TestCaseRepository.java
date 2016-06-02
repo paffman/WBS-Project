@@ -3,42 +3,41 @@ package de.fhbingen.wbs.dbaccess.repositories;
 import de.fhbingen.wbs.dbaccess.DBModelManager;
 import de.fhbingen.wbs.dbaccess.data.TestCase;
 import de.fhbingen.wbs.dbaccess.data.Workpackage;
+import de.fhbingen.wbs.dbaccess.repositories.core.ParentToElementMappedCache;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-/**
- * Created by jdepoix on 01.06.16.
- */
 public class TestCaseRepository {
-    private static Map<Integer, Map<Integer, TestCase>> workpackageTestCaseMap = getWorkpackageTestCasesMap();
+    private static class TestCaseParentToElementMappedCache extends ParentToElementMappedCache<TestCase> {
+        @Override
+        protected List<TestCase> loadAllElements() {
+            return DBModelManager.getTestCaseModel().getAllTestCases();
+        }
+
+        @Override
+        protected Integer getParentId(TestCase element) {
+            return element.getWorkpackageID();
+        }
+
+        @Override
+        protected Integer getId(TestCase element) {
+            return element.getId();
+        }
+    }
+
+    private static TestCaseParentToElementMappedCache workpackageTestCaseMap;
 
     private TestCaseRepository() {}
 
-    private static Map<Integer, Map<Integer, TestCase>> getWorkpackageTestCasesMap() {
-        Map<Integer, Map<Integer, TestCase>> newWorkpackageTestCaseMap = new HashMap<>();
-        Map<Integer, TestCase> currentTestCaseMap = null;
+    public static List<TestCase> getAllTestCases(Workpackage workpackage) {
+        return getWorkpackageTestCaseMap().getAllByParentElement(workpackage.getId());
+    }
 
-        for (TestCase testCase : DBModelManager.getTestCaseModel().getAllTestCases()) {
-            if ((currentTestCaseMap = newWorkpackageTestCaseMap.get(testCase.getWorkpackageID())) == null) {
-                currentTestCaseMap = new HashMap<>();
-                currentTestCaseMap.put(testCase.getId(), testCase);
-                newWorkpackageTestCaseMap.put(testCase.getWorkpackageID(), currentTestCaseMap);
-            } else {
-                currentTestCaseMap.put(testCase.getId(), testCase);
-            }
+    public static TestCaseParentToElementMappedCache getWorkpackageTestCaseMap() {
+        if (workpackageTestCaseMap == null) {
+            workpackageTestCaseMap = new TestCaseParentToElementMappedCache();
         }
 
-        return newWorkpackageTestCaseMap;
-    }
-
-    public static List<TestCase> getAllTestCases(Workpackage workpackage) {
-        return new ArrayList<>(workpackageTestCaseMap.get(workpackage.getId()).values());
-    }
-
-    public static void reloadAll() {
-        TestCaseRepository.workpackageTestCaseMap = TestCaseRepository.getWorkpackageTestCasesMap();
+        return workpackageTestCaseMap;
     }
 }
