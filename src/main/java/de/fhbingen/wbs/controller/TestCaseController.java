@@ -5,6 +5,7 @@ import de.fhbingen.wbs.dbaccess.data.TestExecution;
 import de.fhbingen.wbs.dbaccess.models.mysql.MySQLTestCaseModel;
 import de.fhbingen.wbs.dbaccess.models.mysql.MySQLTestExecutionModel;
 import de.fhbingen.wbs.dbaccess.repositories.TestCaseExecutionRepository;
+import de.fhbingen.wbs.dbaccess.repositories.TestCaseRepository;
 import de.fhbingen.wbs.globals.Workpackage;
 
 import java.util.List;
@@ -40,7 +41,7 @@ public class TestCaseController {
      */
 
     public TestExecution getLatestExecutionForTestCase(TestCase tc){
-        return tc.getLatestExecution();
+        return TestCaseExecutionRepository.getLatestTestExecution(tc);
     }
 
 

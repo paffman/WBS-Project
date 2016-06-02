@@ -1587,7 +1587,9 @@ CREATE PROCEDURE test_case_select()
 	 FROM
 		 test_cases t
 		 JOIN
-		 workpackage w;
+		 workpackage w
+		 ON
+		 w.id = t.fid_wp;
  END //
 DELIMITER ;
 -- --------------------------------------------------------
@@ -1611,8 +1613,6 @@ CREATE PROCEDURE test_execution_select()
 		 test_executions t
 		 JOIN
 		 employees e
-		 ON
-		 w.id = t.fid_wp
 	 ORDER BY
 		 t.timestamp
 	 DESC;

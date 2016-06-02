@@ -5,6 +5,9 @@ import de.fhbingen.wbs.dbaccess.data.TestCase;
 import de.fhbingen.wbs.dbaccess.data.TestExecution;
 import de.fhbingen.wbs.dbaccess.repositories.core.ParentToElementMappedCache;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class TestCaseExecutionRepository {
@@ -31,6 +34,23 @@ public class TestCaseExecutionRepository {
 
     public static List<TestExecution> getAllTestCaseExecutions(TestCase testCase) {
         return getTestCaseExecutionMap().getAllByParentElement(testCase.getId());
+    }
+
+    public static TestExecution getLatestTestExecution(TestCase testCase) {
+        List<TestExecution> allTestCaseExecutions = getAllTestCaseExecutions(testCase);
+
+        if (!allTestCaseExecutions.isEmpty()) {
+            Collections.sort(allTestCaseExecutions, new Comparator<TestExecution>() {
+                @Override
+                public int compare(TestExecution o1, TestExecution o2) {
+                    return o1.getTime().compareTo(o2.getTime());
+                }
+            });
+
+            return allTestCaseExecutions.get(0);
+        }
+
+        return null;
     }
 
     public static TestCaseExecutionParentToElementMappedCache getTestCaseExecutionMap() {
