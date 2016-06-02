@@ -1611,6 +1611,8 @@ CREATE PROCEDURE test_execution_select()
 		 test_executions t
 		 JOIN
 		 employees e
+		 ON
+		 w.id = t.fid_wp
 	 ORDER BY
 		 t.timestamp
 	 DESC;
