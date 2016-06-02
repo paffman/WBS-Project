@@ -11,16 +11,16 @@ public class TestCaseExecutionRepository {
     private static class TestCaseExecutionParentToElementMappedCache extends ParentToElementMappedCache<TestExecution> {
         @Override
         protected List<TestExecution> loadAllElements() {
-            return DBModelManager.getTestExecutionModel().get;
+            return DBModelManager.getTestExecutionModel().getAllTestExecutions();
         }
 
         @Override
-        protected Integer getParentId(TestCase element) {
-            return element.getWorkpackageID();
+        protected Integer getParentId(TestExecution element) {
+            return element.getTestcaseID();
         }
 
         @Override
-        protected Integer getId(TestCase element) {
+        protected Integer getId(TestExecution element) {
             return element.getId();
         }
     }
@@ -29,8 +29,8 @@ public class TestCaseExecutionRepository {
 
     private TestCaseExecutionRepository() {}
 
-    public static List<TestCase> getAllTestCaseExecutions(TestCase testCase) {
-        return getTestCaseExecutionMap().getAllByParentElement(testCase.getId());
+    public static List<TestExecution> getAllTestCaseExecutions(TestExecution testExecution) {
+        return getTestCaseExecutionMap().getAllByParentElement(testExecution.getId());
     }
 
     public static TestCaseExecutionParentToElementMappedCache getTestCaseExecutionMap() {

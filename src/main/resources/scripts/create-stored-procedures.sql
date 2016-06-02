@@ -1591,3 +1591,29 @@ CREATE PROCEDURE test_case_select()
  END //
 DELIMITER ;
 -- --------------------------------------------------------
+
+-- --------------------------------------------------------
+-- test_execution_select()
+-- r
+-- --------------------------------------------------------
+DELIMITER //
+CREATE PROCEDURE test_execution_select()
+ BEGIN
+	 SELECT
+		 t.id,
+		 t.fid_tc,
+		 t.fid_emp,
+		 t.remark,
+		 t.timestamp,
+		 t.status,
+		 e.login
+	 FROM
+		 test_executions t
+		 JOIN
+		 employees e
+	 ORDER BY
+		 t.timestamp
+	 DESC;
+ END //
+DELIMITER ;
+-- --------------------------------------------------------
