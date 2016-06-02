@@ -5,6 +5,7 @@ import de.fhbingen.wbs.dbServices.WorkpackageService;
 import de.fhbingen.wbs.dbaccess.DBModelManager;
 import de.fhbingen.wbs.dbaccess.data.Employee;
 import de.fhbingen.wbs.dbaccess.data.Project;
+import de.fhbingen.wbs.dbaccess.repositories.TestCaseRepository;
 import de.fhbingen.wbs.functions.CalcOAPBaseline;
 import de.fhbingen.wbs.dbaccess.data.TestCase;
 import de.fhbingen.wbs.dbaccess.data.TestExecution;
@@ -1347,8 +1348,7 @@ public class Workpackage {
      * @return list of testcases
      */
     public List<TestCase> getTestCases() {
-        MySQLTestCaseModel sqltcm = new MySQLTestCaseModel();
-        return sqltcm.getAllTestCases(thisWp);
+        return TestCaseRepository.getAllTestCases(thisWp);
     }
 
     /**

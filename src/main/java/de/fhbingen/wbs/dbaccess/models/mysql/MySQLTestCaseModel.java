@@ -60,7 +60,7 @@ public class MySQLTestCaseModel implements TestCaseModel {
         ResultSet sqlResult = null;
         PreparedStatement stm = null;
 
-        String storedProcedure = "CALL test_case_select_by_wp()";
+        String storedProcedure = "CALL test_case_select()";
 
         try {
             stm = connection.prepareStatement(storedProcedure);

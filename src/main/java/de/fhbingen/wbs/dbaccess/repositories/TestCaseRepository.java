@@ -2,8 +2,11 @@ package de.fhbingen.wbs.dbaccess.repositories;
 
 import de.fhbingen.wbs.dbaccess.DBModelManager;
 import de.fhbingen.wbs.dbaccess.data.TestCase;
+import de.fhbingen.wbs.dbaccess.data.Workpackage;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -29,6 +32,10 @@ public class TestCaseRepository {
         }
 
         return newWorkpackageTestCaseMap;
+    }
+
+    public static List<TestCase> getAllTestCases(Workpackage workpackage) {
+        return new ArrayList<>(workpackageTestCaseMap.get(workpackage.getId()).values());
     }
 
     public static void reloadAll() {
