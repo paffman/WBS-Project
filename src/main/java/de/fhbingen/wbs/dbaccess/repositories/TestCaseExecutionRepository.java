@@ -43,7 +43,7 @@ public class TestCaseExecutionRepository {
             Collections.sort(allTestCaseExecutions, new Comparator<TestExecution>() {
                 @Override
                 public int compare(TestExecution o1, TestExecution o2) {
-                    return o1.getTime().compareTo(o2.getTime());
+                    return o2.getTime().compareTo(o1.getTime());
                 }
             });
 
@@ -59,5 +59,10 @@ public class TestCaseExecutionRepository {
         }
 
         return testCaseExecutionMap;
+    }
+
+    public static void updateTestCaseExecution(TestExecution testExecution) {
+        testCaseExecutionMap.setElement(testExecution);
+        DBModelManager.getTestExecutionModel().updateTestExecution(testExecution);
     }
 }

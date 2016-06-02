@@ -28,6 +28,27 @@ public abstract class ParentToElementMappedCache<T> {
 
         return newGetParentPkToElementPkMap;
     }
+    
+    public T getElement(Integer id) {
+        for (Map<Integer, T> pkToElementMap : this.parentPkToElementPkMap.values()) {
+            if (pkToElementMap.containsKey(id)) {
+                return pkToElementMap.get(id);
+            }
+        }
+
+        return null;
+    }
+
+    public void setElement(T element) {
+        Map<Integer, T> parentMap = this.parentPkToElementPkMap.get(this.getParentId(element));
+        if (parentMap == null) {
+            Map<Integer, T> newElements = new HashMap<>();
+            newElements.put(this.getId(element), element);
+            this.parentPkToElementPkMap.put(this.getParentId(element), newElements);
+        } else {
+            parentMap.put(this.getId(element), element);
+        }
+    }
 
     public List<T> getAllByParentElement(Integer parentElementId) {
         Map<Integer, T> elements = this.getParentPkToElementPkMap().get(parentElementId);

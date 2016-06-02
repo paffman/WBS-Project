@@ -40,4 +40,9 @@ public class TestCaseRepository {
 
         return workpackageTestCaseMap;
     }
+
+    public static void updateTestCase(TestCase testCase) {
+        workpackageTestCaseMap.setElement(testCase);
+        DBModelManager.getTestCaseModel().updateTestCase(testCase);
+    }
 }
