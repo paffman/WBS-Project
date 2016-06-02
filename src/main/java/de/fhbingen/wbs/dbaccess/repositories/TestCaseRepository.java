@@ -41,8 +41,12 @@ public class TestCaseRepository {
         return workpackageTestCaseMap;
     }
 
-    public static void updateTestCase(TestCase testCase) {
+    public static boolean updateTestCase(TestCase testCase) {
         workpackageTestCaseMap.setElement(testCase);
-        DBModelManager.getTestCaseModel().updateTestCase(testCase);
+        return DBModelManager.getTestCaseModel().updateTestCase(testCase);
+    }
+
+    public static void reloadCache() {
+        workpackageTestCaseMap.loadCache();
     }
 }

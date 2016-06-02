@@ -61,8 +61,12 @@ public class TestCaseExecutionRepository {
         return testCaseExecutionMap;
     }
 
-    public static void updateTestCaseExecution(TestExecution testExecution) {
+    public static boolean updateTestCaseExecution(TestExecution testExecution) {
         testCaseExecutionMap.setElement(testExecution);
-        DBModelManager.getTestExecutionModel().updateTestExecution(testExecution);
+        return DBModelManager.getTestExecutionModel().updateTestExecution(testExecution);
+    }
+
+    public static void reloadCache() {
+        testCaseExecutionMap.loadCache();
     }
 }

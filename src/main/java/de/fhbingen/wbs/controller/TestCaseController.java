@@ -3,8 +3,6 @@ package de.fhbingen.wbs.controller;
 import de.fhbingen.wbs.dbaccess.DBModelManager;
 import de.fhbingen.wbs.dbaccess.data.TestCase;
 import de.fhbingen.wbs.dbaccess.data.TestExecution;
-import de.fhbingen.wbs.dbaccess.models.mysql.MySQLTestCaseModel;
-import de.fhbingen.wbs.dbaccess.models.mysql.MySQLTestExecutionModel;
 import de.fhbingen.wbs.dbaccess.repositories.TestCaseExecutionRepository;
 import de.fhbingen.wbs.dbaccess.repositories.TestCaseRepository;
 import de.fhbingen.wbs.globals.Workpackage;
@@ -57,8 +55,10 @@ public class TestCaseController {
      *          success of this operation
      */
     public boolean addTestCase(TestCase tc){
-        MySQLTestCaseModel sqltcm = new MySQLTestCaseModel();
-        return sqltcm.addNewTestCase(tc);
+        boolean result = DBModelManager.getTestCaseModel().addNewTestCase(tc);
+        TestCaseRepository.reloadCache();
+
+        return result;
     }
 
     /**
@@ -69,7 +69,7 @@ public class TestCaseController {
      *          success of this operation
      */
     public boolean updateTestCase(TestCase tc){
-        TestCaseRepository.updateTestCase(tc);
+        return TestCaseRepository.updateTestCase(tc);
     }
 
     /**
@@ -80,8 +80,10 @@ public class TestCaseController {
      *          success of this operation
      */
     public boolean addTestExecution(TestExecution te){
-        MySQLTestExecutionModel sqlexecm = new MySQLTestExecutionModel();
-        return sqlexecm.addNewTestExecution(te);
+        boolean result = DBModelManager.getTestExecutionModel().addNewTestExecution(te);
+        TestCaseExecutionRepository.reloadCache();
+
+        return result;
     }
 
     /**
@@ -92,7 +94,7 @@ public class TestCaseController {
      *          success of this operation
      */
     public boolean updateTestExecution(TestExecution te){
-        TestCaseExecutionRepository.updateTestCaseExecution(te);
+        return TestCaseExecutionRepository.updateTestCaseExecution(te);
     }
 
     /**

@@ -9,7 +9,7 @@ public abstract class ParentToElementMappedCache<T> {
     private Map<Integer, Map<Integer, T>> parentPkToElementPkMap;
 
     public ParentToElementMappedCache() {
-        this.parentPkToElementPkMap = this.loadParentPkToElementPkMap();
+        this.loadCache();
     }
 
     private Map<Integer, Map<Integer, T>> loadParentPkToElementPkMap() {
@@ -62,6 +62,10 @@ public abstract class ParentToElementMappedCache<T> {
 
     public Map<Integer, Map<Integer, T>> getParentPkToElementPkMap() {
         return parentPkToElementPkMap;
+    }
+
+    public void loadCache() {
+        this.parentPkToElementPkMap = this.loadParentPkToElementPkMap();
     }
 
     protected abstract List<T> loadAllElements();
