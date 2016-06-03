@@ -19,7 +19,12 @@ public interface TestCaseModel {
      */
     boolean addNewTestCase(TestCase testcase);
 
-
+    /**
+     * gets all testcases
+     *
+     * @return a list of all testcases
+     */
+    List<TestCase> getAllTestCases();
 
     /**
      * Gets all testcases belonging to a workpackage and all its childs.
@@ -28,7 +33,6 @@ public interface TestCaseModel {
      * @return Returns a list with all queried testcases.
      */
     List<TestCase> getAllTestCases(Workpackage wp);
-
 
 /*  TODO: do we need this method?
     /**
@@ -40,7 +44,6 @@ public interface TestCaseModel {
      */
 //    TestCase getTestCase(int id);
 
-
     /**
      * Updates a testcase.
      *
@@ -49,8 +52,4 @@ public interface TestCaseModel {
      * @return the success of the update.
      */
     boolean updateTestCase(TestCase tc);
-
-
-
-
 }

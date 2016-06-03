@@ -1,9 +1,10 @@
 package de.fhbingen.wbs.controller;
 
+import de.fhbingen.wbs.dbaccess.DBModelManager;
 import de.fhbingen.wbs.dbaccess.data.TestCase;
 import de.fhbingen.wbs.dbaccess.data.TestExecution;
-import de.fhbingen.wbs.dbaccess.models.mysql.MySQLTestCaseModel;
-import de.fhbingen.wbs.dbaccess.models.mysql.MySQLTestExecutionModel;
+import de.fhbingen.wbs.dbaccess.repositories.TestCaseExecutionRepository;
+import de.fhbingen.wbs.dbaccess.repositories.TestCaseRepository;
 import de.fhbingen.wbs.globals.Workpackage;
 
 import java.util.List;
@@ -13,23 +14,17 @@ public class TestCaseController {
 
     private Workpackage workpackage;
 
-
-
     public TestCaseController(Workpackage workpackage) {
         this.workpackage = workpackage;
     }
-
 
     /**
      * @return
      *          List of all Testcases
      */
-
     public List<TestCase> getAllTestCases() {
         return this.workpackage.getAllTestCases();
     }
-
-
 
     /**
      * @param tc
@@ -37,12 +32,9 @@ public class TestCaseController {
      * @return
      *          latest execution for this Testcase
      */
-
     public TestExecution getLatestExecutionForTestCase(TestCase tc){
-        return tc.getLatestExecution();
+        return TestCaseExecutionRepository.getLatestTestExecution(tc);
     }
-
-
 
     /**
      *
@@ -51,14 +43,9 @@ public class TestCaseController {
      * @return
      *          List of executions for this Testcase
      */
-
-
     public List<TestExecution> getTestExecutionsForTestCase(TestCase tc){
-
-        MySQLTestExecutionModel sqlexecm = new MySQLTestExecutionModel();
-        return sqlexecm.getExecutionsForTestCase(tc);
+        return TestCaseExecutionRepository.getAllTestCaseExecutions(tc);
     }
-
 
     /**
      *
@@ -67,12 +54,12 @@ public class TestCaseController {
      * @return
      *          success of this operation
      */
-
     public boolean addTestCase(TestCase tc){
-        MySQLTestCaseModel sqltcm = new MySQLTestCaseModel();
-        return sqltcm.addNewTestCase(tc);
-    }
+        boolean result = DBModelManager.getTestCaseModel().addNewTestCase(tc);
+        TestCaseRepository.reloadCache();
 
+        return result;
+    }
 
     /**
      *
@@ -81,13 +68,9 @@ public class TestCaseController {
      * @return
      *          success of this operation
      */
-
     public boolean updateTestCase(TestCase tc){
-        MySQLTestCaseModel sqltcm = new MySQLTestCaseModel();
-        return sqltcm.updateTestCase(tc);
+        return TestCaseRepository.updateTestCase(tc);
     }
-
-
 
     /**
      *
@@ -96,13 +79,12 @@ public class TestCaseController {
      * @return
      *          success of this operation
      */
-
     public boolean addTestExecution(TestExecution te){
-        MySQLTestExecutionModel sqlexecm = new MySQLTestExecutionModel();
-        return sqlexecm.addNewTestExecution(te);
+        boolean result = DBModelManager.getTestExecutionModel().addNewTestExecution(te);
+        TestCaseExecutionRepository.reloadCache();
+
+        return result;
     }
-
-
 
     /**
      *
@@ -111,10 +93,8 @@ public class TestCaseController {
      * @return
      *          success of this operation
      */
-
     public boolean updateTestExecution(TestExecution te){
-        MySQLTestExecutionModel sqlexecm = new MySQLTestExecutionModel();
-        return sqlexecm.updateTestExecution(te);
+        return TestCaseExecutionRepository.updateTestCaseExecution(te);
     }
 
     /**
@@ -124,6 +104,4 @@ public class TestCaseController {
     public List<TestCase> getTestCases(){
         return this.workpackage.getTestCases();
     }
-
-
 }

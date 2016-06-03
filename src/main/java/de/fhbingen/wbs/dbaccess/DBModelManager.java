@@ -19,7 +19,6 @@
 
 package de.fhbingen.wbs.dbaccess;
 
-import de.fhbingen.wbs.dbaccess.data.TestExecution;
 import de.fhbingen.wbs.dbaccess.models.*;
 import de.fhbingen.wbs.dbaccess.models.mysql.*;
 
@@ -175,5 +174,7 @@ public class DBModelManager {
         return testCaseModel;
     }
 
-    public static TestExecutionModel getTestExecutionModel() { return testExecutionModel; }
+    public static TestExecutionModel getTestExecutionModel() {
+        return testExecutionModel;
+    }
 }

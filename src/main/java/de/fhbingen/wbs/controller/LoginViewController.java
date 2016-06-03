@@ -309,6 +309,7 @@ public class LoginViewController implements LoginView.ActionsDelegate,
             out.println(db);
             out.println(indexPw);
             out.println(user);
+            out.println(AddWorkEffortController.workEffortType);
             out.close();
         } catch (IOException e) {
             e.printStackTrace();
@@ -330,6 +331,12 @@ public class LoginViewController implements LoginView.ActionsDelegate,
                 this.lastDbName = in.readLine();
                 this.lastDbIndexPw = in.readLine();
                 this.lastDbUser = in.readLine();
+                String type = in.readLine();
+                if(type != null && type.equals(LocalizedStrings.getGeneralStrings().hours())) {
+                    AddWorkEffortController.workEffortType = LocalizedStrings.getGeneralStrings().hours();
+                } else {
+                    AddWorkEffortController.workEffortType = LocalizedStrings.getGeneralStrings().days();
+                }
                 in.close();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -356,8 +363,7 @@ public class LoginViewController implements LoginView.ActionsDelegate,
     public final String getLastDbUser() {
         return lastDbUser;
     }
-
-    /**
+        /**
      * @return the gui
      */
     public final LoginView getGui() {

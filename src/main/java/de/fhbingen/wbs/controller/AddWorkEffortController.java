@@ -2,6 +2,7 @@ package de.fhbingen.wbs.controller;
 
 import java.awt.event.KeyEvent;
 import java.awt.geom.Arc2D;
+import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,6 +48,9 @@ public class AddWorkEffortController implements
     public WPShow wpshow;
     private Workpackage wp;
     private String myaufwand;
+
+    public static String workEffortType;
+
     /**
      * Constructor.
      *
@@ -103,6 +107,7 @@ public class AddWorkEffortController implements
 
             gui.getWorker().setEnabled(false);
         }
+        gui.getBookingTime().setSelectedItem(workEffortType);
     }
 
     /**
@@ -163,13 +168,16 @@ public class AddWorkEffortController implements
                     (userLogin).getId());
             effort.setRec_date(dte);
             effort.setDescription(gui.getDescription());
-            if(gui.getBookingTime().getSelectedItem().equals(LocalizedStrings.getGeneralStrings().hours())) {
-                myaufwand = String.valueOf(Double.parseDouble(myaufwand)/8);
-                gui.setWorkEffort(myaufwand);
-                gui.getBookingTime().setSelectedItem(LocalizedStrings.getGeneralStrings().days());
-            }
-            effort.setEffort(Double.parseDouble(myaufwand));
 
+            if(gui.getBookingTime().getSelectedItem().equals(LocalizedStrings.getGeneralStrings().hours())) {
+                effort.setEffort(Double.parseDouble(myaufwand)/8);
+                workEffortType = LocalizedStrings.getGeneralStrings().hours();
+                saveWorkEffortType();
+                return DBModelManager.getWorkEffortModel().addNewWorkEffort(effort);
+            }
+            workEffortType = LocalizedStrings.getGeneralStrings().days();
+            effort.setEffort(Double.parseDouble(myaufwand));
+            saveWorkEffortType();
             return DBModelManager.getWorkEffortModel().addNewWorkEffort(effort);
         } catch (Exception e) {
             e.printStackTrace();
@@ -186,8 +194,13 @@ public class AddWorkEffortController implements
                     JOptionPane.showMessageDialog(gui,
                             LocalizedStrings.getErrorMessages().checkInputs());
                 } else {
+                    double ETC;
                     //berechnet den neuen ETC und schreibt den Wert in das Textfeld ETC der WPShow damit die Werte mit dem neu errechneten ETC berechnet werden
-                    double ETC = wpshow.getETCfromGUI() - Double.parseDouble(gui.getWorkEffort());
+                    if(gui.getBookingTime().getSelectedItem().equals(LocalizedStrings.getGeneralStrings().hours())) {
+                        ETC = wpshow.getETCfromGUI() - Double.parseDouble(gui.getWorkEffort())/8;
+                    } else {
+                        ETC = wpshow.getETCfromGUI() - Double.parseDouble(gui.getWorkEffort());
+                    }
                     wpshow.updateETCInGUI(ETC);
                     //Methode setChanges der Klasse WPShow aktualisiert die neuen Werte und berechnet alles neu mit dem neuen Aufwand und ETC
                     //JOptionPane.showMessageDialog(addaufwand.gui, "Aufwand wurde erfolgreich eingetragen");
@@ -240,6 +253,29 @@ public class AddWorkEffortController implements
                     gui.getWorkEffort().length()-1));
         }
         gui.setWorkEffort(gui.getWorkEffort().replace(",", "."));
+    }
+
+    private void saveWorkEffortType() {
+        File dbConfig = new File("DbConfig.txt");
+        try {
+            BufferedReader br = new BufferedReader(new FileReader("DbConfig.txt"));
+            String line;
+            ArrayList<String> rows = new ArrayList<String>();
+            while((line = br.readLine()) != null) {
+                rows.add(line);
+            }
+            br.close();
+
+            PrintWriter out = new PrintWriter(dbConfig);
+            for(int i = 0; i < 4; i++ ) {
+                out.println(rows.get(i));
+            }
+
+            out.println(AddWorkEffortController.workEffortType);
+            out.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }

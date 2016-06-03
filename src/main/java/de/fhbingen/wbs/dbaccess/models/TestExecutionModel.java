@@ -1,6 +1,5 @@
 package de.fhbingen.wbs.dbaccess.models;
 
-import de.fhbingen.wbs.dbaccess.data.Employee;
 import de.fhbingen.wbs.dbaccess.data.TestCase;
 import de.fhbingen.wbs.dbaccess.data.TestExecution;
 
@@ -21,7 +20,12 @@ public interface TestExecutionModel {
      */
     boolean addNewTestExecution(TestExecution testexec);
 
-
+    /**
+     * Gets all testexecutions
+     *
+     * @return list of all testexecutions
+     */
+    List<TestExecution> getAllTestExecutions();
 
     /**
      * Gets all testexecutions for a specific testcase.
@@ -32,8 +36,6 @@ public interface TestExecutionModel {
      */
     List<TestExecution> getExecutionsForTestCase(TestCase testcase);
 
-
-
     /**
      * Gets the latest testexecution.
      *
@@ -43,7 +45,6 @@ public interface TestExecutionModel {
      */
     TestExecution getLastExecution(TestCase testcase);
 
-
     /**
      * Updates a testexecution.
      *
@@ -52,8 +53,4 @@ public interface TestExecutionModel {
      * @return the success of the update.
      */
     boolean updateTestExecution(TestExecution testexec);
-
-
-
-
 }

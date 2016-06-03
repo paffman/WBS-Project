@@ -20,6 +20,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import de.fhbingen.wbs.wpConflict.ConflictCompat;
 import de.fhbingen.wbs.wpOverview.WPOverview;
 
 /**
@@ -348,6 +350,9 @@ public class CalcOAPBaseline {
         }
         // baseID wird mit der neu generierten Baseline-ID initialisiert
         baseID = highest;
+
+        ConflictCompat.deleteWpMovedConflicts();
+
         return baseID;
     }
 

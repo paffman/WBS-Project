@@ -18,7 +18,6 @@ import java.util.List;
  */
 public class MySQLTestExecutionModel implements TestExecutionModel {
 
-
     @Override
     public boolean addNewTestExecution(TestExecution testexec) {
         final Connection connection = SQLExecuter.getConnection();
@@ -60,6 +59,41 @@ public class MySQLTestExecutionModel implements TestExecutionModel {
             }
         }
         return success;
+    }
+
+    @Override
+    public List<TestExecution> getAllTestExecutions() {
+        final Connection connection = SQLExecuter.getConnection();
+        List<TestExecution> teList = new ArrayList<TestExecution>();
+        ResultSet sqlResult = null;
+        PreparedStatement stm = null;
+
+        String storedProcedure = "CALL test_execution_select()";
+
+        try {
+            stm = connection.prepareStatement(storedProcedure);
+            sqlResult = stm.executeQuery();
+
+            while (sqlResult.next()) {
+                teList.add(teFromResultSet(sqlResult));
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (sqlResult != null) {
+                    sqlResult.close();
+                }
+                if (stm != null) {
+                    stm.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return teList;
     }
 
     @Override
@@ -108,9 +142,6 @@ public class MySQLTestExecutionModel implements TestExecutionModel {
 
     }
 
-
-
-
     @Override
     public TestExecution getLastExecution(TestCase testcase) {
         List<TestExecution> execList = getExecutionsForTestCase(testcase);
@@ -121,11 +152,6 @@ public class MySQLTestExecutionModel implements TestExecutionModel {
 
         return latestExec;
     }
-
-
-
-
-
 
     @Override
     public boolean updateTestExecution(TestExecution testexec) {
@@ -173,9 +199,6 @@ public class MySQLTestExecutionModel implements TestExecutionModel {
 
     }
 
-
-
-
     /**
      * Creates a <code>TestExecution</code> based on a <code>ResultSet</code> freshly fetched from the DB.
      *
@@ -202,8 +225,4 @@ public class MySQLTestExecutionModel implements TestExecutionModel {
 
         return te;
     }
-
-
-
-
 }

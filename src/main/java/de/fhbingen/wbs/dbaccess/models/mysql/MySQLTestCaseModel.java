@@ -14,8 +14,6 @@ import java.util.List;
  */
 public class MySQLTestCaseModel implements TestCaseModel {
 
-
-
     @Override
     public final boolean addNewTestCase(TestCase testcase){
 
@@ -31,8 +29,6 @@ public class MySQLTestCaseModel implements TestCaseModel {
         }
 
         storedProcedure += "?)";
-
-        //System.out.println(storedProcedure);
 
         try {
             stm = connection.prepareStatement(storedProcedure);
@@ -57,6 +53,40 @@ public class MySQLTestCaseModel implements TestCaseModel {
         return success;
     }
 
+    @Override
+    public List<TestCase> getAllTestCases() {
+        final Connection connection = SQLExecuter.getConnection();
+        List<TestCase> tcList = new ArrayList<TestCase>();
+        ResultSet sqlResult = null;
+        PreparedStatement stm = null;
+
+        String storedProcedure = "CALL test_case_select()";
+
+        try {
+            stm = connection.prepareStatement(storedProcedure);
+            sqlResult = stm.executeQuery();
+
+            while (sqlResult.next()) {
+                tcList.add(tcFromResultSet(sqlResult));
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (sqlResult != null) {
+                    sqlResult.close();
+                }
+                if (stm != null) {
+                    stm.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return tcList;
+    }
 
     @Override
     public List<TestCase> getAllTestCases(Workpackage wp) {
@@ -100,7 +130,6 @@ public class MySQLTestCaseModel implements TestCaseModel {
 
         return tcList;
     }
-
 
     @Override
     public boolean updateTestCase(TestCase testcase) {
@@ -146,11 +175,6 @@ public class MySQLTestCaseModel implements TestCaseModel {
         return success;
     }
 
-
-
-
-
-
     /**
      * Creates a <code>TestCase</code> based on a <code>ResultSet</code> freshly fetched from the DB.
      *
@@ -175,6 +199,4 @@ public class MySQLTestCaseModel implements TestCaseModel {
 
         return tc;
     }
-
-
 }

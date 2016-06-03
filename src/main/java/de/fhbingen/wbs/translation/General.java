@@ -254,5 +254,13 @@ public interface General {
     @De("Es existieren keine Testfälle!")
     @En("No Testcases exists")
     String testcaseMessage();
+
+    @De("Beschreibung {0}")
+    @En("{0} Description")
+    String editDesc(String s);
+
+    @De("Wollen Sie dieses Arbeitspaket wirklich verschieben?")
+    @En("Do you really want to move this workpackage?")
+    String confirmMovingWP();
 }
 
