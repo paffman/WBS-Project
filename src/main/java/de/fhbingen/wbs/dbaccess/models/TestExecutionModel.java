@@ -21,6 +21,13 @@ public interface TestExecutionModel {
     boolean addNewTestExecution(TestExecution testexec);
 
     /**
+     * Gets all testexecutions
+     *
+     * @return list of all testexecutions
+     */
+    List<TestExecution> getAllTestExecutions();
+
+    /**
      * Gets all testexecutions for a specific testcase.
      *
      * @param testcase

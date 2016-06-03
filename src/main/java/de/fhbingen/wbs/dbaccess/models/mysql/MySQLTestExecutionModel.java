@@ -62,6 +62,41 @@ public class MySQLTestExecutionModel implements TestExecutionModel {
     }
 
     @Override
+    public List<TestExecution> getAllTestExecutions() {
+        final Connection connection = SQLExecuter.getConnection();
+        List<TestExecution> teList = new ArrayList<TestExecution>();
+        ResultSet sqlResult = null;
+        PreparedStatement stm = null;
+
+        String storedProcedure = "CALL test_execution_select()";
+
+        try {
+            stm = connection.prepareStatement(storedProcedure);
+            sqlResult = stm.executeQuery();
+
+            while (sqlResult.next()) {
+                teList.add(teFromResultSet(sqlResult));
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (sqlResult != null) {
+                    sqlResult.close();
+                }
+                if (stm != null) {
+                    stm.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return teList;
+    }
+
+    @Override
     public List<TestExecution> getExecutionsForTestCase(TestCase testcase) {
 
         final Connection connection = SQLExecuter.getConnection();
