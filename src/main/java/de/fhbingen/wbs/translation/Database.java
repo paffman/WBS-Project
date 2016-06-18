@@ -11,8 +11,8 @@ public interface Database {
     @De("Datenbank")
     String database();
 
-    @En("Server address")
-    @De("Serveradresse")
+    @En("Database-Server address")
+    @De("Datenbank-Server Adresse")
     String serverAddress();
 
     @En("Root username")
@@ -42,4 +42,8 @@ public interface Database {
     @En("User")
     @De("Benutzer")
     String user();
+
+    @En("Application-Server address")
+    @De("Application-Server Adresse")
+    String applicationServer();
 }
