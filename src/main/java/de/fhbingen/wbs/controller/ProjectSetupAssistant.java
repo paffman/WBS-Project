@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.net.Socket;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -256,12 +257,14 @@ public final class ProjectSetupAssistant implements ProjectProperties.Actions,
                         + newSummaryLine(labels.loginLong(),
                         projectProperties.getUserName())
                         + "</table><br /><b><i>"//NON-NLS
-                        + labels.databaseAdminLogin()
+                        + labels.databaseApplication()
                         + "</i></b><br /><table>" //NON-NLS
                         + newSummaryLine(labels.serverAddress(),
                         databaseAdminLogin.getServerAddress())
                         + newSummaryLine(labels.rootLoginName(),
                         databaseAdminLogin.getUserName())
+                        + newSummaryLine(labels.applicationServer(),
+                        databaseAdminLogin.getApplicationAddress())
                         + "</table><br /><br />" //NON-NLS
                         + messages.valuesCorrect() + "</html>"; //NON-NLS
         JLabel label = new JLabel(summary);
@@ -310,7 +313,8 @@ public final class ProjectSetupAssistant implements ProjectProperties.Actions,
      */
     private boolean validateDatabaseAdminLoginEntries() {
         if (databaseAdminLogin.getUserName().isEmpty()
-                || databaseAdminLogin.getServerAddress().isEmpty()) {
+                || databaseAdminLogin.getServerAddress().isEmpty()
+                || databaseAdminLogin.getApplicationAddress().isEmpty()) {
             showErrorMessage(messages.fillAllFieldsError());
             return false;
         }
@@ -1022,5 +1026,14 @@ public final class ProjectSetupAssistant implements ProjectProperties.Actions,
         statement.execute();
         statement.close();
 
+    }
+
+    private boolean validateApplicationServerAddress(){
+        try {
+            Socket server = new Socket("localhost", 8889);
+        } catch(IOException e){
+            return false;
+        }
+        return true;
     }
 }
