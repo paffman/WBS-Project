@@ -567,4 +567,8 @@ public class LoginView extends JFrame {
     protected final JPasswordField getPwPasswordField() {
         return pwPasswordField;
     }
+
+    public final String getApplicationField(){
+        return txfApplicationAddress.getText();
+    }
 }
