@@ -323,4 +323,8 @@ public interface ErrorMessages {
     @De("Bitte eine Application Server Adresse eintragen.")
     @En("Please input the application server address.")
     String loginMissingApplication();
+
+    @De("Verbindung zum Application Server konnte nicht aufgebaut werdem.")
+    @En("Connection to the application server could not established")
+    String connectionApplicationFailure();
 }
