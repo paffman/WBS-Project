@@ -319,4 +319,8 @@ public interface ErrorMessages {
     @De("Bitte geben Sie eine korrekte ID an.")
     @En("Please input a correct ID.")
     String idIncorrect();
+
+    @De("Bitte eine Application Server Adresse eintragen.")
+    @En("Please input the application server address.")
+    String loginMissingApplication();
 }
