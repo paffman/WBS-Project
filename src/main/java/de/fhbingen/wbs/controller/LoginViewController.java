@@ -23,6 +23,7 @@ import c10n.C10N;
 import de.fhbingen.wbs.gui.login.LoginView;
 import de.fhbingen.wbs.dbaccess.DBModelManager;
 import de.fhbingen.wbs.dbaccess.data.Employee;
+import de.fhbingen.wbs.timetracker.TimeTrackerConnector;
 import de.fhbingen.wbs.translation.C10NUseEnglishDefaultConfiguration;
 import de.fhbingen.wbs.translation.LocalizedStrings;
 import de.fhbingen.wbs.functions.WpManager;
@@ -119,6 +120,12 @@ public class LoginViewController implements LoginView.ActionsDelegate,
                     .loginMissingDbName());
             return;
         }
+
+        if(gui.getApplicationField().equals("")){
+            JOptionPane.showMessageDialog(gui, LocalizedStrings.getMessages()
+                    .loginMissingApplication());
+            return;
+        }
         if (user.equals("")) {
             JOptionPane.showMessageDialog(gui, LocalizedStrings.getMessages()
                     .loginMissingUser());
@@ -151,6 +158,13 @@ public class LoginViewController implements LoginView.ActionsDelegate,
                         .getMessages().loginConnectionFailure()
                         + "\nException: " + e.toString());
             }
+            return;
+        }
+
+        TimeTrackerConnector tracker = new TimeTrackerConnector(gui.getApplicationField());
+        if(!tracker.checkConnection()){
+            JOptionPane.showMessageDialog(gui, LocalizedStrings.getMessages()
+                    .connectionApplicationFailure());
             return;
         }
 
