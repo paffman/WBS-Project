@@ -205,4 +205,12 @@ public interface Messages extends ErrorMessages {
     @De("Arbeitspacket wurde verschoeben. Legen Sie eine neue Baseline an!")
     @En("Workpackage has been moved. Create a new baseline!")
     String wpMoveRecalcBaseline();
+
+    @De("Berechnen Sie nach Wunsch Planned Value und/oder Dauer neu!")
+    @En(" Think about recalculating planned value and/or duration!")
+    String recalculatePVandDuration();
+
+    @De("Ein Arbeitspacket ({0}) wurde hinzugefügt.")
+    @En("Workpackage ({0}) has been added.")
+    String wpAddedRecalc(String x);
 }
