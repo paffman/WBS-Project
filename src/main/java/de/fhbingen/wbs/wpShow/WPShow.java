@@ -407,7 +407,7 @@ public class WPShow {
         for (int i = 0; i < wpWorkers.size(); i++) {
             if (guiWorkers.length != wpWorkers.size()
                 || wpWorkers.get(i).equals(guiWorkers[i])) {
-                System.out.println("hier bei neuanlegung?  --  WPShow 410");
+
                 WPOverview.throwConflict(new ConflictCompat(new Date(System
                     .currentTimeMillis()), ConflictCompat.CHANGED_RESOURCES,
                     WPOverview.getUser().getId(), wp));

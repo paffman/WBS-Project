@@ -172,7 +172,6 @@ public class Conflict {
      * @return The occurence date
      */
     public Date getOccurence_date() {
-        System.out.println(occurence_date);
         return occurence_date;
     }
 
