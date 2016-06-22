@@ -23,17 +23,9 @@ import de.fhbingen.wbs.globals.Controller;
 import de.fhbingen.wbs.globals.Loader;
 import de.fhbingen.wbs.globals.Workpackage;
 import de.fhbingen.wbs.wpConflict.ConflictCompat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
+
+import java.util.*;
+
 import de.fhbingen.wbs.wpComparators.APBacComparator;
 import de.fhbingen.wbs.wpComparators.APEndDateComparator;
 import de.fhbingen.wbs.wpComparators.APFollowerComparator;
@@ -64,7 +56,7 @@ public class TimeCalc {
      * Constructor.
      */
     public TimeCalc() {
-        Loader.setLoadingText(LocalizedStrings.getStatus().initialize());
+/*        Loader.setLoadingText(LocalizedStrings.getStatus().initialize());
         DBModelManager.getConflictsModel().deleteConflicts(); // Delete all
                                     // conflicts => will be
                                      // recalculated
@@ -166,7 +158,9 @@ public class TimeCalc {
             }
             WpManager.updateAP(actualWp);
         }
+*/
 
+        calcCalculatedDates();
     }
 
 
@@ -176,19 +170,29 @@ public class TimeCalc {
      */
     private void calcCalculatedDates(){
 
+
+        Set<Workpackage> allAp = WpManager.getAllAp();
+        for (Workpackage actualWp : allAp) {
+            // Setting the work package is blocked, if it is in the past.
+            actualWp.setStartDateCalc(actualWp.getStartDateHope());
+            actualWp.setEndDateCalc(actualWp.getEndDateHope());
+        }
+
+
         boolean changedDate = true;
 
         Set<Workpackage> allWithoutAncestors = WpManager.getNoAncestorWps();
-        // delete WPs without followers
+        // find WPs without followers
+        Set<Workpackage> allWithoutAncestorsButFollowers = new HashSet<Workpackage>();
         for(Workpackage actWp : allWithoutAncestors){
             if(actWp.getFollowers().size()>0)
-            allWithoutAncestors.remove(actWp);
+            allWithoutAncestorsButFollowers.add(actWp);
         }
 
         while(changedDate)
 
             changedDate = false;
-            for(Workpackage actWp : allWithoutAncestors){
+            for(Workpackage actWp : allWithoutAncestorsButFollowers){
                 for(Workpackage follower: actWp.getFollowers()){
                     for (Workpackage predecessor : follower.getAncestors()){
 

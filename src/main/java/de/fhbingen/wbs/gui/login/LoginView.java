@@ -200,7 +200,7 @@ public class LoginView extends JFrame {
         setResizable(false);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-
+/*
         Date d = new Date();
         Calendar cal = Calendar.getInstance();
         cal.setTime(d);
@@ -209,7 +209,7 @@ public class LoginView extends JFrame {
         System.out.println(DateFunctions.calcDateByOffset(d, 7).toString());
         System.out.println(d2.toString());
 
-
+*/
         // menus
         mainMenuBar = new JMenuBar();
         fileMenu = new JMenu(LocalizedStrings.getDbChooser().file());

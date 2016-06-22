@@ -172,10 +172,11 @@ public final class DateFunctions {
         cal.setTime(date);
         do {
 
-            cal.add(Calendar.DAY_OF_MONTH, 1);
+
             if (cal.get(Calendar.DAY_OF_WEEK) != Calendar.SATURDAY && cal.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY) {
                 --workdays;
             }
+            cal.add(Calendar.DAY_OF_MONTH, 1);
         } while (workdays > 0);
 
         return cal.getTime();
