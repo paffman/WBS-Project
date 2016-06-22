@@ -286,21 +286,21 @@ public class ConflictCompat {
             return messageStrings.resourcesChanged() + " " + messageStrings
                     .recalculate();
         case CHANGED_WISHDATES:
-            return messageStrings.targetDateChanged() + "\n" + messageStrings.recalculatePVandDuration();
+            return messageStrings.targetDateChanged() + " " + messageStrings.recalculatePVandDuration();
         case NEW_WP:
-            return messageStrings.wpAddedRecalc(getTriggerApStringId()) + "\n" + messageStrings.recalculatePVandDuration();
+            return messageStrings.wpAddedRecalc(getTriggerApStringId()) + " " + messageStrings.recalculatePVandDuration();
         case CHANGED_DEPENDENCIES:
-            return messageStrings.dependenciesHaveChanged() + "\n" + messageStrings.recalculatePVandDuration();
+            return messageStrings.dependenciesHaveChanged() + " " + messageStrings.recalculatePVandDuration();
         case CHANGED_BAC:
             return messageStrings.bacHasChanged() + " " + messageStrings
                     .recalculate();
         case DELETED_WP:
-            return messageStrings.apWasDeleted() + " " + messageStrings + "\n" + messageStrings.recalculatePVandDuration();
+            return messageStrings.apWasDeleted() + " " + messageStrings + " " + messageStrings.recalculatePVandDuration();
         case CHANGED_ACTIVESTATE:
             return messageStrings.apActiveStateChanged() + " "
                     + messageStrings.recalculate();
         case WP_MOVED:
-            return messageStrings.wpMoveRecalcBaseline() + "\n" + messageStrings.recalculatePVandDuration();
+            return messageStrings.wpMoveRecalcBaseline() + " " + messageStrings.recalculatePVandDuration();
         default:
             return null;
         }
