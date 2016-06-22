@@ -1,14 +1,13 @@
 package de.fhbingen.wbs.dbServices;
 
 import java.sql.SQLException;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 import de.fhbingen.wbs.dbaccess.DBModelManager;
 import de.fhbingen.wbs.dbaccess.data.PlannedValue;
+import de.fhbingen.wbs.globals.Workpackage;
+import sun.util.resources.cldr.aa.CalendarData_aa_ER;
 
 /**
  * Diese Klasse dient als Verbindung zur Datenbank fuer das Speicher und
@@ -251,4 +250,57 @@ public class ValuesService {
         }
         return ergMap;
     }
+
+
+    /**
+     * Diese Methode errechnet PVs vom Start- bis Enddatum für ein Workpackage.
+     * Verwendet wird das errechnete Start-/Enddatum des Workpackages.
+     * Für jeden Arbeitstag wird der PV-Intervall aufsummiert, für Samstage und Sonntage
+     * wird der vorherige PV übernommen und nicht aufsummiert.
+     * @param wp
+     * @return pvMap
+     */
+    public static Map<Date, Double> calcPVs(Workpackage wp) {
+        Map<Date, Double> pvMap = new HashMap<>();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(wp.getStartDateCalc());
+
+        int workDays = getWorkingDaysBetweenTwoDates(wp.getStartDateCalc(), wp.getEndDateCalc());
+        double interval = wp.getBac_kosten() / workDays;
+        double pv = 0;
+        while(calendar.getTimeInMillis() <= wp.getEndDateCalc().getTime() ); {
+            if(! (calendar.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY  || calendar.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY ) ) {
+                pv += interval;
+            }
+
+            pvMap.put(calendar.getTime(), pv);
+            calendar.add(Calendar.DATE,1);
+        }
+        return pvMap;
+    }
+
+    //Errechnet Arbeitstage zwischen Start- und Enddatum, Dauer ist mindestens 1 Tag
+    private static int getWorkingDaysBetweenTwoDates(Date startDate, Date endDate) {
+        Calendar startCal = Calendar.getInstance();
+        startCal.setTime(startDate);
+
+        Calendar endCal = Calendar.getInstance();
+        endCal.setTime(endDate);
+
+        int workDays = 0;
+
+        do {
+            //excluding start date
+            startCal.add(Calendar.DAY_OF_MONTH, 1);
+            if (startCal.get(Calendar.DAY_OF_WEEK) != Calendar.SATURDAY && startCal.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY) {
+                ++workDays;
+            }
+        } while (startCal.getTimeInMillis() < endCal.getTimeInMillis());
+
+        if(workDays == 0)
+            return 1;
+
+        return workDays;
+    }
+
 }
