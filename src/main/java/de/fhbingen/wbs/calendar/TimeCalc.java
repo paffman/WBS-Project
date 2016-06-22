@@ -83,7 +83,7 @@ public class TimeCalc {
         List<Workpackage> uapWithoutAncestors = new LinkedList<>();
         levelOAP = new HashMap<>();
 
-        // Creates a list with all sub work package without predecessors.
+        // Creates a list with all sub work packages without predecessors.
         init(uapWithoutAncestors, levelOAP);
 
         // A map that helps by manage the worked hours.
@@ -168,6 +168,53 @@ public class TimeCalc {
         }
 
     }
+
+
+    /**
+     * New way to calculate the calculated Dates with respect to dependencies
+     *
+     */
+    private void calcCalculatedDates(){
+
+        boolean changedDate = true;
+
+        Set<Workpackage> allWithoutAncestors = WpManager.getNoAncestorWps();
+        // delete WPs without followers
+        for(Workpackage actWp : allWithoutAncestors){
+            if(actWp.getFollowers().size()>0)
+            allWithoutAncestors.remove(actWp);
+        }
+
+        while(changedDate)
+
+            changedDate = false;
+            for(Workpackage actWp : allWithoutAncestors){
+                for(Workpackage follower: actWp.getFollowers()){
+                    for (Workpackage predecessor : follower.getAncestors()){
+
+                        if(predecessor.getEndDateCalc().after(follower.getStartDateCalc())){
+                            System.out.println("chnaged Date of WP " + follower.getName());
+                            changedDate = true;
+                            int delta = DateFunctions.getWorkdayDistanceBetweenDates(predecessor.getEndDateCalc(), follower.getStartDateCalc());
+                            Date newStartDate = DateFunctions.calcDateByOffset(follower.getStartDateCalc(), delta);
+                            Date newEndDate = DateFunctions.calcDateByOffset(follower.getEndDateCalc(), delta);
+                            follower.setStartDateCalc(newStartDate);
+                            follower.setEndDateCalc(newEndDate);
+                            WpManager.updateAP(follower);
+                    }
+                }
+            }
+        }
+    }
+
+
+
+
+
+
+
+
+
 
     /**
      * Returns the start date as early as possible to a work package.

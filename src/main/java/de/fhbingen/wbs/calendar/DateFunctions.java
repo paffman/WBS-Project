@@ -51,7 +51,7 @@ public final class DateFunctions {
     /**
      * Convert a Java date into a SQL date. Format: #MM/DD/YYYY HH:MM:SS#
      * @param d
-     *            date which has to convert.
+     *            date which has to be converted.
      * @return The converted date as String.
      */
     public static String getDateString(final Date d) {
@@ -118,5 +118,69 @@ public final class DateFunctions {
         }
         return new Timestamp(date.getTime());
     }
+
+
+    /**
+     * calculates the Distance between two dates expressed in workdays
+     * @param d1
+     *             first Date
+     * @param d2
+     *             second Date
+     * @return Number of Workdays
+     *
+     */
+    public static int getWorkdayDistanceBetweenDates(Date d1, Date d2){
+        Calendar startCal = Calendar.getInstance();
+        startCal.setTime(d1);
+
+        Calendar endCal = Calendar.getInstance();
+        endCal.setTime(d2);
+
+        int workDays = 0;
+
+        //Return 0 if start and end are the same
+        if (startCal.getTimeInMillis() == endCal.getTimeInMillis()) {
+            return 0;
+        }
+
+        if (startCal.getTimeInMillis() > endCal.getTimeInMillis()) {
+            startCal.setTime(d2);
+            endCal.setTime(d1);
+        }
+
+        do {
+            if (startCal.get(Calendar.DAY_OF_WEEK) != Calendar.SATURDAY && startCal.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY) {
+                ++workDays;
+            }
+            startCal.add(Calendar.DAY_OF_MONTH, 1);
+        } while (startCal.getTimeInMillis() < endCal.getTimeInMillis()); //excluding end date
+
+        return workDays;
+    }
+
+
+    /**
+     * @param date
+     *          Date to add an amount of Workdays
+     * @param workdays
+     *          Number of Workdays to be added on the Date
+     * @return calculated Date
+     */
+    public static Date calcDateByOffset(Date date, int workdays){
+
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        do {
+
+            cal.add(Calendar.DAY_OF_MONTH, 1);
+            if (cal.get(Calendar.DAY_OF_WEEK) != Calendar.SATURDAY && cal.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY) {
+                --workdays;
+            }
+        } while (workdays > 0);
+
+        return cal.getTime();
+    }
+
+
 
 }
