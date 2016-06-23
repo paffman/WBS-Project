@@ -176,6 +176,7 @@ public class TimeCalc {
             // Setting the work package is blocked, if it is in the past.
             actualWp.setStartDateCalc(actualWp.getStartDateHope());
             actualWp.setEndDateCalc(actualWp.getEndDateHope());
+            //WpManager.updateAP(actualWp);
         }
 
 
@@ -199,9 +200,10 @@ public class TimeCalc {
                         if(predecessor.getEndDateCalc().after(follower.getStartDateCalc())){
                             System.out.println("chnaged Date of WP " + follower.getName());
                             changedDate = true;
-                            int delta = DateFunctions.getWorkdayDistanceBetweenDates(predecessor.getEndDateCalc(), follower.getStartDateCalc());
-                            Date newStartDate = DateFunctions.calcDateByOffset(follower.getStartDateCalc(), delta);
-                            Date newEndDate = DateFunctions.calcDateByOffset(follower.getEndDateCalc(), delta);
+
+                            Date newStartDate = DateFunctions.getNextWorkday(predecessor.getEndDateCalc());
+                            int followerDuration = DateFunctions.getWorkdayDistanceBetweenDates(follower.getStartDateCalc(), follower.getEndDateCalc());
+                            Date newEndDate = DateFunctions.calcDateByOffset(follower.getEndDateCalc(), followerDuration);
                             follower.setStartDateCalc(newStartDate);
                             follower.setEndDateCalc(newEndDate);
                             WpManager.updateAP(follower);

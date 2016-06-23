@@ -184,4 +184,23 @@ public final class DateFunctions {
 
 
 
+
+    /**
+     * @param date
+     *           Date wich should be converted to nearest future weekday if it is not a weekday
+     * @return
+     *           the resulting Date
+     * */
+    public static Date getNextWorkday(Date date){
+
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        while(cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY || cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY){
+
+            cal.add(Calendar.DAY_OF_MONTH, 1);
+        }
+
+        return cal.getTime();
+    }
+
 }

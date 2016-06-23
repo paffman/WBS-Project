@@ -206,10 +206,11 @@ public class LoginView extends JFrame {
         cal.setTime(d);
         cal.add(Calendar.DAY_OF_MONTH, 7);
         Date d2 = cal.getTime();
-        System.out.println(DateFunctions.calcDateByOffset(d, 7).toString());
+        System.out.println(DateFunctions.getWorkdayDistanceBetweenDates(d, d2));
+        System.out.println(d.toString());
         System.out.println(d2.toString());
-
 */
+
         // menus
         mainMenuBar = new JMenuBar();
         fileMenu = new JMenu(LocalizedStrings.getDbChooser().file());
