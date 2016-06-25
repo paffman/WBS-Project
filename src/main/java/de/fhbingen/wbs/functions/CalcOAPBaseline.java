@@ -113,20 +113,17 @@ public class CalcOAPBaseline {
         this.withTime = withTime;
 
         Map<Integer, List<Workpackage>> oapLevels = new HashMap<Integer, List<Workpackage>>();
-        Map<Integer, List<Workpackage>> uapLevels = new HashMap<>();
 
 
         for (int i = WpManager.getRootAp().getLvlIDs().length; i >= 0; i--) {
             oapLevels.put(i, new ArrayList<Workpackage>());
-            uapLevels.put(i, new ArrayList<Workpackage>());
+
         }
 
         //Je Level eine Liste an OAPs/UAPs für dieses Level eintragen
         for (Workpackage actualWp : WpManager.getAllAp()) {
             if (actualWp.isIstOAP()) {
                 oapLevels.get(actualWp.getlastRelevantIndex()).add(actualWp);
-            } else {
-                uapLevels.get(actualWp.getlastRelevantIndex()).add(actualWp);
             }
         }
 
@@ -137,28 +134,17 @@ public class CalcOAPBaseline {
             }
         }
 
-        //Alle UAPs berechnen, errechnetes Datum setzen
-        for(int i =  WpManager.getRootAp().getLvlIDs().length; i >= 0; i--) {
-            for(Workpackage wp : uapLevels.get(i)) {
-                if(wp.getAncestors()==null) {
-
-                }
-
-            }
-        }
-
-        //Alle OAPs berechnen, errechnetes Datum setzen
-        for(int i =  WpManager.getRootAp().getLvlIDs().length; i >= 0; i--) {
-            for(Workpackage wp : oapLevels.get(i)) {
-
-            }
-        }
-
         //wenn True, dann PV ebenfalls neu berechnen
         if (withTime) {
             new TimeCalc();
+
         }
 
+        for (int i = WpManager.getRootAp().getLvlIDs().length; i >= 0; i--) {
+            for(Workpackage oap : oapLevels.get(i)){
+                calculate(oap);
+            }
+        }
         wpOverview.reload();
     }
 
@@ -282,8 +268,8 @@ public class CalcOAPBaseline {
                 }
             }
 
-            oap.setStartDateCalc(oap.getStartDateHope());
-            oap.setEndDateCalc(oap.getEndDateHope());
+            //oap.setStartDateCalc(oap.getStartDateHope());
+            //oap.setEndDateCalc(oap.getEndDateHope());
 
             cpi = WpManager.calcCPI(acCost, etcCost, bacCost);
 

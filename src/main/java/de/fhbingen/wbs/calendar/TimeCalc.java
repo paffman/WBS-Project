@@ -17,6 +17,7 @@ package de.fhbingen.wbs.calendar;
 import de.fhbingen.wbs.dbServices.ValuesService;
 import de.fhbingen.wbs.dbaccess.DBModelManager;
 import de.fhbingen.wbs.dbaccess.data.Employee;
+import de.fhbingen.wbs.functions.APList;
 import de.fhbingen.wbs.translation.LocalizedStrings;
 import de.fhbingen.wbs.functions.WpManager;
 import de.fhbingen.wbs.globals.Controller;
@@ -165,6 +166,55 @@ public class TimeCalc {
 
 
     /**
+     *
+     * @param predec
+     *              The predecessor
+     * @param follower
+     *              The follower in terms of dependencies
+     */
+    private void adjustDates(Workpackage predec, Workpackage follower){
+
+        Date newStartDate = DateFunctions.getNextWorkday(predec.getEndDateCalc());
+        int followerDuration = DateFunctions.getWorkdayDistanceBetweenDates(follower.getStartDateCalc(), follower.getEndDateCalc());
+        Date newEndDate = DateFunctions.calcDateByOffset(newStartDate, followerDuration);
+        follower.setStartDateCalc(newStartDate);
+        follower.setEndDateCalc(newEndDate);
+        WpManager.updateAP(follower);
+    }
+
+
+    /**
+     *
+     * @param wp
+     *          Worpackage as startingpoint for semirecursive brute force dependency check
+     */
+    private void checkDependenciesRecursive(Workpackage wp){
+       for(Workpackage fellow: wp.getFollowers()){
+
+           if (wp.getEndDateCalc().after(fellow.getStartDateCalc())) {
+
+               adjustDates(wp, fellow);
+
+           }
+           // outside of IF Condition
+           checkDependenciesRecursive(fellow);
+       }
+
+        for (Workpackage predecessor : wp.getAncestors()) {
+
+            if (predecessor.getEndDateCalc().after(wp.getStartDateCalc())) {
+                //System.out.println("will chnage Date of WP " + wp.getName());
+                adjustDates(predecessor, wp);
+                // inside IF Condition
+                checkDependenciesRecursive(predecessor);
+            }
+
+        }
+    }
+
+
+
+    /**
      * New way to calculate the calculated Dates with respect to dependencies
      *
      */
@@ -173,14 +223,10 @@ public class TimeCalc {
 
         Set<Workpackage> allAp = WpManager.getAllAp();
         for (Workpackage actualWp : allAp) {
-            // Setting the work package is blocked, if it is in the past.
             actualWp.setStartDateCalc(actualWp.getStartDateHope());
             actualWp.setEndDateCalc(actualWp.getEndDateHope());
-            //WpManager.updateAP(actualWp);
+
         }
-
-
-        boolean changedDate = true;
 
         Set<Workpackage> allWithoutAncestors = WpManager.getNoAncestorWps();
         // find WPs without followers
@@ -190,32 +236,11 @@ public class TimeCalc {
             allWithoutAncestorsButFollowers.add(actWp);
         }
 
-        while(changedDate)
+        for(Workpackage w : allWithoutAncestorsButFollowers)
+            checkDependenciesRecursive(w);
 
-            changedDate = false;
-            for(Workpackage actWp : allWithoutAncestorsButFollowers){
-                for(Workpackage follower: actWp.getFollowers()){
-                    for (Workpackage predecessor : follower.getAncestors()){
 
-                        if(predecessor.getEndDateCalc().after(follower.getStartDateCalc())){
-                            System.out.println("chnaged Date of WP " + follower.getName());
-                            changedDate = true;
-
-                            Date newStartDate = DateFunctions.getNextWorkday(predecessor.getEndDateCalc());
-                            int followerDuration = DateFunctions.getWorkdayDistanceBetweenDates(follower.getStartDateCalc(), follower.getEndDateCalc());
-                            Date newEndDate = DateFunctions.calcDateByOffset(follower.getEndDateCalc(), followerDuration);
-                            follower.setStartDateCalc(newStartDate);
-                            follower.setEndDateCalc(newEndDate);
-                            WpManager.updateAP(follower);
-                    }
-                }
-            }
-        }
     }
-
-
-
-
 
 
 

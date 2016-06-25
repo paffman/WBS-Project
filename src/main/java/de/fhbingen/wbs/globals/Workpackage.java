@@ -775,7 +775,7 @@ public class Workpackage {
      *            als Date von Datenbank
      */
     public final void setStartDateCalc(final Date startDateCalc) {
-        if (thisWp.getStartDateCalc() == null) {
+       /* if (thisWp.getStartDateCalc() == null) {
             thisWp.setStartDateCalc(startDateCalc);
         } else {
             if (thisWp.isTopLevel()
@@ -784,6 +784,8 @@ public class Workpackage {
                 thisWp.setStartDateCalc(startDateCalc);
             }
         }
+        */
+        thisWp.setStartDateCalc(startDateCalc);
     }
 
     /**
