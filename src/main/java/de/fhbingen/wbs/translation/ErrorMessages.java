@@ -324,7 +324,11 @@ public interface ErrorMessages {
     @En("Please input the application server address.")
     String loginMissingApplication();
 
-    @De("Verbindung zum Application Server konnte nicht aufgebaut werdem.")
+    @De("Verbindung zum Application Server konnte nicht aufgebaut werden.")
     @En("Connection to the application server could not established")
     String connectionApplicationFailure();
+
+    @De("Das Passwort für den bereits registrierten User ist falsch!")
+    @En("Wrong password for the registered user!")
+    String wrongUserPassword();
 }
