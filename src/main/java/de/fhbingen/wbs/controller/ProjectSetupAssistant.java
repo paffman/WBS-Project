@@ -1062,6 +1062,9 @@ public final class ProjectSetupAssistant implements ProjectProperties.Actions,
 
     }
 
+    /**
+     * Setup the project on the application server.
+     */
     private void setupProjectOnApplication(){
         tracker.createProject();
         try {
@@ -1071,6 +1074,10 @@ public final class ProjectSetupAssistant implements ProjectProperties.Actions,
         }
     }
 
+    /**
+     * Validate the Connection to the application server.
+     * @return successful connection
+     */
     private boolean validateConnectionApplication(){
         tracker = new TimeTrackerConnector(databaseAdminLogin.getApplication());
         if(!tracker.checkConnection()){
@@ -1079,6 +1086,10 @@ public final class ProjectSetupAssistant implements ProjectProperties.Actions,
         return tracker.checkConnection();
     }
 
+    /**
+     * Validate the user.
+     * @return successful validation of the user.
+     */
     private boolean validateApplicationUser(){
         try {
             int response = tracker.createUser(projectProperties.getUserName(), new String(projectProperties.getPassword()));
