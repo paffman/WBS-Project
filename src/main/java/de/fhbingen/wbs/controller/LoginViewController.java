@@ -95,6 +95,11 @@ public class LoginViewController implements LoginView.ActionsDelegate,
     }
 
     /**
+     * Connetor to the application server.
+     */
+    private TimeTrackerConnector tracker;
+
+    /**
      * This method is called when the "ok"-Button in the GUI is activated. It
      * controls the database connection and handles the login. If everything is
      * valid the wbs-tool is started.
@@ -161,10 +166,11 @@ public class LoginViewController implements LoginView.ActionsDelegate,
             return;
         }
 
-        TimeTrackerConnector tracker = new TimeTrackerConnector(gui.getApplicationField());
+        tracker = new TimeTrackerConnector(gui.getApplicationField());
         if(!tracker.checkConnection()){
             JOptionPane.showMessageDialog(gui, LocalizedStrings.getMessages()
                     .connectionApplicationFailure());
+            tracker.loginUser(gui.getName(), gui.getUserPassword().toString());
             return;
         }
 
