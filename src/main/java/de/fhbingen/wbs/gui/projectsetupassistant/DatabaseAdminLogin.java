@@ -2,6 +2,7 @@ package de.fhbingen.wbs.gui.projectsetupassistant;
 
 import c10n.C10N;
 import de.fhbingen.wbs.gui.SwingUtilityMethods;
+import de.fhbingen.wbs.timetracker.TimeTrackerConnector;
 import de.fhbingen.wbs.translation.ProjectSetup;
 
 import java.awt.BorderLayout;
@@ -180,7 +181,6 @@ public class DatabaseAdminLogin extends JDialog {
 
         addUiElements();
         addActionListeners();
-
         setupDialogProperties();
     }
 
@@ -311,6 +311,15 @@ public class DatabaseAdminLogin extends JDialog {
      */
     public final void clearPasswordField() {
         textFieldPassword.setText("");
+    }
+
+    /**
+     * Application server address.
+     * @return string from application server address
+     */
+    public String getApplication(){
+        System.out.println("Adresse: " + txfApplicationAddress.getText());
+        return txfApplicationAddress.getText();
     }
 
 }
