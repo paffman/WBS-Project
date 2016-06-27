@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
+import de.fhbingen.wbs.calendar.Day;
 import de.fhbingen.wbs.dbaccess.DBModelManager;
 import de.fhbingen.wbs.dbaccess.data.PlannedValue;
 import de.fhbingen.wbs.globals.Workpackage;
@@ -260,22 +261,26 @@ public class ValuesService {
      * @param wp
      * @return pvMap
      */
-    public static Map<Date, Double> calcPVs(Workpackage wp) {
-        Map<Date, Double> pvMap = new HashMap<>();
+    public static Map<Day, Double> calcPVs(Workpackage wp) {
+
+        System.out.println("in clacPVs (VS)");
+        Map<Day, Double> pvMap = new HashMap<>();
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(wp.getStartDateCalc());
 
         int workDays = getWorkingDaysBetweenTwoDates(wp.getStartDateCalc(), wp.getEndDateCalc());
         double interval = wp.getBac_kosten() / workDays;
         double pv = 0;
-        while(calendar.getTimeInMillis() <= wp.getEndDateCalc().getTime() ); {
+        while( calendar.getTime().before(wp.getEndDateCalc()) ) {
             if(! (calendar.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY  || calendar.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY ) ) {
                 pv += interval;
             }
 
-            pvMap.put(calendar.getTime(), pv);
+            pvMap.put(new Day(calendar.getTime()), pv);
             calendar.add(Calendar.DATE,1);
         }
+
+        System.out.println(wp.getName() + " :  " + pvMap.values());
         return pvMap;
     }
 
