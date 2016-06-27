@@ -27,7 +27,7 @@ import java.util.*;
  */
 public class TimeCalc {
 
-   
+
 
     /**
      * Constructor.
@@ -121,9 +121,8 @@ public class TimeCalc {
         // set all calculated Dates similar to all chosen Dates
         Set<Workpackage> allAp = WpManager.getAllAp();
         for (Workpackage actualWp : allAp) {
-            actualWp.setStartDateCalc(actualWp.getStartDateHope());
-            actualWp.setEndDateCalc(actualWp.getEndDateHope());
-
+            actualWp.setStartDateCalc(DateFunctions.getNextWorkday(actualWp.getStartDateHope()));
+            actualWp.setEndDateCalc(DateFunctions.getNextWorkday(actualWp.getEndDateHope()));
         }
 
         // get all WPs with no Predecessors

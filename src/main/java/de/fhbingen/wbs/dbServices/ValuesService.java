@@ -274,13 +274,13 @@ public class ValuesService {
         while( calendar.getTime().before(wp.getEndDateCalc()) ) {
             if(! (calendar.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY  || calendar.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY ) ) {
                 pv += interval;
-            }
+    }
 
-            pvMap.put(new Day(calendar.getTime()), pv);
-            calendar.add(Calendar.DATE,1);
-        }
+    pvMap.put(new Day(calendar.getTime()), pv);
+    calendar.add(Calendar.DATE,1);
+}
 
-        System.out.println(wp.getName() + " :  " + pvMap.values());
+        //System.out.println(wp.getName() + " :  " + pvMap.values());
         return pvMap;
     }
 

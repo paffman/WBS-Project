@@ -233,18 +233,18 @@ public class CalcOAPBaseline {
                     bacCost += actualUAP.getBac_kosten();
                     acCost += actualUAP.getAc_kosten();
                     etcCost += actualUAP.getEtc_kosten();
-                    /*
-                    * Wenn Zeiten inkl PV neu berechnet werden, dann nehme
-                    * frühestes Startdatum und spätestes Enddatum der UAPs.
-                    * Errechne für diese Zeitspanne den PV für dieses OAP.
-                    * */
+
+                    
                     if (withTime) {
                         //Holt alle PVs von Start- bis Enddatum für ein UAP
                         Map<Date, Double> uapPVs = ValuesService.getWPPVs(  ValuesService.getNextFriday(actualUAP.getStartDateCalc()).getTime(),
                                                                             ValuesService.getNextFriday(actualUAP.getEndDateCalc()).getTime(),
                                                                             actualUAP.getWpId());
 
+
+
                         List<Date> pvSorted = new ArrayList<Date>(uapPVs.keySet());
+
                         Collections.sort(pvSorted);
 
                         //Summiere PVs für das OAP in dessen Map
@@ -258,8 +258,12 @@ public class CalcOAPBaseline {
                         }
 
                     }
+
+
                 }
             }
+
+
 
             //Neu berechnete PVs mit Dauer in DB schreiben
             if(withTime) {
