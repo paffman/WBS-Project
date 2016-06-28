@@ -14,6 +14,7 @@
 
 package de.fhbingen.wbs.controller;
 
+import com.mashape.unirest.http.exceptions.UnirestException;
 import com.mysql.jdbc.MySQLConnection;
 import de.fhbingen.wbs.gui.wpworker.WBSUserView;
 import de.fhbingen.wbs.jdbcConnection.MySqlConnect;
@@ -279,13 +280,13 @@ public class WBSUserViewController implements WBSUserView.Delegate {
                     rights, this.getGui().getDailyRate()));
             this.getGui().dispose();
             //For the application server update the database.
-            TimeTrackerConnector tracker = new TimeTrackerConnector(LoginViewController.lastApplicationAddress);
-            tracker.createUser(getGui().getLogin(), "1234");
-            tracker.loginUser(getGui().getLogin(), "1234");
             try {
+                TimeTrackerConnector tracker = new TimeTrackerConnector(LoginViewController.lastApplicationAddress);
+                tracker.createUser(getGui().getLogin(), "1234");
+                tracker.loginUser(getGui().getLogin(), "1234");
                 tracker.addUserToProject(ProjectSetupAssistant.getIdByDatabaseName(MySqlConnect.getConnection(), LoginViewController.lastDbName),
                         ProjectSetupAssistant.getUserID(MySqlConnect.getConnection(), getGui().getLogin()));
-            } catch(SQLException e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
