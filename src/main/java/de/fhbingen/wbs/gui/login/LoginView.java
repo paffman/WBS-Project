@@ -187,6 +187,11 @@ public class LoginView extends JFrame {
          * @return The last username.
          */
         String getLastDbUser();
+
+        /**
+         * Returns the last application server address.
+         */
+        String getLastApplicationAddress();
     }
 
     /**
@@ -286,6 +291,10 @@ public class LoginView extends JFrame {
         }
         if (dataSource.getLastDbUser() != null) {
             userField.setText(dataSource.getLastDbUser());
+        }
+
+        if (dataSource.getLastApplicationAddress() != null){
+            txfApplicationAddress.setText(dataSource.getLastApplicationAddress());
         }
 
         // place all elements in the window.
