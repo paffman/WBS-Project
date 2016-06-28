@@ -6,6 +6,7 @@ import de.fhbingen.wbs.dbaccess.data.TestExecution;
 import de.fhbingen.wbs.dbaccess.repositories.TestCaseExecutionRepository;
 import de.fhbingen.wbs.dbaccess.repositories.TestCaseRepository;
 import de.fhbingen.wbs.globals.Workpackage;
+import de.fhbingen.wbs.translation.LocalizedStrings;
 
 import java.util.List;
 
@@ -80,6 +81,7 @@ public class TestCaseController {
      *          success of this operation
      */
     public boolean addTestExecution(TestExecution te){
+        te.setEmployeeLogin( LocalizedStrings.getLogin().login());
         boolean result = DBModelManager.getTestExecutionModel().addNewTestExecution(te);
         TestCaseExecutionRepository.reloadCache();
 
