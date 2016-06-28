@@ -263,7 +263,6 @@ public class ValuesService {
      */
     public static Map<Day, Double> calcPVs(Workpackage wp) {
 
-        System.out.println("in clacPVs (VS)");
         Map<Day, Double> pvMap = new HashMap<>();
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(wp.getStartDateCalc());
@@ -274,13 +273,11 @@ public class ValuesService {
         while( calendar.getTime().before(wp.getEndDateCalc()) ) {
             if(! (calendar.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY  || calendar.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY ) ) {
                 pv += interval;
-    }
-
-    pvMap.put(new Day(calendar.getTime()), pv);
-    calendar.add(Calendar.DATE,1);
-}
-
-        //System.out.println(wp.getName() + " :  " + pvMap.values());
+            }
+            pvMap.put(new Day(calendar.getTime()), pv);
+            calendar.add(Calendar.DATE,1);
+        }
+        pvMap.put(new Day(wp.getEndDateCalc()),wp.getBac_kosten());
         return pvMap;
     }
 
@@ -292,18 +289,15 @@ public class ValuesService {
         Calendar endCal = Calendar.getInstance();
         endCal.setTime(endDate);
 
-        int workDays = 0;
+        int workDays = 1;
 
         do {
             //excluding start date
-            startCal.add(Calendar.DAY_OF_MONTH, 1);
+            startCal.add(Calendar.DATE, 1);
             if (startCal.get(Calendar.DAY_OF_WEEK) != Calendar.SATURDAY && startCal.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY) {
                 ++workDays;
             }
         } while (startCal.getTimeInMillis() < endCal.getTimeInMillis());
-
-        if(workDays == 0)
-            return 1;
 
         return workDays;
     }

@@ -59,7 +59,7 @@ public class CalcOAPBaseline {
             Loader.setLoadingText(LocalizedStrings.getStatus().calculateLevel(
                     actualOAP.getlastRelevantIndex()));
             actualOAP = WpManager.getWorkpackage(actualOAP.getOAPID());
-            calculate(actualOAP);
+            //calculate(actualOAP);
         } while (!actualOAP.equals(WpManager.getRootAp()));
         wpOverview.reload();
     }
@@ -86,7 +86,7 @@ public class CalcOAPBaseline {
             Loader.setLoadingText(LocalizedStrings.getStatus().calculateLevel(
                     actualOAP.getlastRelevantIndex()));
             actualOAP = WpManager.getWorkpackage(actualOAP.getOAPID());
-            calculate(actualOAP);
+            //calculate(actualOAP);
         } while (!actualOAP.equals(WpManager.getRootAp()));
     }
 
@@ -117,7 +117,6 @@ public class CalcOAPBaseline {
 
         for (int i = WpManager.getRootAp().getLvlIDs().length; i >= 0; i--) {
             oapLevels.put(i, new ArrayList<Workpackage>());
-
         }
 
         //Je Level eine Liste an OAPs/UAPs für dieses Level eintragen
@@ -173,7 +172,6 @@ public class CalcOAPBaseline {
             for (Workpackage actualWp : oapLevels.get(i)) {
                 Loader.setLoadingText(LocalizedStrings.getStatus()
                         .calculateLevel(i));
-                calculate(actualWp);
                 this.writeAnalysis(actualWp, baselineID);
             }
         }
@@ -215,9 +213,31 @@ public class CalcOAPBaseline {
 
             Set<Employee> workers = new HashSet<Employee>();
 
-            Map<Day, Double> oapPvs = new HashMap<Day, Double>();
             Set<Workpackage> uaps = WpManager.getUAPs(oap);
 
+
+            Date minDate = oap.getStartDateHope();
+            Date maxDate = oap.getEndDateHope();
+
+            boolean init = false;
+
+            for(Workpackage uap : uaps) {
+                if(!init) {
+                    maxDate = uap.getEndDateCalc();
+                    minDate = uap.getStartDateCalc();
+                    init = true;
+                }
+                if(uap.getEndDateCalc().after(maxDate)) {
+                    maxDate = uap.getEndDateCalc();
+                }
+                if(uap.getStartDateCalc().before(minDate)) {
+                    minDate = uap.getStartDateCalc();
+                }
+            }
+            oap.setStartDateCalc(minDate);
+            oap.setEndDateCalc(maxDate);
+            Map<Day, Double> oapPvs = getFilledPvMap(minDate, maxDate);
+            int i = 0;
             for (Workpackage actualUAP : uaps) {
                 workers.addAll(actualUAP.getWorkers());
 
@@ -241,25 +261,28 @@ public class CalcOAPBaseline {
                                                                             ValuesService.getNextFriday(actualUAP.getEndDateCalc()).getTime(),
                                                                             actualUAP.getWpId());
 
-
-
                         List<Date> pvSorted = new ArrayList<Date>(uapPVs.keySet());
-
                         Collections.sort(pvSorted);
 
                         //Summiere PVs für das OAP in dessen Map
                         for (Date actualDate : pvSorted) {
-                            if (!oapPvs.containsKey(new Day(actualDate))) {
-                                oapPvs.put(new Day(actualDate), uapPVs.get(actualDate));
-                            } else {
-                                double oldOAPPV = oapPvs.get(actualDate);
-                                oapPvs.put(new Day(actualDate), uapPVs.get(actualDate) + oldOAPPV);
+
+                            double oldOAPPV = oapPvs.get(new Day(actualDate));
+                            oapPvs.put(new Day(actualDate), uapPVs.get(actualDate) + oldOAPPV);
+                            System.out.println(i+" --- "+actualDate+":   "+uapPVs.get(actualDate).intValue());
+                        }
+                        i++;
+                        //Summiere nach Paketende dessen PV (=BAC) auf die nachfolgenden Datumswerte
+                        double lastPv = actualUAP.getBac_kosten();
+                        Date end = actualUAP.getEndDateCalc();
+                        for(Date date : oapPvs.keySet()) {
+                            if(date.after(end)) {
+                                double oldValue = oapPvs.get(new Day(date));
+                                oapPvs.put(new Day(date), oldValue + lastPv);
+
                             }
                         }
-
                     }
-
-
                 }
             }
 
@@ -271,10 +294,6 @@ public class CalcOAPBaseline {
                     ValuesService.savePv(oap.getWpId(), new Day(actualDate), oapPvs.get(new Day(actualDate)));
                 }
             }
-
-            //oap.setStartDateCalc(oap.getStartDateHope());
-            //oap.setEndDateCalc(oap.getEndDateHope());
-
             cpi = WpManager.calcCPI(acCost, etcCost, bacCost);
 
             oap.setBac(bac);
@@ -298,6 +317,18 @@ public class CalcOAPBaseline {
             WpManager.updateAP(oap);
         }
 
+    }
+
+    private Map<Day, Double> getFilledPvMap(Date min, Date max) {
+        Map<Day, Double> pvMap = new HashMap<>();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(min);
+        do{
+            pvMap.put(new Day(calendar.getTime()),0.0);
+            calendar.add(Calendar.DATE,1);
+        } while(calendar.getTime().before(max));
+        pvMap.put(new Day(calendar.getTime()), 0.0);
+        return pvMap;
     }
 
     /**
