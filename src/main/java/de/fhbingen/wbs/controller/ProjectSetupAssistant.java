@@ -1066,10 +1066,14 @@ public final class ProjectSetupAssistant implements ProjectProperties.Actions,
      * Setup the project on the application server.
      */
     private void setupProjectOnApplication(){
-        tracker.createProject();
         try {
-            tracker.addUserToProject(dbID, getUserID(connection, projectProperties.getUserName()));
-        } catch(SQLException e){
+            tracker.createProject();
+            try {
+                tracker.addUserToProject(dbID, getUserID(connection, projectProperties.getUserName()));
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        } catch(IOException e){
             e.printStackTrace();
         }
     }
@@ -1079,11 +1083,16 @@ public final class ProjectSetupAssistant implements ProjectProperties.Actions,
      * @return successful connection
      */
     private boolean validateConnectionApplication(){
-        tracker = new TimeTrackerConnector(databaseAdminLogin.getApplication());
-        if(!tracker.checkConnection()){
-            showErrorMessage(messages.connectionApplicationFailure());
+        try {
+            tracker = new TimeTrackerConnector(databaseAdminLogin.getApplication());
+            if (!tracker.checkConnection()) {
+                showErrorMessage(messages.connectionApplicationFailure());
+            }
+            return tracker.checkConnection();
+        }catch(Exception e){
+            e.printStackTrace();
+            return false;
         }
-        return tracker.checkConnection();
     }
 
     /**
@@ -1092,17 +1101,17 @@ public final class ProjectSetupAssistant implements ProjectProperties.Actions,
      */
     private boolean validateApplicationUser(){
         try {
-            int response = tracker.createUser(projectProperties.getUserName(), new String(projectProperties.getPassword()));
-            if (response == HttpURLConnection.HTTP_FORBIDDEN) {
-                response = tracker.loginUser(projectProperties.getUserName(), new String(projectProperties.getPassword()));
-                if (response == HttpURLConnection.HTTP_BAD_REQUEST) {
-                    showErrorMessage(messages.wrongUserPassword());
-                    return false;
-                }
+            tracker.createUser(projectProperties.getUserName(), new String(projectProperties.getPassword()));
+            int response = tracker.loginUser(projectProperties.getUserName(), new String(projectProperties.getPassword()));
+            if (response == HttpURLConnection.HTTP_BAD_REQUEST) {
+                showErrorMessage(messages.wrongUserPassword());
+                return false;
             }
-        } catch(Exception e) {
+
+            return true;
+        } catch(IOException e){
             e.printStackTrace();
+            return false;
         }
-        return true;
     }
 }
