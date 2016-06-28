@@ -71,11 +71,11 @@ public class LoginViewController implements LoginView.ActionsDelegate,
     /**
      * last Host the client was connected to.
      */
-    private String lastDbHost = null;
+    public static String lastDbHost = null;
     /**
      * Name of the last database the client was connected to.
      */
-    private String lastDbName = null;
+    public static String lastDbName = null;
     /**
      * Password for the id_wbs database of the last host the client was
      * connected to.
@@ -85,6 +85,11 @@ public class LoginViewController implements LoginView.ActionsDelegate,
      * Last username used to login into a database.
      */
     private String lastDbUser = null;
+
+    /**
+     * Last application server address.
+     */
+    public static String lastApplicationAddress;
 
     /**
      * Constructor initializes the LoginView and the Listeners for it.
@@ -113,6 +118,7 @@ public class LoginViewController implements LoginView.ActionsDelegate,
         char[] indexDbPw = gui.getIndexPassword();
         char[] userPw = gui.getUserPassword();
         Boolean pl = gui.isProjectLeader();
+        String application = gui.getApplicationField();
 
         // check input
         if (host.equals("")) {
@@ -175,7 +181,7 @@ public class LoginViewController implements LoginView.ActionsDelegate,
         }
 
         // save database as last accessed db
-        saveLastDB(host, db, user, indexDbPw);
+        saveLastDB(host, db, user, indexDbPw, application);
 
         // get employee data
         Employee employee =
@@ -321,7 +327,7 @@ public class LoginViewController implements LoginView.ActionsDelegate,
      *            password for the index database.
      */
     private void saveLastDB(final String host, final String db,
-            final String user, final char[] indexPw) {
+            final String user, final char[] indexPw, final String application) {
         File dbConfig = new File("DbConfig.txt");
         try {
             PrintWriter out = new PrintWriter(dbConfig);
@@ -330,6 +336,7 @@ public class LoginViewController implements LoginView.ActionsDelegate,
             out.println(indexPw);
             out.println(user);
             out.println(AddWorkEffortController.workEffortType);
+            out.println(application);
             out.close();
         } catch (IOException e) {
             e.printStackTrace();
@@ -357,6 +364,7 @@ public class LoginViewController implements LoginView.ActionsDelegate,
                 } else {
                     AddWorkEffortController.workEffortType = LocalizedStrings.getGeneralStrings().days();
                 }
+                this.lastApplicationAddress = in.readLine();
                 in.close();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -383,7 +391,11 @@ public class LoginViewController implements LoginView.ActionsDelegate,
     public final String getLastDbUser() {
         return lastDbUser;
     }
-        /**
+
+    @Override
+    public final String getLastApplicationAddress(){ return lastApplicationAddress; }
+
+    /**
      * @return the gui
      */
     public final LoginView getGui() {
