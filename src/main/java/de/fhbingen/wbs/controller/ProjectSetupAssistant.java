@@ -751,7 +751,7 @@ public final class ProjectSetupAssistant implements ProjectProperties.Actions,
      * @return id of database name.
      * @throws SQLException if something goes wrong.
      */
-    private static int getIdByDatabaseName(final Connection connection,
+    public static int getIdByDatabaseName(final Connection connection,
                                            final String databaseName)
             throws SQLException {
         String oldDatabaseName = connection.getCatalog();
@@ -764,11 +764,11 @@ public final class ProjectSetupAssistant implements ProjectProperties.Actions,
             resultSet.next();
             return resultSet.getInt(2);
         } finally {
-            connection.setCatalog(oldDatabaseName);
+            //connection.setCatalog(oldDatabaseName);
         }
     }
 
-    private int getUserID(final Connection connection,
+    public static int getUserID(final Connection connection,
                                  final String username) throws SQLException{
         String oldDatabaseName = connection.getCatalog();
         useDatabase(connection, SQL_WBS_DB_NAME);
@@ -780,7 +780,7 @@ public final class ProjectSetupAssistant implements ProjectProperties.Actions,
             resultSet.next();
             return resultSet.getInt(1);
         } finally {
-            connection.setCatalog(oldDatabaseName);
+            //connection.setCatalog(oldDatabaseName);
         }
 
 
