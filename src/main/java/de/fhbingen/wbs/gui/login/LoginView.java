@@ -19,6 +19,7 @@
 
 package de.fhbingen.wbs.gui.login;
 
+import de.fhbingen.wbs.calendar.DateFunctions;
 import de.fhbingen.wbs.gui.GPLAboutDialog;
 import de.fhbingen.wbs.gui.SwingUtilityMethods;
 import de.fhbingen.wbs.gui.delegates.SimpleDialogDelegate;
@@ -26,6 +27,8 @@ import de.fhbingen.wbs.translation.LocalizedStrings;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Calendar;
+import java.util.Date;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -211,6 +214,17 @@ public class LoginView extends JFrame {
         initialize();
         setResizable(false);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+/*
+        Date d = new Date();
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(d);
+        cal.add(Calendar.DAY_OF_MONTH, 7);
+        Date d2 = cal.getTime();
+        System.out.println(DateFunctions.getWorkdayDistanceBetweenDates(d, d2));
+        System.out.println(d.toString());
+        System.out.println(d2.toString());
+*/
 
         // menus
         mainMenuBar = new JMenuBar();

@@ -62,7 +62,7 @@ public class ConflictCompat {
     public static final int CHANGED_ACTIVESTATE = 8;
 
     /**
-     * Conflict code for changed active state.
+     * Conflict code for WP moved.
      */
     public static final int WP_MOVED = 9;
 
@@ -286,25 +286,21 @@ public class ConflictCompat {
             return messageStrings.resourcesChanged() + " " + messageStrings
                     .recalculate();
         case CHANGED_WISHDATES:
-            return messageStrings.targetDateChanged() + " " + messageStrings
-                    .recalculate();
+            return messageStrings.targetDateChanged() + " " + messageStrings.recalculatePVandDuration();
         case NEW_WP:
-            return messageStrings.newApsWereCreated() + " " + messageStrings
-                    .recalculate();
+            return messageStrings.wpAddedRecalc(getTriggerApStringId()) + " " + messageStrings.recalculatePVandDuration();
         case CHANGED_DEPENDENCIES:
-            return messageStrings.dependenciesHaveChanged() + " "
-                    + messageStrings.recalculate();
+            return messageStrings.dependenciesHaveChanged() + " " + messageStrings.recalculatePVandDuration();
         case CHANGED_BAC:
             return messageStrings.bacHasChanged() + " " + messageStrings
                     .recalculate();
         case DELETED_WP:
-            return messageStrings.apWasDeleted() + " " + messageStrings
-                    .recalculate();
+            return messageStrings.apWasDeleted() + " " + messageStrings + " " + messageStrings.recalculatePVandDuration();
         case CHANGED_ACTIVESTATE:
             return messageStrings.apActiveStateChanged() + " "
                     + messageStrings.recalculate();
         case WP_MOVED:
-            return messageStrings.wpMoveRecalcBaseline();
+            return messageStrings.wpMoveRecalcBaseline() + " " + messageStrings.recalculatePVandDuration();
         default:
             return null;
         }
