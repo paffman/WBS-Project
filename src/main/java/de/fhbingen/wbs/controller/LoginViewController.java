@@ -172,13 +172,18 @@ public class LoginViewController implements LoginView.ActionsDelegate,
             return;
         }
 
-        tracker = new TimeTrackerConnector(gui.getApplicationField());
-        if(!tracker.checkConnection()){
-            JOptionPane.showMessageDialog(gui, LocalizedStrings.getMessages()
-                    .connectionApplicationFailure());
-            tracker.loginUser(gui.getName(), gui.getUserPassword().toString());
-            return;
+        try {
+            tracker = new TimeTrackerConnector(gui.getApplicationField());
+            if (!tracker.checkConnection()) {
+                JOptionPane.showMessageDialog(gui, LocalizedStrings.getMessages()
+                        .connectionApplicationFailure());
+                tracker.loginUser(gui.getName(), gui.getUserPassword().toString());
+                return;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
 
         // save database as last accessed db
         saveLastDB(host, db, user, indexDbPw, application);
