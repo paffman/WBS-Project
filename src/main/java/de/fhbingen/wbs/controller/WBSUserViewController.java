@@ -14,7 +14,10 @@
 
 package de.fhbingen.wbs.controller;
 
+import com.mysql.jdbc.MySQLConnection;
 import de.fhbingen.wbs.gui.wpworker.WBSUserView;
+import de.fhbingen.wbs.jdbcConnection.MySqlConnect;
+import de.fhbingen.wbs.timetracker.TimeTrackerConnector;
 import de.fhbingen.wbs.translation.LocalizedStrings;
 import de.fhbingen.wbs.translation.Messages;
 
@@ -25,6 +28,14 @@ import de.fhbingen.wbs.dbaccess.DBModelManager;
 import de.fhbingen.wbs.dbaccess.data.Employee;
 import de.fhbingen.wbs.wpOverview.WPOverview;
 import de.fhbingen.wbs.wpOverview.WPOverviewGUI;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
 /**
  * A class to insert the work effort to the work package.
@@ -267,6 +278,16 @@ public class WBSUserViewController implements WBSUserView.Delegate {
                     this.getGui().getFirstName(), this.getGui().getName(),
                     rights, this.getGui().getDailyRate()));
             this.getGui().dispose();
+            //For the application server update the database.
+            TimeTrackerConnector tracker = new TimeTrackerConnector(LoginViewController.lastApplicationAddress);
+            tracker.createUser(getGui().getLogin(), "1234");
+            tracker.loginUser(getGui().getLogin(), "1234");
+            try {
+                tracker.addUserToProject(ProjectSetupAssistant.getIdByDatabaseName(MySqlConnect.getConnection(), LoginViewController.lastDbName),
+                        ProjectSetupAssistant.getUserID(MySqlConnect.getConnection(), getGui().getLogin()));
+            } catch(SQLException e){
+                e.printStackTrace();
+            }
         }
     }
 
@@ -280,4 +301,6 @@ public class WBSUserViewController implements WBSUserView.Delegate {
         this.passwordReset();
         this.getGui().dispose();
     }
+
+
 }
