@@ -14,9 +14,9 @@ public interface ProjectSetup extends Button, Database, Project, Login, Wbs {
     @En("Project setup assistant")
     String projectSetupAssistant();
 
-    @De("Datenbank Admin Login")
-    @En("Database Admin Login")
-    String databaseAdminLogin();
+    @De("Datenbank und Application Server")
+    @En("Database and Application Server")
+    String databaseApplication();
 
     @De("Projekteinrichtung")
     @En("Project Setup")

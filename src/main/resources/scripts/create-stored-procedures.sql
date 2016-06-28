@@ -994,9 +994,13 @@ BEGIN
 	DEALLOCATE PREPARE createUsr;
 
 	SET @grantExec = CONCAT('GRANT EXECUTE ON ',in_dbname,'.* TO \'',username,'\'@"','localhost','"');
+	SET @grantExec2 = CONCAT('GRANT EXECUTE ON ','id_wbs','.* TO \'',username,'\'@"','localhost','"');
 	PREPARE grantExec FROM @grantExec;
+	PREPARE grantExec2 FROM @grantExec2;
 	EXECUTE grantExec;
+	EXECUTE grantExec2;
 	DEALLOCATE PREPARE grantExec;
+	DEALLOCATE PREPARE grantExec2;
 	
 	SET username = CONCAT_WS('_', in_db_id, LEFT(in_login,11));	
 	SET @createUsr = CONCAT('CREATE USER \'',username,'\'@"','%','" IDENTIFIED BY "',in_password,'"');
@@ -1005,9 +1009,13 @@ BEGIN
 	DEALLOCATE PREPARE createUsr;
 
 	SET @grantExec = CONCAT('GRANT EXECUTE ON ',in_dbname,'.* TO \'',username,'\'@"','%','"');
+	SET @grantExec2 = CONCAT('GRANT EXECUTE ON ','id_wbs','.* TO \'',username,'\'@"','%','"');
 	PREPARE grantExec FROM @grantExec;
+	PREPARE grantExec2 FROM @grantExec2;
 	EXECUTE grantExec;
+	EXECUTE grantExec2;
 	DEALLOCATE PREPARE grantExec;
+	DEALLOCATE PREPARE grantExec2;
 	
 	INSERT 
 	INTO employees(

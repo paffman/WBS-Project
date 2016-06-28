@@ -100,6 +100,16 @@ public class LoginView extends JFrame {
      * Fields for the database connection.
      */
     private JTextField hostField, dbNameField, userField;
+
+    /**
+     * Textfield for the application server address.
+     */
+    private final JTextField txfApplicationAddress;
+
+    /**
+     * Label for application server
+     */
+    private final JLabel lblApplicationServer;
     /**
      * PasswordFields for the passwords needed for a database connection.
      */
@@ -177,6 +187,11 @@ public class LoginView extends JFrame {
          * @return The last username.
          */
         String getLastDbUser();
+
+        /**
+         * Returns the last application server address.
+         */
+        String getLastApplicationAddress();
     }
 
     /**
@@ -225,7 +240,7 @@ public class LoginView extends JFrame {
 
         // LocalizedStrings.getDbChooser() and input elements
         JLabel titleLabel =
-                new JLabel(LocalizedStrings.getDbChooser().database() + ":");
+                new JLabel(LocalizedStrings.getDbChooser().databaseApplication() + ":");
 
         Font oldFont = titleLabel.getFont();
         Font boldFont = new Font(oldFont.getFontName(), Font.BOLD,
@@ -241,6 +256,11 @@ public class LoginView extends JFrame {
         JLabel dbPwLabel =
                 new JLabel(LocalizedStrings.getDbChooser().indexPassword()
                         + ":");
+
+        lblApplicationServer =
+                new JLabel(LocalizedStrings.getDbChooser().applicationServer(
+                        ) +":");
+
         JLabel titleUserLabel =
                 new JLabel(LocalizedStrings.getDbChooser().user() + ":");
         titleUserLabel.setFont(boldFont);
@@ -254,6 +274,7 @@ public class LoginView extends JFrame {
         dbNameField = new JTextField();
         userField = new JTextField();
         dbPwPasswordField = new JPasswordField();
+        txfApplicationAddress = new JTextField();
         pwPasswordField = new JPasswordField();
         closeButton = new JButton(LocalizedStrings.getDbChooser().cancel());
         okButton = new JButton(LocalizedStrings.getDbChooser().ok());
@@ -272,6 +293,10 @@ public class LoginView extends JFrame {
             userField.setText(dataSource.getLastDbUser());
         }
 
+        if (dataSource.getLastApplicationAddress() != null){
+            txfApplicationAddress.setText(dataSource.getLastApplicationAddress());
+        }
+
         // place all elements in the window.
         this.setJMenuBar(mainMenuBar);
         createGBC(titleLabel, 0, 0, 4, 1);
@@ -281,14 +306,16 @@ public class LoginView extends JFrame {
         createGBC(dbNameField, 1, 2, 3, 1);
         createGBC(dbPwLabel, 0, 3, 1, 1);
         createGBC(dbPwPasswordField, 1, 3, 3, 1);
-        createGBC(titleUserLabel, 0, 4, 4, 1);
-        createGBC(userLabel, 0, 5, 1, 1);
-        createGBC(userField, 1, 5, 3, 1);
-        createGBC(pwLabel, 0, 6, 1, 1);
-        createGBC(pwPasswordField, 1, 6, 3, 1);
-        createGBC(plCheckBox, 0, 7, 1, 1);
-        createGBC(okButton, 2, 8, 1, 1);
-        createGBC(closeButton, 3, 8, 1, 1);
+        createGBC(lblApplicationServer, 0, 4, 1, 1);
+        createGBC(txfApplicationAddress, 1, 4, 3, 1);
+        createGBC(titleUserLabel, 0, 5, 4, 1);
+        createGBC(userLabel, 0, 6, 1, 1);
+        createGBC(userField, 1, 6, 3, 1);
+        createGBC(pwLabel, 0, 7, 1, 1);
+        createGBC(pwPasswordField, 1, 7, 3, 1);
+        createGBC(plCheckBox, 0, 8, 1, 1);
+        createGBC(okButton, 2, 9, 1, 1);
+        createGBC(closeButton, 3, 9, 1, 1);
 
         SwingUtilityMethods.setNativeLookAndFeel(this);
         // show gui
@@ -548,5 +575,9 @@ public class LoginView extends JFrame {
      */
     protected final JPasswordField getPwPasswordField() {
         return pwPasswordField;
+    }
+
+    public final String getApplicationField(){
+        return txfApplicationAddress.getText();
     }
 }

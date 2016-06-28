@@ -5,6 +5,7 @@ import c10n.C10N;
 import de.fhbingen.wbs.dbaccess.ScriptRunner;
 import de.fhbingen.wbs.gui.projectsetupassistant.DatabaseAdminLogin;
 import de.fhbingen.wbs.gui.projectsetupassistant.ProjectProperties;
+import de.fhbingen.wbs.timetracker.TimeTrackerConnector;
 import de.fhbingen.wbs.translation.Messages;
 import de.fhbingen.wbs.translation.ProjectSetup;
 
@@ -13,6 +14,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.net.HttpURLConnection;
+import java.net.Socket;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -118,6 +121,10 @@ public final class ProjectSetupAssistant implements ProjectProperties.Actions,
      */
     private static final String SQL_CALL_DB_IDENTIFIER_NEW
             = "CALL db_identifier_new (?)"; //NON-NLS
+
+    private static final String SQL_CALL_DB_USERID_SELECT_BY_USERNAME
+            = "CALL db_userid_select_by_username (?)";
+
     /**
      * SQL statement for creating the project database. Used in {@link
      * #createProjectDatabase(java.sql.Connection, String)}.
@@ -184,6 +191,13 @@ public final class ProjectSetupAssistant implements ProjectProperties.Actions,
     private Connection connection;
 
     /**
+     * Connetor to the application server.
+     */
+    private TimeTrackerConnector tracker;
+
+    private int dbID;
+
+    /**
      * Private default constructor. Static method must be used to create a
      * new Project.
      * @param parent the parent for dialogs.
@@ -213,11 +227,14 @@ public final class ProjectSetupAssistant implements ProjectProperties.Actions,
         assert validateProjectPropertiesEntries();
         if (validateDatabaseAdminLoginEntries()
                 && validateAndEstablishDatabaseAccess()
-                && validateDatabaseRights(connection)) {
+                && validateDatabaseRights(connection)
+                && validateConnectionApplication()
+                && validateApplicationUser()) {
             databaseAdminLogin.setVisible(false);
             switch (showSummary()) {
                 case JOptionPane.OK_OPTION:
                     setupProjectOnDatabase();
+                    setupProjectOnApplication();
                     break;
                 case JOptionPane.NO_OPTION:
                     databaseAdminLogin.setVisible(true);
@@ -256,12 +273,14 @@ public final class ProjectSetupAssistant implements ProjectProperties.Actions,
                         + newSummaryLine(labels.loginLong(),
                         projectProperties.getUserName())
                         + "</table><br /><b><i>"//NON-NLS
-                        + labels.databaseAdminLogin()
+                        + labels.databaseApplication()
                         + "</i></b><br /><table>" //NON-NLS
                         + newSummaryLine(labels.serverAddress(),
                         databaseAdminLogin.getServerAddress())
                         + newSummaryLine(labels.rootLoginName(),
                         databaseAdminLogin.getUserName())
+                        + newSummaryLine(labels.applicationServer(),
+                        databaseAdminLogin.getApplicationAddress())
                         + "</table><br /><br />" //NON-NLS
                         + messages.valuesCorrect() + "</html>"; //NON-NLS
         JLabel label = new JLabel(summary);
@@ -310,7 +329,8 @@ public final class ProjectSetupAssistant implements ProjectProperties.Actions,
      */
     private boolean validateDatabaseAdminLoginEntries() {
         if (databaseAdminLogin.getUserName().isEmpty()
-                || databaseAdminLogin.getServerAddress().isEmpty()) {
+                || databaseAdminLogin.getServerAddress().isEmpty()
+                || databaseAdminLogin.getApplicationAddress().isEmpty()) {
             showErrorMessage(messages.fillAllFieldsError());
             return false;
         }
@@ -645,7 +665,7 @@ public final class ProjectSetupAssistant implements ProjectProperties.Actions,
                         messages.projectSetupSuccess(),
                         labels.projectSetupSuccessTitle(),
                         JOptionPane.DEFAULT_OPTION);
-                connection.close();
+                //connection.close();
             } else {
                 showErrorMessage(messages.databaseNameAlreadyExists());
                 projectProperties.setVisible(true);
@@ -731,7 +751,7 @@ public final class ProjectSetupAssistant implements ProjectProperties.Actions,
      * @return id of database name.
      * @throws SQLException if something goes wrong.
      */
-    private static int getIdByDatabaseName(final Connection connection,
+    public static int getIdByDatabaseName(final Connection connection,
                                            final String databaseName)
             throws SQLException {
         String oldDatabaseName = connection.getCatalog();
@@ -744,8 +764,26 @@ public final class ProjectSetupAssistant implements ProjectProperties.Actions,
             resultSet.next();
             return resultSet.getInt(2);
         } finally {
-            connection.setCatalog(oldDatabaseName);
+            //connection.setCatalog(oldDatabaseName);
         }
+    }
+
+    public static int getUserID(final Connection connection,
+                                 final String username) throws SQLException{
+        String oldDatabaseName = connection.getCatalog();
+        useDatabase(connection, SQL_WBS_DB_NAME);
+        try{
+            PreparedStatement statement = connection.prepareStatement(
+                    SQL_CALL_DB_USERID_SELECT_BY_USERNAME);
+            statement.setString(1, username);
+            ResultSet resultSet = statement.executeQuery();
+            resultSet.next();
+            return resultSet.getInt(1);
+        } finally {
+            //connection.setCatalog(oldDatabaseName);
+        }
+
+
     }
     /**
      * Runs a script from the resource bundle on the connection.
@@ -994,9 +1032,9 @@ public final class ProjectSetupAssistant implements ProjectProperties.Actions,
      */
     private void createProjectManagerUser() throws SQLException {
         String databaseName = projectProperties.getDatabaseName();
-        int databaseId = getIdByDatabaseName(connection, databaseName);
+        dbID = getIdByDatabaseName(connection, databaseName);
         useDatabase(connection, databaseName);
-        String formattedId = String.format("%04d", databaseId); //NON-NLS
+        String formattedId = String.format("%04d", dbID); //NON-NLS
 
         final int paramCount = 9;
         String storedProcedure = "CALL employees_new("; //NON-NLS
@@ -1022,5 +1060,58 @@ public final class ProjectSetupAssistant implements ProjectProperties.Actions,
         statement.execute();
         statement.close();
 
+    }
+
+    /**
+     * Setup the project on the application server.
+     */
+    private void setupProjectOnApplication(){
+        try {
+            tracker.createProject();
+            try {
+                tracker.addUserToProject(dbID, getUserID(connection, projectProperties.getUserName()));
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        } catch(IOException e){
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Validate the Connection to the application server.
+     * @return successful connection
+     */
+    private boolean validateConnectionApplication(){
+        try {
+            tracker = new TimeTrackerConnector(databaseAdminLogin.getApplication());
+            if (!tracker.checkConnection()) {
+                showErrorMessage(messages.connectionApplicationFailure());
+            }
+            return tracker.checkConnection();
+        }catch(Exception e){
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
+     * Validate the user.
+     * @return successful validation of the user.
+     */
+    private boolean validateApplicationUser(){
+        try {
+            tracker.createUser(projectProperties.getUserName(), new String(projectProperties.getPassword()));
+            int response = tracker.loginUser(projectProperties.getUserName(), new String(projectProperties.getPassword()));
+            if (response == HttpURLConnection.HTTP_BAD_REQUEST) {
+                showErrorMessage(messages.wrongUserPassword());
+                return false;
+            }
+
+            return true;
+        } catch(IOException e){
+            e.printStackTrace();
+            return false;
+        }
     }
 }

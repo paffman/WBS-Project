@@ -61,6 +61,21 @@ END //
 DELIMITER ;
 -- --------------------------------------------------------
 
+-- --------------------------------------------------------
+-- db_userid_select_by_username( username )
+-- r
+-- --------------------------------------------------------
+DELIMITER //
+CREATE PROCEDURE db_userid_select_by_usermane(
+  IN in_username varchar(255))
+BEGIN
+  SELECT w.id
+  FROM auth_user a join wbs_user_wbsuser w on (a.id = w.user_id)
+  WHERE a.username = in_username;
+END //
+DELIMITER ;
+-- --------------------------------------------------------
+
 CREATE USER 'idxUser'@'localhost'
  IDENTIFIED BY '1234';
 GRANT EXECUTE ON id_wbs.* TO 'idxUser'@'localhost'
