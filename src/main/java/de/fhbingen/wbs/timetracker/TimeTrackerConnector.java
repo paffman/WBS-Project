@@ -46,7 +46,7 @@ public class TimeTrackerConnector {
         HttpURLConnection connection = null;
         try {
             connection = (HttpURLConnection) address.openConnection();
-            int response = connection.getResponseCode();
+            int response = connection.getResponseCode()
             connection.disconnect();
             if (response == HttpURLConnection.HTTP_BAD_GATEWAY)
                 return false;
