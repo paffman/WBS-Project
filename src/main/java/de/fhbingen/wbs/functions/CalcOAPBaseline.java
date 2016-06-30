@@ -132,6 +132,7 @@ public class CalcOAPBaseline {
 
         for (int i = WpManager.getRootAp().getLvlIDs().length; i >= 0; i--) {
             for(Workpackage oap : oapLevels.get(i)){
+                System.out.println("will calc OAP: " + oap.getName());
                 calculate(oap);
             }
         }

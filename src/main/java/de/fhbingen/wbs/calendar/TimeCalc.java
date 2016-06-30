@@ -72,7 +72,7 @@ public class TimeCalc {
         Date newStartDate = DateFunctions.getNextWorkday(predec.getEndDateCalc());
         int followerDuration = DateFunctions.getWorkdayDistanceBetweenDates(follower.getStartDateCalc(), follower.getEndDateCalc());
         Date newEndDate = DateFunctions.calcDateByOffset(newStartDate, followerDuration);
-        System.out.println("follower verschoben: " + follower.getName() + "old End: " + follower.getEndDateCalc() + ", new End" + newEndDate);
+        //System.out.println("follower verschoben: " + follower.getName() + "old End: " + follower.getEndDateCalc() + ", new End" + newEndDate);
         follower.setStartDateCalc(newStartDate);
         follower.setEndDateCalc(newEndDate);
         WpManager.updateAP(follower);
