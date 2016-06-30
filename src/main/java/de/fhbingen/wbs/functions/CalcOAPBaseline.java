@@ -7,22 +7,13 @@ import de.fhbingen.wbs.dbaccess.DBModelManager;
 import de.fhbingen.wbs.dbaccess.data.AnalyseData;
 import de.fhbingen.wbs.dbaccess.data.Baseline;
 import de.fhbingen.wbs.dbaccess.data.Employee;
-import de.fhbingen.wbs.translation.LocalizedStrings;
 import de.fhbingen.wbs.globals.Loader;
 import de.fhbingen.wbs.globals.Workpackage;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
+import de.fhbingen.wbs.translation.LocalizedStrings;
 import de.fhbingen.wbs.wpConflict.ConflictCompat;
 import de.fhbingen.wbs.wpOverview.WPOverview;
+
+import java.util.*;
 
 /**
  * Studienprojekt: PSYS WBS 2.0<br/>
@@ -144,6 +135,9 @@ public class CalcOAPBaseline {
                 calculate(oap);
             }
         }
+
+
+
         wpOverview.reload();
     }
 
@@ -269,7 +263,7 @@ public class CalcOAPBaseline {
 
                             double oldOAPPV = oapPvs.get(new Day(actualDate));
                             oapPvs.put(new Day(actualDate), uapPVs.get(actualDate) + oldOAPPV);
-                            System.out.println(i+" --- "+actualDate+":   "+uapPVs.get(actualDate).intValue());
+                            //System.out.println(i+" --- "+actualDate+":   "+uapPVs.get(actualDate).intValue());
                         }
                         i++;
                         //Summiere nach Paketende dessen PV (=BAC) auf die nachfolgenden Datumswerte

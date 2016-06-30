@@ -807,16 +807,9 @@ public class Workpackage {
      *            als Date von Datenbank
      */
     public final void setEndDateCalc(final Date endDateCalc) {
-        if (thisWp.getEndDateCalc() == null
-                || thisWp.getStartDateCalc() == null) {
-            thisWp.setEndDateCalc(endDateCalc);
-        } else {
-            if (thisWp.isTopLevel()
-                    || thisWp.getEndDateCalc().after(
-                            new Date(System.currentTimeMillis()))) {
-                thisWp.setEndDateCalc(endDateCalc);
-            }
-        }
+
+              thisWp.setEndDateCalc(endDateCalc);
+
     }
 
     /**
