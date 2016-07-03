@@ -1000,7 +1000,6 @@ BEGIN
 	EXECUTE grantExec;
 	EXECUTE grantExec2;
 	DEALLOCATE PREPARE grantExec;
-	DEALLOCATE PREPARE grantExec2;
 	
 	SET username = CONCAT_WS('_', in_db_id, LEFT(in_login,11));	
 	SET @createUsr = CONCAT('CREATE USER \'',username,'\'@"','%','" IDENTIFIED BY "',in_password,'"');
