@@ -1,5 +1,7 @@
 package de.fhbingen.wbs.timetracker;
 
+import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.mashape.unirest.request.HttpRequestWithBody;
@@ -102,7 +104,7 @@ public class TimeTrackerConnector {
             }
         }
 
-        return h.asJson().getCode();
+        return h.asString().getCode();
     }
 
     public String getToken(){

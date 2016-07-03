@@ -66,7 +66,7 @@ DELIMITER ;
 -- r
 -- --------------------------------------------------------
 DELIMITER //
-CREATE PROCEDURE db_userid_select_by_usermane(
+CREATE PROCEDURE db_userid_select_by_username(
   IN in_username varchar(255))
 BEGIN
   SELECT w.id
