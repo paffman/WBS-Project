@@ -1076,11 +1076,11 @@ public final class ProjectSetupAssistant implements ProjectProperties.Actions,
             tracker.post("projects/", null, true);
 
             //add the user to an already existing project
-            data.put("project", "/api/projects/" + dbID + "/");
+            data.put("project", tracker.getAPIURL("/api/projects/" + dbID + "/"));
             tracker.post("users/" + getUserID(connection, projectProperties.getUserName()) + "/projects/", data, true);
 
         } catch(Exception e){
-
+            e.printStackTrace();
         }
     }
 
@@ -1111,7 +1111,6 @@ public final class ProjectSetupAssistant implements ProjectProperties.Actions,
             data.put("username", projectProperties.getUserName());
             data.put("password", new String(projectProperties.getPassword()));
 
-            //create the user
             tracker.post("users/", data, false);
 
             //login the user
