@@ -200,7 +200,6 @@ public class LoginViewController implements LoginView.ActionsDelegate,
             e.printStackTrace();
         }
 
-
         // save database as last accessed db
         saveLastDB(host, db, user, indexDbPw, application);
 
@@ -349,6 +348,8 @@ public class LoginViewController implements LoginView.ActionsDelegate,
      */
     private void saveLastDB(final String host, final String db,
             final String user, final char[] indexPw, final String application) {
+        LoginViewController.lastApplicationAddress = application;
+
         File dbConfig = new File("DbConfig.txt");
         try {
             PrintWriter out = new PrintWriter(dbConfig);
