@@ -68,7 +68,7 @@ public class TreePanelAction {
 
             @Override
             public void mousePressed(final MouseEvent e) {
-                System.out.println(" *** mouse pressed");
+
                 DefaultMutableTreeNode node = (DefaultMutableTreeNode) gui
                         .getTree().getLastSelectedPathComponent();
                 Workpackage selected = null;
@@ -89,7 +89,7 @@ public class TreePanelAction {
 
             @Override
             public void mouseReleased(final MouseEvent e) {
-                System.out.println(" *** mouse released");
+
                 DefaultMutableTreeNode node = (DefaultMutableTreeNode) gui
                     .getTree().getLastSelectedPathComponent();
                 Workpackage selected = null;
