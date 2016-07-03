@@ -350,7 +350,6 @@ public class LoginViewController implements LoginView.ActionsDelegate,
             final String user, final char[] indexPw, final String application) {
         LoginViewController.lastApplicationAddress = application;
         LoginViewController.lastDbName = db;
-        LoginViewController.lastDbHost = host;
 
         File dbConfig = new File("DbConfig.txt");
         try {
