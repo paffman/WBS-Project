@@ -1014,7 +1014,6 @@ BEGIN
 	EXECUTE grantExec;
 	EXECUTE grantExec2;
 	DEALLOCATE PREPARE grantExec;
-	DEALLOCATE PREPARE grantExec2;
 	
 	INSERT 
 	INTO employees(
