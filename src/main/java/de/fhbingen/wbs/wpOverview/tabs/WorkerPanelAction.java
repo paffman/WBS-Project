@@ -14,12 +14,18 @@
 
 package de.fhbingen.wbs.wpOverview.tabs;
 
+import de.fhbingen.wbs.controller.LoginViewController;
+import de.fhbingen.wbs.controller.ProjectSetupAssistant;
 import de.fhbingen.wbs.controller.WBSUserViewController;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.HashMap;
+import java.util.Map;
 
 import de.fhbingen.wbs.dbaccess.DBModelManager;
 import de.fhbingen.wbs.dbaccess.data.Employee;
+import de.fhbingen.wbs.jdbcConnection.MySqlConnect;
+import de.fhbingen.wbs.timetracker.TimeTrackerConnector;
 import de.fhbingen.wbs.wpOverview.WPOverview;
 import de.fhbingen.wbs.wpWorker.Worker;
 
@@ -52,6 +58,16 @@ public class WorkerPanelAction {
                                 .isProject_leader(), employee
                                 .getDaily_rate());
                         new WBSUserViewController(mit, over);
+                        try {
+                            TimeTrackerConnector tracker = new TimeTrackerConnector(LoginViewController.lastApplicationAddress);
+                            tracker.setToken(LoginViewController.tokenLoginUser);
+                            Map<String, Object> data = new HashMap<>();
+                            data.put("password", "1234");
+                            tracker.patch("users/" + ProjectSetupAssistant.getUserID(MySqlConnect.getConnection(),
+                                    employee.getLogin()) +"/",
+                                    data);
+                        } catch(Exception t) {
+                        }
                     }
                     over.reload();
                 }
