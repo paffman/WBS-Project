@@ -1,10 +1,7 @@
 package de.fhbingen.wbs.chart;
 
-import de.fhbingen.wbs.translation.LocalizedStrings;
 import de.fhbingen.wbs.globals.Controller;
-import java.awt.Color;
-import java.awt.Dimension;
-import javax.swing.JFrame;
+import de.fhbingen.wbs.translation.LocalizedStrings;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartFrame;
 import org.jfree.chart.JFreeChart;
@@ -14,6 +11,9 @@ import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.time.TimeSeriesCollection;
 import org.jfree.ui.RectangleInsets;
+
+import javax.swing.*;
+import java.awt.*;
 
 /**
  * Studienprojekt:	PSYS WBS 2.0<br/>
@@ -37,6 +37,7 @@ public abstract class WBSChart {
 
 	protected ChartFrame frame;
 	protected XYPlot plot;
+	protected JFreeChart charty;
 
 	/**
 	 * Konstruktor
@@ -50,8 +51,8 @@ public abstract class WBSChart {
 			Controller.showMessage("Es sind zuwenig Daten vorhanden oder die Laufzeit des AP ist nicht lang genug");
 
 		} else {
-			JFreeChart chart = createChart(dataSet);
-			frame = new ChartFrame(LocalizedStrings.getChart().diagramView(), chart);
+			charty = createChart(dataSet);
+			frame = new ChartFrame(LocalizedStrings.getChart().diagramView(), charty);
 			frame.setSize(new Dimension(1024, 700));
 			frame.setResizable(true);
 			frame.getChartPanel().setPopupMenu(null);

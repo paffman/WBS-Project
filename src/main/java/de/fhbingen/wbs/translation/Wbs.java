@@ -178,4 +178,8 @@ public interface Wbs {
     @De("Aufwand erfassen")
     @En("Work effort booking")
     String workEffortTime();
+
+    @De("Arbeitspaketverlauf")
+    @En("Wp-Chart")
+    String wpChart();
 }

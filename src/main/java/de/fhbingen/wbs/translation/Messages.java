@@ -109,6 +109,10 @@ public interface Messages extends ErrorMessages {
     @En("Time line was saved at {0}")
     String timeLineSaved(String outfile);
 
+    @De("Arbeitspaketverlaufsdiagramm wurde unter {0} gespeichert")
+    @En("WP Chart was saved at {0}")
+    String wpChartSaved(String outfile);
+
     @De("Die Dauerberechnung ist eventuell nicht aktuell. Trotzdem Baseline "
             + "berechnen?")
     @En("The calculation of the duration is not up to date. Do you want to " +
