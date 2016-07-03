@@ -295,8 +295,8 @@ public class WBSUserViewController implements WBSUserView.Delegate {
 
                 //add the user to an already existing project
                 data.clear();
-                data.put("project", "/api/projects/" + ProjectSetupAssistant.getIdByDatabaseName(MySqlConnect.getConnection(),
-                        LoginViewController.lastDbName) + "/");
+                data.put("project", tracker.getAPIURL("/api/projects/" + ProjectSetupAssistant.getIdByDatabaseName(MySqlConnect.getConnection(),
+                        LoginViewController.lastDbName) + "/"));
                 tracker.post("users/" + ProjectSetupAssistant.getUserID(MySqlConnect.getConnection(), getGui().getLogin()) + "/projects/", data, true);
 
             } catch (Exception e) {
