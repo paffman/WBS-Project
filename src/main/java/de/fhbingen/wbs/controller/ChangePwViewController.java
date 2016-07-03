@@ -32,6 +32,8 @@ import de.fhbingen.wbs.translation.Messages;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Functionality for the ChangePwView class. Checks all needed conditions to
@@ -154,12 +156,19 @@ public class ChangePwViewController implements ChangePwView.Delegate {
                                 passwordChangeConfirm());
                         getGui().dispose();
                         try{
-                        TimeTrackerConnector tracker = new TimeTrackerConnector(LoginViewController.lastApplicationAddress);
-                        tracker.loginUser(getUsr().getLogin(), new String(gui.txfOldPW.getPassword()));
+                            TimeTrackerConnector tracker = new TimeTrackerConnector(LoginViewController.lastApplicationAddress);
+                            Map<String, Object> data = new HashMap<>();
+                            data.put("username", getUsr().getLogin());
+                            data.put("password", new String(gui.txfOldPW.getPassword()));
+                            //login the user
+                            tracker.post("login/", data, false);
 
-                            tracker.updateUser(ProjectSetupAssistant.getUserID(MySqlConnect.getConnection(),
-                                    getUsr().getLogin()),
-                                    new String(gui.txfNewPW.getPassword()));
+                            //update the user password
+                            data.clear();
+                            data.put("password", new String(gui.txfNewPW.getPassword()));
+                            tracker.patch("users/" + ProjectSetupAssistant.getUserID(MySqlConnect.getConnection(),
+                                    getUsr().getLogin()) +"/",
+                                    data);
                         } catch (Exception e){
                             e.printStackTrace();
                         }

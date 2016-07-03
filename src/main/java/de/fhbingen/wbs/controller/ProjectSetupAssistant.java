@@ -2,9 +2,11 @@ package de.fhbingen.wbs.controller;
 
 
 import c10n.C10N;
+import com.mashape.unirest.http.exceptions.UnirestException;
 import de.fhbingen.wbs.dbaccess.ScriptRunner;
 import de.fhbingen.wbs.gui.projectsetupassistant.DatabaseAdminLogin;
 import de.fhbingen.wbs.gui.projectsetupassistant.ProjectProperties;
+import de.fhbingen.wbs.jdbcConnection.MySqlConnect;
 import de.fhbingen.wbs.timetracker.TimeTrackerConnector;
 import de.fhbingen.wbs.translation.Messages;
 import de.fhbingen.wbs.translation.ProjectSetup;
@@ -25,6 +27,8 @@ import java.sql.Statement;
 import java.sql.Types;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.regex.Pattern;
 import javax.swing.JDialog;
@@ -1067,14 +1071,16 @@ public final class ProjectSetupAssistant implements ProjectProperties.Actions,
      */
     private void setupProjectOnApplication(){
         try {
-            tracker.createProject();
-            try {
-                tracker.addUserToProject(dbID, getUserID(connection, projectProperties.getUserName()));
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        } catch(IOException e){
-            e.printStackTrace();
+            //this endpoint is called, when a new project is created by the FAT-Client. Just needed to update the backend.
+            Map<String, Object> data = new HashMap<>();
+            tracker.post("projects/", null, true);
+
+            //add the user to an already existing project
+            data.put("project", "/api/projects/" + dbID + "/");
+            tracker.post("users/" + getUserID(connection, projectProperties.getUserName()) + "/projects/", data, true);
+
+        } catch(Exception e){
+
         }
     }
 
@@ -1090,7 +1096,7 @@ public final class ProjectSetupAssistant implements ProjectProperties.Actions,
             }
             return tracker.checkConnection();
         }catch(Exception e){
-            e.printStackTrace();
+            showErrorMessage(messages.connectionApplicationFailure());
             return false;
         }
     }
@@ -1101,15 +1107,23 @@ public final class ProjectSetupAssistant implements ProjectProperties.Actions,
      */
     private boolean validateApplicationUser(){
         try {
-            tracker.createUser(projectProperties.getUserName(), new String(projectProperties.getPassword()));
-            int response = tracker.loginUser(projectProperties.getUserName(), new String(projectProperties.getPassword()));
+            Map<String, Object> data = new HashMap<>();
+            data.put("username", projectProperties.getUserName());
+            data.put("password", new String(projectProperties.getPassword()));
+
+            //create the user
+            tracker.post("users/", data, false);
+
+            //login the user
+            int response = tracker.post("login/", data, false);
+
             if (response == HttpURLConnection.HTTP_BAD_REQUEST) {
                 showErrorMessage(messages.wrongUserPassword());
                 return false;
             }
 
             return true;
-        } catch(IOException e){
+        } catch(UnirestException e){
             e.printStackTrace();
             return false;
         }

@@ -37,6 +37,8 @@ import java.io.FileReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A class to insert the work effort to the work package.
@@ -282,10 +284,21 @@ public class WBSUserViewController implements WBSUserView.Delegate {
             //For the application server update the database.
             try {
                 TimeTrackerConnector tracker = new TimeTrackerConnector(LoginViewController.lastApplicationAddress);
-                tracker.createUser(getGui().getLogin(), "1234");
-                tracker.loginUser(getGui().getLogin(), "1234");
-                tracker.addUserToProject(ProjectSetupAssistant.getIdByDatabaseName(MySqlConnect.getConnection(), LoginViewController.lastDbName),
-                        ProjectSetupAssistant.getUserID(MySqlConnect.getConnection(), getGui().getLogin()));
+                Map<String, Object> data = new HashMap<>();
+                data.put("username", getGui().getLogin());
+                data.put("password", "1234");
+
+                //create the user
+                tracker.post("users/", data, false);
+                //login the user
+                tracker.post("login/", data, false);
+
+                //add the user to an already existing project
+                data.clear();
+                data.put("project", "/api/projects/" + ProjectSetupAssistant.getIdByDatabaseName(MySqlConnect.getConnection(),
+                        LoginViewController.lastDbName) + "/");
+                tracker.post("users/" + ProjectSetupAssistant.getUserID(MySqlConnect.getConnection(), getGui().getLogin()) + "/projects/", data, true);
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
