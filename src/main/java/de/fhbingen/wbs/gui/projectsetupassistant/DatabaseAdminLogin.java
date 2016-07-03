@@ -318,7 +318,6 @@ public class DatabaseAdminLogin extends JDialog {
      * @return string from application server address
      */
     public String getApplication(){
-        System.out.println("Adresse: " + txfApplicationAddress.getText());
         return txfApplicationAddress.getText();
     }
 
