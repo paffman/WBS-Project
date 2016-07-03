@@ -20,28 +20,29 @@
 package de.fhbingen.wbs.controller;
 
 import c10n.C10N;
-import de.fhbingen.wbs.gui.login.LoginView;
+import com.mashape.unirest.http.exceptions.UnirestException;
 import de.fhbingen.wbs.dbaccess.DBModelManager;
 import de.fhbingen.wbs.dbaccess.data.Employee;
-import de.fhbingen.wbs.translation.C10NUseEnglishDefaultConfiguration;
-import de.fhbingen.wbs.translation.LocalizedStrings;
 import de.fhbingen.wbs.functions.WpManager;
 import de.fhbingen.wbs.globals.Loader;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.PrintWriter;
+import de.fhbingen.wbs.gui.login.LoginView;
+import de.fhbingen.wbs.jdbcConnection.MySqlConnect;
+import de.fhbingen.wbs.jdbcConnection.SQLExecuter;
+import de.fhbingen.wbs.timetracker.TimeTrackerConnector;
+import de.fhbingen.wbs.translation.C10NUseEnglishDefaultConfiguration;
+import de.fhbingen.wbs.translation.LocalizedStrings;
+import de.fhbingen.wbs.wpOverview.WPOverview;
+import de.fhbingen.wbs.wpWorker.User;
+
+import javax.swing.*;
+import java.io.*;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HashMap;
 import java.util.Locale;
-import javax.swing.JOptionPane;
-import de.fhbingen.wbs.jdbcConnection.MySqlConnect;
-import de.fhbingen.wbs.jdbcConnection.SQLExecuter;
-import de.fhbingen.wbs.wpOverview.WPOverview;
-import de.fhbingen.wbs.wpWorker.User;
+import java.util.Map;
 
 /**
  * Studienprojekt: WBS Kunde: Pentasys AG, Jens von Gersdorff Projektmitglieder:
@@ -70,11 +71,11 @@ public class LoginViewController implements LoginView.ActionsDelegate,
     /**
      * last Host the client was connected to.
      */
-    private String lastDbHost = null;
+    public static String lastDbHost = null;
     /**
      * Name of the last database the client was connected to.
      */
-    private String lastDbName = null;
+    public static String lastDbName = null;
     /**
      * Password for the id_wbs database of the last host the client was
      * connected to.
@@ -86,12 +87,27 @@ public class LoginViewController implements LoginView.ActionsDelegate,
     private String lastDbUser = null;
 
     /**
+     * The token for the login user.
+     */
+    public static String tokenLoginUser = null;
+
+    /**
+     * Last application server address.
+     */
+    public static String lastApplicationAddress;
+
+    /**
      * Constructor initializes the LoginView and the Listeners for it.
      */
     public LoginViewController() {
         loadLastDB();
         gui = new LoginView(this, this);
     }
+
+    /**
+     * Connetor to the application server.
+     */
+    private TimeTrackerConnector tracker;
 
     /**
      * This method is called when the "ok"-Button in the GUI is activated. It
@@ -107,6 +123,7 @@ public class LoginViewController implements LoginView.ActionsDelegate,
         char[] indexDbPw = gui.getIndexPassword();
         char[] userPw = gui.getUserPassword();
         Boolean pl = gui.isProjectLeader();
+        String application = gui.getApplicationField();
 
         // check input
         if (host.equals("")) {
@@ -117,6 +134,12 @@ public class LoginViewController implements LoginView.ActionsDelegate,
         if (db.equals("")) {
             JOptionPane.showMessageDialog(gui, LocalizedStrings.getMessages()
                     .loginMissingDbName());
+            return;
+        }
+
+        if(gui.getApplicationField().equals("")){
+            JOptionPane.showMessageDialog(gui, LocalizedStrings.getMessages()
+                    .loginMissingApplication());
             return;
         }
         if (user.equals("")) {
@@ -154,8 +177,31 @@ public class LoginViewController implements LoginView.ActionsDelegate,
             return;
         }
 
+        try {
+            tracker = new TimeTrackerConnector(gui.getApplicationField());
+            if (!tracker.checkConnection()) {
+                JOptionPane.showMessageDialog(gui, LocalizedStrings.getMessages()
+                        .connectionApplicationFailure());
+                return;
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(gui, LocalizedStrings.getMessages()
+                    .connectionApplicationFailure());
+            return;
+        }
+
+        try {
+            Map<String, Object> data = new HashMap<>();
+            data.put("username", getGui().getUsername());
+            data.put("password", new String(getGui().getUserPassword()));
+            tracker.post("login/", data, false);
+            tokenLoginUser = tracker.getToken();
+        } catch (UnirestException e) {
+            e.printStackTrace();
+        }
+
         // save database as last accessed db
-        saveLastDB(host, db, user, indexDbPw);
+        saveLastDB(host, db, user, indexDbPw, application);
 
         // get employee data
         Employee employee =
@@ -239,7 +285,7 @@ public class LoginViewController implements LoginView.ActionsDelegate,
                         .getMessages().loginConnectionFailure()
                         + "\n"
                         + LocalizedStrings.getMessages().loginMissingIndexPw());
-            } else if (rslt.next()) {
+            } else if (rslt.next()) {//maggi
                 ret = rslt.getString("id");
             } else {
                 JOptionPane.showMessageDialog(gui, LocalizedStrings
@@ -301,7 +347,10 @@ public class LoginViewController implements LoginView.ActionsDelegate,
      *            password for the index database.
      */
     private void saveLastDB(final String host, final String db,
-            final String user, final char[] indexPw) {
+            final String user, final char[] indexPw, final String application) {
+        LoginViewController.lastApplicationAddress = application;
+        LoginViewController.lastDbName = db;
+
         File dbConfig = new File("DbConfig.txt");
         try {
             PrintWriter out = new PrintWriter(dbConfig);
@@ -310,6 +359,7 @@ public class LoginViewController implements LoginView.ActionsDelegate,
             out.println(indexPw);
             out.println(user);
             out.println(AddWorkEffortController.workEffortType);
+            out.println(application);
             out.close();
         } catch (IOException e) {
             e.printStackTrace();
@@ -337,6 +387,7 @@ public class LoginViewController implements LoginView.ActionsDelegate,
                 } else {
                     AddWorkEffortController.workEffortType = LocalizedStrings.getGeneralStrings().days();
                 }
+                this.lastApplicationAddress = in.readLine();
                 in.close();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -363,7 +414,11 @@ public class LoginViewController implements LoginView.ActionsDelegate,
     public final String getLastDbUser() {
         return lastDbUser;
     }
-        /**
+
+    @Override
+    public final String getLastApplicationAddress(){ return lastApplicationAddress; }
+
+    /**
      * @return the gui
      */
     public final LoginView getGui() {

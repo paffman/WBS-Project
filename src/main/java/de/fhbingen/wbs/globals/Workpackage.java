@@ -775,7 +775,7 @@ public class Workpackage {
      *            als Date von Datenbank
      */
     public final void setStartDateCalc(final Date startDateCalc) {
-        if (thisWp.getStartDateCalc() == null) {
+       /* if (thisWp.getStartDateCalc() == null) {
             thisWp.setStartDateCalc(startDateCalc);
         } else {
             if (thisWp.isTopLevel()
@@ -784,6 +784,8 @@ public class Workpackage {
                 thisWp.setStartDateCalc(startDateCalc);
             }
         }
+        */
+        thisWp.setStartDateCalc(startDateCalc);
     }
 
     /**
@@ -805,16 +807,9 @@ public class Workpackage {
      *            als Date von Datenbank
      */
     public final void setEndDateCalc(final Date endDateCalc) {
-        if (thisWp.getEndDateCalc() == null
-                || thisWp.getStartDateCalc() == null) {
-            thisWp.setEndDateCalc(endDateCalc);
-        } else {
-            if (thisWp.isTopLevel()
-                    || thisWp.getEndDateCalc().after(
-                            new Date(System.currentTimeMillis()))) {
-                thisWp.setEndDateCalc(endDateCalc);
-            }
-        }
+
+              thisWp.setEndDateCalc(endDateCalc);
+
     }
 
     /**

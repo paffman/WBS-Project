@@ -69,6 +69,7 @@ public class TestCaseController {
      *          success of this operation
      */
     public boolean updateTestCase(TestCase tc){
+
         return TestCaseRepository.updateTestCase(tc);
     }
 
@@ -80,6 +81,7 @@ public class TestCaseController {
      *          success of this operation
      */
     public boolean addTestExecution(TestExecution te){
+
         boolean result = DBModelManager.getTestExecutionModel().addNewTestExecution(te);
         TestCaseExecutionRepository.reloadCache();
 

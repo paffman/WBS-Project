@@ -307,6 +307,7 @@ public class WpManager {
      *            zu aktualisierendes Arbeitspaket
      */
     public static void updateAP(Workpackage wp) {
+        //System.out.println("updateAP: " + wp.getName());
         list.updateWp(wp);
         WorkpackageService.updateWorkpackage(wp);
     }

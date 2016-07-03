@@ -16,6 +16,8 @@ import de.fhbingen.wbs.dbaccess.DBModelManager;
 import de.fhbingen.wbs.dbaccess.data.Dependency;
 import de.fhbingen.wbs.dbaccess.data.Employee;
 import de.fhbingen.wbs.dbaccess.data.WorkpackageAllocation;
+import de.fhbingen.wbs.wpConflict.ConflictCompat;
+import de.fhbingen.wbs.wpOverview.WPOverview;
 
 /**
  * Studienprojekt: PSYS WBS 2.0<br/>
@@ -102,8 +104,17 @@ public class WorkpackageService {
         boolean success =
                 DBModelManager.getWorkpackageModel().addNewWorkpackage(
                         wp.getWp());
+
         if (success) {
+
+
+            WPOverview.throwConflict(new ConflictCompat(new Date(System
+                    .currentTimeMillis()), ConflictCompat.NEW_WP, WPOverview
+                    .getUser().getId(), wp));
+
+
             wp.reloadFromDB();
+
         }
         return success;
     }
