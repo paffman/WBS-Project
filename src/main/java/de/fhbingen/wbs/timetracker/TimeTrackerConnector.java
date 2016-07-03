@@ -31,7 +31,7 @@ public class TimeTrackerConnector {
     private String token;
 
     public TimeTrackerConnector(String address) throws MalformedURLException {
-        this.address = new URL(address + "/api/");
+        this.address = new URL(new URL(address), "api/");
     }
 
     /**
@@ -60,12 +60,12 @@ public class TimeTrackerConnector {
      * @return response Code
      * @throws UnirestException
      */
-    public int patch(String url, Map<String, Object> data) throws UnirestException{
+    public int patch(String url, Map<String, Object> data) throws UnirestException {
         Map<String, String> header = new HashMap<>();
         header.put("accept", "application/json");
         header.put("Authorization", "Token " + token);
 
-        HttpRequestWithBody h = Unirest.patch(address + url);
+        HttpRequestWithBody h = Unirest.patch(getAPIURL(url));
         h.headers(header);
         h.fields(data);
 
@@ -85,15 +85,15 @@ public class TimeTrackerConnector {
         Map<String, String> header = new HashMap<>();
         header.put("accept", "application/json");
 
-        if(authentication){
+        if (authentication) {
             header.put("Authorization", "Token " + token);
         }
 
-        HttpRequestWithBody h = Unirest.post(address + url);
+        HttpRequestWithBody h = Unirest.post(getAPIURL(url));
         h.headers(header);
         h.fields(data);
 
-        if(url.equals("login/")) {
+        if (url.equals("login/")) {
             try {
                 JSONObject j = h.asJson().getBody().getObject();
                 this.token = j.get("token").toString();
@@ -113,5 +113,17 @@ public class TimeTrackerConnector {
         this.token = token;
     }
 
-
+    /**
+     * generates a String URL for the given API endpoint
+     * @param path to the requested endpoint. Beginning or trailing slashes are not needed, but won't break anything.
+     * @return String path to the requested endpoint
+     * @throws UnirestException thrown if URL is malformed
+     */
+    public String getAPIURL(String path) throws UnirestException {
+        try {
+            return new URL(address, path).toString();
+        } catch (MalformedURLException e) {
+            throw new UnirestException(e);
+        }
+    }
 }
