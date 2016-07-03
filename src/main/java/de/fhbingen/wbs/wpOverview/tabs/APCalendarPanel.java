@@ -14,44 +14,18 @@
 
 package de.fhbingen.wbs.wpOverview.tabs;
 
-import de.fhbingen.wbs.util.ExtensionAndFolderFilter;
-import de.fhbingen.wbs.translation.LocalizedStrings;
 import de.fhbingen.wbs.functions.WpManager;
 import de.fhbingen.wbs.globals.Controller;
 import de.fhbingen.wbs.globals.Workpackage;
-import java.awt.BasicStroke;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Graphics2D;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.geom.Rectangle2D;
-import java.awt.geom.RectangularShape;
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import javax.swing.JFileChooser;
-import javax.swing.JMenuItem;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
+import de.fhbingen.wbs.translation.LocalizedStrings;
+import de.fhbingen.wbs.util.ExtensionAndFolderFilter;
+import de.fhbingen.wbs.wpComparators.APLevelComparator;
+import de.fhbingen.wbs.wpOverview.WPOverview;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
-import org.jfree.chart.axis.CategoryAxis;
-import org.jfree.chart.axis.CategoryLabelPosition;
-import org.jfree.chart.axis.CategoryLabelPositions;
-import org.jfree.chart.axis.CategoryLabelWidthType;
-import org.jfree.chart.axis.ValueAxis;
+import org.jfree.chart.axis.*;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.renderer.category.BarPainter;
 import org.jfree.chart.renderer.category.BarRenderer;
@@ -67,8 +41,21 @@ import org.jfree.text.TextBlockAnchor;
 import org.jfree.ui.RectangleAnchor;
 import org.jfree.ui.RectangleEdge;
 import org.jfree.ui.RectangleInsets;
-import de.fhbingen.wbs.wpComparators.APLevelComparator;
-import de.fhbingen.wbs.wpOverview.WPOverview;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.geom.Rectangle2D;
+import java.awt.geom.RectangularShape;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
 
 /**
  * The class for the work package calendar.
@@ -122,7 +109,7 @@ public class APCalendarPanel extends JPanel {
         final JPopupMenu popup = new JPopupMenu();
         JMenuItem miSave = new JMenuItem(LocalizedStrings.getButton().save(
             LocalizedStrings.getWbs().timeLine()));
-        miSave.addActionListener(new ActionListener() {
+             miSave.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(final ActionEvent arg0) {

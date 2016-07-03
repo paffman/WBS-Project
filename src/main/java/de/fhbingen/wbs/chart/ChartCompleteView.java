@@ -4,19 +4,13 @@ import de.fhbingen.wbs.dbServices.ValuesService;
 import de.fhbingen.wbs.dbaccess.DBModelManager;
 import de.fhbingen.wbs.dbaccess.data.AnalyseData;
 import de.fhbingen.wbs.dbaccess.data.Baseline;
-import de.fhbingen.wbs.translation.LocalizedStrings;
 import de.fhbingen.wbs.functions.WpManager;
+import de.fhbingen.wbs.globals.Controller;
 import de.fhbingen.wbs.globals.Workpackage;
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.List;
-import java.util.Map;
-import javax.swing.JFrame;
+import de.fhbingen.wbs.translation.LocalizedStrings;
+import de.fhbingen.wbs.util.ExtensionAndFolderFilter;
+import de.fhbingen.wbs.wpComparators.APLevelComparator;
+import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.Marker;
 import org.jfree.chart.plot.ValueMarker;
@@ -24,7 +18,17 @@ import org.jfree.data.Range;
 import org.jfree.data.time.Day;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
-import de.fhbingen.wbs.wpComparators.APLevelComparator;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
+import java.util.List;
 
 /**
  * Studienprojekt: PSYS WBS 2.0<br/>
@@ -44,6 +48,8 @@ import de.fhbingen.wbs.wpComparators.APLevelComparator;
 public class ChartCompleteView extends WBSChart {
 
     private Workpackage wp;
+    private JFrame parent;
+    private WBSChart chart;
 
     /**
      * Konstruktor
@@ -53,6 +59,8 @@ public class ChartCompleteView extends WBSChart {
      */
     public ChartCompleteView(JFrame parent) {
         super(getDBData(), parent);
+        this.parent = parent;
+        chart = this;
         createSpecials();
     }
 
@@ -67,7 +75,10 @@ public class ChartCompleteView extends WBSChart {
     public ChartCompleteView(Workpackage wp, JFrame parent) {
         super(getDBData(wp), parent);
         this.wp = wp;
+        this.parent = parent;
+        chart = this;
         createSpecials();
+
     }
 
     /**
@@ -186,6 +197,54 @@ public class ChartCompleteView extends WBSChart {
     @Override
     protected void createSpecials() {
 
+
+        final JPopupMenu popup = new JPopupMenu();
+
+        String wpName;
+        if(wp != null) {
+            wpName = wp.getName();
+
+        }
+        else{
+            wpName = "gesamt";
+        }
+        JMenuItem miSave = new JMenuItem(LocalizedStrings.getButton().save(
+                LocalizedStrings.getWbs().wpChart() + " " + wpName));
+        miSave.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(final ActionEvent arg0) {
+
+
+                JFileChooser chooser = new JFileChooser();
+                chooser.setFileFilter(new ExtensionAndFolderFilter(
+                        "jpg", "jpeg")); //NON-NLS
+                chooser.setSelectedFile(new File("chart-" //NON-NLS
+                        + System.currentTimeMillis()
+                        + ".jpg"));
+                int returnVal = chooser.showSaveDialog(parent);
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    try {
+                        File outfile =
+                                chooser.getSelectedFile();
+                        ChartUtilities.saveChartAsJPEG(outfile,
+                                charty,
+                                frame.getWidth(),
+                                frame.getHeight());
+                        Controller.showMessage(LocalizedStrings.getMessages()
+                                .wpChartSaved(outfile.getCanonicalPath()));
+                    } catch (IOException e) {
+                        Controller.showError(LocalizedStrings
+                                .getErrorMessages().timeLineExportError());
+                    }
+                }
+            }
+
+        });
+        popup.add(miSave);
+
+
+
         // Festlegen der Y- Achse auf werte zwischen 0 und 101%
         final NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
         rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
@@ -212,5 +271,36 @@ public class ChartCompleteView extends WBSChart {
 
         frame.getChartPanel().getChart()
                 .setTitle(LocalizedStrings.getChart().progressPv());
+
+
+        frame.getChartPanel().addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if(e.getButton() == MouseEvent.BUTTON3){
+                    popup.show(e.getComponent(), e.getX(), e.getY());
+                }
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+
+            }
+
+        });
     }
 }

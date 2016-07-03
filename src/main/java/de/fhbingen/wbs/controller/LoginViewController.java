@@ -21,19 +21,21 @@ package de.fhbingen.wbs.controller;
 
 import c10n.C10N;
 import com.mashape.unirest.http.exceptions.UnirestException;
-import de.fhbingen.wbs.gui.login.LoginView;
 import de.fhbingen.wbs.dbaccess.DBModelManager;
 import de.fhbingen.wbs.dbaccess.data.Employee;
+import de.fhbingen.wbs.functions.WpManager;
+import de.fhbingen.wbs.globals.Loader;
+import de.fhbingen.wbs.gui.login.LoginView;
+import de.fhbingen.wbs.jdbcConnection.MySqlConnect;
+import de.fhbingen.wbs.jdbcConnection.SQLExecuter;
 import de.fhbingen.wbs.timetracker.TimeTrackerConnector;
 import de.fhbingen.wbs.translation.C10NUseEnglishDefaultConfiguration;
 import de.fhbingen.wbs.translation.LocalizedStrings;
-import de.fhbingen.wbs.functions.WpManager;
-import de.fhbingen.wbs.globals.Loader;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.PrintWriter;
+import de.fhbingen.wbs.wpOverview.WPOverview;
+import de.fhbingen.wbs.wpWorker.User;
+
+import javax.swing.*;
+import java.io.*;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -41,11 +43,6 @@ import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-import javax.swing.JOptionPane;
-import de.fhbingen.wbs.jdbcConnection.MySqlConnect;
-import de.fhbingen.wbs.jdbcConnection.SQLExecuter;
-import de.fhbingen.wbs.wpOverview.WPOverview;
-import de.fhbingen.wbs.wpWorker.User;
 
 /**
  * Studienprojekt: WBS Kunde: Pentasys AG, Jens von Gersdorff Projektmitglieder:
@@ -289,7 +286,7 @@ public class LoginViewController implements LoginView.ActionsDelegate,
                         .getMessages().loginConnectionFailure()
                         + "\n"
                         + LocalizedStrings.getMessages().loginMissingIndexPw());
-            } else if (rslt.next()) {
+            } else if (rslt.next()) {//maggi
                 ret = rslt.getString("id");
             } else {
                 JOptionPane.showMessageDialog(gui, LocalizedStrings
