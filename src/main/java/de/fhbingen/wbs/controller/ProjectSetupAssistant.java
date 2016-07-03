@@ -102,12 +102,7 @@ public final class ProjectSetupAssistant implements ProjectProperties.Actions,
      */
     private static final String SCRIPT_CREATE_WBS_DB =
             "create-wbs-db.sql"; //NON-NLS
-    /**
-     * Name of the script creating {@value #SQL_WBS_DB_NAME} database
-     * structures.
-     */
-    private static final String SCRIPT_CREATE_ID_WBS =
-            "create-id-wbs.sql"; //NON-NLS
+
     /**
      * Name of the script creating views on the database structures.
      */
@@ -705,7 +700,6 @@ public final class ProjectSetupAssistant implements ProjectProperties.Actions,
             connection.setAutoCommit(false);
             connection.setTransactionIsolation(Connection.
                     TRANSACTION_SERIALIZABLE);
-            createIdWbsIfNotPresent(connection);
             createProjectDatabase(connection, dbName);
             useDatabase(connection, dbName);
             createTables(connection, dbName);
@@ -829,18 +823,6 @@ public final class ProjectSetupAssistant implements ProjectProperties.Actions,
             SQLException {
         if (!connection.getCatalog().equals(databaseName)) {
             connection.setCatalog(databaseName);
-        }
-    }
-    /**
-     * Creates id_wbs database if not present yet.
-     * @param connection connection to the database.
-     * @throws IOException {@link #runScript(java.sql.Connection, String)}
-     * @throws SQLException {@link #runScript(java.sql.Connection, String)}
-     */
-    private static void createIdWbsIfNotPresent(final Connection connection)
-            throws IOException, SQLException {
-        if (checkIfDatabaseNameIsFree(connection, SQL_WBS_DB_NAME)) {
-            runScript(connection, SCRIPT_CREATE_ID_WBS);
         }
     }
 
