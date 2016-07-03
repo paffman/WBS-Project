@@ -20,6 +20,7 @@
 package de.fhbingen.wbs.controller;
 
 import c10n.C10N;
+import com.mashape.unirest.http.exceptions.UnirestException;
 import de.fhbingen.wbs.gui.login.LoginView;
 import de.fhbingen.wbs.dbaccess.DBModelManager;
 import de.fhbingen.wbs.dbaccess.data.Employee;
@@ -37,7 +38,9 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import javax.swing.JOptionPane;
 import de.fhbingen.wbs.jdbcConnection.MySqlConnect;
 import de.fhbingen.wbs.jdbcConnection.SQLExecuter;
@@ -85,6 +88,11 @@ public class LoginViewController implements LoginView.ActionsDelegate,
      * Last username used to login into a database.
      */
     private String lastDbUser = null;
+
+    /**
+     * The token for the login user.
+     */
+    public static String tokenLoginUser = null;
 
     /**
      * Last application server address.
@@ -177,10 +185,21 @@ public class LoginViewController implements LoginView.ActionsDelegate,
             if (!tracker.checkConnection()) {
                 JOptionPane.showMessageDialog(gui, LocalizedStrings.getMessages()
                         .connectionApplicationFailure());
-                tracker.loginUser(gui.getName(), gui.getUserPassword().toString());
                 return;
             }
         } catch (Exception e) {
+            JOptionPane.showMessageDialog(gui, LocalizedStrings.getMessages()
+                    .connectionApplicationFailure());
+            return;
+        }
+
+        try {
+            Map<String, Object> data = new HashMap<>();
+            data.put("username", getGui().getUsername());
+            data.put("password", new String(getGui().getUserPassword()));
+            tracker.post("login/", data, false);
+            tokenLoginUser = tracker.getToken();
+        } catch (UnirestException e) {
             e.printStackTrace();
         }
 
