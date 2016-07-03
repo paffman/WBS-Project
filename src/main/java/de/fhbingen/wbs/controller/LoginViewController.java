@@ -349,6 +349,8 @@ public class LoginViewController implements LoginView.ActionsDelegate,
     private void saveLastDB(final String host, final String db,
             final String user, final char[] indexPw, final String application) {
         LoginViewController.lastApplicationAddress = application;
+        LoginViewController.lastDbName = db;
+        LoginViewController.lastDbHost = host;
 
         File dbConfig = new File("DbConfig.txt");
         try {
