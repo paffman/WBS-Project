@@ -14,24 +14,19 @@
 
 package de.fhbingen.wbs.wpOverview;
 
+import de.fhbingen.wbs.chart.ChartCPIView;
+import de.fhbingen.wbs.controller.WBSUserViewController;
+import de.fhbingen.wbs.functions.CalcOAPBaseline;
+import de.fhbingen.wbs.functions.WpManager;
+import de.fhbingen.wbs.globals.Loader;
 import de.fhbingen.wbs.translation.Button;
 import de.fhbingen.wbs.translation.General;
 import de.fhbingen.wbs.translation.LocalizedStrings;
 import de.fhbingen.wbs.translation.Wbs;
-import de.fhbingen.wbs.controller.WBSUserViewController;
 
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JOptionPane;
-import javax.swing.JToolBar;
-
-import de.fhbingen.wbs.chart.ChartCPIView;
-import de.fhbingen.wbs.functions.CalcOAPBaseline;
-import de.fhbingen.wbs.functions.WpManager;
-import de.fhbingen.wbs.globals.Loader;
 
 /**
  * Creates a freely movable tool bar, contains symbols for a faster/easier
