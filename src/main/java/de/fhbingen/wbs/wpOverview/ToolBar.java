@@ -89,6 +89,13 @@ public class ToolBar extends JToolBar {
             public void actionPerformed(final ActionEvent e) {
                 new Thread() {
                     public void run() {
+                        if (JOptionPane.showConfirmDialog(gui, LocalizedStrings
+                                        .getMessages().durationcalc(), buttonStrings
+                                        .calculate(generalStrings.duration()),
+                                JOptionPane.YES_NO_OPTION)
+                                == JOptionPane.NO_OPTION) {
+                            return;
+                        }
                         gui.setEnabled(false);
                         Loader loader = new Loader(gui);
                         new CalcOAPBaseline(false, over);
