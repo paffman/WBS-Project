@@ -174,6 +174,10 @@ public interface Messages extends ErrorMessages {
     @En("The Planned Values will be recalculated. Do you want to continue?")
     String pvChange();
 
+    @De("Die Dauer wird neu berechnet. Dies kann einige Sekunden dauern. Wollen sie fortfahren?")
+    @En("The Duartion will be recalculated. Do you want to continue?")
+    String durationcalc();
+
     @De("Das Arbeitspacket wurde erfolgreich umgehängt.")
     @En("The orkpackage has successfully been moved.")
     String wpMoveWpHasBeenMoved();

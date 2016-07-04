@@ -129,6 +129,10 @@ public interface Status {
     @En("Calculate level {0}.")
     String calculateLevel(int lvl);
 
+    @De("Berechne Dauer - einen Moment bitte.")
+    @En("Calculate duration - please wait..")
+    String calculateDuration(int lvl);
+
     @De("Lade Arbeitspakete...")
     @En("Load workpackages...")
     String loadWps();

@@ -74,7 +74,7 @@ public class CalcOAPBaseline {
         }
 
         do {
-            Loader.setLoadingText(LocalizedStrings.getStatus().calculateLevel(
+            Loader.setLoadingText(LocalizedStrings.getStatus().calculateDuration(
                     actualOAP.getlastRelevantIndex()));
             actualOAP = WpManager.getWorkpackage(actualOAP.getOAPID());
             //calculate(actualOAP);
@@ -125,10 +125,10 @@ public class CalcOAPBaseline {
         }
 
         //wenn True, dann PV ebenfalls neu berechnen
-        if (withTime) {
+        //if (this.withTime) {
             new TimeCalc();
 
-        }
+        //}
 
         for (int i = WpManager.getRootAp().getLvlIDs().length; i >= 0; i--) {
             for(Workpackage oap : oapLevels.get(i)){
@@ -250,7 +250,7 @@ public class CalcOAPBaseline {
                     etcCost += actualUAP.getEtc_kosten();
 
                     
-                    if (withTime) {
+                    if (this.withTime) {
                         //Holt alle PVs von Start- bis Enddatum für ein UAP
                         Map<Date, Double> uapPVs = ValuesService.getWPPVs(  ValuesService.getNextFriday(actualUAP.getStartDateCalc()).getTime(),
                                                                             ValuesService.getNextFriday(actualUAP.getEndDateCalc()).getTime(),
@@ -284,7 +284,7 @@ public class CalcOAPBaseline {
 
 
             //Neu berechnete PVs mit Dauer in DB schreiben
-            if(withTime) {
+            if(this.withTime) {
                 for(Date actualDate : oapPvs.keySet()) {
                     ValuesService.savePv(oap.getWpId(), new Day(actualDate), oapPvs.get(new Day(actualDate)));
                 }
