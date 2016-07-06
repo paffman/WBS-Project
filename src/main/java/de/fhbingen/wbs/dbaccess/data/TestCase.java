@@ -20,6 +20,7 @@
 package de.fhbingen.wbs.dbaccess.data;
 
 import de.fhbingen.wbs.dbaccess.models.mysql.MySQLTestExecutionModel;
+import de.fhbingen.wbs.dbaccess.repositories.TestCaseExecutionRepository;
 
 /**
  * A simple container class representing a TestCase. It mirrors all the
@@ -193,7 +194,6 @@ public class TestCase {
      * @return latest execution of this testcase
      */
     public TestExecution getLatestExecution(){
-        MySQLTestExecutionModel sqlexecm = new MySQLTestExecutionModel();
-        return sqlexecm.getLastExecution(this);
+        return TestCaseExecutionRepository.getLatestTestExecution(this);
     }
 }
