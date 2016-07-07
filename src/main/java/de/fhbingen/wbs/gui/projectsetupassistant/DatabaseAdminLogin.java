@@ -15,13 +15,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JPasswordField;
-import javax.swing.JTextField;
+import javax.swing.*;
 
 /**
  * Dialog asking for the database admin login.
@@ -31,7 +25,7 @@ public class DatabaseAdminLogin extends JDialog {
     /**
      * Default preferred size.
      */
-    private static final Dimension PREFERRED_SIZE = new Dimension(450, 250);
+    private static final Dimension PREFERRED_SIZE = new Dimension(450, 300);
 
     /**
      * UID for serialization.
@@ -111,6 +105,11 @@ public class DatabaseAdminLogin extends JDialog {
     private final ProjectSetup msg;
 
     /**
+     * Checkbox for the option of an application server.
+     */
+    private final JCheckBox cbApplicationServer;
+
+    /**
      * Interface do define possible user actions to be handled by the
      * controller.
      */
@@ -165,6 +164,7 @@ public class DatabaseAdminLogin extends JDialog {
         textFieldUserName = new JTextField();
         textFieldPassword = new JPasswordField();
         txfApplicationAddress = new JTextField();
+        txfApplicationAddress.setEditable(false);
         //Labels for TextFields
         labelTextFieldServerAddress = new JLabel(msg.serverAddress() + ":",
                 JLabel.RIGHT);
@@ -178,6 +178,9 @@ public class DatabaseAdminLogin extends JDialog {
         labelTextFieldServerAddress.setLabelFor(textFieldServerAddress);
         labelTextFieldUserName.setLabelFor(textFieldUserName);
         lblApplicationServer.setLabelFor(txfApplicationAddress);
+
+        //Checkbox
+        cbApplicationServer = new JCheckBox(msg.withApplicationServer());
 
         addUiElements();
         addActionListeners();
@@ -240,7 +243,9 @@ public class DatabaseAdminLogin extends JDialog {
                 labelTextFieldPassword, 0, 2, 0, 0, GridBagConstraints.BOTH,
                 insetsLabel);
         SwingUtilityMethods.addWithGridBagConstraints(centerPanel,
-                lblApplicationServer, 0, 3, 0, 0, GridBagConstraints.BOTH, insetsLabel);
+                cbApplicationServer, 0, 3, 0, 0, GridBagConstraints.HORIZONTAL, insetsLabel);
+        SwingUtilityMethods.addWithGridBagConstraints(centerPanel,
+                lblApplicationServer, 0, 4, 0, 0, GridBagConstraints.BOTH, insetsLabel);
         SwingUtilityMethods.addWithGridBagConstraints(centerPanel,
                 textFieldServerAddress, 1, 0, textFieldWeightx,
                 textFieldWeighty, GridBagConstraints.HORIZONTAL,
@@ -252,7 +257,7 @@ public class DatabaseAdminLogin extends JDialog {
                 textFieldPassword, 1, 2, textFieldWeightx, textFieldWeighty,
                 GridBagConstraints.HORIZONTAL, insetsTextField);
         SwingUtilityMethods.addWithGridBagConstraints(centerPanel, txfApplicationAddress,
-                1, 3, textFieldWeightx, textFieldWeighty, GridBagConstraints.HORIZONTAL, insetsTextField);
+                1, 4, textFieldWeightx, textFieldWeighty, GridBagConstraints.HORIZONTAL, insetsTextField);
 
     }
 
@@ -298,6 +303,19 @@ public class DatabaseAdminLogin extends JDialog {
                 actionHandler.cancelButtonPressed();
             }
         });
+
+        cbApplicationServer.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(cbApplicationServer.isSelected()) {
+                    txfApplicationAddress.setEditable(true);
+                }
+                else{
+                    txfApplicationAddress.setEditable(false);
+                }
+
+            }
+        });
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(final WindowEvent e) {
@@ -319,6 +337,10 @@ public class DatabaseAdminLogin extends JDialog {
      */
     public String getApplication(){
         return txfApplicationAddress.getText();
+    }
+
+    public boolean withApplicationServer(){
+        return cbApplicationServer.isSelected();
     }
 
 }
