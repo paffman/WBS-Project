@@ -281,26 +281,28 @@ public class WBSUserViewController implements WBSUserView.Delegate {
                     this.getGui().getFirstName(), this.getGui().getName(),
                     rights, this.getGui().getDailyRate()));
             this.getGui().dispose();
-            //For the application server update the database.
-            try {
-                TimeTrackerConnector tracker = new TimeTrackerConnector(LoginViewController.lastApplicationAddress);
-                Map<String, Object> data = new HashMap<>();
-                data.put("username", getGui().getLogin());
-                data.put("password", "1234");
+            if(LoginViewController.withApplicationServer) {
+                //For the application server update the database.
+                try {
+                    TimeTrackerConnector tracker = new TimeTrackerConnector(LoginViewController.lastApplicationAddress);
+                    Map<String, Object> data = new HashMap<>();
+                    data.put("username", getGui().getLogin());
+                    data.put("password", "1234");
 
-                //create the user
-                tracker.post("users/", data, false);
-                //login the user
-                tracker.post("login/", data, false);
+                    //create the user
+                    tracker.post("users/", data, false);
+                    //login the user
+                    tracker.post("login/", data, false);
 
-                //add the user to an already existing project
-                data.clear();
-                data.put("project", tracker.getAPIURL("/api/projects/" + ProjectSetupAssistant.getIdByDatabaseName(MySqlConnect.getConnection(),
-                        LoginViewController.lastDbName) + "/"));
-                tracker.post("users/" + ProjectSetupAssistant.getUserID(MySqlConnect.getConnection(), getGui().getLogin()) + "/projects/", data, true);
+                    //add the user to an already existing project
+                    data.clear();
+                    data.put("project", tracker.getAPIURL("/api/projects/" + ProjectSetupAssistant.getIdByDatabaseName(MySqlConnect.getConnection(),
+                            LoginViewController.lastDbName) + "/"));
+                    tracker.post("users/" + ProjectSetupAssistant.getUserID(MySqlConnect.getConnection(), getGui().getLogin()) + "/projects/", data, true);
 
-            } catch (Exception e) {
-                e.printStackTrace();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
