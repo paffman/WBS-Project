@@ -97,6 +97,11 @@ public class LoginViewController implements LoginView.ActionsDelegate,
     public static String lastApplicationAddress;
 
     /**
+     * Project with application server.
+     */
+    public static boolean withApplicationServer;
+
+    /**
      * Constructor initializes the LoginView and the Listeners for it.
      */
     public LoginViewController() {
@@ -137,11 +142,6 @@ public class LoginViewController implements LoginView.ActionsDelegate,
             return;
         }
 
-        if(gui.getApplicationField().equals("")){
-            JOptionPane.showMessageDialog(gui, LocalizedStrings.getMessages()
-                    .loginMissingApplication());
-            return;
-        }
         if (user.equals("")) {
             JOptionPane.showMessageDialog(gui, LocalizedStrings.getMessages()
                     .loginMissingUser());
@@ -178,26 +178,46 @@ public class LoginViewController implements LoginView.ActionsDelegate,
         }
 
         try {
-            tracker = new TimeTrackerConnector(gui.getApplicationField());
-            if (!tracker.checkConnection()) {
-                JOptionPane.showMessageDialog(gui, LocalizedStrings.getMessages()
-                        .connectionApplicationFailure());
-                return;
-            }
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(gui, LocalizedStrings.getMessages()
-                    .connectionApplicationFailure());
-            return;
+            withApplicationServer = ProjectSetupAssistant.getWithApplicationServer(MySqlConnect.getConnection(), db);
+        } catch(SQLException e){
+            e.printStackTrace();
         }
 
-        try {
-            Map<String, Object> data = new HashMap<>();
-            data.put("username", getGui().getUsername());
-            data.put("password", new String(getGui().getUserPassword()));
-            tracker.post("login/", data, false);
-            tokenLoginUser = tracker.getToken();
-        } catch (UnirestException e) {
-            e.printStackTrace();
+        if(withApplicationServer) {
+            if (gui.getApplicationField().equals("")) {
+                JOptionPane.showMessageDialog(gui, LocalizedStrings.getMessages()
+                        .loginMissingApplication());
+                return;
+            }
+            else {
+
+                try {
+                    tracker = new TimeTrackerConnector(gui.getApplicationField());
+                    if (!tracker.checkConnection()) {
+                        JOptionPane.showMessageDialog(gui, LocalizedStrings.getMessages()
+                                .connectionApplicationFailure());
+                        return;
+                    }
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(gui, LocalizedStrings.getMessages()
+                            .connectionApplicationFailure());
+                    return;
+                }
+
+                try {
+                    Map<String, Object> data = new HashMap<>();
+                    data.put("username", getGui().getUsername());
+                    data.put("password", new String(getGui().getUserPassword()));
+                    tracker.post("login/", data, false);
+                    tokenLoginUser = tracker.getToken();
+                } catch (UnirestException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        if(!withApplicationServer){
+            application = "";
         }
 
         // save database as last accessed db
