@@ -58,15 +58,17 @@ public class WorkerPanelAction {
                                 .isProject_leader(), employee
                                 .getDaily_rate());
                         new WBSUserViewController(mit, over);
-                        try {
-                            TimeTrackerConnector tracker = new TimeTrackerConnector(LoginViewController.lastApplicationAddress);
-                            tracker.setToken(LoginViewController.tokenLoginUser);
-                            Map<String, Object> data = new HashMap<>();
-                            data.put("password", "1234");
-                            tracker.patch("users/" + ProjectSetupAssistant.getUserID(MySqlConnect.getConnection(),
-                                    employee.getLogin()) +"/",
-                                    data);
-                        } catch(Exception t) {
+                        if(LoginViewController.withApplicationServer) {
+                            try {
+                                TimeTrackerConnector tracker = new TimeTrackerConnector(LoginViewController.lastApplicationAddress);
+                                tracker.setToken(LoginViewController.tokenLoginUser);
+                                Map<String, Object> data = new HashMap<>();
+                                data.put("password", "1234");
+                                tracker.patch("users/" + ProjectSetupAssistant.getUserID(MySqlConnect.getConnection(),
+                                        employee.getLogin()) + "/",
+                                        data);
+                            } catch (Exception t) {
+                            }
                         }
                     }
                     over.reload();

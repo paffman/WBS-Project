@@ -37,4 +37,8 @@ public interface ProjectSetup extends Button, Database, Project, Login, Wbs {
     @De("Projekteinrichtung erfolgreich.")
     @En("Project Setup Successful")
     String projectSetupSuccessTitle();
+
+    @De("Mit Application Server?")
+    @En("With application server")
+    String withApplicationServer();
 }

@@ -221,4 +221,15 @@ public interface Messages extends ErrorMessages {
     @De("Ein Arbeitspacket ({0}) wurde hinzugefügt.")
     @En("Workpackage ({0}) has been added.")
     String wpAddedRecalc(String x);
+
+    @De("Bitte beachten Sie, dass ohne Application Server, \n" +
+            "der Mobile Client mit Time Tracking nicht verwedent kann!\n" +
+            "Es kann nachträglich ein Application Server\n" +
+            "zum Projekt hinzugefügt werden, aber mit gewissem\n" +
+            "Mehraufwand.(Siehe Benutzerhandbuch)")
+    @En("Please remember that the mobile client doesn´t work\n" +
+            "without the application server! You can add the application" +
+            "server to the project in the future, but with \n" +
+            "overhead.(Lookat the userdoku)")
+    String withoutApplicationServer();
 }

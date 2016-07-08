@@ -104,6 +104,13 @@ public final class ProjectSetupAssistant implements ProjectProperties.Actions,
             "create-wbs-db.sql"; //NON-NLS
 
     /**
+     * Name of the script creating {@value #SQL_WBS_DB_NAME} database
+     * structures.
+     */
+    private static final String SCRIPT_CREATE_ID_WBS =
+            "create-id-wbs.sql"; //NON-NLS
+
+    /**
      * Name of the script creating views on the database structures.
      */
     private static final String SCRIPT_CREATE_VIEWS =
@@ -114,15 +121,26 @@ public final class ProjectSetupAssistant implements ProjectProperties.Actions,
      */
     private static final String SCRIPT_CREATE_STORED_PROCEDURES =
             "create-stored-procedures.sql"; //NON-NLS
+
     /**
      * SQL statement for calling the stored procedure that creates a new id
      * in {@value #SQL_WBS_DB_NAME} database.
      */
     private static final String SQL_CALL_DB_IDENTIFIER_NEW
-            = "CALL db_identifier_new (?)"; //NON-NLS
+            = "CALL db_identifier_new (?,?)"; //NON-NLS
 
+    /**
+     * SQL statement for calling the stored procedure to get the id from the user.
+     */
     private static final String SQL_CALL_DB_USERID_SELECT_BY_USERNAME
             = "CALL db_userid_select_by_username (?)";
+
+    /**
+     * SQL statement for calling the stored procedure to get the information, if the
+     * project is with an application server.
+     */
+    private static final String SQL_CALL_DB_IDENTIFIER_WITH_APPLICATION_SERVER
+            = "CALL db_identifier_with_application_server (?)";
 
     /**
      * SQL statement for creating the project database. Used in {@link
@@ -223,17 +241,22 @@ public final class ProjectSetupAssistant implements ProjectProperties.Actions,
     //DatabaseAdminLogin
     @Override
     public void nextButtonPressedDatabaseAdminLogin() {
+        boolean withApplicationServer = databaseAdminLogin.withApplicationServer();
         assert validateProjectPropertiesEntries();
         if (validateDatabaseAdminLoginEntries()
                 && validateAndEstablishDatabaseAccess()
                 && validateDatabaseRights(connection)
-                && validateConnectionApplication()
-                && validateApplicationUser()) {
+                && ((withApplicationServer)? validateConnectionApplication() : true)
+                && ((withApplicationServer)? validateApplicationUser() : true)
+                && ((!withApplicationServer)? ((JOptionPane.showConfirmDialog(activeDialog, messages.withoutApplicationServer(),
+                "Information", JOptionPane.YES_NO_OPTION) == JOptionPane.OK_OPTION)? true : false) : true)) {
             databaseAdminLogin.setVisible(false);
             switch (showSummary()) {
                 case JOptionPane.OK_OPTION:
                     setupProjectOnDatabase();
-                    setupProjectOnApplication();
+                    if(withApplicationServer) {
+                        setupProjectOnApplication();
+                    }
                     break;
                 case JOptionPane.NO_OPTION:
                     databaseAdminLogin.setVisible(true);
@@ -329,7 +352,8 @@ public final class ProjectSetupAssistant implements ProjectProperties.Actions,
     private boolean validateDatabaseAdminLoginEntries() {
         if (databaseAdminLogin.getUserName().isEmpty()
                 || databaseAdminLogin.getServerAddress().isEmpty()
-                || databaseAdminLogin.getApplicationAddress().isEmpty()) {
+                || (databaseAdminLogin.withApplicationServer()) ?
+                databaseAdminLogin.getApplicationAddress().isEmpty() : false) {
             showErrorMessage(messages.fillAllFieldsError());
             return false;
         }
@@ -658,7 +682,7 @@ public final class ProjectSetupAssistant implements ProjectProperties.Actions,
             if (connection.isValid(0) && checkIfDatabaseNameIsFree(connection,
                     dbName)) {
                 connection.setAutoCommit(false);
-                setupNewProjectDataStructureOnDatabase(connection, dbName);
+                setupNewProjectDataStructureOnDatabase(connection, dbName, databaseAdminLogin.withApplicationServer());
                 createProjectData();
                 JOptionPane.showConfirmDialog(loginWindow,
                         messages.projectSetupSuccess(),
@@ -691,7 +715,7 @@ public final class ProjectSetupAssistant implements ProjectProperties.Actions,
      * @throws IOException see other used methods.
      */
     private static void setupNewProjectDataStructureOnDatabase(
-            final Connection connection, final String dbName)
+            final Connection connection, final String dbName, final boolean withApplicationServer)
             throws SQLException, IOException {
         assert connection != null;
         int oldTransactionIsolation = connection.getTransactionIsolation();
@@ -700,12 +724,15 @@ public final class ProjectSetupAssistant implements ProjectProperties.Actions,
             connection.setAutoCommit(false);
             connection.setTransactionIsolation(Connection.
                     TRANSACTION_SERIALIZABLE);
+            if(!withApplicationServer){
+                createIdWbsIfNotPresent(connection);
+            }
             createProjectDatabase(connection, dbName);
             useDatabase(connection, dbName);
             createTables(connection, dbName);
             createViews(connection, dbName);
             createStoredProcedures(connection, dbName);
-            createDbIdentifier(connection, dbName);
+            createDbIdentifier(connection, dbName, withApplicationServer);
             connection.commit();
         } catch (SQLException | IOException e) {
             connection.rollback();
@@ -750,38 +777,44 @@ public final class ProjectSetupAssistant implements ProjectProperties.Actions,
      * @throws SQLException if something goes wrong.
      */
     public static int getIdByDatabaseName(final Connection connection,
-                                           final String databaseName)
+                                          final String databaseName)
             throws SQLException {
-        String oldDatabaseName = connection.getCatalog();
         useDatabase(connection, SQL_WBS_DB_NAME);
-        try {
-            PreparedStatement statement = connection.prepareStatement(
-                    SQL_CALL_DB_IDENTIFIER_SELECT_BY_DBNAME);
-            statement.setString(1, databaseName);
-            ResultSet resultSet = statement.executeQuery();
-            resultSet.next();
-            return resultSet.getInt(2);
-        } finally {
-            //connection.setCatalog(oldDatabaseName);
-        }
+
+        PreparedStatement statement = connection.prepareStatement(
+                SQL_CALL_DB_IDENTIFIER_SELECT_BY_DBNAME);
+        statement.setString(1, databaseName);
+        ResultSet resultSet = statement.executeQuery();
+        resultSet.next();
+
+        return resultSet.getInt(2);
     }
 
     public static int getUserID(final Connection connection,
-                                 final String username) throws SQLException{
+                                final String username) throws SQLException {
         String oldDatabaseName = connection.getCatalog();
         useDatabase(connection, SQL_WBS_DB_NAME);
-        try{
-            PreparedStatement statement = connection.prepareStatement(
-                    SQL_CALL_DB_USERID_SELECT_BY_USERNAME);
-            statement.setString(1, username);
-            ResultSet resultSet = statement.executeQuery();
-            resultSet.next();
-            return resultSet.getInt(1);
-        } finally {
-            //connection.setCatalog(oldDatabaseName);
-        }
 
+        PreparedStatement statement = connection.prepareStatement(
+                SQL_CALL_DB_USERID_SELECT_BY_USERNAME);
+        statement.setString(1, username);
+        ResultSet resultSet = statement.executeQuery();
+        resultSet.next();
 
+        return resultSet.getInt(1);
+    }
+
+    public static boolean getWithApplicationServer(final Connection connection,
+                                                   final String dbName) throws SQLException {
+        useDatabase(connection, SQL_WBS_DB_NAME);
+
+        PreparedStatement statement = connection.prepareStatement(
+                SQL_CALL_DB_IDENTIFIER_WITH_APPLICATION_SERVER);
+        statement.setString(1, dbName);
+        ResultSet resultSet = statement.executeQuery();
+        resultSet.next();
+
+        return resultSet.getBoolean(1);
     }
     /**
      * Runs a script from the resource bundle on the connection.
@@ -823,6 +856,20 @@ public final class ProjectSetupAssistant implements ProjectProperties.Actions,
             SQLException {
         if (!connection.getCatalog().equals(databaseName)) {
             connection.setCatalog(databaseName);
+        }
+    }
+
+    /**
+     * Creates id_wbs database if not present yet.
+     *
+     * @param connection connection to the database.
+     * @throws IOException  {@link #runScript(java.sql.Connection, String)}
+     * @throws SQLException {@link #runScript(java.sql.Connection, String)}
+     */
+    private static void createIdWbsIfNotPresent(final Connection connection)
+            throws IOException, SQLException {
+        if (checkIfDatabaseNameIsFree(connection, SQL_WBS_DB_NAME)) {
+            runScript(connection, SCRIPT_CREATE_ID_WBS);
         }
     }
 
@@ -910,7 +957,8 @@ public final class ProjectSetupAssistant implements ProjectProperties.Actions,
      * {@link #useDatabase(java.sql.Connection, String)}
      */
     private static void createDbIdentifier(final Connection connection,
-                                           final String dbName) throws
+                                           final String dbName,
+                                           final boolean with_application_server) throws
             SQLException {
         assert connection != null;
         assert connection.isValid(0);
@@ -920,6 +968,7 @@ public final class ProjectSetupAssistant implements ProjectProperties.Actions,
         PreparedStatement statement = connection.prepareStatement(
                 storedProcedure);
         statement.setString(1, dbName);
+        statement.setBoolean(2, with_application_server);
         statement.execute();
     }
 

@@ -155,22 +155,24 @@ public class ChangePwViewController implements ChangePwView.Delegate {
                         WPOverviewGUI.setStatusText(messages.
                                 passwordChangeConfirm());
                         getGui().dispose();
-                        try{
-                            TimeTrackerConnector tracker = new TimeTrackerConnector(LoginViewController.lastApplicationAddress);
-                            Map<String, Object> data = new HashMap<>();
-                            data.put("username", getUsr().getLogin());
-                            data.put("password", new String(gui.txfOldPW.getPassword()));
-                            //login the user
-                            tracker.post("login/", data, false);
+                        if(LoginViewController.withApplicationServer) {
+                            try {
+                                TimeTrackerConnector tracker = new TimeTrackerConnector(LoginViewController.lastApplicationAddress);
+                                Map<String, Object> data = new HashMap<>();
+                                data.put("username", getUsr().getLogin());
+                                data.put("password", new String(gui.txfOldPW.getPassword()));
+                                //login the user
+                                tracker.post("login/", data, false);
 
-                            //update the user password
-                            data.clear();
-                            data.put("password", new String(gui.txfNewPW.getPassword()));
-                            tracker.patch("users/" + ProjectSetupAssistant.getUserID(MySqlConnect.getConnection(),
-                                    getUsr().getLogin()) +"/",
-                                    data);
-                        } catch (Exception e){
-                            e.printStackTrace();
+                                //update the user password
+                                data.clear();
+                                data.put("password", new String(gui.txfNewPW.getPassword()));
+                                tracker.patch("users/" + ProjectSetupAssistant.getUserID(MySqlConnect.getConnection(),
+                                        getUsr().getLogin()) + "/",
+                                        data);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                         }
                     } else {
                         JOptionPane.showMessageDialog(getGui(),
