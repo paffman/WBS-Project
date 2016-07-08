@@ -50,6 +50,7 @@ public class CalcOAPBaseline {
             Loader.setLoadingText(LocalizedStrings.getStatus().calculateLevel(
                     actualOAP.getlastRelevantIndex()));
             actualOAP = WpManager.getWorkpackage(actualOAP.getOAPID());
+            refreshOAP(actualOAP);
             //calculate(actualOAP);
         } while (!actualOAP.equals(WpManager.getRootAp()));
         wpOverview.reload();
@@ -77,6 +78,7 @@ public class CalcOAPBaseline {
             Loader.setLoadingText(LocalizedStrings.getStatus().calculateDuration(
                     actualOAP.getlastRelevantIndex()));
             actualOAP = WpManager.getWorkpackage(actualOAP.getOAPID());
+            refreshOAP(actualOAP);
             //calculate(actualOAP);
         } while (!actualOAP.equals(WpManager.getRootAp()));
     }
@@ -392,6 +394,71 @@ public class CalcOAPBaseline {
         data.setPv(wp.getPv());
         DBModelManager.getAnalyseDataModel().addNewAnalyseData(data);
 
+    }
+
+
+    /**
+     * Berechnet Werte für ein OAP neu, ausgenommen Datum und PV.
+     *
+     * @param oap
+     *            OAP was es zu aktualisieren gilt
+     */
+    private void refreshOAP(Workpackage oap) {
+        if (oap.isIstOAP()) {
+            //Wenn OAP, dann berechne neue Werte aus dessen UAPs
+            double bac = 0.0;
+            double ac = 0.0;
+            double etc = 0.0;
+            double ev = 0.0;
+            double eac = 0.0;
+            double cpi = 0.0;
+            double bacCost = 0.0;
+            double acCost = 0.0;
+            double etcCost = 0.0;
+
+            Set<Employee> workers = new HashSet<Employee>();
+
+            Set<Workpackage> uaps = WpManager.getUAPs(oap);
+
+            for (Workpackage actualUAP : uaps) {
+                workers.addAll(actualUAP.getWorkers());
+                if (actualUAP.isIstInaktiv()) {
+                    ac += actualUAP.getAc();
+                    acCost += actualUAP.getAc_kosten();
+                } else {
+                    bac += actualUAP.getBac();
+                    ac += actualUAP.getAc();
+                    etc += actualUAP.getEtc();
+                    ev += actualUAP.getEv();
+                    eac += actualUAP.getEac();
+                    bacCost += actualUAP.getBac_kosten();
+                    acCost += actualUAP.getAc_kosten();
+                    etcCost += actualUAP.getEtc_kosten();
+                }
+            }
+
+            cpi = WpManager.calcCPI(acCost, etcCost, bacCost);
+
+            oap.setBac(bac);
+            oap.setAc(ac);
+            oap.setEtc(etc);
+            oap.setEv(ev);
+            oap.setEac(eac);
+            oap.setcpi(cpi);
+            oap.setbac_kosten(bacCost);
+            oap.setAc_kosten(acCost);
+            oap.setEtc_kosten(etcCost);
+
+            //vorhandene Worker löschen, neue Worker eintragen
+            for (Employee actualWorker : oap.getWorkers()) {
+                oap.removeWorker(actualWorker);
+            }
+            for (Employee actualWorker : workers) {
+                oap.addWorker(actualWorker);
+            }
+
+            WpManager.updateAP(oap);
+        }
     }
 
 }
