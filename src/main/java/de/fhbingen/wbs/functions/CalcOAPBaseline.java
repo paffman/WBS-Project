@@ -231,8 +231,7 @@ public class CalcOAPBaseline {
                     minDate = uap.getStartDateCalc();
                 }
             }
-            oap.setStartDateCalc(minDate);
-            oap.setEndDateCalc(maxDate);
+
             Map<Day, Double> oapPvs = getFilledPvMap(minDate, maxDate);
             int i = 0;
             for (Workpackage actualUAP : uaps) {
