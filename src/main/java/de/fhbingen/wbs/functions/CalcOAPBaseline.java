@@ -251,7 +251,7 @@ public class CalcOAPBaseline {
                     etcCost += actualUAP.getEtc_kosten();
 
                     
-                    if (this.withTime) {
+              //      if (this.withTime) {
                         //Holt alle PVs von Start- bis Enddatum für ein UAP
                         Map<Date, Double> uapPVs = ValuesService.getWPPVs(  ValuesService.getNextFriday(actualUAP.getStartDateCalc()).getTime(),
                                                                             ValuesService.getNextFriday(actualUAP.getEndDateCalc()).getTime(),
@@ -279,17 +279,17 @@ public class CalcOAPBaseline {
                             }
                         }
                     }
-                }
+                //}
             }
 
 
 
             //Neu berechnete PVs mit Dauer in DB schreiben
-            if(this.withTime) {
+            //if(this.withTime) {
                 for(Date actualDate : oapPvs.keySet()) {
                     ValuesService.savePv(oap.getWpId(), new Day(actualDate), oapPvs.get(new Day(actualDate)));
                 }
-            }
+            //}
             cpi = WpManager.calcCPI(acCost, etcCost, bacCost);
 
             oap.setBac(bac);
