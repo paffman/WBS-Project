@@ -27,18 +27,12 @@ import java.util.*;
  */
 public class TimeCalc {
 
-
-
     /**
      * Constructor.
      */
     public TimeCalc() {
-
-
         calcCalculatedDates();
         recalcPVs(WpManager.getAllAp());
-
-
     }
 
 
@@ -50,13 +44,11 @@ public class TimeCalc {
      *             Set of workpackages which should get a new Planned Value
      */
     private void recalcPVs(Set<Workpackage> wps){
-
         ValuesService.deleteAllPV();
         for(Workpackage w : wps){
             if(!w.isIstOAP())
             savePV(ValuesService.calcPVs(w), w);
         }
-
     }
 
 
@@ -68,11 +60,9 @@ public class TimeCalc {
      *              The follower in terms of dependencies
      */
     private void adjustDates(Workpackage predec, Workpackage follower){
-
         Date newStartDate = DateFunctions.getNextWorkday(predec.getEndDateCalc(), true);
         int followerDuration = DateFunctions.getWorkdayDistanceBetweenDates(follower.getStartDateCalc(), follower.getEndDateCalc());
         Date newEndDate = DateFunctions.calcDateByOffset(newStartDate, followerDuration);
-        //System.out.println("follower verschoben: " + follower.getName() + "old End: " + follower.getEndDateCalc() + ", new End" + newEndDate);
         follower.setStartDateCalc(newStartDate);
         follower.setEndDateCalc(newEndDate);
         WpManager.updateAP(follower);
@@ -90,23 +80,16 @@ public class TimeCalc {
        for(Workpackage fellow: wp.getFollowers()){
 
            if (wp.getEndDateCalc().after(fellow.getStartDateCalc())) {
-
                adjustDates(wp, fellow);
-
            }
-           // outside of IF Condition
            checkDependenciesRecursive(fellow);
        }
 
         for (Workpackage predecessor : wp.getAncestors()) {
-
             if (predecessor.getEndDateCalc().getTime() >= wp.getStartDateCalc().getTime()) {
-                //System.out.println("will chnage Date of WP " + wp.getName());
                 adjustDates(predecessor, wp);
-                // inside IF Condition
                 checkDependenciesRecursive(predecessor);
             }
-
         }
     }
 
@@ -117,8 +100,6 @@ public class TimeCalc {
      *
      */
     private void calcCalculatedDates(){
-
-
         // set all calculated Dates similar to all chosen Dates
         Set<Workpackage> allAp = WpManager.getAllAp();
         for (Workpackage actualWp : allAp) {
@@ -128,6 +109,7 @@ public class TimeCalc {
 
         // get all WPs with no Predecessors
         Set<Workpackage> allWithoutAncestors = WpManager.getNoAncestorWps();
+
         // find WPs without followers
         Set<Workpackage> allWithoutAncestorsButFollowers = new HashSet<Workpackage>();
         for(Workpackage actWp : allWithoutAncestors){
@@ -138,7 +120,6 @@ public class TimeCalc {
         for(Workpackage w : allWithoutAncestorsButFollowers) {
             checkDependenciesRecursive(w);
         }
-
     }
 
 
@@ -161,43 +142,14 @@ public class TimeCalc {
         Collections.sort(days);
         double actualPV = 0.0;
         Calendar cal = new GregorianCalendar();
-       /* if (!days.isEmpty()) {
-            cal.setTime(days.get(0));
-            cal = ValuesService.getPreviousFriday(cal.getTime());
-            ValuesService.savePv(wpKey, cal.getTime(), 0.0);
-        }
-        */
 
         for (Day actualDay : days) {
-           // if (actualDay.after(new Date(System.currentTimeMillis()))) {
-                cal.setTime(actualDay);
-               // actualPV += singlePVs.get(actualDay);
-                //if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY) {
-                    ValuesService.savePv(wpKey, actualDay, singlePVs.get(actualDay));
-                    Controller.showConsoleMessage(
-                        LocalizedStrings.getStatus()
-                            .pvValueOnDate(wpID,
-                                Controller.DATE_DAY.format(actualDay),
-                                actualPV),
+            cal.setTime(actualDay);
+            ValuesService.savePv(wpKey, actualDay, singlePVs.get(actualDay));
+            Controller.showConsoleMessage(
+                LocalizedStrings.getStatus().pvValueOnDate(
+                        wpID, Controller.DATE_DAY.format(actualDay), actualPV),
                         Controller.TIME_CALCULATION_DEBUG);
-                //}
-          //  }
-
         }
-        /*if (cal.get(Calendar.DAY_OF_WEEK) != Calendar.FRIDAY) {
-            while (cal.get(Calendar.DAY_OF_WEEK) != Calendar.FRIDAY) {
-                cal.add(Calendar.DATE, 1);
-            }
-            if (cal.getTime().after(new Date(System.currentTimeMillis()))) {
-                Controller.showConsoleMessage(
-                    LocalizedStrings.getStatus()
-                        .pvValueOnDate(wpID,
-                            Controller.DATE_DAY.format(cal.getTime()),
-                            actualPV), Controller.TIME_CALCULATION_DEBUG);
-                ValuesService.savePv(wpKey, cal.getTime(), actualPV);
-            }
-
-        }*/
-
     }
 }
