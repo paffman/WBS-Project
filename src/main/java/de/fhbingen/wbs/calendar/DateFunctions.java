@@ -196,10 +196,13 @@ public final class DateFunctions {
      * @return
      *           the resulting Date
      * */
-    public static Date getNextWorkday(Date date){
+    public static Date getNextWorkday(Date date, boolean oneDayOffset){
 
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
+        if(oneDayOffset) {
+            cal.add(Calendar.DAY_OF_MONTH, 1);
+        }
         while(cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY || cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY){
 
             cal.add(Calendar.DAY_OF_MONTH, 1);

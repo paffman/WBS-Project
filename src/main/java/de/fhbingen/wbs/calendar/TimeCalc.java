@@ -69,7 +69,7 @@ public class TimeCalc {
      */
     private void adjustDates(Workpackage predec, Workpackage follower){
 
-        Date newStartDate = DateFunctions.getNextWorkday(predec.getEndDateCalc());
+        Date newStartDate = DateFunctions.getNextWorkday(predec.getEndDateCalc(), true);
         int followerDuration = DateFunctions.getWorkdayDistanceBetweenDates(follower.getStartDateCalc(), follower.getEndDateCalc());
         Date newEndDate = DateFunctions.calcDateByOffset(newStartDate, followerDuration);
         //System.out.println("follower verschoben: " + follower.getName() + "old End: " + follower.getEndDateCalc() + ", new End" + newEndDate);
@@ -122,8 +122,8 @@ public class TimeCalc {
         // set all calculated Dates similar to all chosen Dates
         Set<Workpackage> allAp = WpManager.getAllAp();
         for (Workpackage actualWp : allAp) {
-            actualWp.setStartDateCalc(DateFunctions.getNextWorkday(actualWp.getStartDateHope()));
-            actualWp.setEndDateCalc(DateFunctions.getNextWorkday(actualWp.getEndDateHope()));
+            actualWp.setStartDateCalc(DateFunctions.getNextWorkday(actualWp.getStartDateHope(), false));
+            actualWp.setEndDateCalc(DateFunctions.getNextWorkday(actualWp.getEndDateHope(), false));
         }
 
         // get all WPs with no Predecessors
