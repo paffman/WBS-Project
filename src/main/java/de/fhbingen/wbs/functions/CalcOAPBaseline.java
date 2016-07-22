@@ -51,7 +51,6 @@ public class CalcOAPBaseline {
                     actualOAP.getlastRelevantIndex()));
             actualOAP = WpManager.getWorkpackage(actualOAP.getOAPID());
             refreshOAP(actualOAP);
-            //calculate(actualOAP);
         } while (!actualOAP.equals(WpManager.getRootAp()));
         wpOverview.reload();
     }
@@ -79,7 +78,6 @@ public class CalcOAPBaseline {
                     actualOAP.getlastRelevantIndex()));
             actualOAP = WpManager.getWorkpackage(actualOAP.getOAPID());
             refreshOAP(actualOAP);
-            //calculate(actualOAP);
         } while (!actualOAP.equals(WpManager.getRootAp()));
     }
 
@@ -126,15 +124,9 @@ public class CalcOAPBaseline {
             }
         }
 
-        //wenn True, dann PV ebenfalls neu berechnen
-        //if (this.withTime) {
-            new TimeCalc();
-
-        //}
-
+        new TimeCalc();
         for (int i = WpManager.getRootAp().getLvlIDs().length; i >= 0; i--) {
             for(Workpackage oap : oapLevels.get(i)){
-                System.out.println("will calc OAP: " + oap.getName());
                 calculate(oap);
             }
         }
@@ -218,6 +210,7 @@ public class CalcOAPBaseline {
 
             boolean init = false;
 
+            //Datumsspanne für UAPs um PV zu berechnen
             for(Workpackage uap : uaps) {
                 if(!init) {
                     maxDate = uap.getEndDateCalc();
@@ -233,7 +226,7 @@ public class CalcOAPBaseline {
             }
 
             Map<Day, Double> oapPvs = getFilledPvMap(minDate, maxDate);
-            int i = 0;
+
             for (Workpackage actualUAP : uaps) {
                 workers.addAll(actualUAP.getWorkers());
 
@@ -250,33 +243,30 @@ public class CalcOAPBaseline {
                     acCost += actualUAP.getAc_kosten();
                     etcCost += actualUAP.getEtc_kosten();
 
-                    
-                    if (this.withTime) {
-                        //Holt alle PVs von Start- bis Enddatum für ein UAP
-                        Map<Date, Double> uapPVs = ValuesService.getWPPVs(  ValuesService.getNextFriday(actualUAP.getStartDateCalc()).getTime(),
-                                                                            ValuesService.getNextFriday(actualUAP.getEndDateCalc()).getTime(),
-                                                                            actualUAP.getWpId());
+                    //Holt alle PVs von Start- bis Enddatum für ein UAP
+                    Map<Date, Double> uapPVs = ValuesService.getWPPVs(  ValuesService.getNextFriday(actualUAP.getStartDateCalc()).getTime(),
+                                                                        ValuesService.getNextFriday(actualUAP.getEndDateCalc()).getTime(),
+                                                                        actualUAP.getWpId());
 
-                        List<Date> pvSorted = new ArrayList<Date>(uapPVs.keySet());
-                        Collections.sort(pvSorted);
+                    List<Date> pvSorted = new ArrayList<Date>(uapPVs.keySet());
+                    Collections.sort(pvSorted);
 
-                        //Summiere PVs für das OAP in dessen Map
-                        for (Date actualDate : pvSorted) {
+                    //Summiere PVs für das OAP in dessen Map
+                    for (Date actualDate : pvSorted) {
 
-                            double oldOAPPV = oapPvs.get(new Day(actualDate));
-                            oapPvs.put(new Day(actualDate), uapPVs.get(actualDate) + oldOAPPV);
-                            //System.out.println(i+" --- "+actualDate+":   "+uapPVs.get(actualDate).intValue());
-                        }
-                        i++;
-                        //Summiere nach Paketende dessen PV (=BAC) auf die nachfolgenden Datumswerte
-                        double lastPv = actualUAP.getBac_kosten();
-                        Date end = actualUAP.getEndDateCalc();
-                        for(Date date : oapPvs.keySet()) {
-                            if(date.after(end)) {
-                                double oldValue = oapPvs.get(new Day(date));
-                                oapPvs.put(new Day(date), oldValue + lastPv);
+                        double oldOAPPV = oapPvs.get(new Day(actualDate));
+                        oapPvs.put(new Day(actualDate), uapPVs.get(actualDate) + oldOAPPV);
+                        //System.out.println(i+" --- "+actualDate+":   "+uapPVs.get(actualDate).intValue());
+                    }
 
-                            }
+                    //Summiere nach Paketende dessen PV (=BAC) auf die nachfolgenden Datumswerte
+                    double lastPv = actualUAP.getBac_kosten();
+                    Date end = actualUAP.getEndDateCalc();
+                    for(Date date : oapPvs.keySet()) {
+                        if(date.after(end)) {
+                            double oldValue = oapPvs.get(new Day(date));
+                            oapPvs.put(new Day(date), oldValue + lastPv);
+
                         }
                     }
                 }
@@ -285,11 +275,10 @@ public class CalcOAPBaseline {
 
 
             //Neu berechnete PVs mit Dauer in DB schreiben
-            if(this.withTime) {
-                for(Date actualDate : oapPvs.keySet()) {
-                    ValuesService.savePv(oap.getWpId(), new Day(actualDate), oapPvs.get(new Day(actualDate)));
-                }
+            for(Date actualDate : oapPvs.keySet()) {
+                ValuesService.savePv(oap.getWpId(), new Day(actualDate), oapPvs.get(new Day(actualDate)));
             }
+
             cpi = WpManager.calcCPI(acCost, etcCost, bacCost);
 
             oap.setBac(bac);

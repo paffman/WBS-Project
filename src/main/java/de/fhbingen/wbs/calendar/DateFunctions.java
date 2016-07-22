@@ -137,8 +137,6 @@ public final class DateFunctions {
         endCal.setTime(d2);
 
         int workDays = 1;
-        //System.out.println("in getworkdaydist..");
-        //Return 0 if start and end are the same
         if (startCal.getTimeInMillis() == endCal.getTimeInMillis()) {
             return 0;
         }
@@ -148,17 +146,12 @@ public final class DateFunctions {
             endCal.setTime(d1);
         }
 
-        //System.out.println("start: " + d1);
-        //System.out.println("end: " + d2);
         do {
             if (startCal.get(Calendar.DAY_OF_WEEK) != Calendar.SATURDAY && startCal.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY) {
                 ++workDays;
             }
             startCal.add(Calendar.DAY_OF_MONTH, 1);
-            //System.out.println(startCal.getTime() + "  before? " + endCal.getTime());
         } while (startCal.getTime().before(endCal.getTime()));
-
-
         return workDays;
     }
 
@@ -171,7 +164,6 @@ public final class DateFunctions {
      * @return calculated Date
      */
     public static Date calcDateByOffset(Date date, int workdays){
-
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
 
@@ -182,9 +174,7 @@ public final class DateFunctions {
             cal.add(Calendar.DAY_OF_MONTH, 1);
 
         }
-
-            return de.fhbingen.wbs.calendar.DateFunctions.getTimesampOrNull(cal.getTime());
-
+        return de.fhbingen.wbs.calendar.DateFunctions.getTimesampOrNull(cal.getTime());
     }
 
 
@@ -196,17 +186,16 @@ public final class DateFunctions {
      * @return
      *           the resulting Date
      * */
-    public static Date getNextWorkday(Date date){
-
+    public static Date getNextWorkday(Date date, boolean oneDayOffset){
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
+        if(oneDayOffset) {
+            cal.add(Calendar.DAY_OF_MONTH, 1);
+        }
         while(cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY || cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY){
 
             cal.add(Calendar.DAY_OF_MONTH, 1);
         }
-
-        //System.out.println(date);
-        //System.out.println(cal.getTime());
         return de.fhbingen.wbs.calendar.DateFunctions.getTimesampOrNull(cal.getTime());
     }
 
