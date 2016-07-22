@@ -100,7 +100,7 @@ public class TimeCalc {
 
         for (Workpackage predecessor : wp.getAncestors()) {
 
-            if (predecessor.getEndDateCalc().after(wp.getStartDateCalc())) {
+            if (predecessor.getEndDateCalc().getTime() >= wp.getStartDateCalc().getTime()) {
                 //System.out.println("will chnage Date of WP " + wp.getName());
                 adjustDates(predecessor, wp);
                 // inside IF Condition
