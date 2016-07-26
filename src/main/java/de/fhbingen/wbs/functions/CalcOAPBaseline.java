@@ -204,7 +204,6 @@ public class CalcOAPBaseline {
 
             Set<Workpackage> uaps = WpManager.getUAPs(oap);
 
-
             Date minDate = oap.getStartDateHope();
             Date maxDate = oap.getEndDateHope();
 
@@ -253,10 +252,8 @@ public class CalcOAPBaseline {
 
                     //Summiere PVs für das OAP in dessen Map
                     for (Date actualDate : pvSorted) {
-
                         double oldOAPPV = oapPvs.get(new Day(actualDate));
                         oapPvs.put(new Day(actualDate), uapPVs.get(actualDate) + oldOAPPV);
-                        //System.out.println(i+" --- "+actualDate+":   "+uapPVs.get(actualDate).intValue());
                     }
 
                     //Summiere nach Paketende dessen PV (=BAC) auf die nachfolgenden Datumswerte
@@ -272,7 +269,31 @@ public class CalcOAPBaseline {
                 }
             }
 
+            //add missing dates to PV-Map because of graph and +1 day offset through dependencies
+            if(oap.getStartDateCalc() != null ) {
+                if(oap.getStartDateCalc().before(minDate)) {
+                    Calendar calendar = new GregorianCalendar();
+                    double pv = oapPvs.get(new Day(minDate));
+                    calendar.setTime(oap.getStartDateCalc());
+                    while(calendar.getTime().before(minDate)) {
+                        oapPvs.put(new Day(calendar.getTime()), pv);
+                        calendar.add(Calendar.DAY_OF_MONTH, 1);
+                    }
+                }
+            }
 
+            //add missing dates to PV-Map because of graph and +1 day offset through dependencies
+            if(oap.getEndDateCalc() != null) {
+                if(oap.getEndDateCalc().after(maxDate)) {
+                    Calendar calendar = new GregorianCalendar();
+                    double pv = oapPvs.get(new Day(maxDate));
+                    calendar.setTime(oap.getEndDateCalc());
+                    while(calendar.getTime().after(maxDate)) {
+                        oapPvs.put(new Day(calendar.getTime()), pv);
+                        calendar.add(Calendar.DAY_OF_MONTH, -1);
+                    }
+                }
+            }
 
             //Neu berechnete PVs mit Dauer in DB schreiben
             for(Date actualDate : oapPvs.keySet()) {
