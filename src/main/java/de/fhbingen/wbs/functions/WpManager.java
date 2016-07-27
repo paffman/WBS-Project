@@ -550,7 +550,7 @@ public class WpManager {
      */
     public static int calcPercentComplete(double bac, double etc, double ac) {
         int percentComplete = 0;
-        if (bac > 0 && etc == 0) {
+        if (etc == 0) {
             percentComplete = 100;
         } else {
             if (etc > 0 && ac > 0) {
