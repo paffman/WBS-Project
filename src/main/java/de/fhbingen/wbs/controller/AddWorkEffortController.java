@@ -272,6 +272,8 @@ public class AddWorkEffortController implements
             }
 
             out.println(AddWorkEffortController.workEffortType);
+            //write application server address
+            out.println(rows.get(5));
             out.close();
         } catch (IOException e) {
             e.printStackTrace();
