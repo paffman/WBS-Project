@@ -388,7 +388,7 @@ public class WPShowGUI extends JFrame {
         leftScrollPanel.setLayout(gbl_leftScrollPanel);
 
         JScrollPane wpSettingsPane = new JScrollPane(leftScrollPanel, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-        wpSettingsPane.setMinimumSize(new Dimension(440, 600));
+        wpSettingsPane.setMinimumSize(new Dimension(470, 600));
         splitPane.setLeftComponent(leftPanel);
 
         JLabel lblNr = new JLabel(wbsStrings.workPackageId());

@@ -105,6 +105,7 @@ public class TimeCalc {
         for (Workpackage actualWp : allAp) {
             actualWp.setStartDateCalc(DateFunctions.getNextWorkday(actualWp.getStartDateHope(), false));
             actualWp.setEndDateCalc(DateFunctions.getNextWorkday(actualWp.getEndDateHope(), false));
+            WpManager.updateAP(actualWp);
         }
 
         // get all WPs with no Predecessors

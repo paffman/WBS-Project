@@ -1010,6 +1010,7 @@ public class WPShow {
                     TestCase test = new TestCase(wp.getWpId(), name);
                     testCaseController.addTestCase(test);
                     gui.setTestcases(testCaseController);
+                    gui.getTxfTestTestcase().setText("");
                 }
             }
         };
