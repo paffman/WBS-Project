@@ -14,17 +14,14 @@
 
 package de.fhbingen.wbs.wpShow;
 
+import de.fhbingen.wbs.controller.TestCaseController;
+import de.fhbingen.wbs.dbaccess.data.TestCase;
+import de.fhbingen.wbs.testcases.TestcaseExecutionShow;
+import de.fhbingen.wbs.testcases.TestcaseShow;
+import de.fhbingen.wbs.translation.*;
 import de.fhbingen.wbs.wpConflict.ConflictCompat;
 import java.awt.Component;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.awt.event.*;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,10 +31,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.swing.JComboBox;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.JTextField;
+import javax.swing.*;
 
 import de.fhbingen.wbs.chart.ChartCPIView;
 import de.fhbingen.wbs.chart.ChartCompleteView;
@@ -50,9 +44,6 @@ import de.fhbingen.wbs.functions.CalcOAPBaseline;
 import de.fhbingen.wbs.functions.WpManager;
 import de.fhbingen.wbs.globals.Controller;
 import de.fhbingen.wbs.globals.Workpackage;
-import de.fhbingen.wbs.translation.LocalizedStrings;
-import de.fhbingen.wbs.translation.Messages;
-import de.fhbingen.wbs.translation.Wbs;
 import de.fhbingen.wbs.wpOverview.WPOverview;
 import de.fhbingen.wbs.wpWorker.Worker;
 
@@ -61,6 +52,8 @@ public class WPShow {
 
     private final Wbs wbsStrings;
     private final Messages messageStrings;
+    private final General generalStrings;
+    private Button buttonStrings;
 
     /** The functionality of the WPOverview GUI. */
     private WPOverview over;
@@ -81,6 +74,30 @@ public class WPShow {
     private Set<String> actualWPWorkers;
 
     /**
+     * Controler for the testcase
+     */
+    private TestCaseController testCaseController;
+
+    /**
+     * Parent Frame
+     */
+    private final JFrame parent;
+
+
+    /**
+     * Actual testcase index.
+     */
+    private int actualTestCaseIndex;
+
+    /**
+     * DescriptionGUI to edit the description.
+     */
+    private DescriptionGUI descriptionGUI;
+
+
+
+
+    /**
      * Constructor.
      * @param over
      *            The work package GUI.
@@ -96,9 +113,12 @@ public class WPShow {
         final boolean newWp, final JFrame parent) {
         wbsStrings = LocalizedStrings.getWbs();
         messageStrings = LocalizedStrings.getMessages();
+        generalStrings = LocalizedStrings.getGeneralStrings();
+        buttonStrings = LocalizedStrings.getButton();
 
         this.newWp = newWp;
         this.over = over;
+        this.parent = parent;
 
         if (newWp) {
             this.wp = new Workpackage();
@@ -117,22 +137,28 @@ public class WPShow {
                 + wp.getName(), this, parent);
             wp.setwptagessatz(WpManager.calcTagessatz(wp.getWorkerLogins()));
             actualWPWorkers = new HashSet<String>(wp.getWorkerLogins());
+            gui.getBtnAddTestcase().setEnabled(true);
         }
 
         if (wp.isIstOAP()) {
             gui.setOAPView(WPOverview.getUser().getProjLeiter());
         } else {
-            gui.setUAPView(WPOverview.getUser().getProjLeiter());
+            gui.setUAPView(WPOverview.getUser().getProjLeiter(), true);
         }
+
+        this.testCaseController = new TestCaseController(this.wp);
+
         gui.setNewView(newWp);
         gui.setValues(wp, getUser().getProjLeiter(), getAufwandArray(),
-            WorkerService.getRealWorkers(), actualWPWorkers);
+            WorkerService.getRealWorkers(), actualWPWorkers, testCaseController);
 
         if (newWp) {
             this.saved = false;
         } else {
             this.saved = true;
         }
+
+
     }
 
     /**
@@ -263,7 +289,7 @@ public class WPShow {
     /** Reloads the GUI. */
     protected final void reload() {
         gui.setValues(wp, getUser().getProjLeiter(), getAufwandArray(),
-            WorkerService.getRealWorkers(), actualWPWorkers);
+            WorkerService.getRealWorkers(), actualWPWorkers, testCaseController);
     }
 
     /**
@@ -381,6 +407,7 @@ public class WPShow {
         for (int i = 0; i < wpWorkers.size(); i++) {
             if (guiWorkers.length != wpWorkers.size()
                 || wpWorkers.get(i).equals(guiWorkers[i])) {
+
                 WPOverview.throwConflict(new ConflictCompat(new Date(System
                     .currentTimeMillis()), ConflictCompat.CHANGED_RESOURCES,
                     WPOverview.getUser().getId(), wp));
@@ -970,6 +997,109 @@ public class WPShow {
     }
 
     /**
+     * Return the action listener for the button to add an testcase
+     * @return The action listener
+     */
+    protected final ActionListener getBtnAddTestcase() {
+        return new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e){
+                String name = gui.getTxfTestTestcase().getText().trim();
+                if(!name.equals("")){
+                    TestCase test = new TestCase(wp.getWpId(), name);
+                    testCaseController.addTestCase(test);
+                    gui.setTestcases(testCaseController);
+                    gui.getTxfTestTestcase().setText("");
+                }
+            }
+        };
+    }
+
+    /**
+     * Returns the mouse listener to show the testcase gui.
+     * @return The mouse listener
+     */
+    protected final MouseListener getTblTestcaseListener() {
+        return new MouseAdapter() {
+
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if(e.getClickCount() == 2) {
+                    new TestcaseShow(testCaseController.getAllTestCases().get(gui.getTblTestcase().getSelectedRow()),
+                            testCaseController, gui, getOuterClass());
+                }
+            }
+        };
+    }
+
+    /**
+     * Returns the action listener to execute the testcases.
+     * @return The action listener
+     */
+    protected final ActionListener getBtnTestExecute(){
+        return new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(testCaseController.getAllTestCases().size() > 0){
+                    new TestcaseExecutionShow(testCaseController, testCaseController.getAllTestCases().get(0), gui, true, getOuterClass());
+                    actualTestCaseIndex = 0;
+                }
+                else{
+                    gui.showMessage(generalStrings.testcaseMessage());
+                }
+            }
+        };
+    }
+
+    /**
+     * Returns the action listener to edit the description from a workpackage.
+     * @return The action listener
+     */
+    protected final ActionListener getBtnEditDescListener(){
+        return new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                descriptionGUI = new DescriptionGUI(generalStrings.editDesc(buttonStrings.edit()), getOuterClass());
+            }
+        };
+    }
+
+    /**
+     * Returns the action listener to save the changed description.
+     * @return The action listener.
+     */
+    protected final ActionListener getBtnSaveDescListener(){
+        return new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                wp.setBeschreibung(descriptionGUI.getDesc());
+                WpManager.updateAP(wp);
+                gui.getTxfDesc().setText(descriptionGUI.getDesc());
+            }
+        };
+
+
+    }
+
+    /**
+     * Returns the action listener to cancel the GUI.
+     * @return The action listener.
+     */
+    protected final ActionListener getBtnCancelDescListener(){
+        return new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                descriptionGUI.setVisible(false);
+                descriptionGUI.dispose();
+            }
+        };
+    }
+
+    /**
      * Return it self.
      * @return A reference to it self.
      */
@@ -1035,5 +1165,21 @@ public class WPShow {
         for (Workpackage actualUAP : WpManager.getUAPs(oap)) {
             setUAPEndHope(actualUAP, date);
         }
+    }
+
+    private WPShow getOuterClass(){
+        return this;
+    }
+
+    public void next(){
+        if(actualTestCaseIndex < testCaseController.getAllTestCases().size() - 1) {
+            actualTestCaseIndex++;
+            new TestcaseExecutionShow(testCaseController, testCaseController.getAllTestCases().get(actualTestCaseIndex),
+                    gui, true, getOuterClass());
+        }
+    }
+
+    public WPShowGUI getWPShowGUI(){
+        return gui;
     }
 }

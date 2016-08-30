@@ -1,4 +1,4 @@
--- --------------------------------------------------------
+ -- --------------------------------------------------------
 -- dependencies_select
 -- r
 -- --------------------------------------------------------
@@ -315,7 +315,9 @@ CREATE PROCEDURE workpackage_update_by_id(
 	IN in_is_inactive boolean,
 	IN in_start_date_calc datetime,
 	IN in_start_date_wish datetime,
-	IN in_end_date_calc datetime)
+	IN in_end_date_calc datetime,
+	IN in_fid_parent int(11),
+	IN in_parent_order_id int(11))
 BEGIN
 	DECLARE chk int(11);
 	SELECT COUNT(*) INTO chk
@@ -347,12 +349,33 @@ BEGIN
 			is_inactive = in_is_inactive,
 			start_date_calc = in_start_date_calc,
 			start_date_wish = in_start_date_wish,
-			end_date_calc = in_end_date_calc
+			end_date_calc = in_end_date_calc,
+			fid_parent = in_fid_parent,
+			parent_order_id = in_parent_order_id
 		WHERE
 			string_id = in_string_id
 			AND
 			fid_project = in_project_id;
 	END IF;
+END //
+DELIMITER ;
+-- --------------------------------------------------------
+
+-- --------------------------------------------------------
+-- workpackage_update_string_id
+-- rw
+-- --------------------------------------------------------
+DELIMITER //
+CREATE PROCEDURE workpackage_update_string_id(
+  IN in_pk int(11),
+	IN in_string_id varchar(255)
+)
+BEGIN
+  UPDATE workpackage
+  SET
+    string_id = in_string_id
+  WHERE
+    id = in_pk;
 END //
 DELIMITER ;
 -- --------------------------------------------------------
@@ -672,7 +695,8 @@ DELIMITER //
 CREATE PROCEDURE conflicts_delete()
 BEGIN
 	DELETE
-	FROM conflicts;
+	FROM conflicts
+	WHERE reason != 9;
 END //
 DELIMITER ;
 -- --------------------------------------------------------
@@ -970,8 +994,11 @@ BEGIN
 	DEALLOCATE PREPARE createUsr;
 
 	SET @grantExec = CONCAT('GRANT EXECUTE ON ',in_dbname,'.* TO \'',username,'\'@"','localhost','"');
+	SET @grantExec2 = CONCAT('GRANT EXECUTE ON ','id_wbs','.* TO \'',username,'\'@"','localhost','"');
 	PREPARE grantExec FROM @grantExec;
+	PREPARE grantExec2 FROM @grantExec2;
 	EXECUTE grantExec;
+	EXECUTE grantExec2;
 	DEALLOCATE PREPARE grantExec;
 	
 	SET username = CONCAT_WS('_', in_db_id, LEFT(in_login,11));	
@@ -981,8 +1008,11 @@ BEGIN
 	DEALLOCATE PREPARE createUsr;
 
 	SET @grantExec = CONCAT('GRANT EXECUTE ON ',in_dbname,'.* TO \'',username,'\'@"','%','"');
+	SET @grantExec2 = CONCAT('GRANT EXECUTE ON ','id_wbs','.* TO \'',username,'\'@"','%','"');
 	PREPARE grantExec FROM @grantExec;
+	PREPARE grantExec2 FROM @grantExec2;
 	EXECUTE grantExec;
+	EXECUTE grantExec2;
 	DEALLOCATE PREPARE grantExec;
 	
 	INSERT 
@@ -1371,5 +1401,228 @@ BEGIN
 	    in_name,
 	    in_levels);
 END //
+DELIMITER ;
+-- --------------------------------------------------------
+
+-- --------------------------------------------------------
+-- test_case_select_by_wp(int wp_id)
+-- r
+-- --------------------------------------------------------
+DELIMITER //
+CREATE PROCEDURE test_case_select_by_wp(
+IN in_fid_wp int(11)
+ )
+BEGIN
+	SELECT
+		t.id,
+		t.fid_wp,
+		t.name,
+		t.description,
+		t.precondition,
+		t.expected_result,
+		w.string_id
+	FROM
+		test_cases t
+	JOIN
+		workpackage w
+	WHERE
+		t.fid_wp = in_fid_wp
+		AND
+		t.fid_wp = w.id;
+END //
+DELIMITER ;
+-- --------------------------------------------------------
+
+-- --------------------------------------------------------
+-- test_case_new(everything except id)
+-- rw
+-- --------------------------------------------------------
+DELIMITER //
+CREATE PROCEDURE test_case_new(
+ IN in_fid_wp int(11),
+ IN in_name varchar(255)
+)
+ BEGIN
+	 INSERT INTO test_cases (
+		 fid_wp,
+		 name,
+		 description,
+		 precondition,
+		 expected_result)
+	 VALUES (
+		 in_fid_wp,
+		 in_name,
+		 "",
+		 "",
+		 ""
+	 );
+ END //
+DELIMITER ;
+-- --------------------------------------------------------
+
+-- --------------------------------------------------------
+-- test_case_update_by_id(everything except id)
+-- rw
+-- --------------------------------------------------------
+DELIMITER //
+CREATE PROCEDURE test_case_update_by_id(
+ IN in_id int(11),
+ IN in_fid_wp int(11),
+ IN in_name varchar(255),
+ IN in_description varchar(255),
+ IN in_precondition varchar(255),
+ IN in_expected_result varchar(255)
+)
+ BEGIN
+	 UPDATE test_cases
+	 SET
+		 fid_wp = in_fid_wp,
+		 name = in_name,
+		 description = in_description,
+		 precondition = in_precondition,
+		 expected_result = in_expected_result
+	 WHERE id = in_id;
+ END //
+DELIMITER ;
+-- --------------------------------------------------------
+
+-- --------------------------------------------------------
+-- test_execution_new(everything except id)
+-- rw
+-- --------------------------------------------------------
+DELIMITER //
+CREATE PROCEDURE test_execution_new(
+ IN in_fid_tc int(11),
+ IN in_fid_emp int(11),
+ IN in_remark varchar(255),
+ IN in_timestamp timestamp,
+ IN in_status varchar(255)
+)
+ BEGIN
+	 INSERT INTO test_executions (
+		 fid_tc,
+		 fid_emp,
+		 remark,
+		 timestamp,
+		 status
+	 )
+	 VALUES (
+		 in_fid_tc,
+		 in_fid_emp,
+		 in_remark,
+		 in_timestamp,
+		 in_status
+	 );
+ END //
+DELIMITER ;
+-- --------------------------------------------------------
+
+-- --------------------------------------------------------
+-- test_execution_update_by_id(everything except id)
+-- rw
+-- --------------------------------------------------------
+DELIMITER //
+CREATE PROCEDURE test_execution_update_by_id(
+ IN in_id int(11),
+ IN in_fid_tc int(11),
+ IN in_fid_emp int(11),
+ IN in_remark varchar(255),
+ IN in_timestamp date,
+ IN in_status varchar(255)
+)
+ BEGIN
+	 UPDATE test_executions
+	 SET
+		 fid_tc = in_fid_tc,
+		 fid_emp = in_fid_emp,
+		 remark = in_remark,
+		 timestamp = in_timestamp,
+		 status = in_status
+	 WHERE id = in_id;
+ END //
+DELIMITER ;
+-- --------------------------------------------------------
+
+-- --------------------------------------------------------
+-- test_execution_select_by_test_case
+-- r
+-- --------------------------------------------------------
+DELIMITER //
+CREATE PROCEDURE test_execution_select_by_test_case(
+ IN in_fid_tc int(11)
+)
+ BEGIN
+	SELECT
+		t.id,
+		t.fid_tc,
+		t.fid_emp,
+		t.remark,
+		t.timestamp,
+		t.status,
+		e.login
+	FROM
+		test_executions t
+	JOIN
+		employees e
+	WHERE
+		t.fid_tc = in_fid_tc
+		AND
+		t.fid_emp = e.id
+	ORDER BY
+		t.timestamp
+	DESC;
+ END //
+DELIMITER ;
+-- --------------------------------------------------------
+
+-- --------------------------------------------------------
+-- test_case_select()
+-- r
+-- --------------------------------------------------------
+DELIMITER //
+CREATE PROCEDURE test_case_select()
+ BEGIN
+	 SELECT
+		 t.id,
+		 t.fid_wp,
+		 t.name,
+		 t.description,
+		 t.precondition,
+		 t.expected_result,
+		 w.string_id
+	 FROM
+		 test_cases t
+		 JOIN
+		 workpackage w
+		 ON
+		 w.id = t.fid_wp;
+ END //
+DELIMITER ;
+-- --------------------------------------------------------
+
+-- --------------------------------------------------------
+-- test_execution_select()
+-- r
+-- --------------------------------------------------------
+DELIMITER //
+CREATE PROCEDURE test_execution_select()
+ BEGIN
+	 SELECT
+		 t.id,
+		 t.fid_tc,
+		 t.fid_emp,
+		 t.remark,
+		 t.timestamp,
+		 t.status,
+		 e.login
+	 FROM
+		 test_executions t
+		 JOIN
+		 employees e
+		 ON t.fid_emp = e.id
+	 ORDER BY
+		 t.timestamp
+	 DESC;
+ END //
 DELIMITER ;
 -- --------------------------------------------------------

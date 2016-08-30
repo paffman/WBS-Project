@@ -2,6 +2,7 @@ package de.fhbingen.wbs.gui.projectsetupassistant;
 
 import c10n.C10N;
 import de.fhbingen.wbs.gui.SwingUtilityMethods;
+import de.fhbingen.wbs.timetracker.TimeTrackerConnector;
 import de.fhbingen.wbs.translation.ProjectSetup;
 
 import java.awt.BorderLayout;
@@ -14,13 +15,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JPasswordField;
-import javax.swing.JTextField;
+import javax.swing.*;
 
 /**
  * Dialog asking for the database admin login.
@@ -30,7 +25,7 @@ public class DatabaseAdminLogin extends JDialog {
     /**
      * Default preferred size.
      */
-    private static final Dimension PREFERRED_SIZE = new Dimension(450, 200);
+    private static final Dimension PREFERRED_SIZE = new Dimension(450, 300);
 
     /**
      * UID for serialization.
@@ -74,6 +69,13 @@ public class DatabaseAdminLogin extends JDialog {
      * Password field for root password on the server.
      */
     private final JPasswordField textFieldPassword;
+
+    /**
+     * Textfield for the application server address.
+     */
+    private final JTextField txfApplicationAddress;
+
+
     /**
      * Label for server address text field.
      */
@@ -88,6 +90,11 @@ public class DatabaseAdminLogin extends JDialog {
     private final JLabel labelTextFieldPassword;
 
     /**
+     * Label for application server
+     */
+    private final JLabel lblApplicationServer;
+
+    /**
      * Responsible for handling all user actions.
      */
     private final Actions actionHandler;
@@ -96,6 +103,11 @@ public class DatabaseAdminLogin extends JDialog {
      * Get cosmopolitan translations.
      */
     private final ProjectSetup msg;
+
+    /**
+     * Checkbox for the option of an application server.
+     */
+    private final JCheckBox cbApplicationServer;
 
     /**
      * Interface do define possible user actions to be handled by the
@@ -151,6 +163,8 @@ public class DatabaseAdminLogin extends JDialog {
         textFieldServerAddress = new JTextField();
         textFieldUserName = new JTextField();
         textFieldPassword = new JPasswordField();
+        txfApplicationAddress = new JTextField();
+        txfApplicationAddress.setEditable(false);
         //Labels for TextFields
         labelTextFieldServerAddress = new JLabel(msg.serverAddress() + ":",
                 JLabel.RIGHT);
@@ -158,14 +172,18 @@ public class DatabaseAdminLogin extends JDialog {
                 JLabel.RIGHT);
         labelTextFieldPassword = new JLabel(msg.rootPassword() + ":",
                 JLabel.RIGHT);
+        lblApplicationServer = new JLabel(msg.applicationServer() + ":",
+                JLabel.RIGHT);
         //set labelFor() for screen reader compatibility
         labelTextFieldServerAddress.setLabelFor(textFieldServerAddress);
         labelTextFieldUserName.setLabelFor(textFieldUserName);
-        labelTextFieldPassword.setLabelFor(textFieldPassword);
+        lblApplicationServer.setLabelFor(txfApplicationAddress);
+
+        //Checkbox
+        cbApplicationServer = new JCheckBox(msg.withApplicationServer());
 
         addUiElements();
         addActionListeners();
-
         setupDialogProperties();
     }
 
@@ -183,6 +201,14 @@ public class DatabaseAdminLogin extends JDialog {
      */
     public final String getUserName() {
         return textFieldUserName.getText();
+    }
+
+    /**
+     * Gets the text from application server address.
+     * @return the application server address
+     */
+    public final String getApplicationAddress(){
+        return txfApplicationAddress.getText();
     }
 
     /**
@@ -217,6 +243,10 @@ public class DatabaseAdminLogin extends JDialog {
                 labelTextFieldPassword, 0, 2, 0, 0, GridBagConstraints.BOTH,
                 insetsLabel);
         SwingUtilityMethods.addWithGridBagConstraints(centerPanel,
+                cbApplicationServer, 0, 3, 0, 0, GridBagConstraints.HORIZONTAL, insetsLabel);
+        SwingUtilityMethods.addWithGridBagConstraints(centerPanel,
+                lblApplicationServer, 0, 4, 0, 0, GridBagConstraints.BOTH, insetsLabel);
+        SwingUtilityMethods.addWithGridBagConstraints(centerPanel,
                 textFieldServerAddress, 1, 0, textFieldWeightx,
                 textFieldWeighty, GridBagConstraints.HORIZONTAL,
                 insetsTextField);
@@ -226,6 +256,8 @@ public class DatabaseAdminLogin extends JDialog {
         SwingUtilityMethods.addWithGridBagConstraints(centerPanel,
                 textFieldPassword, 1, 2, textFieldWeightx, textFieldWeighty,
                 GridBagConstraints.HORIZONTAL, insetsTextField);
+        SwingUtilityMethods.addWithGridBagConstraints(centerPanel, txfApplicationAddress,
+                1, 4, textFieldWeightx, textFieldWeighty, GridBagConstraints.HORIZONTAL, insetsTextField);
 
     }
 
@@ -236,7 +268,7 @@ public class DatabaseAdminLogin extends JDialog {
     private void setupDialogProperties() {
         setModal(true);
         getRootPane().setDefaultButton(buttonOk);
-        setTitle(msg.projectSetup() + ": " + msg.databaseAdminLogin());
+        setTitle(msg.projectSetup() + ": " + msg.databaseApplication());
         setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
 
         //positioning and size
@@ -271,6 +303,19 @@ public class DatabaseAdminLogin extends JDialog {
                 actionHandler.cancelButtonPressed();
             }
         });
+
+        cbApplicationServer.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(cbApplicationServer.isSelected()) {
+                    txfApplicationAddress.setEditable(true);
+                }
+                else{
+                    txfApplicationAddress.setEditable(false);
+                }
+
+            }
+        });
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(final WindowEvent e) {
@@ -284,6 +329,18 @@ public class DatabaseAdminLogin extends JDialog {
      */
     public final void clearPasswordField() {
         textFieldPassword.setText("");
+    }
+
+    /**
+     * Application server address.
+     * @return string from application server address
+     */
+    public String getApplication(){
+        return txfApplicationAddress.getText();
+    }
+
+    public boolean withApplicationServer(){
+        return cbApplicationServer.isSelected();
     }
 
 }

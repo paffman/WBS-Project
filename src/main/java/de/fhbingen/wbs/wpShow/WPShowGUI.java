@@ -14,6 +14,10 @@
 
 package de.fhbingen.wbs.wpShow;
 
+import de.fhbingen.wbs.controller.TestCaseController;
+import de.fhbingen.wbs.dbaccess.data.TestCase;
+import de.fhbingen.wbs.dbaccess.data.TestExecution;
+import de.fhbingen.wbs.testcases.TestcaseShowGUI;
 import de.fhbingen.wbs.translation.Button;
 import de.fhbingen.wbs.translation.General;
 import de.fhbingen.wbs.translation.LocalizedStrings;
@@ -23,210 +27,329 @@ import de.fhbingen.wbs.globals.Controller;
 import de.fhbingen.wbs.globals.FilterJTextField;
 import de.fhbingen.wbs.globals.Workpackage;
 
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JSplitPane;
+import javax.swing.*;
 
-import java.awt.BorderLayout;
+import java.awt.*;
 
-import javax.swing.JPanel;
-import javax.swing.JTable;
-
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
-
-import javax.swing.JCheckBox;
-import javax.swing.JTextField;
-import javax.swing.JProgressBar;
-import javax.swing.JTextArea;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
+import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import java.awt.FlowLayout;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseListener;
+import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.Vector;
+import java.util.logging.Filter;
 
+import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.JScrollPane;
 
 import de.fhbingen.wbs.dbServices.WorkerService;
 import de.fhbingen.wbs.dbServices.ValuesService;
 import de.fhbingen.wbs.wpOverview.WPOverview;
 import de.fhbingen.wbs.wpWorker.Worker;
 
-import java.awt.GridLayout;
-import java.awt.Font;
-
 /**
  * The GUI to insert work packages.
  */
 public class WPShowGUI extends JFrame {
 
-    /** Constant serialized ID used for compatibility. */
+
+
+    /**
+     * Constant serialized ID used for compatibility.
+     */
     private static final long serialVersionUID = -5497472870591199416L;
 
-    /** The table to show the work effort. */
+    /**
+     * The table to show the work effort.
+     */
     private JTable tblAufwand;
 
-    /** The text field for the work package number. */
+    /**
+     * The table to show the Testcases.
+     */
+    private JTable tblTestcase;
+
+    /**
+     * The text field for the work package number.
+     */
     private JTextField txfNr;
 
-    /** The text field for the work package name. */
+    /**
+     * The text field for the work package name.
+     */
     private JTextField txfName;
 
-    /** The text field for the sv. */
+    /**
+     * The text field for the sv.
+     */
     private JTextField txfSV;
 
-    /** The text field for the cpi. */
+    /**
+     * The text field for the cpi.
+     */
     private JTextField txfCPI;
 
-    /** The text field for the actual cost. */
+    /**
+     * The text field for the actual cost.
+     */
     private JTextField txfACCost;
 
-    /** The text field for the bac costs. */
+    /**
+     * The text field for the bac costs.
+     */
     private JTextField txfBACCost;
 
-    /** The text field for the ev. */
+    /**
+     * The text field for the ev.
+     */
     private JTextField txfEV;
 
-    /** The text field for the eac. */
+    /**
+     * The text field for the eac.
+     */
     private JTextField txfEAC;
 
-    /** The text field for the etc cost. */
+    /**
+     * The text field for the etc cost.
+     */
     private JTextField txfETCCost;
 
-    /** The text field for the start calc. */
+    /**
+     * The text field for the start calc.
+     */
     private JTextField txfStartCalc;
 
-    /** The text field for the start hope. */
+    /**
+     * The text field for the start hope.
+     */
     private JTextField txfStartHope;
 
-    /** The text field for the end calc. */
+    /**
+     * The text field for the end calc.
+     */
     private JTextField txfEndCalc;
 
-    /** The text field for the end hope. */
+    /**
+     * The text field for the end hope.
+     */
     private JTextField txfEndHope;
 
-    /** The text field for the worker. */
+    /**
+     * The text field for the worker.
+     */
     private JTextField txfWorker;
 
-    /** The text field for the pv. */
+    /**
+     * The text field for the pv.
+     */
     private JTextField txfPV;
 
-    /** The text field for the spi. */
+    /**
+     * The text field for the spi.
+     */
     private JTextField txfSPI;
 
-    /** The button to add an ancestor. */
+    /**
+     * The text field for the testcase.
+     */
+    private FilterJTextField txfTestcase;
+
+    /**
+     * The button to add an ancestor.
+     */
     private JButton btnAddAncestor;
 
-    /** The button to edit an ancestor. */
+    /**
+     * The button to edit an ancestor.
+     */
     private JButton btnEditAncestor;
 
-    /** The button to add an follower. */
+    /**
+     * The button to add an follower.
+     */
     private JButton btnAddFollower;
 
-    /** The button to edit an follower. */
+    /**
+     * The button to edit an follower.
+     */
     private JButton btnEditFollower;
 
-    /** The button to add an worker. */
+    /**
+     * The button to add an worker.
+     */
     private JButton btnAddWorker;
 
-    /** The button to remove an worker. */
+    /**
+     * The button to remove an worker.
+     */
     private JButton btnRemoveWorker;
 
-    /** The button to save the changes. */
+    /**
+     * The button to save the changes.
+     */
     private JButton btnSave;
 
-    /** The button to cancel the changes. */
+    /**
+     * The button to cancel the changes.
+     */
     private JButton btnCancel;
 
-    /** The combo box which contains the workers to add them. */
+    /**
+     * The button to add a testcase.
+     */
+    private JButton btnAddTestcase;
+
+    /**
+     * The button to edit the description.
+     */
+    private JButton btnEditDesc;
+
+    /**
+     * The combo box which contains the workers to add them.
+     */
     private JComboBox<Worker> cobAddWorker;
 
-    /** The combo box which contains the workers to remove them. */
+    /**
+     * The combo box which contains the workers to remove them.
+     */
     private JComboBox<Worker> cobRemoveWorker;
 
-    /** The text area to describe the work package. */
+    /**
+     * The text area to describe the work package.
+     */
     private JTextArea txfDesc;
 
-    /** The check box to select the work package as upper work package. */
+    /**
+     * The check box to select the work package as upper work package.
+     */
     private JCheckBox chbOAP;
 
-    /** The check box to select the work package as inactive. */
+    /**
+     * The check box to select the work package as inactive.
+     */
     private JCheckBox chbInaktiv;
 
-    /** The button to add a work effort. */
+    /**
+     * The button to add a work effort.
+     */
     private JButton btnAddAufwand;
 
-    /** The combo box which contains the workers which are leader. */
+    /**
+     * The button to execute the Tests
+     */
+    private JButton btnTestExecute;
+
+    /**
+     * The combo box which contains the workers which are leader.
+     */
     private JComboBox<Worker> cobLeiter;
 
-    /** The text field for a daily rate. */
+    /**
+     * The text field for a daily rate.
+     */
     private JTextField txfTagessatz;
 
-    /** The progress bar to show the progress. */
+    /**
+     * The progress bar to show the progress.
+     */
     private JProgressBar barComplete;
 
-    /** The scroll pane to scroll the text field. */
+    /**
+     * The scroll pane to scroll the text field.
+     */
     private JScrollPane scrollTable;
 
-    /** The label to describe the daily rate. */
+    /**
+     * The scroll pane to scroll the testcase table.
+     */
+    private JScrollPane scrollTableTestcase;
+
+    /**
+     * The label to describe the daily rate.
+     */
     private JLabel lblTagessatz;
     private JButton btnOk;
 
-    /** The functionality for this GUI. */
+    /**
+     * The functionality for this GUI.
+     */
     private WPShow function;
 
-    /** The label to describe the pv and spi. */
+    /**
+     * The label to describe the pv and spi.
+     */
     private JLabel lblPvSpi;
 
-    /** The label to describe the predecessor. */
+    /**
+     * The label to describe the predecessor.
+     */
     private JLabel lblVorgnger;
 
-    /** The label to describe the successor. */
+    /**
+     * The label to describe the successor.
+     */
     private JLabel lblNachfolger;
 
-    /** A panel for the GUI. */
+    /**
+     * A panel for the GUI.
+     */
     private JPanel panel_9;
 
-    /** The button for the cpi. */
+    /**
+     * The button for the cpi.
+     */
     private JButton btnCPI;
 
-    /** The button for the spi. */
+    /**
+     * The button for the spi.
+     */
     private JButton btnSPI;
 
-    /** A panel for the GUI. */
+    /**
+     * A panel for the GUI.
+     */
     private JPanel panel_10;
 
-    /** The text field for the bac. */
+    /**
+     * The text field for the bac.
+     */
     private JTextField txfBAC;
 
-    /** The text field for the etc. */
+    /**
+     * The text field for the etc.
+     */
     private JTextField txfETC;
 
-    /** The text field for the ac. */
+    /**
+     * The text field for the ac.
+     */
     private JTextField txfAC;
 
-    /** A panel for the GUI. */
+    /**
+     * A panel for the GUI.
+     */
     private JPanel panel_11;
 
-    /** The text field for the date. */
+    /**
+     * The text field for the date.
+     */
     private JTextField txfDate;
 
-    /** The button for all planned values. */
+    /**
+     * The button for all planned values.
+     */
     private JButton btnAllPV;
 
     private final General generalStrings;
@@ -235,15 +358,13 @@ public class WPShowGUI extends JFrame {
 
     /**
      * Constructor.
-     * @param title
-     *            The title of the GUI.
-     * @param function
-     *            The functionality for this GUI.
-     * @param parent
-     *            The parent frame.
+     *
+     * @param title    The title of the GUI.
+     * @param function The functionality for this GUI.
+     * @param parent   The parent frame.
      */
     public WPShowGUI(final String title, final WPShow function,
-        final JFrame parent) {
+                     final JFrame parent) {
         super(title);
         this.function = function;
 
@@ -256,18 +377,19 @@ public class WPShowGUI extends JFrame {
         getContentPane().add(splitPane, BorderLayout.CENTER);
 
         JPanel leftPanel = new JPanel();
-        leftPanel.setBorder(new EmptyBorder(5, 5, 5, 3));
+        leftPanel.setLayout(new BorderLayout());
+
+        JPanel leftScrollPanel = new JPanel();
+        leftScrollPanel.setBorder(new EmptyBorder(5, 5, 5, 3));
+        GridBagLayout gbl_leftScrollPanel = new GridBagLayout();
+        gbl_leftScrollPanel.columnWidths = new int[]{0, 0, 0};
+        gbl_leftScrollPanel.rowHeights = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+        leftScrollPanel.setLayout(gbl_leftScrollPanel);
+
+        JScrollPane wpSettingsPane = new JScrollPane(leftScrollPanel, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        wpSettingsPane.setMinimumSize(new Dimension(470, 600));
         splitPane.setLeftComponent(leftPanel);
-        GridBagLayout gbl_leftPanel = new GridBagLayout();
-        gbl_leftPanel.columnWidths = new int[] {0, 0, 0 };
-        gbl_leftPanel.rowHeights = new int[] {0, 0, 0, 40, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-        gbl_leftPanel.columnWeights = new double[] {1.0, 1.0,
-            Double.MIN_VALUE };
-        gbl_leftPanel.rowWeights = new double[] {0.0, 0.0, 0.0, 1.0, 0.0,
-            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
-        leftPanel.setLayout(gbl_leftPanel);
 
         JLabel lblNr = new JLabel(wbsStrings.workPackageId());
         GridBagConstraints gbc_lblNr = new GridBagConstraints();
@@ -275,7 +397,7 @@ public class WPShowGUI extends JFrame {
         gbc_lblNr.insets = new Insets(0, 0, 5, 5);
         gbc_lblNr.gridx = 0;
         gbc_lblNr.gridy = 0;
-        leftPanel.add(lblNr, gbc_lblNr);
+        leftScrollPanel.add(lblNr, gbc_lblNr);
 
         txfNr = new FilterJTextField();
         GridBagConstraints gbc_txfNr = new GridBagConstraints();
@@ -283,17 +405,17 @@ public class WPShowGUI extends JFrame {
         gbc_txfNr.insets = new Insets(0, 0, 5, 0);
         gbc_txfNr.gridx = 1;
         gbc_txfNr.gridy = 0;
-        leftPanel.add(txfNr, gbc_txfNr);
+        leftScrollPanel.add(txfNr, gbc_txfNr);
         txfNr.setColumns(10);
 
         JLabel lblName = new JLabel(wbsStrings.workPackage()); // TODO OK?
-                                                               // war: name
+        // war: name
         GridBagConstraints gbc_lblName = new GridBagConstraints();
         gbc_lblName.anchor = GridBagConstraints.WEST;
         gbc_lblName.insets = new Insets(0, 0, 5, 5);
         gbc_lblName.gridx = 0;
         gbc_lblName.gridy = 1;
-        leftPanel.add(lblName, gbc_lblName);
+        leftScrollPanel.add(lblName, gbc_lblName);
 
         txfName = new FilterJTextField();
         GridBagConstraints gbc_txfName = new GridBagConstraints();
@@ -301,7 +423,7 @@ public class WPShowGUI extends JFrame {
         gbc_txfName.insets = new Insets(0, 0, 5, 0);
         gbc_txfName.gridx = 1;
         gbc_txfName.gridy = 1;
-        leftPanel.add(txfName, gbc_txfName);
+        leftScrollPanel.add(txfName, gbc_txfName);
         txfName.setColumns(10);
 
         JPanel panel_5 = new JPanel();
@@ -312,7 +434,7 @@ public class WPShowGUI extends JFrame {
         gbc_panel_5.fill = GridBagConstraints.BOTH;
         gbc_panel_5.gridx = 1;
         gbc_panel_5.gridy = 2;
-        leftPanel.add(panel_5, gbc_panel_5);
+        leftScrollPanel.add(panel_5, gbc_panel_5);
 
         chbOAP = new JCheckBox("OAP");
         panel_5.add(chbOAP);
@@ -320,15 +442,22 @@ public class WPShowGUI extends JFrame {
         chbInaktiv = new JCheckBox(generalStrings.inactive());
         panel_5.add(chbInaktiv);
 
-        JLabel lblBeschreibung = new JLabel(generalStrings.description());
-        GridBagConstraints gbc_lblBeschreibung = new GridBagConstraints();
-        gbc_lblBeschreibung.anchor = GridBagConstraints.WEST;
-        gbc_lblBeschreibung.insets = new Insets(0, 0, 5, 5);
-        gbc_lblBeschreibung.gridx = 0;
-        gbc_lblBeschreibung.gridy = 3;
-        leftPanel.add(lblBeschreibung, gbc_lblBeschreibung);
+        JPanel pnlDesc = new JPanel();
+        pnlDesc.setLayout(new BorderLayout());
+        GridBagConstraints gbc_pnlDesc = new GridBagConstraints();
+        gbc_pnlDesc.anchor = GridBagConstraints.WEST;
+        gbc_pnlDesc.insets = new Insets(0, 0, 5, 5);
+        gbc_pnlDesc.gridx = 0;
+        gbc_pnlDesc.gridy = 3;
+        leftScrollPanel.add(pnlDesc, gbc_pnlDesc);
 
-        txfDesc = new JTextArea() {
+        JLabel lblBeschreibung = new JLabel(generalStrings.description());
+        pnlDesc.add(lblBeschreibung, BorderLayout.NORTH);
+
+        btnEditDesc = new JButton("Edit");
+        pnlDesc.add(btnEditDesc, BorderLayout.SOUTH);
+
+        txfDesc = new JTextArea(6, 1) {
             private static final long serialVersionUID = -3874181090738553731L;
 
             public String getText() {
@@ -338,13 +467,13 @@ public class WPShowGUI extends JFrame {
         };
         txfDesc.setFont(new Font("Tahoma", Font.PLAIN, 11));
         txfDesc.setLineWrap(true);
-        txfDesc.setBorder(new LineBorder(Color.LIGHT_GRAY, 1));
-        GridBagConstraints gbc_txfDesc = new GridBagConstraints();
-        gbc_txfDesc.insets = new Insets(0, 0, 5, 0);
-        gbc_txfDesc.fill = GridBagConstraints.BOTH;
-        gbc_txfDesc.gridx = 1;
-        gbc_txfDesc.gridy = 3;
-        leftPanel.add(txfDesc, gbc_txfDesc);
+        JScrollPane scrollDesc = new JScrollPane(txfDesc);
+        GridBagConstraints gbc_scrollDesc = new GridBagConstraints();
+        gbc_scrollDesc.insets = new Insets(0, 0, 5, 0);
+        gbc_scrollDesc.fill = GridBagConstraints.BOTH;
+        gbc_scrollDesc.gridx = 1;
+        gbc_scrollDesc.gridy = 3;
+        leftScrollPanel.add(scrollDesc, gbc_scrollDesc);
 
         lblVorgnger = new JLabel(generalStrings.predecessor());
         GridBagConstraints gbc_lblVorgnger = new GridBagConstraints();
@@ -352,7 +481,7 @@ public class WPShowGUI extends JFrame {
         gbc_lblVorgnger.insets = new Insets(0, 0, 5, 5);
         gbc_lblVorgnger.gridx = 0;
         gbc_lblVorgnger.gridy = 4;
-        leftPanel.add(lblVorgnger, gbc_lblVorgnger);
+        leftScrollPanel.add(lblVorgnger, gbc_lblVorgnger);
 
         JPanel panel_2 = new JPanel();
         GridBagConstraints gbc_panel_2 = new GridBagConstraints();
@@ -360,7 +489,7 @@ public class WPShowGUI extends JFrame {
         gbc_panel_2.fill = GridBagConstraints.BOTH;
         gbc_panel_2.gridx = 1;
         gbc_panel_2.gridy = 4;
-        leftPanel.add(panel_2, gbc_panel_2);
+        leftScrollPanel.add(panel_2, gbc_panel_2);
 
         btnAddAncestor = new JButton(buttonStrings.add());
         btnAddAncestor.addActionListener(new ActionListener() {
@@ -379,7 +508,7 @@ public class WPShowGUI extends JFrame {
         gbc_lblNachfolger.insets = new Insets(0, 0, 5, 5);
         gbc_lblNachfolger.gridx = 0;
         gbc_lblNachfolger.gridy = 5;
-        leftPanel.add(lblNachfolger, gbc_lblNachfolger);
+        leftScrollPanel.add(lblNachfolger, gbc_lblNachfolger);
 
         JPanel panel_3 = new JPanel();
         panel_3.setBorder(null);
@@ -388,7 +517,7 @@ public class WPShowGUI extends JFrame {
         gbc_panel_3.fill = GridBagConstraints.BOTH;
         gbc_panel_3.gridx = 1;
         gbc_panel_3.gridy = 5;
-        leftPanel.add(panel_3, gbc_panel_3);
+        leftScrollPanel.add(panel_3, gbc_panel_3);
         panel_3.setLayout(new GridLayout(0, 2, 5, 0));
 
         btnAddFollower = new JButton(buttonStrings.add());
@@ -398,13 +527,13 @@ public class WPShowGUI extends JFrame {
         panel_3.add(btnEditFollower);
 
         JLabel lblVerantwortlicher = new JLabel(
-            generalStrings.responsiblePerson());
+                generalStrings.responsiblePerson());
         GridBagConstraints gbc_lblVerantwortlicher = new GridBagConstraints();
         gbc_lblVerantwortlicher.anchor = GridBagConstraints.WEST;
         gbc_lblVerantwortlicher.insets = new Insets(0, 0, 5, 5);
         gbc_lblVerantwortlicher.gridx = 0;
         gbc_lblVerantwortlicher.gridy = 6;
-        leftPanel.add(lblVerantwortlicher, gbc_lblVerantwortlicher);
+        leftScrollPanel.add(lblVerantwortlicher, gbc_lblVerantwortlicher);
 
         cobLeiter = new JComboBox<Worker>();
         GridBagConstraints gbc_cobLeiter = new GridBagConstraints();
@@ -412,16 +541,16 @@ public class WPShowGUI extends JFrame {
         gbc_cobLeiter.insets = new Insets(0, 0, 5, 0);
         gbc_cobLeiter.gridx = 1;
         gbc_cobLeiter.gridy = 6;
-        leftPanel.add(cobLeiter, gbc_cobLeiter);
+        leftScrollPanel.add(cobLeiter, gbc_cobLeiter);
 
         JLabel lblMitarbeiter = new JLabel(LocalizedStrings.getLogin()
-            .user()); // TODO ok? war Mitarbeiter
+                .user()); // TODO ok? war Mitarbeiter
         GridBagConstraints gbc_lblMitarbeiter = new GridBagConstraints();
         gbc_lblMitarbeiter.anchor = GridBagConstraints.WEST;
         gbc_lblMitarbeiter.insets = new Insets(0, 0, 5, 5);
         gbc_lblMitarbeiter.gridx = 0;
         gbc_lblMitarbeiter.gridy = 7;
-        leftPanel.add(lblMitarbeiter, gbc_lblMitarbeiter);
+        leftScrollPanel.add(lblMitarbeiter, gbc_lblMitarbeiter);
 
         txfWorker = new FilterJTextField();
         txfWorker.setEditable(false);
@@ -431,7 +560,7 @@ public class WPShowGUI extends JFrame {
         gbc_txfWorker.insets = new Insets(0, 0, 5, 0);
         gbc_txfWorker.gridx = 1;
         gbc_txfWorker.gridy = 7;
-        leftPanel.add(txfWorker, gbc_txfWorker);
+        leftScrollPanel.add(txfWorker, gbc_txfWorker);
         txfWorker.setColumns(10);
 
         JPanel panel_4 = new JPanel();
@@ -440,13 +569,13 @@ public class WPShowGUI extends JFrame {
         gbc_panel_4.fill = GridBagConstraints.BOTH;
         gbc_panel_4.gridx = 1;
         gbc_panel_4.gridy = 8;
-        leftPanel.add(panel_4, gbc_panel_4);
+        leftScrollPanel.add(panel_4, gbc_panel_4);
         GridBagLayout gbl_panel_4 = new GridBagLayout();
-        gbl_panel_4.columnWidths = new int[] {0, 0, 0 };
-        gbl_panel_4.rowHeights = new int[] {23, 23, 0 };
-        gbl_panel_4.columnWeights = new double[] {1.0, 0.0,
-            Double.MIN_VALUE };
-        gbl_panel_4.rowWeights = new double[] {0.0, 0.0, Double.MIN_VALUE };
+        gbl_panel_4.columnWidths = new int[]{0, 0, 0};
+        gbl_panel_4.rowHeights = new int[]{23, 23, 0};
+        gbl_panel_4.columnWeights = new double[]{1.0, 0.0,
+                Double.MIN_VALUE};
+        gbl_panel_4.rowWeights = new double[]{0.0, 0.0, Double.MIN_VALUE};
         panel_4.setLayout(gbl_panel_4);
 
         btnAddWorker = new JButton("+");
@@ -485,7 +614,7 @@ public class WPShowGUI extends JFrame {
         gbc_lblStart.insets = new Insets(0, 0, 5, 5);
         gbc_lblStart.gridx = 0;
         gbc_lblStart.gridy = 9;
-        leftPanel.add(lblStart, gbc_lblStart);
+        leftScrollPanel.add(lblStart, gbc_lblStart);
 
         JPanel panel = new JPanel();
         GridBagConstraints gbc_panel = new GridBagConstraints();
@@ -493,7 +622,7 @@ public class WPShowGUI extends JFrame {
         gbc_panel.fill = GridBagConstraints.BOTH;
         gbc_panel.gridx = 1;
         gbc_panel.gridy = 9;
-        leftPanel.add(panel, gbc_panel);
+        leftScrollPanel.add(panel, gbc_panel);
         panel.setLayout(new GridLayout(0, 2, 5, 0));
 
         txfStartHope = new FilterJTextField();
@@ -512,7 +641,7 @@ public class WPShowGUI extends JFrame {
         gbc_lblEnd.insets = new Insets(0, 0, 5, 5);
         gbc_lblEnd.gridx = 0;
         gbc_lblEnd.gridy = 10;
-        leftPanel.add(lblEnd, gbc_lblEnd);
+        leftScrollPanel.add(lblEnd, gbc_lblEnd);
 
         JPanel panel_1 = new JPanel();
         GridBagConstraints gbc_panel_1 = new GridBagConstraints();
@@ -520,7 +649,7 @@ public class WPShowGUI extends JFrame {
         gbc_panel_1.fill = GridBagConstraints.BOTH;
         gbc_panel_1.gridx = 1;
         gbc_panel_1.gridy = 10;
-        leftPanel.add(panel_1, gbc_panel_1);
+        leftScrollPanel.add(panel_1, gbc_panel_1);
         panel_1.setLayout(new GridLayout(0, 2, 5, 0));
 
         txfEndHope = new FilterJTextField();
@@ -539,7 +668,7 @@ public class WPShowGUI extends JFrame {
         gbc_lblStatus.insets = new Insets(0, 0, 5, 5);
         gbc_lblStatus.gridx = 0;
         gbc_lblStatus.gridy = 11;
-        leftPanel.add(lblStatus, gbc_lblStatus);
+        leftScrollPanel.add(lblStatus, gbc_lblStatus);
 
         barComplete = new JProgressBar();
         GridBagConstraints gbc_barComplete = new GridBagConstraints();
@@ -547,7 +676,7 @@ public class WPShowGUI extends JFrame {
         gbc_barComplete.insets = new Insets(0, 0, 5, 0);
         gbc_barComplete.gridx = 1;
         gbc_barComplete.gridy = 11;
-        leftPanel.add(barComplete, gbc_barComplete);
+        leftScrollPanel.add(barComplete, gbc_barComplete);
 
         JLabel lblCpi = new JLabel(wbsStrings.cpiAndSpi());
         GridBagConstraints gbc_lblCpi = new GridBagConstraints();
@@ -555,7 +684,7 @@ public class WPShowGUI extends JFrame {
         gbc_lblCpi.insets = new Insets(0, 0, 5, 5);
         gbc_lblCpi.gridx = 0;
         gbc_lblCpi.gridy = 12;
-        leftPanel.add(lblCpi, gbc_lblCpi);
+        leftScrollPanel.add(lblCpi, gbc_lblCpi);
 
         JPanel panel_7 = new JPanel();
         GridBagConstraints gbc_panel_7 = new GridBagConstraints();
@@ -563,7 +692,7 @@ public class WPShowGUI extends JFrame {
         gbc_panel_7.fill = GridBagConstraints.BOTH;
         gbc_panel_7.gridx = 1;
         gbc_panel_7.gridy = 12;
-        leftPanel.add(panel_7, gbc_panel_7);
+        leftScrollPanel.add(panel_7, gbc_panel_7);
         panel_7.setLayout(new GridLayout(1, 2, 5, 0));
 
         txfCPI = new FilterJTextField();
@@ -586,7 +715,7 @@ public class WPShowGUI extends JFrame {
         gbc_panel_9.fill = GridBagConstraints.BOTH;
         gbc_panel_9.gridx = 1;
         gbc_panel_9.gridy = 13;
-        leftPanel.add(panel_9, gbc_panel_9);
+        leftScrollPanel.add(panel_9, gbc_panel_9);
         panel_9.setLayout(new GridLayout(1, 2, 5, 0));
 
         btnCPI = new JButton(wbsStrings.graph(wbsStrings.cpi()));
@@ -596,14 +725,14 @@ public class WPShowGUI extends JFrame {
         panel_9.add(btnSPI);
 
         JLabel lblBac = new JLabel(wbsStrings.bac() + " / "
-            + wbsStrings.etc() + " / " + wbsStrings.ac());
+                + wbsStrings.etc() + " / " + wbsStrings.ac());
         lblBac.setToolTipText(wbsStrings.inDays());
         GridBagConstraints gbc_lblBac = new GridBagConstraints();
         gbc_lblBac.anchor = GridBagConstraints.WEST;
         gbc_lblBac.insets = new Insets(0, 0, 5, 5);
         gbc_lblBac.gridx = 0;
         gbc_lblBac.gridy = 14;
-        leftPanel.add(lblBac, gbc_lblBac);
+        leftScrollPanel.add(lblBac, gbc_lblBac);
 
         panel_10 = new JPanel();
         GridBagConstraints gbc_panel_10 = new GridBagConstraints();
@@ -611,7 +740,7 @@ public class WPShowGUI extends JFrame {
         gbc_panel_10.fill = GridBagConstraints.BOTH;
         gbc_panel_10.gridx = 1;
         gbc_panel_10.gridy = 14;
-        leftPanel.add(panel_10, gbc_panel_10);
+        leftScrollPanel.add(panel_10, gbc_panel_10);
         panel_10.setLayout(new GridLayout(1, 0, 5, 0));
 
         txfBAC = new FilterJTextField();
@@ -635,7 +764,7 @@ public class WPShowGUI extends JFrame {
         gbc_lblPv.insets = new Insets(0, 0, 5, 5);
         gbc_lblPv.gridx = 0;
         gbc_lblPv.gridy = 15;
-        leftPanel.add(lblPv, gbc_lblPv);
+        leftScrollPanel.add(lblPv, gbc_lblPv);
 
         JPanel panel_6 = new JPanel();
         GridBagConstraints gbc_panel_6 = new GridBagConstraints();
@@ -643,7 +772,7 @@ public class WPShowGUI extends JFrame {
         gbc_panel_6.fill = GridBagConstraints.BOTH;
         gbc_panel_6.gridx = 1;
         gbc_panel_6.gridy = 15;
-        leftPanel.add(panel_6, gbc_panel_6);
+        leftScrollPanel.add(panel_6, gbc_panel_6);
         panel_6.setLayout(new GridLayout(0, 2, 5, 0));
 
         txfSV = new FilterJTextField();
@@ -659,13 +788,13 @@ public class WPShowGUI extends JFrame {
         txfPV.setColumns(10);
 
         JLabel lblBacKosten = new JLabel(generalStrings.costs(wbsStrings
-            .bac()));
+                .bac()));
         GridBagConstraints gbc_lblBacKosten = new GridBagConstraints();
         gbc_lblBacKosten.anchor = GridBagConstraints.WEST;
         gbc_lblBacKosten.insets = new Insets(0, 0, 5, 5);
         gbc_lblBacKosten.gridx = 0;
         gbc_lblBacKosten.gridy = 16;
-        leftPanel.add(lblBacKosten, gbc_lblBacKosten);
+        leftScrollPanel.add(lblBacKosten, gbc_lblBacKosten);
 
         txfBACCost = new FilterJTextField();
         txfBACCost.setEditable(false);
@@ -675,17 +804,17 @@ public class WPShowGUI extends JFrame {
         gbc_txfBACCost.insets = new Insets(0, 0, 5, 0);
         gbc_txfBACCost.gridx = 1;
         gbc_txfBACCost.gridy = 16;
-        leftPanel.add(txfBACCost, gbc_txfBACCost);
+        leftScrollPanel.add(txfBACCost, gbc_txfBACCost);
         txfBACCost.setColumns(10);
 
         JLabel lblAcKosten = new JLabel(generalStrings.costs(wbsStrings
-            .ac()));
+                .ac()));
         GridBagConstraints gbc_lblAcKosten = new GridBagConstraints();
         gbc_lblAcKosten.anchor = GridBagConstraints.WEST;
         gbc_lblAcKosten.insets = new Insets(0, 0, 5, 5);
         gbc_lblAcKosten.gridx = 0;
         gbc_lblAcKosten.gridy = 17;
-        leftPanel.add(lblAcKosten, gbc_lblAcKosten);
+        leftScrollPanel.add(lblAcKosten, gbc_lblAcKosten);
 
         txfACCost = new FilterJTextField();
         txfACCost.setEditable(false);
@@ -695,7 +824,7 @@ public class WPShowGUI extends JFrame {
         gbc_txfACCost.insets = new Insets(0, 0, 5, 0);
         gbc_txfACCost.gridx = 1;
         gbc_txfACCost.gridy = 17;
-        leftPanel.add(txfACCost, gbc_txfACCost);
+        leftScrollPanel.add(txfACCost, gbc_txfACCost);
         txfACCost.setColumns(10);
 
         JLabel lblEv = new JLabel(wbsStrings.ev());
@@ -704,7 +833,7 @@ public class WPShowGUI extends JFrame {
         gbc_lblEv.insets = new Insets(0, 0, 5, 5);
         gbc_lblEv.gridx = 0;
         gbc_lblEv.gridy = 18;
-        leftPanel.add(lblEv, gbc_lblEv);
+        leftScrollPanel.add(lblEv, gbc_lblEv);
 
         txfEV = new FilterJTextField();
         txfEV.setEditable(false);
@@ -714,7 +843,7 @@ public class WPShowGUI extends JFrame {
         gbc_txfEV.insets = new Insets(0, 0, 5, 0);
         gbc_txfEV.gridx = 1;
         gbc_txfEV.gridy = 18;
-        leftPanel.add(txfEV, gbc_txfEV);
+        leftScrollPanel.add(txfEV, gbc_txfEV);
         txfEV.setColumns(10);
 
         JLabel lblEac = new JLabel(wbsStrings.eac());
@@ -723,7 +852,7 @@ public class WPShowGUI extends JFrame {
         gbc_lblEac.insets = new Insets(0, 0, 5, 5);
         gbc_lblEac.gridx = 0;
         gbc_lblEac.gridy = 19;
-        leftPanel.add(lblEac, gbc_lblEac);
+        leftScrollPanel.add(lblEac, gbc_lblEac);
 
         txfEAC = new FilterJTextField();
         txfEAC.setEditable(false);
@@ -733,17 +862,17 @@ public class WPShowGUI extends JFrame {
         gbc_txfEAC.insets = new Insets(0, 0, 5, 0);
         gbc_txfEAC.gridx = 1;
         gbc_txfEAC.gridy = 19;
-        leftPanel.add(txfEAC, gbc_txfEAC);
+        leftScrollPanel.add(txfEAC, gbc_txfEAC);
         txfEAC.setColumns(10);
 
         JLabel lblEtcKosten = new JLabel(generalStrings.costs(wbsStrings
-            .etc()));
+                .etc()));
         GridBagConstraints gbc_lblEtcKosten = new GridBagConstraints();
         gbc_lblEtcKosten.anchor = GridBagConstraints.WEST;
         gbc_lblEtcKosten.insets = new Insets(0, 0, 5, 5);
         gbc_lblEtcKosten.gridx = 0;
         gbc_lblEtcKosten.gridy = 20;
-        leftPanel.add(lblEtcKosten, gbc_lblEtcKosten);
+        leftScrollPanel.add(lblEtcKosten, gbc_lblEtcKosten);
 
         txfETCCost = new FilterJTextField();
         txfETCCost.setEditable(false);
@@ -753,7 +882,7 @@ public class WPShowGUI extends JFrame {
         gbc_txfETCCost.fill = GridBagConstraints.HORIZONTAL;
         gbc_txfETCCost.gridx = 1;
         gbc_txfETCCost.gridy = 20;
-        leftPanel.add(txfETCCost, gbc_txfETCCost);
+        leftScrollPanel.add(txfETCCost, gbc_txfETCCost);
         txfETCCost.setColumns(10);
 
         lblTagessatz = new JLabel(wbsStrings.dailyRate());
@@ -762,7 +891,7 @@ public class WPShowGUI extends JFrame {
         gbc_lblTagessatz.anchor = GridBagConstraints.WEST;
         gbc_lblTagessatz.gridx = 0;
         gbc_lblTagessatz.gridy = 21;
-        leftPanel.add(lblTagessatz, gbc_lblTagessatz);
+        leftScrollPanel.add(lblTagessatz, gbc_lblTagessatz);
 
         txfTagessatz = new FilterJTextField();
         txfTagessatz.setEditable(false);
@@ -772,17 +901,17 @@ public class WPShowGUI extends JFrame {
         gbc_txfTagessatz.fill = GridBagConstraints.HORIZONTAL;
         gbc_txfTagessatz.gridx = 1;
         gbc_txfTagessatz.gridy = 21;
-        leftPanel.add(txfTagessatz, gbc_txfTagessatz);
+        leftScrollPanel.add(txfTagessatz, gbc_txfTagessatz);
         txfTagessatz.setColumns(10);
 
         lblPvSpi = new JLabel(wbsStrings.pv() + " / " + wbsStrings.spi()
-            + " " + generalStrings.date());
+                + " " + generalStrings.date());
         GridBagConstraints gbc_lblPvSpi = new GridBagConstraints();
         gbc_lblPvSpi.insets = new Insets(0, 0, 5, 5);
         gbc_lblPvSpi.anchor = GridBagConstraints.WEST;
         gbc_lblPvSpi.gridx = 0;
         gbc_lblPvSpi.gridy = 22;
-        leftPanel.add(lblPvSpi, gbc_lblPvSpi);
+        leftScrollPanel.add(lblPvSpi, gbc_lblPvSpi);
 
         panel_11 = new JPanel();
         GridBagConstraints gbc_panel_11 = new GridBagConstraints();
@@ -790,7 +919,7 @@ public class WPShowGUI extends JFrame {
         gbc_panel_11.fill = GridBagConstraints.BOTH;
         gbc_panel_11.gridx = 1;
         gbc_panel_11.gridy = 22;
-        leftPanel.add(panel_11, gbc_panel_11);
+        leftScrollPanel.add(panel_11, gbc_panel_11);
         panel_11.setLayout(new GridLayout(1, 0, 5, 0));
 
         txfDate = new FilterJTextField();
@@ -798,86 +927,102 @@ public class WPShowGUI extends JFrame {
         txfDate.setEnabled(false);
         panel_11.add(txfDate);
         txfDate
-            .setText(Controller.DATE_DAY.format(ValuesService
-                .getNextFriday(new Date(System.currentTimeMillis()))
-                .getTime()));
+                .setText(Controller.DATE_DAY.format(ValuesService
+                        .getNextFriday(new Date(System.currentTimeMillis()))
+                        .getTime()));
 
         btnAllPV = new JButton(generalStrings.history());
         btnAllPV.addActionListener(function.getBtnAllPVListener());
         panel_11.add(btnAllPV);
 
+        JLabel lblTestcase = new JLabel(generalStrings.testcase());
+        GridBagConstraints gbc_lblTestcase = new GridBagConstraints();
+        gbc_lblTestcase.anchor = GridBagConstraints.WEST;
+        gbc_lblTestcase.insets = new Insets(0, 0, 5, 5);
+        gbc_lblTestcase.gridx = 0;
+        gbc_lblTestcase.gridy = 23;
+        leftScrollPanel.add(lblTestcase, gbc_lblTestcase);
+
+        JPanel panelTestcase = new JPanel();
+        panelTestcase.setLayout(new BorderLayout());
+        GridBagConstraints gbc_panelTestcase = new GridBagConstraints();
+        gbc_panelTestcase.insets = new Insets(0, 0, 5, 0);
+        gbc_panelTestcase.fill = GridBagConstraints.BOTH;
+        gbc_panelTestcase.gridx = 1;
+        gbc_panelTestcase.gridy = 23;
+        leftScrollPanel.add(panelTestcase, gbc_panelTestcase);
+
+        txfTestcase = new FilterJTextField();
+        panelTestcase.add(txfTestcase, BorderLayout.CENTER);
+
+        btnAddTestcase = new JButton("+");
+        btnAddTestcase.setEnabled(false);
+        panelTestcase.add(btnAddTestcase, BorderLayout.EAST);
+
+        //empty Label for align the settings on top left
+        GridBagConstraints gbc_empty = new GridBagConstraints();
+        gbc_empty.weightx = 1.0;
+        gbc_empty.weighty = 1.0;
+        gbc_empty.gridx = 0;
+        gbc_empty.gridy = 24;
+        leftScrollPanel.add(new JLabel(""), gbc_empty);
+
+        JPanel leftBottomPanel = new JPanel();
+        leftBottomPanel.setBorder(new EmptyBorder(5, 5, 5, 3));
+        leftBottomPanel.setLayout(new GridLayout(2, 0));
+
+        JPanel effortTestPanel = new JPanel();
+        effortTestPanel.setLayout(new GridLayout(0, 2));
+
         btnAddAufwand = new JButton(wbsStrings.enter(wbsStrings
-            .workEffort()));
-        GridBagConstraints gbc_btnAddAufwand = new GridBagConstraints();
-        gbc_btnAddAufwand.fill = GridBagConstraints.HORIZONTAL;
-        gbc_btnAddAufwand.insets = new Insets(0, 0, 5, 0);
-        gbc_btnAddAufwand.gridx = 1;
-        gbc_btnAddAufwand.gridy = 23;
-        leftPanel.add(btnAddAufwand, gbc_btnAddAufwand);
+                .workEffort()));
+        effortTestPanel.add(btnAddAufwand);
+
+        btnTestExecute = new JButton(wbsStrings.executeTest("Tests"));
+        effortTestPanel.add(btnTestExecute);
+
+        leftBottomPanel.add(effortTestPanel);
 
         JPanel panel_8 = new JPanel();
-        GridBagConstraints gbc_panel_8 = new GridBagConstraints();
-        gbc_panel_8.anchor = GridBagConstraints.EAST;
-        gbc_panel_8.gridwidth = 2;
-        gbc_panel_8.fill = GridBagConstraints.VERTICAL;
-        gbc_panel_8.gridx = 0;
-        gbc_panel_8.gridy = 24;
-        leftPanel.add(panel_8, gbc_panel_8);
-        GridBagLayout gbl_panel_8 = new GridBagLayout();
-        gbl_panel_8.columnWidths = new int[] {0, 0, 0, 0 };
-        gbl_panel_8.rowHeights = new int[] {0, 0 };
-        gbl_panel_8.columnWeights = new double[] {1.0, 1.0, 1.0,
-            Double.MIN_VALUE };
-        gbl_panel_8.rowWeights = new double[] {0.0, Double.MIN_VALUE };
-        panel_8.setLayout(gbl_panel_8);
+        panel_8.setLayout(new GridLayout(0, 3));
 
         btnOk = new JButton(buttonStrings.ok());
-        GridBagConstraints gbc_btnOk = new GridBagConstraints();
-        gbc_btnOk.fill = GridBagConstraints.HORIZONTAL;
-        gbc_btnOk.insets = new Insets(0, 0, 0, 5);
-        gbc_btnOk.gridx = 0;
-        gbc_btnOk.gridy = 0;
-        panel_8.add(btnOk, gbc_btnOk);
+        panel_8.add(btnOk);
 
         btnSave = new JButton(buttonStrings.apply());
         btnSave.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
             }
         });
-        GridBagConstraints gbc_btnSave = new GridBagConstraints();
-        gbc_btnSave.fill = GridBagConstraints.HORIZONTAL;
-        gbc_btnSave.insets = new Insets(0, 0, 0, 5);
-        gbc_btnSave.gridx = 1;
-        gbc_btnSave.gridy = 0;
-        panel_8.add(btnSave, gbc_btnSave);
+        panel_8.add(btnSave);
 
         btnCancel = new JButton(buttonStrings.cancel());
-        GridBagConstraints gbc_btnCancel = new GridBagConstraints();
-        gbc_btnCancel.fill = GridBagConstraints.HORIZONTAL;
-        gbc_btnCancel.gridx = 2;
-        gbc_btnCancel.gridy = 0;
-        panel_8.add(btnCancel, gbc_btnCancel);
+        panel_8.add(btnCancel);
+
+        leftBottomPanel.add(panel_8);
+
+        leftPanel.add(wpSettingsPane, BorderLayout.CENTER);
+        leftPanel.add(leftBottomPanel, BorderLayout.SOUTH);
 
         JPanel rightPanel = new JPanel();
         rightPanel.setBorder(null);
         splitPane.setRightComponent(rightPanel);
-        rightPanel.setLayout(new BorderLayout(0, 0));
 
         tblAufwand = new JTable();
         tblAufwand.setRowSelectionAllowed(false);
-        tblAufwand.setModel(new DefaultTableModel(new Object[][] {{"", "",
-            "", null }, }, new String[] {
-            LocalizedStrings.getLogin().user(), // TODO ok? war: Name
-            wbsStrings.workEffort(), generalStrings.date(),
-            generalStrings.description() }) {
+        tblAufwand.setModel(new DefaultTableModel(new Object[][]{{"", "",
+                "", null},}, new String[]{
+                LocalizedStrings.getLogin().user(), // TODO ok? war: Name
+                wbsStrings.workEffort(), generalStrings.date(),
+                generalStrings.description()}) {
 
             private static final long serialVersionUID = 5903248957368034227L;
             @SuppressWarnings("rawtypes")
             // autogenerated code
-            Class[] columnTypes = new Class[] {String.class, String.class,
-                String.class, String.class };
+                    Class[] columnTypes = new Class[]{String.class, String.class,
+                    String.class, String.class};
 
-            @SuppressWarnings({"unchecked", "rawtypes" })
+            @SuppressWarnings({"unchecked", "rawtypes"})
             // autogenerated code
             public Class getColumnClass(int columnIndex) {
                 return columnTypes[columnIndex];
@@ -888,7 +1033,43 @@ public class WPShowGUI extends JFrame {
         tblAufwand.getColumnModel().getColumn(2).setMaxWidth(150);
 
         scrollTable = new JScrollPane(tblAufwand);
-        rightPanel.add(scrollTable, BorderLayout.CENTER);
+
+        if(!function.getWorkpackage().isIstOAP()) {
+            rightPanel.setLayout(new GridLayout(2, 0));
+            rightPanel.add(scrollTable);
+        }
+        else{
+            rightPanel.setLayout(new BorderLayout());
+        }
+
+        tblTestcase = new JTable();
+        tblTestcase.setModel(new DefaultTableModel(null, new String[]{
+                wbsStrings.workPackageId(),  generalStrings.testcase(), generalStrings.date(),
+                "Tester", "Status"}){
+
+            //Table not editable
+            @Override
+            public boolean isCellEditable(int row, int column){
+                return false;
+            }
+
+            Class[] columnTypes = new Class[]{
+                    String.class, String.class, String.class, String.class, ImageIcon.class
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return columnTypes[columnIndex];
+            }
+        });
+        tblTestcase.getColumnModel().getColumn(0).setMinWidth(100);
+        tblTestcase.getColumnModel().getColumn(4).setMaxWidth(40);
+        tblTestcase.addMouseListener(new MouseAdapter(){
+
+
+        });
+
+        scrollTableTestcase = new JScrollPane(tblTestcase);
+        rightPanel.add(scrollTableTestcase);
 
         this.pack();
 
@@ -901,6 +1082,7 @@ public class WPShowGUI extends JFrame {
 
     /**
      * Returns the number of the work package.
+     *
      * @return The number of the work package.
      */
     protected final String getNr() {
@@ -909,6 +1091,7 @@ public class WPShowGUI extends JFrame {
 
     /**
      * Returns the work package name.
+     *
      * @return The name of the work package.
      */
     protected final String getWpName() {
@@ -917,8 +1100,9 @@ public class WPShowGUI extends JFrame {
 
     /**
      * Returns if the work package is a upper work package or not.
+     *
      * @return True: If the work package is a upper work package. False:
-     *         Else.
+     * Else.
      */
     protected final boolean getIsOAP() {
         return chbOAP.isSelected();
@@ -926,6 +1110,7 @@ public class WPShowGUI extends JFrame {
 
     /**
      * Returns if the work package is inactive or active.
+     *
      * @return True: If the work package is inactive. False: Else.
      */
     protected final boolean getIsInaktiv() {
@@ -934,9 +1119,9 @@ public class WPShowGUI extends JFrame {
 
     /**
      * Returns the value of the bac.
-     * @throws ParseException
-     *             Throws a ParseException.
+     *
      * @return The value of the bac.
+     * @throws ParseException Throws a ParseException.
      */
     protected final Double getBAC() throws ParseException {
         if (txfBAC.getText().equals("")) {
@@ -947,9 +1132,9 @@ public class WPShowGUI extends JFrame {
 
     /**
      * Returns the value of the etc.
-     * @throws ParseException
-     *             Throws a ParseException.
+     *
      * @return The value of the etc.
+     * @throws ParseException Throws a ParseException.
      */
     protected final double getETC() throws ParseException {
         return Double.parseDouble(txfETC.getText());
@@ -957,6 +1142,7 @@ public class WPShowGUI extends JFrame {
 
     /**
      * Returns the worker which is leader of the work package.
+     *
      * @return The leader of the work package.
      */
     protected final Worker getLeiter() {
@@ -965,8 +1151,8 @@ public class WPShowGUI extends JFrame {
 
     /**
      * Sets the workers to the work package.
-     * @param workers
-     *            A list with the workers.
+     *
+     * @param workers A list with the workers.
      */
     protected void setWorkers(final List<String> workers) {
         String responsableWorkers = "";
@@ -975,13 +1161,14 @@ public class WPShowGUI extends JFrame {
         }
         if (responsableWorkers.length() != 0) {
             responsableWorkers = responsableWorkers.substring(0,
-                responsableWorkers.length() - 2);
+                    responsableWorkers.length() - 2);
         }
         this.txfWorker.setText(responsableWorkers);
     }
 
     /**
      * Returns the workers of the work package.
+     *
      * @return The workers of this work package.
      */
     protected final String[] getWorkers() {
@@ -990,6 +1177,7 @@ public class WPShowGUI extends JFrame {
 
     /**
      * Returns the selected worker.
+     *
      * @return The worker from the selected combo box entry.
      */
     protected final Worker getAddWorker() {
@@ -998,6 +1186,7 @@ public class WPShowGUI extends JFrame {
 
     /**
      * Returns the selected worker.
+     *
      * @return The worker from the selected combo box entry.
      */
     protected final Worker getRemoveWorker() {
@@ -1006,9 +1195,9 @@ public class WPShowGUI extends JFrame {
 
     /**
      * Returns the start hope date.
-     * @throws ParseException
-     *             Throws a ParseException.
+     *
      * @return The start hope date.
+     * @throws ParseException Throws a ParseException.
      */
     protected final Date getStartHope() throws ParseException {
         if (txfStartHope.getText().equals("")) {
@@ -1019,9 +1208,9 @@ public class WPShowGUI extends JFrame {
 
     /**
      * Returns the end hope date.
-     * @throws ParseException
-     *             Throws a ParseException.
+     *
      * @return The end hope date.
+     * @throws ParseException Throws a ParseException.
      */
     protected final Date getEndHope() throws ParseException {
         if (txfEndHope.getText().equals("")) {
@@ -1032,21 +1221,19 @@ public class WPShowGUI extends JFrame {
 
     /**
      * Sets the values to the work package.
-     * @param wp
-     *            The work package.
-     * @param leiter
-     *            True: If the worker is a leader. False: Else.
-     * @param aufwaende
-     *            A String array with the work efforts.
-     * @param allWorkers
-     *            A list with all workers.
-     * @param actualWPWorkers
-     *            A set with all workers which currently worked on it.
+     *
+     * @param wp              The work package.
+     * @param leiter          True: If the worker is a leader. False: Else.
+     * @param aufwaende       A String array with the work efforts.
+     * @param allWorkers      A list with all workers.
+     * @param actualWPWorkers A set with all workers which currently worked on it.
+     * @param controller      Controller for the testcases.
      */
     protected final void setValues(final Workpackage wp,
-        final boolean leiter, final String[][] aufwaende,
-        final ArrayList<Worker> allWorkers,
-        final Set<String> actualWPWorkers) {
+                                   final boolean leiter, final String[][] aufwaende,
+                                   final ArrayList<Worker> allWorkers,
+                                   final Set<String> actualWPWorkers,
+                                   final TestCaseController controller) {
         this.txfNr.setText(wp.getStringID());
         this.txfName.setText(wp.getName());
         this.chbOAP.setSelected(wp.isIstOAP());
@@ -1067,28 +1254,28 @@ public class WPShowGUI extends JFrame {
 
         if (wp.getStartDateHope() != null) {
             this.txfStartHope.setText(Controller.DATE_DAY.format(wp
-                .getStartDateHope()));
+                    .getStartDateHope()));
         } else {
             this.txfStartHope.setText("");
         }
 
         if (wp.getEndDateHope() != null) {
             this.txfEndHope.setText(Controller.DATE_DAY.format(wp
-                .getEndDateHope()));
+                    .getEndDateHope()));
         } else {
             this.txfEndHope.setText("");
         }
 
         if (wp.getStartDateCalc() != null) {
             this.txfStartCalc.setText(Controller.DATE_DAY.format(wp
-                .getStartDateCalc()));
+                    .getStartDateCalc()));
         } else {
             this.txfStartCalc.setText("");
         }
 
         if (wp.getEndDateCalc() != null) {
             this.txfEndCalc.setText(Controller.DATE_DAY.format(wp
-                .getEndDateCalc()));
+                    .getEndDateCalc()));
         } else {
             this.txfEndCalc.setText("");
         }
@@ -1098,7 +1285,7 @@ public class WPShowGUI extends JFrame {
         DecimalFormat workDaysFormater = new DecimalFormat("#0.000", ds);
 
         this.barComplete.setValue(WpManager.calcPercentComplete(
-            wp.getBac(), wp.getEtc(), wp.getAc()));
+                wp.getBac(), wp.getEtc(), wp.getAc()));
         this.txfCPI.setText("" + Controller.DECFORM.format(wp.getCpi()));
         this.txfSPI.setText("" + Controller.DECFORM.format(wp.getSpi()));
         this.txfBAC.setText("" + workDaysFormater.format(wp.getBac()));
@@ -1107,38 +1294,40 @@ public class WPShowGUI extends JFrame {
         this.txfEV.setText("" + Controller.DECFORM.format(wp.getEv()));
         this.txfSV.setText(""
                 + Controller.DECFORM.format(wp.getSv())
-                        .replace(",", ".") + generalStrings.currencySymbol());
+                .replace(",", ".") + generalStrings.currencySymbol());
         this.txfPV.setText(""
                 + Controller.DECFORM.format(wp.getPv())
-                        .replace(",", ".") + generalStrings.currencySymbol());
+                .replace(",", ".") + generalStrings.currencySymbol());
         this.txfBACCost.setText(""
                 + Controller.DECFORM.format(wp.getBac_kosten()).replace(
-                        ",", ".") + generalStrings.currencySymbol());
+                ",", ".") + generalStrings.currencySymbol());
         this.txfACCost.setText(""
                 + Controller.DECFORM.format(wp.getAc_kosten()).replace(
-                        ",", ".") + generalStrings.currencySymbol());
+                ",", ".") + generalStrings.currencySymbol());
         this.txfEV.setText(""
                 + Controller.DECFORM.format(wp.getEv())
-                        .replace(",", ".") + generalStrings.currencySymbol());
+                .replace(",", ".") + generalStrings.currencySymbol());
         this.txfEAC.setText(""
                 + Controller.DECFORM.format(wp.getEac()).replace(",",
-                        ".") + generalStrings.currencySymbol());
+                ".") + generalStrings.currencySymbol());
         this.txfETCCost.setText(""
                 + Controller.DECFORM.format(wp.getEtc_kosten()).replace(
-                        ",", ".") + generalStrings.currencySymbol());
+                ",", ".") + generalStrings.currencySymbol());
         this.txfTagessatz.setText(""
                 + Controller.DECFORM.format(wp.getWptagessatz())
-                        .replace(",", ".") + generalStrings.currencySymbol());
+                .replace(",", ".") + generalStrings.currencySymbol());
 
         txfCPI.setDisabledTextColor(WPOverview.getCPIColor(wp.getCpi(),
-            wp.getAc())[0]);
+                wp.getAc())[0]);
         txfCPI
-            .setBackground(WPOverview.getCPIColor(wp.getCpi(), wp.getAc())[1]);
+                .setBackground(WPOverview.getCPIColor(wp.getCpi(), wp.getAc())[1]);
 
         txfSPI.setDisabledTextColor(WPOverview.getSPIColor(wp.getSpi(),
-            wp.getAc())[0]);
+                wp.getAc())[0]);
         txfSPI
-            .setBackground(WPOverview.getSPIColor(wp.getSpi(), wp.getAc())[1]);
+                .setBackground(WPOverview.getSPIColor(wp.getSpi(), wp.getAc())[1]);
+
+        this.setTestcases(controller);
 
         updateDependencyCount(wp);
 
@@ -1149,8 +1338,8 @@ public class WPShowGUI extends JFrame {
 
     /**
      * Sets the upper work package view.
-     * @param leiter
-     *            True: If the worker is a leader. False: Else.
+     *
+     * @param leiter True: If the worker is a leader. False: Else.
      */
     public final void setOAPView(final boolean leiter) {
         setUAPViews(false, leiter);
@@ -1159,21 +1348,33 @@ public class WPShowGUI extends JFrame {
 
     /**
      * Sets the under work package view.
-     * @param leiter
-     *            True: If the worker is a leader. False: Else.
+     *
+     * @param leiter True: If the worker is a leader. False: Else.
      */
     public final void setUAPView(final boolean leiter) {
+        this.setUAPView(leiter, false);
+    }
+
+    /**
+     * Sets the under work package view.
+     *
+     * @param leiter True: If the worker is a leader. False: Else.
+     * @param firstLoad is this called while window is first loaded
+     */
+    public final void setUAPView(final boolean leiter, final boolean firstLoad) {
         setOAPViews(false, leiter);
-        setUAPViews(true, leiter);
+
+        if (firstLoad) {
+            setUAPViews(true, leiter);
+        }
     }
 
     /**
      * Sets the upper work package view.
-     * @param isOAP
-     *            True: If the work package is a upper work package. False:
-     *            Else.
-     * @param leiter
-     *            True: If the worker is a leader. False: Else.
+     *
+     * @param isOAP  True: If the work package is a upper work package. False:
+     *               Else.
+     * @param leiter True: If the worker is a leader. False: Else.
      */
     private void setOAPViews(final boolean isOAP, final boolean leiter) {
         boolean notIfOAP = !isOAP;
@@ -1206,32 +1407,26 @@ public class WPShowGUI extends JFrame {
         this.btnAddFollower.setVisible(leiter);
         this.btnEditAncestor.setVisible(leiter);
         this.btnEditFollower.setVisible(leiter);
-
-        this.pack();
-
     }
 
     /**
      * Sets the upper work package view.
-     * @param isUAP
-     *            True: If the work package is a under work package. False:
-     *            Else.
-     * @param leiter
-     *            True: If the worker is a leader. False: Else.
+     *
+     * @param isUAP  True: If the work package is a under work package. False:
+     *               Else.
+     * @param leiter True: If the worker is a leader. False: Else.
      */
     private void setUAPViews(final boolean isUAP, final boolean leiter) {
         if (!leiter) {
-            //this.tblAufwand.removeColumn(this.tblAufwand.getColumn("Name"));
             this.tblAufwand.removeColumn(this.tblAufwand.getColumn(
                     LocalizedStrings.getLogin().user()));
             this.txfBAC.setEnabled(false);
-        } else {
-
         }
     }
 
     /**
      * Returns the description of the work package.
+     *
      * @return The description of the work package.
      */
     protected final String getDescription() {
@@ -1240,8 +1435,8 @@ public class WPShowGUI extends JFrame {
 
     /**
      * Fills the worker combo boxes.
-     * @param actualWPWorkers
-     *            A set with the actual work package workers.
+     *
+     * @param actualWPWorkers A set with the actual work package workers.
      */
     public void fillWorkerCombos(final Set<String> actualWPWorkers) {
         cobAddWorker.removeAllItems();
@@ -1262,8 +1457,8 @@ public class WPShowGUI extends JFrame {
         }
         if (this.getLeiter() != null) {
             cobRemoveWorker.removeItem(this.getLeiter()); // The leader can
-                                                          // not be
-                                                          // deleted.
+            // not be
+            // deleted.
         }
 
         String responsableWorkers = "";
@@ -1272,20 +1467,19 @@ public class WPShowGUI extends JFrame {
         }
         if (responsableWorkers.length() != 0) {
             responsableWorkers = responsableWorkers.substring(0,
-                responsableWorkers.length() - 2);
+                    responsableWorkers.length() - 2);
         }
         this.txfWorker.setText(responsableWorkers);
     }
 
     /**
      * Fills the worked table.
-     * @param values
-     *            The values which are insert.
-     * @param leiter
-     *            True: If the worker is a leader. False: Else.
+     *
+     * @param values The values which are insert.
+     * @param leiter True: If the worker is a leader. False: Else.
      */
     private void fillWorkedTable(final String[][] values,
-        final boolean leiter) {
+                                 final boolean leiter) {
         DefaultTableModel model = (DefaultTableModel) tblAufwand.getModel();
         while (model.getRowCount() > 0) {
             model.removeRow(0);
@@ -1310,33 +1504,35 @@ public class WPShowGUI extends JFrame {
 
     }
 
-    /** Adds the button action. */
+    /**
+     * Adds the button action.
+     */
     public void addButtonAction() {
         for (Component actualComponent : getComponents()) {
             if (actualComponent instanceof JTextField) {
                 actualComponent.addKeyListener(function
-                    .getChangeListenerTextfield());
+                        .getChangeListenerTextfield());
             } else if (actualComponent instanceof JCheckBox) {
                 ((JCheckBox) actualComponent).addItemListener(function
-                    .getChangeItemListener());
+                        .getChangeItemListener());
             }
         }
 
         btnAddAncestor.addActionListener(function
-            .getBtnAddAncestorListener());
+                .getBtnAddAncestorListener());
         btnEditAncestor.addActionListener(function
-            .getBtnEditAncestorListener());
+                .getBtnEditAncestorListener());
         btnAddFollower.addActionListener(function
-            .getBtnAddFollowerListener());
+                .getBtnAddFollowerListener());
         btnEditFollower.addActionListener(function
-            .getBtnEditFollowerListener());
+                .getBtnEditFollowerListener());
         cobLeiter.addItemListener(function.getChangeItemListener());
         btnAddWorker.addActionListener(function
-            .getBtnAddWorkerListener(cobAddWorker));
+                .getBtnAddWorkerListener(cobAddWorker));
         btnRemoveWorker.addActionListener(function
-            .getBtnRemoveWorkerListener(cobRemoveWorker));
+                .getBtnRemoveWorkerListener(cobRemoveWorker));
         btnAddAufwand
-            .addActionListener(function.getBtnAddAufwandListener());
+                .addActionListener(function.getBtnAddAufwandListener());
         btnOk.addActionListener(function.getBtnOKListener());
         btnSave.addActionListener(function.getBtnSaveListener());
         btnCancel.addActionListener(function.getBtnCancelListener());
@@ -1345,13 +1541,17 @@ public class WPShowGUI extends JFrame {
 
         btnSPI.addActionListener(function.getBtnSPIListener());
         btnCPI.addActionListener(function.getBtnCPIListener());
+        btnAddTestcase.addActionListener(function.getBtnAddTestcase());
+        tblTestcase.addMouseListener(function.getTblTestcaseListener());
+        btnTestExecute.addActionListener(function.getBtnTestExecute());
+        btnEditDesc.addActionListener(function.getBtnEditDescListener());
 
     }
 
     /**
      * Sets the value of the etc.
-     * @param etc
-     *            The value of the etc.
+     *
+     * @param etc The value of the etc.
      */
     protected final void setETC(final double etc) {
         txfETC.setText("" + etc);
@@ -1359,8 +1559,8 @@ public class WPShowGUI extends JFrame {
 
     /**
      * Sets the new view.
-     * @param newWp
-     *            True: If the work package is new. False: Else.
+     *
+     * @param newWp True: If the work package is new. False: Else.
      */
     public final void setNewView(final boolean newWp) {
         txfNr.setEditable(newWp);
@@ -1368,8 +1568,8 @@ public class WPShowGUI extends JFrame {
 
     /**
      * Update the count of dependencies.
-     * @param wp
-     *            The work package.
+     *
+     * @param wp The work package.
      */
     public final void updateDependencyCount(final Workpackage wp) {
         int ancestors = 0;
@@ -1381,8 +1581,73 @@ public class WPShowGUI extends JFrame {
             followers = WpManager.getFollowers(wp).size();
         }
         btnEditAncestor.setText(generalStrings.toManage() + " ("
-            + ancestors + ")");
+                + ancestors + ")");
         btnEditFollower.setText(generalStrings.toManage() + " ("
-            + followers + ")");
+                + followers + ")");
+    }
+
+    /**
+     * Set the testcases to the testcase table
+     */
+    public void setTestcases(TestCaseController testCaseController){
+        tblTestcase.setModel(new DefaultTableModel(null, new String[]{
+                wbsStrings.workPackageId(),  generalStrings.testcase(), generalStrings.date(),
+                "Tester", "Status"}){
+
+            //Table not editable
+            @Override
+            public boolean isCellEditable(int row, int column){
+                return false;
+            }
+
+            Class[] columnTypes = new Class[]{
+                    String.class, String.class, String.class, String.class, ImageIcon.class
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return columnTypes[columnIndex];
+            }
+        });
+
+        for(TestCase test : testCaseController.getAllTestCases()){
+            TestExecution execution = testCaseController.getLatestExecutionForTestCase(test);
+            if(execution != null){
+                ((DefaultTableModel)tblTestcase.getModel()).addRow(new Object[]{test.getWp_stringID(), test.getName(),
+                        new SimpleDateFormat("dd.MM.yy").format(execution.getTime()), execution.getEmployeeLogin(), (execution.getStatus().equals("failed"))?
+                        TestcaseShowGUI.unsucessfulIcon : ((execution.getStatus().equals("succeeded"))?
+                        TestcaseShowGUI.sucessfulIcon : TestcaseShowGUI.neutralIcon)});
+            }else{
+                ((DefaultTableModel)tblTestcase.getModel()).addRow(new Object[]{test.getWp_stringID(),
+                        test.getName(), "-", "-", TestcaseShowGUI.neutralIcon});
+            }
+        }
+    }
+
+    /**
+     * Get the name for the testcase.
+     * @return The TextField with testcase name.
+     */
+    public FilterJTextField getTxfTestTestcase(){
+        return txfTestcase;
+    }
+
+    /**
+     * Get the Table with testcases.
+     * @return The JTable with testcases.
+     */
+    public JTable getTblTestcase(){
+        return tblTestcase;
+    }
+
+    public void showMessage(String text){
+        JOptionPane.showMessageDialog(this, text);
+    }
+
+    public JButton getBtnAddTestcase(){
+        return btnAddTestcase;
+    }
+
+    public JTextArea getTxfDesc(){
+        return txfDesc;
     }
 }

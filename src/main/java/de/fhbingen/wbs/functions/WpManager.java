@@ -307,6 +307,7 @@ public class WpManager {
      *            zu aktualisierendes Arbeitspaket
      */
     public static void updateAP(Workpackage wp) {
+        //System.out.println("updateAP: " + wp.getName());
         list.updateWp(wp);
         WorkpackageService.updateWorkpackage(wp);
     }
@@ -549,7 +550,7 @@ public class WpManager {
      */
     public static int calcPercentComplete(double bac, double etc, double ac) {
         int percentComplete = 0;
-        if (bac > 0 && etc == 0) {
+        if (etc == 0) {
             percentComplete = 100;
         } else {
             if (etc > 0 && ac > 0) {
@@ -633,5 +634,71 @@ public class WpManager {
         } else {
             return 0;
         }
+    }
+
+    /**
+     * gets the siblings of a workpackage
+     *
+     * @param brotherWorkpackage the workpackage to return the siblings for
+     * @return list of sibling workpackages
+     */
+    public static ArrayList<Workpackage> getSiblings(Workpackage brotherWorkpackage) {
+        ArrayList<Workpackage> siblings = new ArrayList<>();
+        int parentId = brotherWorkpackage.getWp().getParentID();
+
+        for (Workpackage workpackage : getAllAp()) {
+            if (workpackage.getWp().getParentID() == parentId
+                    && workpackage.getWpId() != brotherWorkpackage.getWpId()) {
+                siblings.add(workpackage);
+            }
+        }
+
+        return siblings;
+    }
+
+    /**
+     * returns all workpackages which are a direct child to the given workpackage
+     *
+     * @param parentWorkpackage the workpackage you want to find the children for
+     * @return list of child workpackages
+     */
+    public static ArrayList<Workpackage> getDirectChildren(Workpackage parentWorkpackage) {
+        ArrayList<Workpackage> children = new ArrayList<>();
+        int parentId = parentWorkpackage.getWpId();
+
+        for (Workpackage workpackage : getAllAp()) {
+            if (workpackage.getWp().getParentID() == parentId) {
+                children.add(workpackage);
+            }
+        }
+
+        return children;
+    }
+
+    /**
+     * returns all children of the given workpackage
+     *
+     * @param parentWorkpackage the workpackage you want to retrieve the children for
+     * @return
+     */
+    public static ArrayList<Workpackage> getAllChildren(Workpackage parentWorkpackage) {
+        ArrayList<Workpackage> children = WpManager.getDirectChildren(parentWorkpackage);
+
+        for (Workpackage child : children) {
+            if (child.isIstOAP()) {
+                children.addAll(WpManager.getAllChildren(child));
+            }
+        }
+
+        return children;
+    }
+
+    /**
+     * updates the stringId of a given workpackage in the DB
+     *
+     * @param wp workpackage to update
+     */
+    public static boolean updateStringId(Workpackage wp) {
+        return WorkpackageService.updateStringId(wp);
     }
 }

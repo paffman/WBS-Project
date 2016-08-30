@@ -19,19 +19,7 @@
 
 package de.fhbingen.wbs.dbaccess;
 
-import de.fhbingen.wbs.dbaccess.models.AnalyseDataModel;
-import de.fhbingen.wbs.dbaccess.models.BaselineModel;
-import de.fhbingen.wbs.dbaccess.models.ConflictsModel;
-import de.fhbingen.wbs.dbaccess.models.DependenciesModel;
-import de.fhbingen.wbs.dbaccess.models.EmployeeCalendarModel;
-import de.fhbingen.wbs.dbaccess.models.EmployeesModel;
-import de.fhbingen.wbs.dbaccess.models.HolidaysCalendarModel;
-import de.fhbingen.wbs.dbaccess.models.PlannedValueModel;
-import de.fhbingen.wbs.dbaccess.models.ProjectModel;
-import de.fhbingen.wbs.dbaccess.models.SemaphoreModel;
-import de.fhbingen.wbs.dbaccess.models.WorkEffortModel;
-import de.fhbingen.wbs.dbaccess.models.WorkpackageAllocationModel;
-import de.fhbingen.wbs.dbaccess.models.WorkpackageModel;
+import de.fhbingen.wbs.dbaccess.models.*;
 import de.fhbingen.wbs.dbaccess.models.mysql.*;
 
 /**
@@ -62,6 +50,8 @@ public class DBModelManager {
             new MySQLWorkpackageAllocationModel();
     private static WorkpackageModel workpackageModel =
             new MySQLWorkpackageModel();
+    private static TestCaseModel testCaseModel = new MySQLTestCaseModel();
+    private static TestExecutionModel testExecutionModel = new MySQLTestExecutionModel();
 
     /**
      * This method provide the analyse data model.
@@ -178,5 +168,13 @@ public class DBModelManager {
      */
     public static WorkpackageModel getWorkpackageModel() {
         return workpackageModel;
+    }
+
+    public static TestCaseModel getTestCaseModel() {
+        return testCaseModel;
+    }
+
+    public static TestExecutionModel getTestExecutionModel() {
+        return testExecutionModel;
     }
 }

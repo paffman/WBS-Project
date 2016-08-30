@@ -17,6 +17,7 @@ USE `id_wbs`;
 CREATE TABLE IF NOT EXISTS db_identifier (
 	db varchar(255) NOT NULL COMMENT 'Name of the DB',
 	id int(4) NOT NULL AUTO_INCREMENT COMMENT 'ID of the DB',
+	with_application_server BIT NOT NULL COMMENT 'Set the value to true, if the project has an application server',
 	PRIMARY KEY ( id ),
 	UNIQUE ( db )
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1
@@ -37,11 +38,12 @@ FROM db_identifier;
 -- --------------------------------------------------------
 DELIMITER //
 CREATE PROCEDURE db_identifier_new(
-	IN in_dbname varchar(255))
+	IN in_dbname varchar(255),
+	IN in_with_application_server BIT)
 BEGIN
 	INSERT
-	INTO id_wbs.db_identifier( db )
-	VALUES ( in_dbname );
+	INTO id_wbs.db_identifier( db, with_application_server )
+	VALUES ( in_dbname, in_with_application_server );
 END //
 DELIMITER ;
 -- --------------------------------------------------------
@@ -61,6 +63,36 @@ END //
 DELIMITER ;
 -- --------------------------------------------------------
 
+-- --------------------------------------------------------
+-- db_identifier_with_application_server( dbname )
+-- r
+-- --------------------------------------------------------
+DELIMITER //
+CREATE PROCEDURE db_identifier_with_application_server(
+  IN in_dbname varchar(255))
+BEGIN
+  SELECT with_application_server
+  FROM id_wbs.db_identifier
+  WHERE db = in_dbname;
+END //
+DELIMITER ;
+-- --------------------------------------------------------
+
+-- --------------------------------------------------------
+-- db_userid_select_by_username( username )
+-- r
+-- --------------------------------------------------------
+DELIMITER //
+CREATE PROCEDURE db_userid_select_by_username(
+  IN in_username varchar(255))
+BEGIN
+  SELECT w.id
+  FROM auth_user a join wbs_user_wbsuser w on (a.id = w.user_id)
+  WHERE a.username = in_username;
+END //
+DELIMITER ;
+-- --------------------------------------------------------
+
 CREATE USER 'idxUser'@'localhost'
  IDENTIFIED BY '1234';
 GRANT EXECUTE ON id_wbs.* TO 'idxUser'@'localhost'
@@ -72,5 +104,4 @@ CREATE USER 'idxUser'@'%'
 GRANT EXECUTE ON id_wbs.* TO 'idxUser'@'%'
 WITH MAX_CONNECTIONS_PER_HOUR 60
      MAX_USER_CONNECTIONS 5;
-
 

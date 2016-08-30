@@ -17,6 +17,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+
+
 package de.fhbingen.wbs.dbaccess.models.mysql;
 
 import de.fhbingen.wbs.dbaccess.data.Workpackage;
@@ -234,7 +236,7 @@ public class MySQLWorkpackageModel implements WorkpackageModel {
     @Override
     public final boolean updateWorkpackage(final Workpackage wp) {
         final Connection connection = SQLExecuter.getConnection();
-        final int paramCount = 21;
+        final int paramCount = 23;
         PreparedStatement stm = null;
         boolean success = false;
 
@@ -280,6 +282,8 @@ public class MySQLWorkpackageModel implements WorkpackageModel {
                     .getStartDateWish()));
             stm.setTimestamp(21, de.fhbingen.wbs.calendar.DateFunctions.getTimesampOrNull(wp
                     .getEndDateCalc()));
+            stm.setInt(22, wp.getParentID());
+            stm.setInt(23, wp.getPositionID());
 
             stm.execute();
             success = true;
@@ -396,4 +400,31 @@ public class MySQLWorkpackageModel implements WorkpackageModel {
         return success;
     }
 
+    @Override
+    public boolean updateStringId(Workpackage wp) {
+        final Connection connection = SQLExecuter.getConnection();
+        boolean success = false;
+        PreparedStatement stm = null;
+        final String storedProcedure =
+                "CALL workpackage_update_string_id(?, ?)";
+
+        try {
+            stm = connection.prepareStatement(storedProcedure);
+            stm.setInt(1, wp.getId());
+            stm.setString(2, wp.getStringID());
+            stm.execute();
+            success = true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (stm != null) {
+                    stm.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return success;
+    }
 }

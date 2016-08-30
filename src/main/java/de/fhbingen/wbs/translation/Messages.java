@@ -109,6 +109,10 @@ public interface Messages extends ErrorMessages {
     @En("Time line was saved at {0}")
     String timeLineSaved(String outfile);
 
+    @De("Arbeitspaketverlaufsdiagramm wurde unter {0} gespeichert")
+    @En("WP Chart was saved at {0}")
+    String wpChartSaved(String outfile);
+
     @De("Die Dauerberechnung ist eventuell nicht aktuell. Trotzdem Baseline "
             + "berechnen?")
     @En("The calculation of the duration is not up to date. Do you want to " +
@@ -169,4 +173,63 @@ public interface Messages extends ErrorMessages {
     @De("Die Planned Values werden neu berechnet. Wollen sie fortfahren?")
     @En("The Planned Values will be recalculated. Do you want to continue?")
     String pvChange();
+
+    @De("Die Dauer wird neu berechnet. Dies kann einige Sekunden dauern. Wollen sie fortfahren?")
+    @En("The Duartion will be recalculated. Do you want to continue?")
+    String durationcalc();
+
+    @De("Das Arbeitspacket wurde erfolgreich umgehängt.")
+    @En("The orkpackage has successfully been moved.")
+    String wpMoveWpHasBeenMoved();
+
+    @De("Beim Umhängen des Arbeitspacketes, ist ein Fehler aufgetreten.")
+    @En("An Error has occured, while moving the workpackage.")
+    String wpMoveError();
+
+    @De("Es wurde kein Zielarbeitspaket ausgewählt. Ziehen Sie das Arbeitspacket auf ein anderes Arbeitspacket.")
+    @En("No target workpackage has been selected. Drag the workpackage on to another workpackage.")
+    String wpMoveNoneSelected();
+
+    @De("Das Zielarbeitspacket ist gleich dem Ausgangsarbeitspacket.")
+    @En("The target workpackage is the same as the source workpackage.")
+    String wpMoveWpIsItself();
+
+    @De("Das Arbeitspacket befindet sich bereits an dieser Position.")
+    @En("The workpackage already is at this position.")
+    String wpMoveParentOfTargetWp();
+
+    @De("Das Arbeitspacket ist bereits ein OAP des Ziel Arbeitspacket.")
+    @En("The workpackage is a parent workpackage of the target workpackage.")
+    String wpMoveAlreadyIsChild();
+
+    @De("Das Zielarbeitspacket ist kein OAP.")
+    @En("The target workpackage is no parent workpackage")
+    String wpMoveTargetWpIsNoOAP();
+
+    @De("Das Verschieben ist nicht möglich, da dabei die maximale Tiefe überschritten werden würde.")
+    @En("Moving this workpackage is not possible, since this would exceed the maximal depth.")
+    String wpMoveMaxDepth();
+
+    @De("Arbeitspacket wurde verschoeben. Legen Sie eine neue Baseline an!")
+    @En("Workpackage has been moved. Create a new baseline!")
+    String wpMoveRecalcBaseline();
+
+    @De("Berechnen Sie nach Wunsch Planned Value und/oder Dauer neu!")
+    @En(" Think about recalculating planned value and/or duration!")
+    String recalculatePVandDuration();
+
+    @De("Ein Arbeitspacket ({0}) wurde hinzugefügt.")
+    @En("Workpackage ({0}) has been added.")
+    String wpAddedRecalc(String x);
+
+    @De("Bitte beachten Sie, dass ohne Application Server, \n" +
+            "der Mobile Client mit Time Tracking nicht verwedent kann!\n" +
+            "Es kann nachträglich ein Application Server\n" +
+            "zum Projekt hinzugefügt werden, aber mit gewissem\n" +
+            "Mehraufwand.(Siehe Benutzerhandbuch)")
+    @En("Please remember that the mobile client doesn´t work\n" +
+            "without the application server! You can add the application" +
+            "server to the project in the future, but with \n" +
+            "overhead.(Lookat the userdoku)")
+    String withoutApplicationServer();
 }

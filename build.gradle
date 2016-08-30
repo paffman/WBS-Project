@@ -14,7 +14,7 @@ apply plugin: 'idea'
 apply plugin: 'shadow'
 
 sourceCompatibility = 1.7
-version = '3.0'
+version = 'v4.0-alpha-11'
 
 // download dependencies from Maven Central
 repositories {
@@ -28,6 +28,8 @@ dependencies {
     compile group: 'jfree', name: 'jfreechart', version: '1.0.13'
     compile group: 'mysql', name: 'mysql-connector-java', version: '5.1.28'
     compile group: 'c10n', name: 'c10n-core', version: '1.1'
+    compile group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1'
+    compile group: 'com.mashape.unirest', name: 'unirest-java', version: '1.3.1'
 
     // dependencies for our tests
     testCompile group: 'junit', name: 'junit', version: '4.11'
@@ -51,8 +53,13 @@ test {
 
 jar {
     manifest {
-        attributes 'Main-Class': 'de.fhbingen.wbs.controller.LoginViewController'
+
+        attributes 'Implementation-Title': 'WBS-Tool',
+                'Implementation-Version': version,
+                'Main-Class': 'de.fhbingen.wbs.controller.LoginViewController'
     }
+
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
 }
 
 shadow {

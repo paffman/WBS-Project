@@ -14,23 +14,32 @@
 
 package de.fhbingen.wbs.wpOverview.tabs;
 
+import de.fhbingen.wbs.dbaccess.DBModelManager;
+import de.fhbingen.wbs.globals.Loader;
 import de.fhbingen.wbs.translation.Button;
 import de.fhbingen.wbs.translation.LocalizedStrings;
 import de.fhbingen.wbs.translation.Wbs;
 import de.fhbingen.wbs.functions.WpManager;
 import de.fhbingen.wbs.globals.ToolTipTree;
 import de.fhbingen.wbs.globals.Workpackage;
-import java.awt.BorderLayout;
+
+import java.awt.*;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.dnd.*;
+import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.Enumeration;
-import javax.swing.JFrame;
-import javax.swing.JMenuItem;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JTree;
+import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
+import javax.swing.tree.TreeSelectionModel;
+
+import de.fhbingen.wbs.wpConflict.ConflictCompat;
 import de.fhbingen.wbs.wpOverview.TreeCellRenderer;
 import de.fhbingen.wbs.wpOverview.WPOverview;
 import de.fhbingen.wbs.wpOverview.WPOverviewGUI;
@@ -164,6 +173,95 @@ public class TreePanel extends JPanel {
         root = WPOverview.createTree(nodes, onlyThese);
 
         treeAll = new ToolTipTree(root);
+
+        // set draggable if user is pm
+        if (this.over.getUser().getProjLeiter()) {
+            treeAll.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+            treeAll.setDragEnabled(true);
+            treeAll.setDropMode(DropMode.USE_SELECTION);
+            treeAll.setDropTarget(new DropTarget(treeAll, new DropTargetAdapter() {
+                @Override
+                public void drop(DropTargetDropEvent dtde) {
+                    Point droppedLocation = dtde.getLocation();
+                    TreePath droppedPath = treeAll.getPathForLocation(droppedLocation.x, droppedLocation.y);
+
+                    Workpackage sourceWorkpackage =
+                            (Workpackage) ((DefaultMutableTreeNode)
+                                    treeAll.getSelectionPath().getLastPathComponent()).getUserObject();
+                    Workpackage targetWorkpackage = null;
+
+                    ArrayList<Workpackage> targetParentWorkpackages = new ArrayList<>();
+
+                    if (droppedPath != null) {
+                        for (Object path : droppedPath.getPath()) {
+                            targetParentWorkpackages.add((Workpackage) ((DefaultMutableTreeNode) path).getUserObject());
+                        }
+                    }
+
+                    boolean dropSuccessful = false;
+
+                    if (droppedPath == null) {
+                        WPOverviewGUI.setStatusText(LocalizedStrings.getMessages().wpMoveNoneSelected());
+                    } else if ((targetWorkpackage = (Workpackage)
+                            ((DefaultMutableTreeNode) droppedPath.getLastPathComponent())
+                                .getUserObject())
+                            .equals(sourceWorkpackage)) {
+                        WPOverviewGUI.setStatusText(LocalizedStrings.getMessages().wpMoveWpIsItself());
+                    } else if (targetParentWorkpackages.contains(sourceWorkpackage)) {
+                        WPOverviewGUI.setStatusText(LocalizedStrings.getMessages().wpMoveParentOfTargetWp());
+                    } else if (
+                        ((DefaultMutableTreeNode) treeAll.getSelectionPath().getParentPath().getLastPathComponent())
+                            .getUserObject()
+                            .equals(targetWorkpackage)) {
+                        WPOverviewGUI.setStatusText(LocalizedStrings.getMessages().wpMoveAlreadyIsChild());
+                    } else if (!targetWorkpackage.isIstOAP()) {
+                        WPOverviewGUI.setStatusText(LocalizedStrings.getMessages().wpMoveTargetWpIsNoOAP());
+                    } else if ((sourceWorkpackage.getChildrenDepth() + targetParentWorkpackages.size())
+                                > sourceWorkpackage.getProject().getLevels()) {
+                        WPOverviewGUI.setStatusText(LocalizedStrings.getMessages().wpMoveMaxDepth());
+                    } else {
+                        if (JOptionPane.showConfirmDialog(WPOverview.getGui(),
+                                LocalizedStrings.getGeneralStrings().confirmMovingWP(),
+                                LocalizedStrings.getGeneralStrings().warning(),
+                                JOptionPane.YES_NO_OPTION)
+                                == JOptionPane.YES_OPTION) {
+                            Loader.setLoadingText(LocalizedStrings.getStatus().recalcWps());
+                            Loader loader = new Loader(WPOverview.getGui());
+
+                            try {
+                                sourceWorkpackage.changeParent(targetWorkpackage);
+                                dropSuccessful = true;
+
+                                over.reload();
+                            } catch (Exception e) {
+                                dropSuccessful = false;
+
+                                WPOverviewGUI.setStatusText(LocalizedStrings.getMessages().wpMoveError());
+                            } finally {
+                                loader.dispose();
+                                Loader.reset();
+                            }
+                        }
+                    }
+
+                    if (dropSuccessful) {
+                        WPOverviewGUI.setStatusText(LocalizedStrings.getMessages().wpMoveWpHasBeenMoved());
+
+                        WPOverview.throwConflict(new ConflictCompat(new Date(
+                                System.currentTimeMillis()),
+                                ConflictCompat.WP_MOVED, WPOverview.getUser()
+                                .getId(), sourceWorkpackage));
+
+                        dtde.acceptDrop(dtde.getDropAction());
+                        dtde.dropComplete(true);
+                    } else {
+                        dtde.rejectDrop();
+                        dtde.dropComplete(false);
+                    }
+                }
+            }));
+        }
+
         treeAll.setToolTipText("");
         treeAll.setCellRenderer(renderer);
         treeAll.setModel(new DefaultTreeModel(root));

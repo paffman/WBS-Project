@@ -7,20 +7,13 @@ import de.fhbingen.wbs.dbaccess.DBModelManager;
 import de.fhbingen.wbs.dbaccess.data.AnalyseData;
 import de.fhbingen.wbs.dbaccess.data.Baseline;
 import de.fhbingen.wbs.dbaccess.data.Employee;
-import de.fhbingen.wbs.translation.LocalizedStrings;
 import de.fhbingen.wbs.globals.Loader;
 import de.fhbingen.wbs.globals.Workpackage;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import de.fhbingen.wbs.translation.LocalizedStrings;
+import de.fhbingen.wbs.wpConflict.ConflictCompat;
 import de.fhbingen.wbs.wpOverview.WPOverview;
+
+import java.util.*;
 
 /**
  * Studienprojekt: PSYS WBS 2.0<br/>
@@ -57,9 +50,35 @@ public class CalcOAPBaseline {
             Loader.setLoadingText(LocalizedStrings.getStatus().calculateLevel(
                     actualOAP.getlastRelevantIndex()));
             actualOAP = WpManager.getWorkpackage(actualOAP.getOAPID());
-            calculate(actualOAP);
+            refreshOAP(actualOAP);
         } while (!actualOAP.equals(WpManager.getRootAp()));
         wpOverview.reload();
+    }
+
+    /**
+     * Konstruktor
+     *
+     * @param changedWp
+     *            Arbeitspaket, dessen OAP aktualisiert werden muessen
+     * @param withTime
+     *            falls die Zeiten mit berechnet werden sollen
+     * @param calcInitialWp
+     *            also calculates the changedWp
+     */
+    public CalcOAPBaseline(Workpackage changedWp, boolean withTime, boolean calcInitialWp) {
+        this.withTime = withTime;
+        Workpackage actualOAP = changedWp;
+
+        if (calcInitialWp) {
+            calculate(changedWp);
+        }
+
+        do {
+            Loader.setLoadingText(LocalizedStrings.getStatus().calculateDuration(
+                    actualOAP.getlastRelevantIndex()));
+            actualOAP = WpManager.getWorkpackage(actualOAP.getOAPID());
+            refreshOAP(actualOAP);
+        } while (!actualOAP.equals(WpManager.getRootAp()));
     }
 
     /**
@@ -73,7 +92,7 @@ public class CalcOAPBaseline {
     }
 
     /**
-     * Konstruktor
+     * Konstruktor, withTime = false für Dauer, withTime = true für Dauer und PV
      *
      * @param withTime
      *            Berechnung unter Beruecksichtigung der PV-Berechnung, wenn
@@ -83,26 +102,37 @@ public class CalcOAPBaseline {
      */
     public CalcOAPBaseline(boolean withTime, WPOverview wpOverview) {
         this.withTime = withTime;
-        if (withTime) {
-            new TimeCalc();
-        }
-        Map<Integer, List<Workpackage>> oapLevels =
-                new HashMap<Integer, List<Workpackage>>();
+
+        Map<Integer, List<Workpackage>> oapLevels = new HashMap<Integer, List<Workpackage>>();
+
+
         for (int i = WpManager.getRootAp().getLvlIDs().length; i >= 0; i--) {
             oapLevels.put(i, new ArrayList<Workpackage>());
         }
+
+        //Je Level eine Liste an OAPs/UAPs für dieses Level eintragen
         for (Workpackage actualWp : WpManager.getAllAp()) {
             if (actualWp.isIstOAP()) {
                 oapLevels.get(actualWp.getlastRelevantIndex()).add(actualWp);
             }
         }
+
+        //Sollte Text setzen zur Anzeige des aktuell bearbeiteten Levels
         for (int i = WpManager.getRootAp().getLvlIDs().length; i >= 0; i--) {
             for (Workpackage actualWp : oapLevels.get(i)) {
-                Loader.setLoadingText(LocalizedStrings.getStatus()
-                        .calculateLevel(i));
-                calculate(actualWp);
+                Loader.setLoadingText(LocalizedStrings.getStatus().calculateLevel(1));
             }
         }
+
+        new TimeCalc();
+        for (int i = WpManager.getRootAp().getLvlIDs().length; i >= 0; i--) {
+            for(Workpackage oap : oapLevels.get(i)){
+                calculate(oap);
+            }
+        }
+
+
+
         wpOverview.reload();
     }
 
@@ -131,7 +161,6 @@ public class CalcOAPBaseline {
             for (Workpackage actualWp : oapLevels.get(i)) {
                 Loader.setLoadingText(LocalizedStrings.getStatus()
                         .calculateLevel(i));
-                calculate(actualWp);
                 this.writeAnalysis(actualWp, baselineID);
             }
         }
@@ -160,6 +189,7 @@ public class CalcOAPBaseline {
      */
     public void calculate(Workpackage oap) {
         if (oap.isIstOAP()) {
+            //Wenn OAP, dann berechne neue Werte aus dessen UAPs
             double bac = 0.0;
             double ac = 0.0;
             double etc = 0.0;
@@ -172,9 +202,31 @@ public class CalcOAPBaseline {
 
             Set<Employee> workers = new HashSet<Employee>();
 
-            Map<Day, Double> oapPvs = new HashMap<Day, Double>();
+            Set<Workpackage> uaps = WpManager.getUAPs(oap);
 
-            for (Workpackage actualUAP : WpManager.getUAPs(oap)) {
+            Date minDate = oap.getStartDateHope();
+            Date maxDate = oap.getEndDateHope();
+
+            boolean init = false;
+
+            //Datumsspanne für UAPs um PV zu berechnen
+            for(Workpackage uap : uaps) {
+                if(!init) {
+                    maxDate = uap.getEndDateCalc();
+                    minDate = uap.getStartDateCalc();
+                    init = true;
+                }
+                if(uap.getEndDateCalc().after(maxDate)) {
+                    maxDate = uap.getEndDateCalc();
+                }
+                if(uap.getStartDateCalc().before(minDate)) {
+                    minDate = uap.getStartDateCalc();
+                }
+            }
+
+            Map<Day, Double> oapPvs = getFilledPvMap(minDate, maxDate);
+
+            for (Workpackage actualUAP : uaps) {
                 workers.addAll(actualUAP.getWorkers());
 
                 if (actualUAP.isIstInaktiv()) {
@@ -189,82 +241,63 @@ public class CalcOAPBaseline {
                     bacCost += actualUAP.getBac_kosten();
                     acCost += actualUAP.getAc_kosten();
                     etcCost += actualUAP.getEtc_kosten();
-                    if (withTime) {
-                        Map<Date, Double> uapPVs =
-                                ValuesService
-                                        .getWPPVs(
-                                                ValuesService
-                                                        .getPreviousFriday(
-                                                                actualUAP
-                                                                        .getStartDateCalc())
-                                                        .getTime(),
-                                                ValuesService
-                                                        .getNextFriday(
-                                                                actualUAP
-                                                                        .getEndDateCalc())
-                                                        .getTime(), actualUAP
-                                                        .getWpId());
-                        List<Date> pvSorted =
-                                new ArrayList<Date>(uapPVs.keySet());
-                        Collections.sort(pvSorted);
-                        Date lastDate = null;
-                        for (Date actualDate : pvSorted) {
-                            if (!oapPvs.containsKey(new Day(actualDate))) {
-                                oapPvs.put(new Day(actualDate),
-                                        uapPVs.get(actualDate));
-                            } else {
-                                double oldOAPPV = oapPvs.get(actualDate);
-                                oapPvs.put(new Day(actualDate),
-                                        uapPVs.get(actualDate) + oldOAPPV);
-                            }
-                            lastDate = actualDate;
-                        }
-                        if (lastDate != null) { // Keine UAP vorhanden
-                            Calendar cal = new GregorianCalendar();
-                            cal.setTime(lastDate);
-                            cal.add(Calendar.DATE, 7);
-                            while (!cal.after(ValuesService.getNextFriday(oap
-                                    .getEndDateCalc()))) {
-                                if (!oapPvs.containsKey(new Day(cal.getTime()))) {
-                                    oapPvs.put(
-                                            new Day(cal.getTime()),
-                                            ValuesService.getApPv(
-                                                    actualUAP.getWpId(), cal));
-                                } else {
-                                    double oldOAPPV = oapPvs.get(cal.getTime());
-                                    oapPvs.put(
-                                            new Day(cal.getTime()),
-                                            ValuesService.getApPv(
-                                                    actualUAP.getWpId(), cal)
-                                                    + oldOAPPV);
-                                }
-                                cal.add(Calendar.DATE, 7);
-                            }
-                        }
 
+                    //Holt alle PVs von Start- bis Enddatum für ein UAP
+                    Map<Date, Double> uapPVs = ValuesService.getWPPVs(  ValuesService.getNextFriday(actualUAP.getStartDateCalc()).getTime(),
+                                                                        ValuesService.getNextFriday(actualUAP.getEndDateCalc()).getTime(),
+                                                                        actualUAP.getWpId());
+
+                    List<Date> pvSorted = new ArrayList<Date>(uapPVs.keySet());
+                    Collections.sort(pvSorted);
+
+                    //Summiere PVs für das OAP in dessen Map
+                    for (Date actualDate : pvSorted) {
+                        double oldOAPPV = oapPvs.get(new Day(actualDate));
+                        oapPvs.put(new Day(actualDate), uapPVs.get(actualDate) + oldOAPPV);
+                    }
+
+                    //Summiere nach Paketende dessen PV (=BAC) auf die nachfolgenden Datumswerte
+                    double lastPv = actualUAP.getBac_kosten();
+                    Date end = actualUAP.getEndDateCalc();
+                    for(Date date : oapPvs.keySet()) {
+                        if(date.after(end)) {
+                            double oldValue = oapPvs.get(new Day(date));
+                            oapPvs.put(new Day(date), oldValue + lastPv);
+
+                        }
                     }
                 }
             }
 
-            Calendar actualCal = new GregorianCalendar();
-            actualCal.setTime(ValuesService.getPreviousFriday(
-                    oap.getStartDateCalc()).getTime());
-            ValuesService
-                    .savePv(oap.getWpId(), new Day(actualCal.getTime()), 0);
-
-            actualCal.setTime(ValuesService.getNextFriday(
-                    oap.getStartDateCalc()).getTime());
-
-            while (!actualCal.after(ValuesService.getNextFriday(oap
-                    .getEndDateCalc()))) {
-                try {
-                    ValuesService.savePv(oap.getWpId(),
-                            new Day(actualCal.getTime()),
-                            oapPvs.get(new Day(actualCal.getTime())));
-                } catch (Exception e) {
-
+            //add missing dates to PV-Map because of graph and +1 day offset through dependencies
+            if(oap.getStartDateCalc() != null ) {
+                if(oap.getStartDateCalc().before(minDate)) {
+                    Calendar calendar = new GregorianCalendar();
+                    double pv = oapPvs.get(new Day(minDate));
+                    calendar.setTime(oap.getStartDateCalc());
+                    while(calendar.getTime().before(minDate)) {
+                        oapPvs.put(new Day(calendar.getTime()), pv);
+                        calendar.add(Calendar.DAY_OF_MONTH, 1);
+                    }
                 }
-                actualCal.add(Calendar.DATE, 7);
+            }
+
+            //add missing dates to PV-Map because of graph and +1 day offset through dependencies
+            if(oap.getEndDateCalc() != null) {
+                if(oap.getEndDateCalc().after(maxDate)) {
+                    Calendar calendar = new GregorianCalendar();
+                    double pv = oapPvs.get(new Day(maxDate));
+                    calendar.setTime(oap.getEndDateCalc());
+                    while(calendar.getTime().after(maxDate)) {
+                        oapPvs.put(new Day(calendar.getTime()), pv);
+                        calendar.add(Calendar.DAY_OF_MONTH, -1);
+                    }
+                }
+            }
+
+            //Neu berechnete PVs mit Dauer in DB schreiben
+            for(Date actualDate : oapPvs.keySet()) {
+                ValuesService.savePv(oap.getWpId(), new Day(actualDate), oapPvs.get(new Day(actualDate)));
             }
 
             cpi = WpManager.calcCPI(acCost, etcCost, bacCost);
@@ -278,6 +311,8 @@ public class CalcOAPBaseline {
             oap.setbac_kosten(bacCost);
             oap.setAc_kosten(acCost);
             oap.setEtc_kosten(etcCost);
+
+            //vorhandene Worker löschen, neue Worker eintragen
             for (Employee actualWorker : oap.getWorkers()) {
                 oap.removeWorker(actualWorker);
             }
@@ -288,6 +323,18 @@ public class CalcOAPBaseline {
             WpManager.updateAP(oap);
         }
 
+    }
+
+    private Map<Day, Double> getFilledPvMap(Date min, Date max) {
+        Map<Day, Double> pvMap = new HashMap<>();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(min);
+        do{
+            pvMap.put(new Day(calendar.getTime()),0.0);
+            calendar.add(Calendar.DATE,1);
+        } while(calendar.getTime().before(max));
+        pvMap.put(new Day(calendar.getTime()), 0.0);
+        return pvMap;
     }
 
     /**
@@ -322,6 +369,9 @@ public class CalcOAPBaseline {
         }
         // baseID wird mit der neu generierten Baseline-ID initialisiert
         baseID = highest;
+
+        ConflictCompat.deleteWpMovedConflicts();
+
         return baseID;
     }
 
@@ -354,4 +404,70 @@ public class CalcOAPBaseline {
         DBModelManager.getAnalyseDataModel().addNewAnalyseData(data);
 
     }
+
+
+    /**
+     * Berechnet Werte für ein OAP neu, ausgenommen Datum und PV.
+     *
+     * @param oap
+     *            OAP was es zu aktualisieren gilt
+     */
+    private void refreshOAP(Workpackage oap) {
+        if (oap.isIstOAP()) {
+            //Wenn OAP, dann berechne neue Werte aus dessen UAPs
+            double bac = 0.0;
+            double ac = 0.0;
+            double etc = 0.0;
+            double ev = 0.0;
+            double eac = 0.0;
+            double cpi = 0.0;
+            double bacCost = 0.0;
+            double acCost = 0.0;
+            double etcCost = 0.0;
+
+            Set<Employee> workers = new HashSet<Employee>();
+
+            Set<Workpackage> uaps = WpManager.getUAPs(oap);
+
+            for (Workpackage actualUAP : uaps) {
+                workers.addAll(actualUAP.getWorkers());
+                if (actualUAP.isIstInaktiv()) {
+                    ac += actualUAP.getAc();
+                    acCost += actualUAP.getAc_kosten();
+                } else {
+                    bac += actualUAP.getBac();
+                    ac += actualUAP.getAc();
+                    etc += actualUAP.getEtc();
+                    ev += actualUAP.getEv();
+                    eac += actualUAP.getEac();
+                    bacCost += actualUAP.getBac_kosten();
+                    acCost += actualUAP.getAc_kosten();
+                    etcCost += actualUAP.getEtc_kosten();
+                }
+            }
+
+            cpi = WpManager.calcCPI(acCost, etcCost, bacCost);
+
+            oap.setBac(bac);
+            oap.setAc(ac);
+            oap.setEtc(etc);
+            oap.setEv(ev);
+            oap.setEac(eac);
+            oap.setcpi(cpi);
+            oap.setbac_kosten(bacCost);
+            oap.setAc_kosten(acCost);
+            oap.setEtc_kosten(etcCost);
+
+            //vorhandene Worker löschen, neue Worker eintragen
+            for (Employee actualWorker : oap.getWorkers()) {
+                oap.removeWorker(actualWorker);
+            }
+            for (Employee actualWorker : workers) {
+                oap.addWorker(actualWorker);
+            }
+
+            WpManager.updateAP(oap);
+        }
+    }
+
 }

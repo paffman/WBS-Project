@@ -31,3 +31,7 @@ most often.
 When building the project gradlew will generate a `build` folder and put all the
 build related output into that folder. If you want to get rid of the build
 folder just run `gradlew clean`.
+
+## Migrating from previous versions
+
+If you are migrating from a previous versions, there might be incompatibilities in the databases. Therefore you'll need to run a migration script. You'll find the migration script in ```src/main/resources/scripts/migrations```. These scripts are named ```[PREVIOUSVERSION]_to_[NEWVERSION].sql``` and should be run in a chronological order, until you're at the newest version.

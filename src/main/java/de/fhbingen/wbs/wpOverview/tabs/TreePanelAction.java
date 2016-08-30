@@ -14,21 +14,19 @@
 
 package de.fhbingen.wbs.wpOverview.tabs;
 
+import de.fhbingen.wbs.functions.WpManager;
+import de.fhbingen.wbs.globals.Workpackage;
+import de.fhbingen.wbs.wpOverview.WPOverview;
+import de.fhbingen.wbs.wpShow.WPShow;
+
+import javax.swing.*;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreePath;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-
-import javax.swing.JFrame;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreePath;
-
-import de.fhbingen.wbs.functions.WpManager;
-import de.fhbingen.wbs.globals.Workpackage;
-
-import de.fhbingen.wbs.wpOverview.WPOverview;
-import de.fhbingen.wbs.wpShow.WPShow;
 
 /**
  * Functionality of the TreePanel.
@@ -67,7 +65,31 @@ public class TreePanelAction {
                 over.setSelectedWorkpackage(selected);
             }
 
+
+            @Override
+            public void mousePressed(final MouseEvent e) {
+
+                DefaultMutableTreeNode node = (DefaultMutableTreeNode) gui
+                        .getTree().getLastSelectedPathComponent();
+                Workpackage selected = null;
+                if (node != null) {
+                    selected = (Workpackage) node.getUserObject();
+                    if (e.isPopupTrigger()) {
+                        gui.getTree().setSelectionPath(
+                                gui.getTree().getPathForLocation(e.getX(),
+                                        e.getY()));
+
+                        // Show context menu
+                        gui.treeContextMenu.show(e.getComponent(),
+                                e.getX(), e.getY());
+                    }
+                }
+                over.setSelectedWorkpackage(selected);
+            }
+
+            @Override
             public void mouseReleased(final MouseEvent e) {
+
                 DefaultMutableTreeNode node = (DefaultMutableTreeNode) gui
                     .getTree().getLastSelectedPathComponent();
                 Workpackage selected = null;

@@ -129,6 +129,10 @@ public interface Status {
     @En("Calculate level {0}.")
     String calculateLevel(int lvl);
 
+    @De("Berechne Dauer - einen Moment bitte.")
+    @En("Calculate duration - please wait..")
+    String calculateDuration(int lvl);
+
     @De("Lade Arbeitspakete...")
     @En("Load workpackages...")
     String loadWps();
@@ -136,4 +140,8 @@ public interface Status {
     @De("Lade Beziehungen...")
     @En("Load dependencies...")
     String loadDependencies();
+
+    @De("Arbeitspakete werden neu berechnet...")
+    @En("Workpackages are being recalculated...")
+    String recalcWps();
 }

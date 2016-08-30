@@ -14,7 +14,10 @@
 
 package de.fhbingen.wbs.controller;
 
+import com.mashape.unirest.http.exceptions.UnirestException;
+import de.fhbingen.wbs.gui.projectsetupassistant.DatabaseAdminLogin;
 import de.fhbingen.wbs.gui.wpworker.ChangePwView;
+import de.fhbingen.wbs.timetracker.TimeTrackerConnector;
 import de.fhbingen.wbs.wpOverview.WPOverviewGUI;
 import de.fhbingen.wbs.wpWorker.Worker;
 import javax.swing.JOptionPane;
@@ -25,6 +28,12 @@ import de.fhbingen.wbs.dbaccess.DBModelManager;
 import de.fhbingen.wbs.dbaccess.data.Employee;
 import de.fhbingen.wbs.translation.LocalizedStrings;
 import de.fhbingen.wbs.translation.Messages;
+
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Functionality for the ChangePwView class. Checks all needed conditions to
@@ -146,6 +155,25 @@ public class ChangePwViewController implements ChangePwView.Delegate {
                         WPOverviewGUI.setStatusText(messages.
                                 passwordChangeConfirm());
                         getGui().dispose();
+                        if(LoginViewController.withApplicationServer) {
+                            try {
+                                TimeTrackerConnector tracker = new TimeTrackerConnector(LoginViewController.lastApplicationAddress);
+                                Map<String, Object> data = new HashMap<>();
+                                data.put("username", getUsr().getLogin());
+                                data.put("password", new String(gui.txfOldPW.getPassword()));
+                                //login the user
+                                tracker.post("login/", data, false);
+
+                                //update the user password
+                                data.clear();
+                                data.put("password", new String(gui.txfNewPW.getPassword()));
+                                tracker.patch("users/" + ProjectSetupAssistant.getUserID(MySqlConnect.getConnection(),
+                                        getUsr().getLogin()) + "/",
+                                        data);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
                     } else {
                         JOptionPane.showMessageDialog(getGui(),
                                 messages.passwordInvalidError() + "\n"
